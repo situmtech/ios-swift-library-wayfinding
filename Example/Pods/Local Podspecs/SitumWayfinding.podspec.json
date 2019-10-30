@@ -1,0 +1,22 @@
+{
+  "name": "SitumWayfinding",
+  "version": "0.1.0",
+  "summary": "A short description of SitumWayfinding.",
+  "description": "TODO: Add long description of the pod here.",
+  "homepage": "https://github.com/fsvilas/SitumWayfinding",
+  "license": {
+    "type": "MIT",
+    "file": "LICENSE"
+  },
+  "authors": {
+    "fsvilas": "fsvilas@situm.com"
+  },
+  "source": {
+    "git": "https://github.com/fsvilas/SitumWayfinding.git",
+    "tag": "0.1.0"
+  },
+  "platforms": {
+    "ios": "8.0"
+  },
+  "source_files": "SitumWayfinding/Classes/**/*"
+}
