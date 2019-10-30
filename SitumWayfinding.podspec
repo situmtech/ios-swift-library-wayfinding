@@ -9,34 +9,24 @@
 Pod::Spec.new do |s|
   s.name             = 'SitumWayfinding'
   s.version          = '0.1.0'
-  s.summary          = 'A short description of SitumWayfinding.'
-
-# This description is used to generate tags and improve search results.
-#   * Think: What does it do? Why did you write it? What is the focus?
-#   * Try to keep it short, snappy and to the point.
-#   * Write the description between the DESC delimiters below.
-#   * Finally, don't worry about the indent, CocoaPods strips it!
+  s.summary          = 'Indoor Location for iOS.'
 
   s.description      = <<-DESC
-TODO: Add long description of the pod here.
+    With Situm IPS platform you can develop your wayfinding solution from zero, and with the module Situm WYF you can easily integrate guiding functionality in an existing APP to improve your visitors experience, whether in hospitals, malls, airports, corporate headquarters or convention centers.
                        DESC
 
-  s.homepage         = 'https://github.com/fsvilas/SitumWayfinding'
-  # s.screenshots     = 'www.example.com/screenshots_1', 'www.example.com/screenshots_2'
+  s.homepage         = 'http://developers.situm.es/pages/mobile/ios/'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
-  s.author           = { 'fsvilas' => 'fsvilas@situm.com' }
+  s.author           = { 'Name' => 'support@situm.es' }
   s.source           = { :git => 'https://github.com/fsvilas/SitumWayfinding.git', :tag => s.version.to_s }
-  # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
 
-  s.ios.deployment_target = '8.0'
-
-  s.source_files = 'SitumWayfinding/Classes/**/*'
+  s.ios.deployment_target = '9.0'
+  s.platform = :ios
+  s.swift_version = '5.0'
   
-  # s.resource_bundles = {
-  #   'SitumWayfinding' => ['SitumWayfinding/Assets/*.png']
-  # }
-
-  # s.public_header_files = 'Pod/Classes/**/*.h'
-  # s.frameworks = 'UIKit', 'MapKit'
-  # s.dependency 'AFNetworking', '~> 2.3'
+  s.source_files = 'SitumWayfinding/Classes/**/*'
+  s.resources = ['SitumWayfindingPod/Assets/*.storyboard', 'SitumWayfindingPod/Assets/Images/**/*.png']
+  s.dependency 'GoogleMaps', '~> 3.1.0'
+  s.dependency 'SitumSDK'
+  
 end
