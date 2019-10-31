@@ -1,6 +1,0 @@
-framework module SitumWayfinding {
-  umbrella header "SitumWayfinding-umbrella.h"
-
-  export *
-  module * { export * }
-}
