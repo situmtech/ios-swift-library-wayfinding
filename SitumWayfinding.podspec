@@ -26,7 +26,7 @@ Pod::Spec.new do |s|
   s.swift_version = '5.0'
   
   s.source_files = 'SitumWayfinding/Classes/**/*'
-  s.resources = ['SitumWayfindingPod/Assets/*.storyboard', 'SitumWayfindingPod/Assets/Images/**/*.png']
+  s.resources = ['SitumWayfinding/Assets/*.storyboard', 'SitumWayfinding/Assets/Images/**/*.png']
   s.dependency 'GoogleMaps', '~> 3.1.0'
   s.dependency 'SitumSDK'
   
