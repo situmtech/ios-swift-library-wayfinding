@@ -1,24 +1,33 @@
 //
 //  ViewController.swift
-//  SitumWayfinding
+//  ios-app-wayfindingExample
 //
-//  Created by fsvilas on 10/30/2019.
-//  Copyright (c) 2019 fsvilas. All rights reserved.
+//  Created by Adrián Rodríguez on 16/05/2019.
+//  Copyright © 2019 Situm Technologies. All rights reserved.
 //
 
 import UIKit
+import SitumWayfinding
+import SitumSDK
 
 class ViewController: UIViewController {
-
+   
+    @IBOutlet var loadButton: UIButton!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
     }
-
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+    }
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
-
+    
+    @IBAction func onPressLoadButton(_ sender: Any) {
+        self.performSegue(withIdentifier: "loadWayfindingSegue", sender: self)
+    }
 }
 
