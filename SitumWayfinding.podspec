@@ -10,6 +10,7 @@ Pod::Spec.new do |s|
   s.name             = 'SitumWayfinding'
   s.version          = '0.1.0'
   s.summary          = 'Indoor Location for iOS.'
+  s.static_framework = true
 
   s.description      = <<-DESC
     With Situm IPS platform you can develop your wayfinding solution from zero, and with the module Situm WYF you can easily integrate guiding functionality in an existing APP to improve your visitors experience, whether in hospitals, malls, airports, corporate headquarters or convention centers.
