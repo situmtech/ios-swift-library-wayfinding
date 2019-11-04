@@ -158,11 +158,11 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
     func initializeIcons() {
         poiCategoryIcons = Dictionary()
         let bundle = Bundle(for: type(of: self))
-        if let locationPointer = UIImage(named: "location-pointer", in: bundle, compatibleWith: nil), let location = UIImage(named: "location", in: bundle, compatibleWith: nil), let radius = UIImage(named: "radius", in: bundle, compatibleWith: nil) {
+        if let locationPointer = UIImage(named: "swf_location_pointer", in: bundle, compatibleWith: nil), let location = UIImage(named: "swf_location", in: bundle, compatibleWith: nil), let radius = UIImage(named: "swf_radius", in: bundle, compatibleWith: nil) {
             userMarkerIcons = [
-                "location-pointer" : locationPointer,
-                "location" : location,
-                "radius" : radius
+                "swf_location_pointer" : locationPointer,
+                "swf_location" : location,
+                "swf_radius" : radius
             ]
         }
     }
@@ -342,9 +342,9 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
                 userLocationMarker.rotation = CLLocationDegrees(location.bearing.degrees())
             }
             if location.quality == .sitHigh && location.bearingQuality == .sitHigh {
-                userLocationMarker.icon = userMarkerIcons["location-pointer"]
+                userLocationMarker.icon = userMarkerIcons["swf_location_pointer"]
             } else {
-                userLocationMarker.icon = userMarkerIcons["location"]
+                userLocationMarker.icon = userMarkerIcons["swf_location"]
             }
             self.makeUserMarkerVisible(visible: true) 
         } else {
@@ -412,7 +412,7 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
         switch state {
         case .stopped:
             positioningButton.backgroundColor = UIColor(red: 0xff / 255.0, green: 0xff / 255.0, blue: 0xff / 255.0, alpha: 1)
-            positioningButton.setImage(UIImage(named: "ic_action_no_positioning_x1", in: bundle, compatibleWith: nil), for: .normal)
+            positioningButton.setImage(UIImage(named: "swf_ic_action_no_positioning", in: bundle, compatibleWith: nil), for: .normal)
             loadingIndicator.stopAnimating()
             positioningButton.isSelected = false
         case .calculating:
@@ -422,7 +422,7 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
             positioningButton.isSelected = false
         case .started:
             positioningButton.backgroundColor = UIColor(red: 0x00 / 255.0, green: 0x75 / 255.0, blue: 0xc9 / 255.0, alpha: 1)
-            positioningButton.setImage(UIImage(named: "ic_action_localize_x1", in: bundle, compatibleWith: nil), for: .selected)
+            positioningButton.setImage(UIImage(named: "swf_ic_action_localize", in: bundle, compatibleWith: nil), for: .selected)
             loadingIndicator.stopAnimating()
             positioningButton.isSelected = true
         default:
@@ -780,7 +780,7 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
     func userLocationMarkerInMapView(mapView: GMSMapView) -> GMSMarker {
         if (self.userLocationMarker == nil) {
             let marker: GMSMarker = GMSMarker.init()
-            marker.icon = self.userMarkerIcons["location-pointer"]
+            marker.icon = self.userMarkerIcons["swf_location_pointer"]
             marker.groundAnchor = CGPoint(x: 0.5, y: 0.5)
             marker.isTappable = false;
             marker.zIndex = 2;
@@ -793,7 +793,7 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
     func userLocationRadiusMarkerInMapView (mapView: GMSMapView) -> GMSMarker {
         if (self.userLocationRadiusMarker == nil) {
             let marker: GMSMarker = GMSMarker.init()
-            marker.icon = self.userMarkerIcons["radius"]
+            marker.icon = self.userMarkerIcons["swf_radius"]
             marker.groundAnchor = CGPoint(x: 0.5, y: 0.5)
             marker.isTappable = false;
             marker.zIndex = 1
