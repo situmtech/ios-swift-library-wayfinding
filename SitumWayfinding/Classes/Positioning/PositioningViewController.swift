@@ -20,7 +20,6 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
     var library: SitumMapsLibrary?
 
     //Positioning
-    @IBOutlet weak var mapView: GMSMapView!
     @IBOutlet weak var navbar: UINavigationBar!
     @IBOutlet weak var positioningButton: UIButton!
     @IBOutlet weak var levelsTableView: UITableView!
@@ -41,6 +40,11 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
     @IBOutlet weak var cancelNavigationButton: UIButton!
     @IBOutlet weak var infoIconImage: UIImageView!
     @IBOutlet weak var navigationButton: UIButton!
+    
+    //Map added from outside. We have to use containment view to allow
+    //the map and the other layers appear in same screen
+    var mapViewVC: UIViewController!
+    var mapView: GMSMapView!
     
     //Positioning
     var mapOverlay: GMSGroundOverlay = GMSGroundOverlay()
@@ -80,6 +84,7 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
         let alert: UIAlertView = UIAlertView.init(title: "Loading", message: "Hold on for a moment", delegate: nil, cancelButtonTitle: nil)
         alert.show()
         
+        addMap()
         SITCommunicationManager.shared().fetchBuildingInfo(self.buildingId, withOptions: nil, success: { (mapping: [AnyHashable : Any]?) in
             if (mapping != nil) {
                 self.buildingInfo = mapping!["results"] as? SITBuildingInfo
@@ -113,6 +118,12 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
         initializeMapView()
         initializePositioningUIElements()
         initializeIcons()
+    }
+    
+    func addMap(){
+        let camera = GMSCameraPosition.camera(withLatitude: -33.86, longitude: 151.20, zoom: 6.0)
+        self.mapView = GMSMapView.map(withFrame: CGRect.zero, camera: camera)
+        self.mapViewVC.view = mapView
     }
     
     func initializeMapView() {
@@ -847,5 +858,14 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
         self.destinationMarker?.map = nil
         self.destinationMarker = nil
     }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if let identifier = segue.identifier {
+            if identifier == "mapContainerSegueID"{
+                self.mapViewVC = segue.destination
+            }
+        }
+    }
+
 }
 
