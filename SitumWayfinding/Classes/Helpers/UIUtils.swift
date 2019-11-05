@@ -19,14 +19,12 @@ class UIUtils: NSObject {
     
     func present(the viewController:UIViewController, over parentViewController:UIViewController, in view:UIView){
         parentViewController.addChild(viewController)
-        view.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(viewController.view)
         viewController.view.bindFrameToSuperviewBounds()        
         viewController.didMove(toParent: parentViewController)
     }
     
     func presentFromView(the viewController:UIViewController, in view:UIView){
-        view.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(viewController.view)
         viewController.view.bindFrameToSuperviewBounds()
     }
