@@ -13,7 +13,7 @@ import GoogleMaps
 /**
  Class used to load the wayfinding module on a given view
  */
-public class SitumMapsLibrary: SitumMap {
+@objc public class SitumMapsLibrary: NSObject, SitumMap {
     
     private var parentViewControler: UIViewController
     private var containerView: UIView
@@ -30,7 +30,7 @@ public class SitumMapsLibrary: SitumMap {
      - parameter view: View object that will contain the wayfinding UI
      - parameter viewController: View controller associated with the containing view
      */
-    public init(containedBy view: UIView, controlledBy viewController: UIViewController) {
+    @objc public init(containedBy view: UIView, controlledBy viewController: UIViewController) {
         self.parentViewControler = viewController
         self.containerView = view
     }
@@ -40,7 +40,7 @@ public class SitumMapsLibrary: SitumMap {
      
      - parameter: credentials: Credentials object used to authenticate against Situm SDK and Google Maps
      */
-    public func setCredentials(_ credentials: Credentials) {
+    @objc public func setCredentials(_ credentials: Credentials) {
         self.credentials = credentials
     }
     
