@@ -50,8 +50,23 @@ import GoogleMaps
      
      - parameter buildingId: Id of the building to be load
      */
-    public func load(buildingWithId buildingId: String?) throws {
-        try prepareForLoading(buildingId)
+    @objc public func load(buildingWithId buildingId: String?) throws {
+        try validationsPreLoading(buildingWithId: buildingId)
+        let mapView = obtainGMSMapView()
+        prepareForLoading(buildingWithId: buildingId, withMap: mapView)
+        UIUtils().present(the: self.toPresentViewController!, over: self.parentViewControler, in: self.containerView)
+    }
+    
+    /**
+     Loads the Wayfinding UI in the assigned view using the provided map and shows the selected building.
+     If no Credentials have been set, this method will throw an exception.
+     
+     - parameter buildingId: Id of the building to be load
+     - parameter googleMapsMap: Map to be used to present info
+     */
+    @objc public func loadForCordova(buildingWithId buildingId: String?, googleMapsMap gMap:GMSMapView?) throws {
+        try validationsPreLoading(buildingWithId: buildingId)
+        prepareForLoading(buildingWithId: buildingId, withMap: gMap)
         UIUtils().present(the: self.toPresentViewController!, over: self.parentViewControler, in: self.containerView)
     }
     
@@ -108,16 +123,27 @@ import GoogleMaps
 
 extension SitumMapsLibrary {
     
+    internal func obtainGMSMapView()->GMSMapView?{
+        let camera = GMSCameraPosition.camera(withLatitude: -33.86, longitude: 151.20, zoom: 6.0)
+        let mapView = GMSMapView.map(withFrame: CGRect.zero, camera: camera)
+        return mapView
+    }
+    
     internal func loadFromView(buildingWithId buildingId: String?) throws {
-        try prepareForLoading(buildingId)
+        let mapView = obtainGMSMapView()
+        try prepareForLoading(buildingWithId: buildingId, withMap: mapView)
         UIUtils().presentFromView(the: self.toPresentViewController!, in: self.containerView)
     }
     
-    internal func prepareForLoading(_ buildingId: String?) throws {
+    internal func validationsPreLoading(buildingWithId buildingId: String?) throws {
         try validateUserCredentials(self.credentials)
         try validateActiveBuilding(buildingId)
+        
+    }
+    
+    internal func prepareForLoading(buildingWithId buildingId: String?, withMap googleMapView: GMSMapView?) {
         if self.toPresentViewController == nil {
-            self.toPresentViewController = self.prepareControllerToPresent(buildingId!)
+            self.toPresentViewController = self.prepareControllerToPresent(buildingWithId: buildingId!, withMap: googleMapView!)
         }
     }
     
@@ -136,11 +162,12 @@ extension SitumMapsLibrary {
         }
     }
     
-    internal func prepareControllerToPresent(_ buildingId: String) -> PositioningViewController? {
+    internal func prepareControllerToPresent(buildingWithId buildingId: String,withMap googleMapView: GMSMapView) -> PositioningViewController? {
         let vc = UIUtils().viewControllerFromStoryboard(with:"SCTPositioningController")
         let toPresentViewController = vc as? PositioningViewController
         toPresentViewController?.buildingId = buildingId
         toPresentViewController?.library = self
+        toPresentViewController?.mapView = googleMapView
         
         return toPresentViewController
     }

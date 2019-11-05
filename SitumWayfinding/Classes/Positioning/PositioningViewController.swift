@@ -121,8 +121,6 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
     }
     
     func addMap(){
-        let camera = GMSCameraPosition.camera(withLatitude: -33.86, longitude: 151.20, zoom: 6.0)
-        self.mapView = GMSMapView.map(withFrame: CGRect.zero, camera: camera)
         self.mapViewVC.view = mapView
     }
     
