@@ -12,6 +12,7 @@ enum AlertType: Int {
     case compassCalibrationNeeded = 0
     case outOfBuilding = 1
     case outsideRoute = 2
+    case otherAlert = 3
     
     func value() -> Int{
         return self.rawValue

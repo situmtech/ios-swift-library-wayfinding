@@ -84,9 +84,14 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
         #endif
     }
     
-    func shouldShowAlert(type: AlertType) -> Bool {
+    func hasAlertPresentationDateExpired(type: AlertType) -> Bool {
         let now = Date().timeIntervalSince1970
         var lastDate: TimeInterval = 0.0
+        
+        if (type == .otherAlert){
+            print("Got a non valid alert type checking hasAlertPresentationDateExpired")
+            return false
+        }
         
         lastDate = {
             switch type {
@@ -96,10 +101,25 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
                 return self.lastOOBAlert
             case .outsideRoute:
                 return self.lastOutsideRouteAlert
+            case .otherAlert:
+                return now
             }
         }()
         
         return now - lastDate > SecondsBetweenAlerts
+    }
+    
+    private func updateLastAlertVisibleDate(type: AlertType){
+        switch type {
+        case .compassCalibrationNeeded:
+            self.lastCalibrationAlert = NSDate().timeIntervalSince1970
+        case.outOfBuilding:
+            self.lastOOBAlert = NSDate().timeIntervalSince1970
+        case .outsideRoute:
+            self.lastOutsideRouteAlert = NSDate().timeIntervalSince1970
+        default:
+            print("Got a non valid alert type updating last AlertVisibleDate")
+        }
     }
     
     //MARK: Handle user interactions
@@ -123,13 +143,15 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
     }
     
     public func alertViewClosed(_ alertView: UIAlertView) {
+        var alertType:AlertType = .otherAlert;
         if(alertView.title == self.compassCalibrationAlertTitle) {
-            self.lastCalibrationAlert = NSDate().timeIntervalSince1970
+            alertType = .compassCalibrationNeeded
         } else if(alertView.title == self.oobAlertTitle) {
-            self.lastOOBAlert = NSDate().timeIntervalSince1970
+            alertType = .outOfBuilding
         } else if(alertView.title == self.outsideRouteAlertTitle) {
-            self.lastOutsideRouteAlert = NSDate().timeIntervalSince1970
+            alertType = .outsideRoute
         }
+        self.updateLastAlertVisibleDate(type: alertType)
     }
     
     public func fakeLocationPressed(coordinate: CLLocationCoordinate2D, floorId: String) {
@@ -321,15 +343,11 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
             break;
         case .compassNeedsCalibration:
             stateName = "Compass needs calibration"
-            if (self.shouldShowAlert(type: .compassCalibrationNeeded)) {
-                view?.showAlertMessage(title: self.compassCalibrationAlertTitle, message: "Your device's compass isn't calibrated right now. Please recalibrate it to obtain the best navigation experience.")
-            }
+            showAlertIfNeeded(type: .compassCalibrationNeeded, title: self.compassCalibrationAlertTitle, message: "Your device's compass isn't calibrated right now. Please recalibrate it to obtain the best navigation experience.")
             break;
         case .userNotInBuilding:
             stateName = "User not in building"
-            if (self.shouldShowAlert(type: .outOfBuilding)) {
-                view?.showAlertMessage(title: self.oobAlertTitle, message: "The user is currently outside of the building. Positioning will resume when the user returns.")
-            }
+            showAlertIfNeeded(type: .outOfBuilding, title: self.oobAlertTitle, message: "The user is currently outside of the building. Positioning will resume when the user returns.")
             break;
         }
         Logger.logDebugMessage("Location manager updates state: \(stateName)")
@@ -377,11 +395,14 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
     }
     
     func navigationManager(_ navigationManager: SITNavigationInterface, userOutsideRoute route: SITRoute) {
-        
         Logger.logDebugMessage("user outside route detected: \(route.debugDescription)");
-        
-        if self.shouldShowAlert(type: .outsideRoute) {
-            view?.showAlertMessage(title: self.outsideRouteAlertTitle, message: "The user is not currently detected on the route. Please go back to resume navigation.")
+        showAlertIfNeeded(type: .outsideRoute, title: self.outsideRouteAlertTitle, message: "The user is not currently detected on the route. Please go back to resume navigation.")
+    }
+    
+    func showAlertIfNeeded(type: AlertType, title: String, message: String){
+        if self.hasAlertPresentationDateExpired(type: type) {
+            view?.showAlertMessage(title: title, message: message)
+            self.updateLastAlertVisibleDate(type: type)
         }
     }
     
