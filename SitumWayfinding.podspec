@@ -19,7 +19,7 @@ Pod::Spec.new do |s|
   s.homepage         = 'http://developers.situm.es/pages/mobile/ios/'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
   s.author           = { 'Name' => 'support@situm.es' }
-  s.source           = { :git => 'https://github.com/fsvilas/SitumWayfinding.git', :tag => s.version.to_s }
+  s.source           = { :git => 'https://github.com/situmtech/SitumWayfinding.git', :tag => s.version.to_s }
 
   s.ios.deployment_target = '9.0'
   s.platform = :ios, '9.0'
