@@ -1,0 +1,83 @@
+# Changelog
+All notable changes to this project will be documented in this file. For previous versions see CHANGES file
+
+The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
+and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
+
+All non released changes should be in CHANGELOG_UNRELEASED.md file
+
+---------
+## [0.1.6] - 2019-11-04
+
+#### Changed
+* Add level name when it exists to floor selector
+* Correct relogin error
+* Remove unnecessary methods from class `UserDefaultsWrapper` 
+* Correct target merbership of classes `UserDefaultsWrapper` and `Logger`
+
+
+## [0.1.5] - 2019-06-27
+
+# Added
+* Add new class `SitumView`
+* Add option to load Wayfinding module as a view (only programmaticaly before)
+* Add new custom error `UnsuportedConfigurationError`
+
+#### Changed
+* Credentials are now set through a separate method `setCredentials()`
+* Not providing credentials before loading the module now throws an exception
+
+
+## [0.1.4] - 2019-06-19
+
+### Added
+* Add `SitumMap` protocol
+* Add function `getGoogleMap()` to `SitumMapsLibrary` class
+* Add interceptors functionality for location, directions and navigation requests
+
+### Changed
+* Rename `Facade`to `SitumMapsLibrary`
+* `onBackPressedCallback` is now passed to `SitumMapsLibrary` through a separate method
+* Apply all new changes to SMT
+
+
+## [0.1.3] - 2019-06-11
+
+### Added
+* Add onBackCallback to Facade's load method
+* Add new class Credentials
+
+### Changed
+* CI now fails if the podspec can´t be pushed in master-release
+* Refactor Facade Methods
+
+### Deleted
+* Deleted KeysStore class
+
+
+## [0.1.2] - 2019-05-29
+
+### Added
+* Add jazzy to generate appledoc during Jenkins compilation
+* Add podspec
+
+### Changed
+* Comment all public classes and methods in SitumWayfinding
+* Modify Jenkinsfile so it cleans "build/" and "docs/" after compilation
+
+
+
+## [0.1.1] - 2019-05-24
+
+### Added
+* Add login and building selection screen from SMT
+* Add new target to compile SMT and Wayfinding in the same project
+
+### Changed
+* Positioning view now always matches its superview size
+
+
+## [0.1.0] - 2019-05-23
+
+### Added
+* Initial implementation of the wayfinding module.
