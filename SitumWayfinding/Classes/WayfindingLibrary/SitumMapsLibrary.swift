@@ -64,7 +64,7 @@ import GoogleMaps
      - parameter buildingId: Id of the building to be load
      - parameter googleMapsMap: Map to be used to present info
      */
-    @objc public func loadForCordova(buildingWithId buildingId: String?, googleMapsMap gMap:GMSMapView?) throws {
+    @objc public func load(buildingWithId buildingId: String?, googleMapsMap gMap:GMSMapView?) throws {
         try validationsPreLoading(buildingWithId: buildingId)
         prepareForLoading(buildingWithId: buildingId, withMap: gMap)
         UIUtils().present(the: self.toPresentViewController!, over: self.parentViewControler, in: self.containerView)
