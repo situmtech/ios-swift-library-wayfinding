@@ -84,7 +84,6 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
         let alert: UIAlertView = UIAlertView.init(title: "Loading", message: "Hold on for a moment", delegate: nil, cancelButtonTitle: nil)
         alert.show()
         
-        addMap()
         SITCommunicationManager.shared().fetchBuildingInfo(self.buildingId, withOptions: nil, success: { (mapping: [AnyHashable : Any]?) in
             if (mapping != nil) {
                 self.buildingInfo = mapping!["results"] as? SITBuildingInfo
@@ -101,6 +100,11 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
             alert.dismiss(withClickedButtonIndex: 0, animated: true)
             self.showAlertMessage(title: "Error obtaining building info at 2", message: "An unexpected error ocurred while downloading the building's information. Please try again.")
         })
+    }
+    
+    override func viewDidLayoutSubviews() {
+        //In viewWillAppear layout hasnt finished yet
+        addMap()
     }
     
     override func viewDidAppear(_ animated: Bool) {
