@@ -11,7 +11,7 @@ import Foundation
 /**
  Container class used to provide credentials both for SitumSDK and Google Maps
  */
-public class Credentials {
+@objc public class Credentials: NSObject {
     
     /// Mail of the Situm dashboard user
     public private(set) var user: String
@@ -29,7 +29,7 @@ public class Credentials {
      - parameter password: Apikey associated with the provided mail
      - parameter googleMapsApiKey: APIKey to use GoogleMaps services
      */
-    public init(user: String, apiKey: String, googleMapsApiKey: String) {
+     @objc public init(user: String, apiKey: String, googleMapsApiKey: String) {
         self.user = user
         self.password = apiKey
         self.mapsApiKey = googleMapsApiKey
