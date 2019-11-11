@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 All non released changes should be in CHANGELOG_UNRELEASED.md file
 
 ---------
+## [0.1.7] - 2019-11-11
+### Added
+* New load method that allows injecting GoogleMaps map
+
+### Changed
+* Make pod public
+* Make public methods accesible from Objective-C
+* Correct bug causing multiple presentations of several Error Alerts
+
 ## [0.1.6] - 2019-11-04
 
 #### Changed
