@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15400" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15404"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Initial Controller-->
+        <scene sceneID="tne-QT-ifu">
+            <objects>
+                <viewController id="BYZ-38-t0r" userLabel="Initial Controller" customClass="ViewController" customModule="situm_ios_wayfinding_getting_started" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="842"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Wayfinding Example" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LYZ-5T-B5U">
+                                <rect key="frame" x="111" y="409" width="192" height="24"/>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kYz-PR-o25">
+                                <rect key="frame" x="132" y="456" width="150" height="30"/>
+                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <gestureRecognizers/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="kYz-PR-o25" secondAttribute="height" multiplier="5:1" id="9Xs-9f-ES5"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                <state key="normal" title="Load Wayfinding">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </state>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                        <integer key="value" value="5"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                                <connections>
+                                    <action selector="onPressLoadButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="S2G-KR-pc4"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <gestureRecognizers/>
+                        <constraints>
+                            <constraint firstItem="kYz-PR-o25" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" constant="50" id="1r5-7C-ZwI"/>
+                            <constraint firstItem="kYz-PR-o25" firstAttribute="centerX" secondItem="rGn-7e-utf" secondAttribute="centerX" id="33j-dw-Nqw"/>
+                            <constraint firstItem="LYZ-5T-B5U" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="kp7-7M-nDe"/>
+                            <constraint firstItem="LYZ-5T-B5U" firstAttribute="centerX" secondItem="rGn-7e-utf" secondAttribute="centerX" id="n7B-k8-6cW"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="rGn-7e-utf"/>
+                    </view>
+                    <connections>
+                        <outlet property="loadButton" destination="kYz-PR-o25" id="iNN-Y5-fdK"/>
+                        <segue destination="uIe-Uw-TaB" kind="show" identifier="loadWayfindingSegue" id="JYy-W1-OV2"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-57.971014492753625" y="137.94642857142856"/>
+        </scene>
+        <!--Wayfinding Controller-->
+        <scene sceneID="haS-bz-McG">
+            <objects>
+                <viewController id="uIe-Uw-TaB" userLabel="Wayfinding Controller" customClass="WayfindingController" customModule="situm_ios_wayfinding_getting_started" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="9Js-hL-g4W">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="842"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ff5-Rh-MIl">
+                                <rect key="frame" x="0.0" y="0.0" width="414" height="808"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="ff5-Rh-MIl" firstAttribute="leading" secondItem="9lI-Er-HH3" secondAttribute="leading" id="5kj-lb-zcp"/>
+                            <constraint firstItem="ff5-Rh-MIl" firstAttribute="trailing" secondItem="9lI-Er-HH3" secondAttribute="trailing" id="kUQ-fk-rHN"/>
+                            <constraint firstItem="ff5-Rh-MIl" firstAttribute="top" secondItem="9lI-Er-HH3" secondAttribute="top" id="mCi-k4-zNa"/>
+                            <constraint firstItem="ff5-Rh-MIl" firstAttribute="bottom" secondItem="9lI-Er-HH3" secondAttribute="bottom" id="puv-OM-N1N"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="9lI-Er-HH3"/>
+                    </view>
+                    <connections>
+                        <outlet property="containerView" destination="ff5-Rh-MIl" id="yNv-D8-8za"/>
+                        <segue destination="BYZ-38-t0r" kind="show" identifier="unloadWayfinding" id="8eB-Gj-faP"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Jmi-F1-unf" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1342.0289855072465" y="137.94642857142856"/>
+        </scene>
+    </scenes>
+</document>
