@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'SitumWayfinding'
-  s.version          = '0.1.7'
+  s.version          = '0.1.8'
   s.summary          = 'Indoor Location for iOS.'
   s.static_framework = true
 

@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 All non released changes should be in CHANGELOG_UNRELEASED.md file
 
 ---------
+
+## [0.1.8] - 2019-11-12
+
+### Added
+* New methods to stop nagivation and positioning
+
+
 ## [0.1.7] - 2019-11-11
 ### Added
 * New load method that allows injecting GoogleMaps map
