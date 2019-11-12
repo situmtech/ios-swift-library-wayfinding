@@ -71,6 +71,20 @@ import GoogleMaps
     }
     
     /**
+       Stops Stum Navigation
+     */
+    @objc public func stopNavigation(){
+        self.toPresentViewController?.presenter?.stopNavigation()
+    }
+    
+    /**
+        Stops Situm Positioning
+     */
+    @objc public func stopPositioning(){
+        self.toPresentViewController?.presenter?.stopPositioning()
+    }
+    
+    /**
      Provides the GMSMapView instance used inside the Wayfinding view
      
      - returns: A GMSMapView instance which is the same being used by the Wayfinding controller
