@@ -62,7 +62,7 @@ node('ios-slave') {
 
   // Install all the required pods
   stage('Install dependencies') {
-    sh "pod repo update && pod install"
+    sh "pod repo update && pushd Example/ && pod install; popd"
   }
 
   // Build Example App
