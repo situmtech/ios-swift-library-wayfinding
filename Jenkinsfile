@@ -1,0 +1,94 @@
+import java.nio.file.NoSuchFileException
+def branch_n = env.BRANCH_NAME.replaceAll('/', '-')
+ARTIFACTORY_INTERNAL_ID = "-1505608236@1461239289843"
+ARTIFACTORY_PUBLIC_ID = "-1505608236@1461239289844"
+
+properties([buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '30', numToKeepStr: '20')), pipelineTriggers([])])
+
+
+////////////////////////////////////////////////////
+// Structure
+// Branch:
+//    master-release:     SitumWayfinding.framework.zip
+//                        Goes to public artifactory
+//                        Goes to libs-release-local/iOS/SitumSDK/<version>
+//                        Release build
+//
+//    master:             SitumWayfinding.framework-<version>.zip
+//                        Goes to libs-release-local/iOS/SitumSDK/master/<version>
+//                        Release build
+//
+//    release_<version>:  SitumWayfinding.framework-<version>.zip
+//                        Goes to libs-release-local/iOS/SitumSDK/release-<version>/<version>
+//                        Release build
+//
+//    develop:            SitumWayfinding.framework-develop-<version>-DEV.zip
+//                        Goes to libs-snapshot-local/iOS/SitumSDK/develop/<version>
+//                        Debug build
+//
+//    feature/XXXX:       SitumWayfinding.framework-feature-XXXX-<version>-DEV.zip
+//                        Goes to libs-snapshot-local/iOS/SitumSDK/feature-<branch_name>/<version>
+//                        Debug build
+////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////
+// Read properties
+////////////////////////////////////////////////////
+def readProperties(String propertiesFile) {
+    if (!fileExists(propertiesFile)){
+        echo "No $propertiesFile"
+        //TODO stop with appropiate methods
+        throw new NoSuchFileException(propertiesFile)
+    }
+    def props = readProperties file: propertiesFile
+    frameworkVersion = props["frameworkVersion"]
+}
+
+def getBuildType(String branch_n) {
+  if (branch_n == 'master-release' || branch_n == 'master' || branch_n.startsWith("release-")) {
+    return 'Release'
+  } else {
+    return 'Debug'
+  }
+}
+
+node('ios-slave') {
+  stage('Checkout') {
+    checkout scm
+  }
+
+  PROPERTIES_FILE = 'scripts/framework.properties'
+  readProperties(PROPERTIES_FILE)
+
+  // Install all the required pods
+  stage('Install dependencies') {
+    sh "pod repo update && pod install"
+  }
+
+  // Build Example App
+  stage('Build example app') {
+    sh "/usr/local/bin/safe-xcode-select /Applications/Xcode.app"
+    def buildType = getBuildType(branch_n)
+    sh "bash scripts/compilation_wayfinding.sh ${buildType}"
+  }
+
+  // Generate appledoc for SitumWayfinding
+  stage('Generate appledoc') {
+    sh "/usr/local/bin/safe-xcode-select /Applications/Xcode.app"
+    def buildType = getBuildType(branch_n)
+    def zipName = getZipName('docs', buildType, branch_n)
+    sh "bash scripts/generate_appledoc.sh ${zipName}"
+  }
+
+  // Archive the build logs
+  stage('Archive build logs') {
+    archiveArtifacts "build/buildWayfinding.log"
+  }
+
+  // Clean files from project build and docs generation
+  stage('Clean workspace') {
+    sh 'rm -rf build/'
+    sh 'rm -rf docs/'
+  }
+
+}
