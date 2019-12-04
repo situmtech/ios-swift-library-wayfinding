@@ -52,6 +52,37 @@ def getBuildType(String branch_n) {
   }
 }
 
+def generateFolderName(String buildType) {
+  return (buildType == 'Release') ? "libs-release-local" : "libs-snapshot-local"
+}
+
+def selectServer(String branch_n) {
+  return branch_n.equals('master-release') ? ARTIFACTORY_PUBLIC_ID : ARTIFACTORY_INTERNAL_ID
+}
+
+def generateUploadSpec(String branchName, String version){
+  def buildType = getBuildType(branchName)
+  def folderName = generateFolderName(buildType)
+  def docName = getZipName('docs', buildType, branchName)
+  def branchNameIfPrivate = branchName.equals('master-release') ? "" : (branchName + '/')
+
+  def text = """{
+              "files":[
+                  {
+                    "pattern": "${docName}",
+                    "target": "${folderName}/iOS/SitumWayfinding/${branchNameIfPrivate}${version}/"
+                  }
+                ]}"""
+
+  return text
+}
+
+def uploadIOSArtifact(String branchName, String version){
+    def artifactoryServer = Artifactory.server(selectServer(branchName))
+    def uploadSpec = generateUploadSpec(branchName, version);
+    artifactoryServer.upload(uploadSpec)
+}
+
 node('ios-slave') {
   stage('Checkout') {
     checkout scm
@@ -89,6 +120,11 @@ node('ios-slave') {
   stage('Clean workspace') {
     sh 'rm -rf build/'
     sh 'rm -rf docs/'
+  }
+
+  //  Upload artifact on result
+  stage('Upload artifacts') {
+    uploadIOSArtifact(branch_n, frameworkVersion)
   }
 
 }
