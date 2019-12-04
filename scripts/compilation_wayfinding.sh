@@ -2,8 +2,8 @@
 
 BUILD_TYPE="Release"
 
-if [ ! -z "$2" ]; then
-BUILD_TYPE=$2
+if [ ! -z "$1" ]; then
+BUILD_TYPE=$1
 fi
 
 if [ ! -d "build/" ]; then
