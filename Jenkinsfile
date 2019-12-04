@@ -52,6 +52,18 @@ def getBuildType(String branch_n) {
   }
 }
 
+def getZipName(String target, String buildType, String branch_n) {
+  def midName = target == 'framework' ? '' : '.appledoc'
+
+  if (buildType == 'Release' && branch_n == 'master-release'){
+    return "SitumWayfinding${midName}.zip"
+  } else if (buildType == 'Release'){
+    return "SitumWayfinding${midName}-${frameworkVersion}.zip"
+  } else {
+    return "SitumWayfinding${midName}-${branch_n}-${frameworkVersion}-DEV.zip"
+  }
+}
+
 def generateFolderName(String buildType) {
   return (buildType == 'Release') ? "libs-release-local" : "libs-snapshot-local"
 }
