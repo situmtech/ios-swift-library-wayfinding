@@ -18,7 +18,7 @@ if [ ! -d "docs/" ]; then
 fi
 
 # Xeramos a documentacion no directorio {project_dir}/build/Documentation
-count=`jazzy --xcodebuild-arguments -scheme,SitumWayfinding | grep -i 100% | wc -l`
+count=`jazzy --podspec SitumWayfinding.podspec | grep -i 100% | wc -l`
 if [ $count -lt 1 ]; then
     echo "Documentation error. Either a public interface has not been documented, or a private interface has not been excluded"
     exit 1
