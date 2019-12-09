@@ -18,9 +18,12 @@ xcodebuild -workspace ./Example/SitumWayfinding.xcworkspace \
 
 # Change dir if debug release
 if [ "$BUILD_TYPE" == "Release" ]; then
-cd "build/derivedData/Build/Products/Release-iphoneos"
+	cd "build/derivedData/Build/Products/Release-iphoneos"
 else
-cd "build/derivedData/Build/Products/Debug-iphoneos"
+	cd "build/derivedData/Build/Products/Debug-iphoneos"
 fi
 
-test -f "SitumWayfinding_Example.app"
+#If example app isnt generated throw error
+if [ ! -f "SitumWayfinding_Example.app"]; then
+    echo "App not found"
+fi
