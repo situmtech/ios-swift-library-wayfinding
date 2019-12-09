@@ -112,7 +112,7 @@ node('ios-slave') {
   stage('Build example app') {
     sh "/usr/local/bin/safe-xcode-select /Applications/Xcode.app"
     def buildType = getBuildType(branch_n)
-    sh "bash scripts/compilation_wayfinding.sh ${buildType}"
+    sh "./scripts/compilation_wayfinding.sh ${buildType}"
   }
 
   // Generate appledoc for SitumWayfinding
@@ -120,7 +120,7 @@ node('ios-slave') {
     sh "/usr/local/bin/safe-xcode-select /Applications/Xcode.app"
     def buildType = getBuildType(branch_n)
     def zipName = getZipName('docs', buildType, branch_n)
-    sh "bash scripts/generate_appledoc.sh ${zipName}"
+    sh "./scripts/generate_appledoc.sh ${zipName}"
   }
 
   // Archive the build logs
