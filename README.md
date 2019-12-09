@@ -13,7 +13,7 @@ Situm Wayfinding Module written in Swift for iOS devices has been designed to cr
 
 This code is in alpha release. Modifying SitumWayfinding code is not recommended at this stage. To work with SitumWayfinding use the offered public methods.
 
-### Requirements
+## Requirements
 
 1. MacOS.
 2. Xcode. More about this IDE [here] (https://developer.apple.com/xcode/).
@@ -48,8 +48,8 @@ Go to the Info tab of the Settings of your app. We need to add descriptors for t
 
 In order to use both SitumSDK and GoogleMaps capabilities you need to authenticate yourself.
 This can be done by storing the credentials in a `Credentials` object that will later be forwarded to the `SitumMapsLibrary` initializer.
-You should also provide the `SitumMapsLibrary` with both the `UIView` and the `UIViewController` that are gonna contain the wayfinding UI.
-Finally, you just need to call the `load()` method with a building ID. The following example illustrates this process:
+You should also provide the `SitumMapsLibrary` with both the UIView and the UIViewController that are gonna contain the wayfinding UI.
+Finally, you just need to call the load() method with a building ID. The following example illustrates this process:
 
 ```
 let credentials = Credentials(user: "YOUR SITUM USER", password:  "YOUR SITUM PASSWORD", googleMapsApiKey: "YOUR GOOGLE MAPS API KEY")
