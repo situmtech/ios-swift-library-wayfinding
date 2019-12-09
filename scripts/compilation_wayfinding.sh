@@ -24,7 +24,7 @@ else
 fi
 
 #If example app isnt generated throw error
-if [ ! -f "SitumWayfinding_Example.app" ]; then
+if [ ! -f SitumWayfinding_Example.app ]; then
     echo "App not found"
     exit 1
 fi
