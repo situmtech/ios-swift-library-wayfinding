@@ -1,0 +1,7 @@
+module: SitumWayfinding
+author: Situm Technologies S.L.
+author_url: https://situm.es
+readme: README.md
+sdk: iphonesimulator
+exclude:
+  - "**/module.modulemap"
