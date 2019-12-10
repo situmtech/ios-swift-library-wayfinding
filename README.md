@@ -7,11 +7,17 @@
 
 ## Description
 
-Situm Wayfinding Module has been designed to create indoor location applications in the simplest way. It has been built in the top of the Situm SDK and its functionalities has been widely tested. If you are interested in building applications using the Situm SDK, please refer to [Situm iOS SDK Sample app](https://github.com/situmtech/situm-ios-swift-getting-started).
+Situm Wayfinding Module written in Swift for iOS devices has been designed to create indoor location applications in the simplest way. It has been built in the top of the Situm SDK and allows users to position in a building, see its floors, see the building POIs (Point Of Interest), create routes to any point of the building, receive instructions to reach a place and more. If you are interested in building applications using the Situm SDK, please refer to [Situm iOS SDK Sample app](https://github.com/situmtech/situm-ios-swift-getting-started).
 
 ## Disclaimer
 
-This code is in alpha release. Modifying SitumWayfinding code is not recommended at this stage. To work with SitumWayfinding use the offered public methods 
+This code is in alpha release. Modifying SitumWayfinding code is not recommended at this stage. To work with SitumWayfinding use the offered public methods.
+
+## Requirements
+
+1. MacOS.
+2. Xcode. More about this IDE [here] (https://developer.apple.com/xcode/).
+3. Cocoapods. Information about the installation process [here] (https://guides.cocoapods.org/using/getting-started.html). 
 
 ## Example
 
@@ -37,6 +43,24 @@ Go to the Info tab of the Settings of your app. We need to add descriptors for t
 * __NSLocationWhenInUseUsageDescription__ (in XCode, “Privacy - Location When In Use Usage Description”).
 * __NSBluetoothPeripheralUsageDescription__ (in XCode, “Privacy - Bluetooth Peripheral Usage Description”).
 * Only if you are targeting iOS13.0 or superior: __NSBluetoothAlwaysUsageDescription__ (in XCode, “Privacy - Bluetooth Always Usage Description”)
+
+## Authenticate and load the wayfinding module
+
+In order to use both SitumSDK and GoogleMaps capabilities you need to authenticate yourself.
+This can be done by storing the credentials in a `Credentials` object that will later be forwarded to the `SitumMapsLibrary` initializer.
+You should also provide the `SitumMapsLibrary` with both the UIView and the UIViewController that are gonna contain the wayfinding UI.
+Finally, you just need to call the load() method with a building ID. The following example illustrates this process:
+
+```
+let credentials = Credentials(user: "YOUR SITUM USER", password:  "YOUR SITUM PASSWORD", googleMapsApiKey: "YOUR GOOGLE MAPS API KEY")
+let library = SitumMapsLibrary(containedBy: containerView, controlledBy: containerViewController)
+do{
+    library.setCredentials(credentials)
+    try library.load(buildingWithId: self.buildingId)
+}catch{
+    // PROPERLY MANAGE ERROR
+}
+```
 
 ## License
 
