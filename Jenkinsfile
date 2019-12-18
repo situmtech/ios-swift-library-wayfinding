@@ -117,7 +117,7 @@ node('ios-slave') {
 
   // Generate appledoc for SitumWayfinding
   stage('Generate appledoc') {
-    sh "/usr/local/bin/safe-xcode-select /Applications/Xcode.app"
+    sh "/usr/local/bin/safe-xcode-select /Applications/Xcode10.2.app"
     def buildType = getBuildType(branch_n)
     def zipName = getZipName('docs', buildType, branch_n)
     sh "./scripts/generate_appledoc.sh ${zipName}"
