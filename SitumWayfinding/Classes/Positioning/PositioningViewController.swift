@@ -171,9 +171,10 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
     func initializeIcons() {
         poiCategoryIcons = Dictionary()
         let bundle = Bundle(for: type(of: self))
-        if let locationPointer = UIImage(named: "swf_location_pointer", in: bundle, compatibleWith: nil), let location = UIImage(named: "swf_location", in: bundle, compatibleWith: nil), let radius = UIImage(named: "swf_radius", in: bundle, compatibleWith: nil) {
+        if let locationPointer = UIImage(named: "swf_location_pointer", in: bundle, compatibleWith: nil), let locationOutdoorPointer = UIImage(named: "swf_location_outdoor_pointer", in: bundle, compatibleWith: nil), let location = UIImage(named: "swf_location", in: bundle, compatibleWith: nil), let radius = UIImage(named: "swf_radius", in: bundle, compatibleWith: nil) {
             userMarkerIcons = [
                 "swf_location_pointer" : locationPointer,
+                "swf_location_outdoor_pointer" : locationOutdoorPointer,
                 "swf_location" : location,
                 "swf_radius" : radius
             ]
@@ -278,9 +279,9 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
     func selectFloor(floorId: String) {
         if let indexPath = getIndexPath(floorId: floorId) {
             tableView(levelsTableView, didSelectRowAt: indexPath)
-            isCameraCentered = true
-            hideCenterButton()
         }
+        isCameraCentered = true
+        hideCenterButton()
     }
     
     func reloadTableViewData() {
@@ -303,7 +304,7 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
         if let level: SITFloor = buildingInfo?.floors[indexPath.row] {
             // [06/08/19] This check is here because older buildings without the name field give unexpected nulls casted to string
             let shouldDisplayLevelName = !(level.name.isEmpty || (level.name == "<null>"))
-            let textToDisplay: String = shouldDisplayLevelName ? level.name : String(level.level)
+            let textToDisplay: String = shouldDisplayLevelName ? level.name : String(level.floor)
             cell?.textLabel?.text = String(format: "%@", textToDisplay)
             cell?.backgroundColor = self.getBackgroundColor(row: indexPath.row, floorIdentifier: level.identifier)
         }
@@ -348,13 +349,15 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
         let userLocationMarker = self.userLocationMarkerInMapView(mapView: self.mapView)
         let userLocationRadiusMarker = self.userLocationRadiusMarkerInMapView(mapView: self.mapView)
         let selectedLevel: SITFloor? = buildingInfo!.floors[selectedLevelIndex]
-        if isCameraCentered || selectedLevel?.identifier == location.position.floorIdentifier {
+        if isCameraCentered || location.position.isOutdoor() || selectedLevel?.identifier == location.position.floorIdentifier {
             userLocationMarker.position = location.position.coordinate()
             userLocationRadiusMarker.position = location.position.coordinate()
             if self.isBearingChangedEnoughToReloadUi(bearing: location.bearing.degrees()) {
                 userLocationMarker.rotation = CLLocationDegrees(location.bearing.degrees())
             }
-            if location.quality == .sitHigh && location.bearingQuality == .sitHigh {
+            if location.position.isOutdoor() {
+                userLocationMarker.icon = userMarkerIcons["swf_location_outdoor_pointer"]
+            } else if location.quality == .sitHigh && location.bearingQuality == .sitHigh {
                 userLocationMarker.icon = userMarkerIcons["swf_location_pointer"]
             } else {
                 userLocationMarker.icon = userMarkerIcons["swf_location"]
@@ -541,6 +544,7 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
         if (presenter?.userLocation != nil && !isSameLevel) {
             self.isCameraCentered = false
             self.showCenterButton()
+            self.updateUI(with: self.presenter!.userLocation!)
         }
     }
 
