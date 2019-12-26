@@ -7,11 +7,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 All non released changes should be in CHANGELOG_UNRELEASED.md file
 
 ---------
+## [0.1.9] - 2019-12-26
+
 #### Changed
 * Change positioning view so it also prints outdoor positions
 
 #### Fixed
 * Fix a bug that kept the user's marker on screen after selecting a different floor
+
 
 ## [0.1.8] - 2019-11-12
 
@@ -33,7 +36,7 @@ All non released changes should be in CHANGELOG_UNRELEASED.md file
 #### Changed
 * Add level name when it exists to floor selector
 * Correct relogin error
-* Remove unnecessary methods from class `UserDefaultsWrapper` 
+* Remove unnecessary methods from class `UserDefaultsWrapper`
 * Correct target merbership of classes `UserDefaultsWrapper` and `Logger`
 
 
