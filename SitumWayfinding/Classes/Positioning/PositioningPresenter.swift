@@ -214,8 +214,10 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
     
     func centerButtonPressed() {
         if let userLocation = userLocation {
-            view?.updateUI(with: userLocation)
+            
             view?.selectFloor(floorId: userLocation.position.floorIdentifier)
+            view?.updateUI(with: userLocation)
+            
         }
     }
     
