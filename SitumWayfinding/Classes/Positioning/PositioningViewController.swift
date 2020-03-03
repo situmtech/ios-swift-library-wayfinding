@@ -58,7 +58,7 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
     var lastAnimatedBearing: Float = 0.0
     var isCameraCentered: Bool = false
     let locManager: CLLocationManager = CLLocationManager()
-    var buildingInfo: SITBuildingInfo? = nil
+    public var buildingInfo: SITBuildingInfo? = nil
     var actualZoom: Float = 0.0
     var selectedLevelIndex: Int = 0
     var presenter: PositioningPresenter? = nil
@@ -873,5 +873,8 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
         }
     }
 
+    @IBAction func clearCacheButtonPressed(_ sender: Any) {
+        SITCommunicationManager.shared().clearCache()
+    }
 }
 

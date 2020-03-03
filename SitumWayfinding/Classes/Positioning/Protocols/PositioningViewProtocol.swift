@@ -11,6 +11,8 @@ import SitumSDK
 
 protocol PositioningView {
     
+    var buildingInfo: SITBuildingInfo? { get }
+    
     func change(_ state: SITLocationState, centerCamera: Bool)
     
     func stop()

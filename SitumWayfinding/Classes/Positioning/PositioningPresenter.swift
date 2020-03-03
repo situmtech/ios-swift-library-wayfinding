@@ -64,7 +64,9 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
     }
     
     func stopPositioning() {
-        self.locationManager.removeUpdates()
+        if self.locationManager.state() != .stopped {
+            self.locationManager.removeUpdates()
+        }
         self.userLocation = nil
         self.lastOOBAlert = 0.0
         self.lastCalibrationAlert = 0.0
@@ -327,7 +329,12 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
     
     func locationManager(_ locationManager: SITLocationInterface, didFailWithError error: Error?) {
         Logger.logErrorMessage("Location error problem: \(error.debugDescription)")
-        view?.stop()
+        if error != nil {
+            let fullError = error! as NSError
+            if ((fullError.userInfo["kindof"] != nil) && ((fullError.userInfo["kindof"] as! String) == "critical")) {
+                view?.stop()
+            }
+        }
         view?.showAlertMessage(title: "Error", message: error!.localizedDescription)
     }
     
@@ -363,7 +370,7 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
     }
     
     func directionsManager(_ manager: SITDirectionsInterface, didProcessRequest request: SITDirectionsRequest, withResponse route: SITRoute) {
-        if (route.routeSteps.count == 0) {
+        if (route.routeSteps.count == 0) {  
             view?.showAlertMessage(title: "Unable to compute route", message: "There is no route between the selected locations. Try to compute a different route or to switch accessibility mode")
             Logger.logDebugMessage("Unable to find a path for request: \(request.debugDescription)")
         } else {
