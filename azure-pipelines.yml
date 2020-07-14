@@ -47,7 +47,7 @@ steps:
 
 - script: |
     sudo xcode-select -switch /Applications/Xcode_11.3.1.app
-    ./scripts/compilation_wayfinding.sh $(buildType)
+    #./scripts/compilation_wayfinding.sh $(buildType)
   displayName: Build example app
 
 - script: |
