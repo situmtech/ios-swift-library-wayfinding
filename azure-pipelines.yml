@@ -51,9 +51,10 @@ steps:
   displayName: Build example app
 
 - script: |
+    sudo gem install jazzy
     sudo xcode-select -switch /Applications/Xcode_10.2.app
 
-    if [ $(buildType) == 'Release' ] && [ $(branch) == 'master-release') ];then
+    if [ $(buildType) == 'Release' ] && [ $(branch) == 'master-release' ];then
       zipName="SitumWayfinding.appledoc.zip"
     elif [ buildType == 'Release' ];then
       zipName="SitumWayfinding.appledoc-$(version).zip"
