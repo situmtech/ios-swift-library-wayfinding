@@ -67,12 +67,12 @@ steps:
   displayName: Generate appledoc
 
 
-- task: PublishPipelineArtifact@1
-  inputs:
-    targetPath: 'build/buildWayfinding.log'
-    artifact: 'logs'
-    publishLocation: 'pipeline'
-  displayName: Archive build logs
+#- task: PublishPipelineArtifact@1
+#  inputs:
+#    targetPath: 'build/buildWayfinding.log'
+#    artifact: 'logs'
+#    publishLocation: 'pipeline'
+#  displayName: Archive build logs
 
 - script: |
     if [ "$(branch)" == "master-release" ];then
