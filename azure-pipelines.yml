@@ -4,16 +4,91 @@
 # https://aka.ms/yaml
 
 trigger:
-- master
+- azure-pipelines
+
+pr: none
+
+variables:
+- group: Passwords
+
+resources:
+  repositories:
+  - repository: sys_kubernetes_templates
+    type: bitbucket
+    endpoint: Bitbucket - sistemas
+    name: situm/sys-kubernetes-templates.git
+    ref: SIS-144
 
 pool:
-  vmImage: 'ubuntu-latest'
+  vmImage: 'macOS-10.14'
 
 steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
+- template: azure-templates/upload-sharepoint.yml@sys_kubernetes_templates
+  parameters:
+    prepare_sharepoint: False
+    properties_file: 'scripts/framework.properties'
+    prepare_ndk: false
 
 - script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+    if [ "$(branch)" == "master-release" ] || [ "$(branch)" == "master" ] || [ $(echo $(branch) | grep -cE "^release-*") -eq 1 ];then
+      buildType="Release"
+    else
+      buildType="Debug"
+    fi
+     echo "##vso[task.setvariable variable=buildType]$(echo $buildType)"
+  displayName: Set buildType
+
+- script: |
+    pod repo update 
+    pushd Example/ 
+    pod install
+    popd
+  displayName: Install dependencies
+
+- script: |
+    sudo xcode-select -switch /Applications/Xcode_11.3.1.app
+    ./scripts/compilation_wayfinding.sh $(buildType)
+  displayName: Build example app
+
+- script: |
+    sudo xcode-select -switch /Applications/Xcode_10.2.app
+
+    if [ $(buildType) == 'Release' ] && [ $(branch) == 'master-release') ];then
+      zipName="SitumWayfinding.appledoc.zip"
+    elif [ buildType == 'Release' ];then
+      zipName="SitumWayfinding.appledoc-$(version).zip"
+    else 
+      zipName="SitumWayfinding.appledoc-$(branch)-$(version)-DEV.zip"
+    fi
+
+    echo "##vso[task.setvariable variable=zipName]$(echo $zipName)"
+    ./scripts/generate_appledoc.sh $zipName
+  displayName: Generate appledoc
+
+
+- task: PublishPipelineArtifact@1
+  inputs:
+    targetPath: 'build/buildWayfinding.log'
+    artifact: 'logs'
+    publishLocation: 'pipeline'
+  displayName: Archive build logs
+
+- script: |
+    if [ "$(branch)" == "master-release" ];then
+      branchNameIfPrivate=""
+      if [ "$(buildType)"  == "Release" ];then
+        reponame="libs-release-local"
+      else
+        reponame="libs-snapshot-local"
+      fi
+    else
+      branchNameIfPrivate="$(branch)"
+      if [ "$(buildType)"  == "Release" ];then
+        reponame="lib-release-local-private"
+      else
+        reponame="libs-snapshot-local-private"
+      fi
+    fi
+
+    ./jfrog rt upload $(zipName) $reponame/iOS/SitumWayfinding/$branchNameIfPrivate/$(version)/
+  displayName: Upload artifacts
