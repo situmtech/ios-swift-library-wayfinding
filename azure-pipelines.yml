@@ -23,10 +23,15 @@ pool:
   vmImage: 'macOS-10.14'
 
 steps:
+
+- task: InstallAppleCertificate@2
+  inputs:
+    certSecureFile: Identities.p12
+
 - task: InstallAppleProvisioningProfile@1
   inputs:
     provisioningProfileLocation: 'secureFiles'
-    provProfileSecureFile: SitumMappingTool.mobileprovision
+    provProfileSecureFile: 3bf9b5b5-5906-45bf-92a9-3529a3197636.iOSTeamProvisioningProfilees.situm.situmcalibrationtool.mobileprovision
     removeProfile: true
     
 - template: azure-templates/upload-sharepoint.yml@sys_kubernetes_templates
