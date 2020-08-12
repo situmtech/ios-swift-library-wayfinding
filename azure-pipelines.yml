@@ -21,7 +21,6 @@ resources:
     type: bitbucket
     endpoint: Bitbucket - sistemas
     name: situm/sys-kubernetes-templates.git
-    ref: SIS-144
 
 pool:
   vmImage: 'macOS-10.14'
