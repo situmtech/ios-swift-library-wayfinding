@@ -4,7 +4,11 @@
 # https://aka.ms/yaml
 
 trigger:
-- azure-pipelines
+- master
+- master-release
+- release/*
+- develop
+- feature/*
 
 pr: none
 
