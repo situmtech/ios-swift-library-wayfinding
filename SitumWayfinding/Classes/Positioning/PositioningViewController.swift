@@ -656,13 +656,6 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
 
         self.present(alert, animated: true, completion: nil)
     }
-
-    
-    func alertView(_ alertView: UIAlertView, clickedButtonAt buttonIndex: Int) {
-        #if DEBUG
-        presenter?.fakeLocOptionSelected(atIndex: buttonIndex)
-        #endif
-    }
     
     
     func showRoute(route: SITRoute) {
