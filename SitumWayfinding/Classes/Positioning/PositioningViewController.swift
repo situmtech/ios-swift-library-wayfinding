@@ -46,6 +46,9 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
     var mapViewVC: UIViewController!
     var mapView: GMSMapView!
     
+    //Loading
+    var loadingError:Bool = false
+    
     //Positioning
     var mapOverlay: GMSGroundOverlay = GMSGroundOverlay()
     var userLocationMarker: GMSMarker? = nil
@@ -87,7 +90,7 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
         let loadingAlert = UIAlertController(title:  "Loading", message: "Hold on for a moment", preferredStyle: .actionSheet)
         self.present(loadingAlert, animated: true, completion: {
             if (self.loadFinished){
-                loadingAlert.dismiss(animated: true, completion: nil)
+                self.situmLoadFinished(loadingAlert: loadingAlert)
             }
         })
         
@@ -95,19 +98,18 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
             if (mapping != nil) {
                 self.buildingInfo = mapping!["results"] as? SITBuildingInfo
                 if self.buildingInfo!.floors.count <= 0 {
-                    self.showAlertMessage(title: "Error obtaining building info at 1", message: "An unexpected error ocurred while downloading the building's information. Please try again.", alertType: .otherAlert)
+                    self.loadingError = true;
+                    self.situmLoadFinished(loadingAlert: loadingAlert)
                 } else {
-                    loadingAlert.dismiss(animated: true, completion: nil)
-                    self.loadFinished = true;
+                    self.situmLoadFinished(loadingAlert: loadingAlert)
                     self.presenter = PositioningPresenter(view: self, buildingInfo: self.buildingInfo!, interceptorsManager: self.library?.interceptorsManager ?? InterceptorsManager())
                     self.initializeUIElements()
                 }
             }
         }, failure: { (error: Error?) in
             Logger.logErrorMessage(error.debugDescription)
-            loadingAlert.dismiss(animated: true, completion: nil)
-            self.loadFinished = true;
-            self.showAlertMessage(title: "Error obtaining building info at 2", message: "An unexpected error ocurred while downloading the building's information. Please try again.",alertType: .otherAlert)
+            self.loadingError = true;
+            self.situmLoadFinished(loadingAlert: loadingAlert)
         })
     }
     
@@ -124,6 +126,15 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
                 self.locManager.requestAlwaysAuthorization()
             }
         }
+    }
+    
+    func situmLoadFinished(loadingAlert : UIAlertController){
+        loadingAlert.dismiss(animated: true) {
+            if (self.loadingError){
+                self.showAlertMessage(title: "Error obtaining building info", message: "An unexpected error ocurred while downloading the building's information. Please try again.",alertType: .otherAlert)
+            }
+        }
+        loadFinished = true
     }
     
     //MARK: Initializers
