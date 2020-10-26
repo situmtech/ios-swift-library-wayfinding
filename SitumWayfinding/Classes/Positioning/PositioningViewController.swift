@@ -13,7 +13,7 @@ import SitumSDK
 
 let SecondsBetweenAlerts = 30.0
 
-class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableViewDataSource, UITableViewDelegate, UIAlertViewDelegate, PositioningView, PositioningController {
+class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableViewDataSource, UITableViewDelegate, PositioningView, PositioningController {
     
     //MARK PositioningController protocol variables
     var buildingId: String = ""
@@ -70,10 +70,12 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
     var progress: SITNavigationProgress? = nil
     var polyline: Array<GMSPolyline> = []
     var routePath: Array<GMSMutablePath> = []
+    var loadFinished:Bool = false
     
     // Constants
     let DEFAULT_POI_NAME: String = "POI"
     let DEFAULT_BUILDING_NAME: String = "Current Building"
+    let fakeLocationsOptions = ["0º", "90º", "180º", "270º", "Create marker"]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -81,24 +83,31 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        let alert: UIAlertView = UIAlertView.init(title: "Loading", message: "Hold on for a moment", delegate: nil, cancelButtonTitle: nil)
-        alert.show()
+        
+        let loadingAlert = UIAlertController(title:  "Loading", message: "Hold on for a moment", preferredStyle: .actionSheet)
+        self.present(loadingAlert, animated: true, completion: {
+            if (self.loadFinished){
+                loadingAlert.dismiss(animated: true, completion: nil)
+            }
+        })
         
         SITCommunicationManager.shared().fetchBuildingInfo(self.buildingId, withOptions: nil, success: { (mapping: [AnyHashable : Any]?) in
             if (mapping != nil) {
                 self.buildingInfo = mapping!["results"] as? SITBuildingInfo
                 if self.buildingInfo!.floors.count <= 0 {
-                    self.showAlertMessage(title: "Error obtaining building info at 1", message: "An unexpected error ocurred while downloading the building's information. Please try again.")
+                    self.showAlertMessage(title: "Error obtaining building info at 1", message: "An unexpected error ocurred while downloading the building's information. Please try again.", alertType: .otherAlert)
                 } else {
-                    alert.dismiss(withClickedButtonIndex: 0, animated: true)
+                    loadingAlert.dismiss(animated: true, completion: nil)
+                    self.loadFinished = true;
                     self.presenter = PositioningPresenter(view: self, buildingInfo: self.buildingInfo!, interceptorsManager: self.library?.interceptorsManager ?? InterceptorsManager())
                     self.initializeUIElements()
                 }
             }
         }, failure: { (error: Error?) in
             Logger.logErrorMessage(error.debugDescription)
-            alert.dismiss(withClickedButtonIndex: 0, animated: true)
-            self.showAlertMessage(title: "Error obtaining building info at 2", message: "An unexpected error ocurred while downloading the building's information. Please try again.")
+            loadingAlert.dismiss(animated: true, completion: nil)
+            self.loadFinished = true;
+            self.showAlertMessage(title: "Error obtaining building info at 2", message: "An unexpected error ocurred while downloading the building's information. Please try again.",alertType: .otherAlert)
         })
     }
     
@@ -246,7 +255,7 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
                     self.floorplans[levelIdentifier] = scaledImage
                     self.displayFloorplan(forLevel: levelIdentifier)
                 } else {
-                    self.showAlertMessage(title: "Empty floorplan", message: "An unexpected error ocurred while downloading the floorplan. Please try again.")
+                    self.showAlertMessage(title: "Empty floorplan", message: "An unexpected error ocurred while downloading the floorplan. Please try again.", alertType: .otherAlert)
                 }
             })
         }
@@ -529,9 +538,18 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
     }
     
     func showFakeLocationsAlert() {
-        let alert = UIAlertView(title: "Long press actions", message: "Select an action:", delegate: self, cancelButtonTitle: "Cancel", otherButtonTitles: "0º", "90º", "180º", "270º", "Create marker")
-        
-        alert.show()
+        let alert = UIAlertController(title: "Long press actions", message: "Select an action:", preferredStyle: .alert)
+
+        alert.addAction(UIAlertAction(title: "Cancel", style: .default, handler: { _ in
+            self.presenter?.alertViewClosed(.otherAlert)
+        }))
+        for (buttonIndex, text) in fakeLocationsOptions.enumerated() {
+            alert.addAction(UIAlertAction(title: text, style: .default, handler: { _ in
+                self.presenter?.fakeLocOptionSelected(atIndex: buttonIndex)
+            }))
+        }
+
+        self.present(alert, animated: true, completion: nil)
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -562,7 +580,7 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
         if (self.lastSelectedMarker != nil) {
             self.destinationMarker = self.lastSelectedMarker
         } else {
-            self.showAlertMessage(title: "No destination selected", message: "There is no destination currently selected, the navigation cannot be started. Please select a POI (or longpress to create a custom one) and try again.")
+            self.showAlertMessage(title: "No destination selected", message: "There is no destination currently selected, the navigation cannot be started. Please select a POI (or longpress to create a custom one) and try again.", alertType: .otherAlert)
         }
         self.positioningButton.isHidden = true
         self.changeCancelNavigationButtonVisibility(isVisible: true)
@@ -628,9 +646,15 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
         }
     }
     
-    func showAlertMessage(title: String, message: String) {
-        let alertView = UIAlertView.init(title: title, message: message, delegate: self, cancelButtonTitle: "Ok");
-        alertView.show()
+    func showAlertMessage(title: String, message: String, alertType:AlertType) {
+        
+        let alert = UIAlertController(title: title, message: message,         preferredStyle: .alert)
+
+        alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: { _ in
+            self.presenter?.alertViewClosed(alertType)
+        }))
+
+        self.present(alert, animated: true, completion: nil)
     }
 
     
@@ -640,9 +664,6 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
         #endif
     }
     
-    func alertViewCancel(_ alertView: UIAlertView) {
-        self.presenter?.alertViewClosed(alertView)
-    }
     
     func showRoute(route: SITRoute) {
         self.changeNavigationButtonVisibility(isVisible: false)

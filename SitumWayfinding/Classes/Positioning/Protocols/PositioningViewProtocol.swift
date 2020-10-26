@@ -19,7 +19,7 @@ protocol PositioningView {
     
     func updateUI(with location: SITLocation)
     
-    func showAlertMessage(title: String, message: String)
+    func showAlertMessage(title: String, message: String, alertType:AlertType)
     
     func showFakeLocationsAlert()
     

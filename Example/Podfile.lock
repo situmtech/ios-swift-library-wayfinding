@@ -19,7 +19,7 @@ PODS:
   - Quick (1.2.0)
   - SitumSDK (2.36.2):
     - Protobuf (~> 3.7)
-  - SitumWayfinding (0.1.0):
+  - SitumWayfinding (0.1.9):
     - GoogleMaps (~> 3.1.0)
     - SitumSDK
 
@@ -31,7 +31,7 @@ DEPENDENCIES:
   - SitumWayfinding (from `../`)
 
 SPEC REPOS:
-  https://github.com/cocoapods/specs.git:
+  https://github.com/CocoaPods/Specs.git:
     - FBSnapshotTestCase
     - GoogleMaps
     - Nimble
@@ -52,8 +52,8 @@ SPEC CHECKSUMS:
   Protobuf: a4dc852ad69c027ca2166ed287b856697814375b
   Quick: 58d203b1c5e27fff7229c4c1ae445ad7069a7a08
   SitumSDK: b4ea999b6dd8588afbacde6cf38f66ebb89ad9ec
-  SitumWayfinding: b580579a16aaed07d40495695d39ff53794ce163
+  SitumWayfinding: f0cac4b7f162851f42ed2720df2ba8f7b691a4b9
 
 PODFILE CHECKSUM: a798c7f4ae4242918fac6601ae0d0052fb198646
 
-COCOAPODS: 1.7.5
+COCOAPODS: 1.9.3
