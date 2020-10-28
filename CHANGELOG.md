@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 All non released changes should be in CHANGELOG_UNRELEASED.md file
 
 ---------
+## [0.1.10] - 2020-10-28
+
+#### Fixed
+* Replace deprecated UIAlertView for UIAlertController
+
 ## [0.1.9] - 2019-12-26
 
 #### Changed
