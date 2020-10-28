@@ -1,0 +1,109 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- master
+- master-release
+- release/*
+- develop
+- feature/*
+
+pr: none
+
+variables:
+- group: Passwords
+
+resources:
+  repositories:
+  - repository: sys_kubernetes_templates
+    type: bitbucket
+    endpoint: Bitbucket - sistemas
+    name: situm/sys-kubernetes-templates.git
+
+pool:
+  vmImage: 'macOS-10.14'
+
+steps:
+
+- task: InstallAppleCertificate@2
+  inputs:
+    certSecureFile: Identities.p12
+
+- task: InstallAppleProvisioningProfile@1
+  inputs:
+    provisioningProfileLocation: 'secureFiles'
+    provProfileSecureFile: 1b9d6048-341a-44e7-876b-40c204410814.iOSTeamProvisioningProfile.mobileprovision
+    removeProfile: true
+    
+- template: azure-templates/upload-sharepoint.yml@sys_kubernetes_templates
+  parameters:
+    prepare_sharepoint: False
+    properties_file: 'scripts/framework.properties'
+    prepare_ndk: false
+
+- script: |
+    if [ "$(branch)" == "master-release" ] || [ "$(branch)" == "master" ] || [ $(echo $(branch) | grep -cE "^release-*") -eq 1 ];then
+      buildType="Release"
+    else
+      buildType="Debug"
+    fi
+     echo "##vso[task.setvariable variable=buildType]$(echo $buildType)"
+  displayName: Set buildType
+
+- script: |
+    pod repo update 
+    pushd Example/ 
+    pod install
+    popd
+  displayName: Install dependencies
+
+- script: |
+    sudo xcode-select -switch /Applications/Xcode_11.3.1.app
+    ./scripts/compilation_wayfinding.sh $(buildType)
+  displayName: Build example app
+
+- script: |
+    sudo gem install jazzy
+    sudo xcode-select -switch /Applications/Xcode_10.2.app
+
+    if [ $(buildType) == 'Release' ] && [ $(branch) == 'master-release' ];then
+      zipName="SitumWayfinding.appledoc.zip"
+    elif [ buildType == 'Release' ];then
+      zipName="SitumWayfinding.appledoc-$(version).zip"
+    else 
+      zipName="SitumWayfinding.appledoc-$(branch)-$(version)-DEV.zip"
+    fi
+
+    echo "##vso[task.setvariable variable=zipName]$(echo $zipName)"
+    ./scripts/generate_appledoc.sh $zipName
+  displayName: Generate appledoc
+
+
+- task: PublishPipelineArtifact@1
+  inputs:
+    targetPath: 'build/buildWayfinding.log'
+    artifact: 'logs'
+    publishLocation: 'pipeline'
+  displayName: Archive build logs
+
+- script: |
+    if [ "$(branch)" == "master-release" ];then
+      branchNameIfPrivate=""
+      if [ "$(buildType)"  == "Release" ];then
+        reponame="libs-release-local"
+      else
+        reponame="libs-snapshot-local"
+      fi
+    else
+      branchNameIfPrivate="$(branch)"
+      if [ "$(buildType)"  == "Release" ];then
+        reponame="lib-release-local-private"
+      else
+        reponame="libs-snapshot-local-private"
+      fi
+    fi
+
+    ./jfrog rt upload $(zipName) $reponame/iOS/SitumWayfinding/$branchNameIfPrivate/$(version)/
+  displayName: Upload artifacts
