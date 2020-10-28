@@ -142,15 +142,7 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
         }
     }
     
-    public func alertViewClosed(_ alertView: UIAlertView) {
-        var alertType:AlertType = .otherAlert;
-        if(alertView.title == self.compassCalibrationAlertTitle) {
-            alertType = .compassCalibrationNeeded
-        } else if(alertView.title == self.oobAlertTitle) {
-            alertType = .outOfBuilding
-        } else if(alertView.title == self.outsideRouteAlertTitle) {
-            alertType = .outsideRoute
-        }
+    public func alertViewClosed(_ alertType:AlertType = .otherAlert) {
         self.updateLastAlertVisibleDate(type: alertType)
     }
     
@@ -272,7 +264,7 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
             SITDirectionsManager.sharedInstance().delegate = self
             SITDirectionsManager.sharedInstance().requestDirections(request)
         } else {
-            view?.showAlertMessage(title: "Position unknown", message: "User actual location is unknown, please activate the positioning before computing a route and try again.")
+            view?.showAlertMessage(title: "Position unknown", message: "User actual location is unknown, please activate the positioning before computing a route and try again.", alertType: .otherAlert)
             view?.stopNavigation()
             return
         }
@@ -328,7 +320,7 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
     func locationManager(_ locationManager: SITLocationInterface, didFailWithError error: Error?) {
         Logger.logErrorMessage("Location error problem: \(error.debugDescription)")
         view?.stop()
-        view?.showAlertMessage(title: "Error", message: error!.localizedDescription)
+        view?.showAlertMessage(title: "Error", message: error!.localizedDescription, alertType: .otherAlert)
     }
     
     func locationManager(_ locationManager: SITLocationInterface, didUpdate state: SITLocationState) {
@@ -358,13 +350,13 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
     //MARK: DirectionsDelegate methods
     
     func directionsManager(_ manager: SITDirectionsInterface, didFailProcessingRequest request: SITDirectionsRequest, withError error: Error?) {
-        view?.showAlertMessage(title: "Unable to compute route", message: "An unexpected error was found while computing the route. Please try again.")
+        view?.showAlertMessage(title: "Unable to compute route", message: "An unexpected error was found while computing the route. Please try again.", alertType: .otherAlert)
         Logger.logErrorMessage("directions request failed with error: \(error.debugDescription)");
     }
     
     func directionsManager(_ manager: SITDirectionsInterface, didProcessRequest request: SITDirectionsRequest, withResponse route: SITRoute) {
         if (route.routeSteps.count == 0) {
-            view?.showAlertMessage(title: "Unable to compute route", message: "There is no route between the selected locations. Try to compute a different route or to switch accessibility mode")
+            view?.showAlertMessage(title: "Unable to compute route", message: "There is no route between the selected locations. Try to compute a different route or to switch accessibility mode", alertType: .otherAlert)
             Logger.logDebugMessage("Unable to find a path for request: \(request.debugDescription)")
         } else {
             view?.showRoute(route: route)
@@ -390,9 +382,7 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
     
     func navigationManager(_ navigationManager: SITNavigationInterface, destinationReachedOn route: SITRoute) {
         Logger.logDebugMessage("Destination reached")
-        let alert = UIAlertView(title: "Destination Reached", message: "You've arrived to your destination", delegate: self, cancelButtonTitle: "Ok")
-        alert.tag = 1
-        alert.show()
+        view?.showAlertMessage(title: "Destination Reached", message: "You've arrived to your destination", alertType: .otherAlert)
         view?.stopNavigation()
     }
     
@@ -403,7 +393,7 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
     
     func showAlertIfNeeded(type: AlertType, title: String, message: String){
         if self.hasAlertPresentationDateExpired(type: type) {
-            view?.showAlertMessage(title: title, message: message)
+            view?.showAlertMessage(title: title, message: message, alertType: type)
             self.updateLastAlertVisibleDate(type: type)
         }
     }
