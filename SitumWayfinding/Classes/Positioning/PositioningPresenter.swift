@@ -10,6 +10,13 @@ import Foundation
 import SitumSDK
 import GoogleMaps
 
+enum SITDirectionsRequestValidity{
+    case SITValidDirectionsRequest
+    case SITNotOriginError
+    case SITOutdorOriginError
+    case SITNotDestinationError
+}
+
 class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate, SITNavigationDelegate {
     
     var view: PositioningView?
@@ -133,7 +140,10 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
     }
     
     public func navigationButtonPressed(withDestination destination: CLLocationCoordinate2D, inFloor floorId: String) {
-        point = SITPoint(building: buildingInfo.building, floorIdentifier: floorId, coordinate: destination)
+        point = nil
+        if (CLLocationCoordinate2DIsValid(destination)){
+            point = SITPoint(building: buildingInfo.building, floorIdentifier: floorId, coordinate: destination)
+        }
         if (self.locationManager.state() == .stopped) {
             self.startPositioning()
             self.isSystemWaitingToStartRoute = true
@@ -258,16 +268,59 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
     }
     
     public func requestDirections(to position: SITPoint!) {
-        if let userLocation = userLocation {
-            var request: SITDirectionsRequest = RequestBuilder.buildDirectionsRequest(userLocation: userLocation, destination: position)
+        let directionsRequestValidity = isValidDirectionsRequest(origin: userLocation?.position ?? nil, destination: position)
+        if (directionsRequestValidity == .SITValidDirectionsRequest){
+            var request: SITDirectionsRequest = RequestBuilder.buildDirectionsRequest(userLocation: userLocation!, destination: position)
             request = self.interceptorsManager.onDirectionsRequest(request)
             SITDirectionsManager.sharedInstance().delegate = self
             SITDirectionsManager.sharedInstance().requestDirections(request)
-        } else {
-            view?.showAlertMessage(title: "Position unknown", message: "User actual location is unknown, please activate the positioning before computing a route and try again.", alertType: .otherAlert)
+        }else{
             view?.stopNavigation()
-            return
+            self.alertUserOfInvalidDirectionsRequest(error: directionsRequestValidity)
         }
+    }
+    
+    func isValidDirectionsRequest(origin: SITPoint!, destination: SITPoint!) -> SITDirectionsRequestValidity{
+        let isOriginValid = self.isValidDirectionsOrigin(origin: origin)
+        let isDestinationValid = self.isValidDirectionsDestination(destination: destination)
+        if (isOriginValid != .SITValidDirectionsRequest){
+            return isOriginValid
+        }
+        return isDestinationValid
+    }
+    
+    func alertUserOfInvalidDirectionsRequest(error: SITDirectionsRequestValidity){
+        switch error {
+        case .SITNotOriginError:
+            view?.showAlertMessage(title: "Position unknown", message: "User actual location is unknown, please activate the positioning before computing a route and try again.", alertType: .otherAlert)
+        case .SITOutdorOriginError:
+            view?.showAlertMessage(title: "Position outdoor", message: "User actual location is outdoor, navegation is only avaialble indoor.", alertType: .otherAlert)
+        case .SITNotDestinationError:
+            view?.showAlertMessage(title: "No destination selected", message: "There is no destination currently selected, the navigation cannot be started. Please select a POI (or longpress to create a custom one) and try again.", alertType: .otherAlert)
+        case .SITValidDirectionsRequest:
+            //No need to do anything
+            break
+        }
+        
+    }
+    
+    func isValidDirectionsOrigin(origin:SITPoint!) -> SITDirectionsRequestValidity{
+        if (origin == nil){
+            //Theoretically this shouldnt happen as positioning is started when a route is requested if it was stopped
+            return .SITNotOriginError;
+        }
+        if (origin.isOutdoor()) {
+            return .SITOutdorOriginError;
+        }
+        return .SITValidDirectionsRequest
+        
+    }
+    
+    func isValidDirectionsDestination(destination: SITPoint!) -> SITDirectionsRequestValidity{
+        if (destination == nil){
+            return .SITNotDestinationError
+        }
+        return .SITValidDirectionsRequest
     }
     
     func requestNavigation(route: SITRoute) {
