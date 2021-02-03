@@ -274,7 +274,7 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
     }
     
     public func requestDirections(to position: SITPoint!) {
-        let directionsRequestValidity = isValidDirectionsRequest(origin: userLocation?.position ?? nil, destination: position)
+        let directionsRequestValidity = checkDirectionsRequestValidity(origin: userLocation?.position ?? nil, destination: position)
         if (directionsRequestValidity == .SITValidDirectionsRequest){
             var request: SITDirectionsRequest = RequestBuilder.buildDirectionsRequest(userLocation: userLocation!, destination: position)
             request = self.interceptorsManager.onDirectionsRequest(request)
@@ -297,13 +297,13 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
         return SITNavigationManager.shared().isRunning()
     }
     
-    func isValidDirectionsRequest(origin: SITPoint!, destination: SITPoint!) -> SITDirectionsRequestValidity{
-        let isOriginValid = self.isValidDirectionsOrigin(origin: origin)
-        let isDestinationValid = self.isValidDirectionsDestination(destination: destination)
-        if (isOriginValid != .SITValidDirectionsRequest){
-            return isOriginValid
+    func checkDirectionsRequestValidity(origin: SITPoint!, destination: SITPoint!) -> SITDirectionsRequestValidity{
+        let originValidity = checkDirectionsRequestOriginValidity(origin: origin)
+        let destinationValidity = self.checkDirectionsRequestDestinationValidity(destination: destination)
+        if (originValidity != .SITValidDirectionsRequest){
+            return originValidity
         }
-        return isDestinationValid
+        return destinationValidity
     }
     
     func alertUserOfInvalidDirectionsRequest(error: SITDirectionsRequestValidity){
@@ -321,7 +321,7 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
         
     }
     
-    func isValidDirectionsOrigin(origin:SITPoint!) -> SITDirectionsRequestValidity{
+    func checkDirectionsRequestOriginValidity(origin:SITPoint!) -> SITDirectionsRequestValidity{
         if (origin == nil){
             //Theoretically this shouldnt happen as positioning is started when a route is requested if it was stopped
             return .SITNotOriginError;
@@ -333,7 +333,7 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
         
     }
     
-    func isValidDirectionsDestination(destination: SITPoint!) -> SITDirectionsRequestValidity{
+    func checkDirectionsRequestDestinationValidity(destination: SITPoint!) -> SITDirectionsRequestValidity{
         if (destination == nil){
             return .SITNotDestinationError
         }
