@@ -286,15 +286,6 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
         }
     }
     
-    func isValidDirectionsRequest(origin: SITPoint!, destination: SITPoint!) -> SITDirectionsRequestValidity{
-        let isOriginValid = self.isValidDirectionsOrigin(origin: origin)
-        let isDestinationValid = self.isValidDirectionsDestination(destination: destination)
-        if (isOriginValid != .SITValidDirectionsRequest){
-            return isOriginValid
-        }
-        return isDestinationValid
-    }
-    
     func isUserIndoor() -> Bool{
         if let userIndoor = locationManagerUserLocation?.position.isIndoor(){
             return userIndoor
@@ -304,6 +295,15 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
     
     func isUserNavigating() -> Bool{
         return SITNavigationManager.shared().isRunning()
+    }
+    
+    func isValidDirectionsRequest(origin: SITPoint!, destination: SITPoint!) -> SITDirectionsRequestValidity{
+        let isOriginValid = self.isValidDirectionsOrigin(origin: origin)
+        let isDestinationValid = self.isValidDirectionsDestination(destination: destination)
+        if (isOriginValid != .SITValidDirectionsRequest){
+            return isOriginValid
+        }
+        return isDestinationValid
     }
     
     func alertUserOfInvalidDirectionsRequest(error: SITDirectionsRequestValidity){
