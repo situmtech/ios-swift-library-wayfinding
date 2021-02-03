@@ -25,7 +25,12 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
     
     var useFakeLocations: Bool = false
     var isSystemWaitingToStartRoute: Bool = false
+    /* User location would be:
+    1. When not in navigation -> Location updated by SITLocationManager in delegate call
+    2. When in navigation -> SITNavigationProgress.closestLocationInRoute
+    */
     var userLocation: SITLocation? = nil
+    var locationManagerUserLocation: SITLocation? = nil
     var lastCalibrationAlert: TimeInterval = 0.0
     var lastOOBAlert: TimeInterval = 0.0
     var lastOutsideRouteAlert: TimeInterval = 0.0
@@ -73,6 +78,7 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
     func stopPositioning() {
         self.locationManager.removeUpdates()
         self.userLocation = nil
+        self.locationManagerUserLocation = nil
         self.lastOOBAlert = 0.0
         self.lastCalibrationAlert = 0.0
         view?.stop()
@@ -289,6 +295,17 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
         return isDestinationValid
     }
     
+    func isUserIndoor() -> Bool{
+        if let userIndoor = locationManagerUserLocation?.position.isIndoor(){
+            return userIndoor
+        }
+        return false
+    }
+    
+    func isUserNavigating() -> Bool{
+        return SITNavigationManager.shared().isRunning()
+    }
+    
     func alertUserOfInvalidDirectionsRequest(error: SITDirectionsRequestValidity){
         switch error {
         case .SITNotOriginError:
@@ -351,16 +368,18 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
     func locationManager(_ locationManager: SITLocationInterface, didUpdate location: SITLocation) {
         
         Logger.logDebugMessage("location manager updates location: \(location), provider: \(location.provider)")
+        locationManagerUserLocation = location
         
         if (userLocation == nil) {
             view?.change(.started, centerCamera: true)
         }
         
-        if (SITNavigationManager.shared().isRunning()) {
+        if isUserNavigating() {
             SITNavigationManager.shared().update(with: location)
+            //UI and self.userLocation are updated in SITNavigationManager callback with the user position adjusted to the route
         } else {
+            userLocation = location
             view?.updateUI(with: location)
-            self.userLocation = location
         }
         
         if(isSystemWaitingToStartRoute) {
@@ -394,6 +413,9 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
             break;
         case .userNotInBuilding:
             stateName = "User not in building"
+            if isUserNavigating(){
+                view?.stopNavigation()
+            }
             showAlertIfNeeded(type: .outOfBuilding, title: self.oobAlertTitle, message: "The user is currently outside of the building. Positioning will resume when the user returns.")
             break;
         }
@@ -441,7 +463,13 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
     
     func navigationManager(_ navigationManager: SITNavigationInterface, userOutsideRoute route: SITRoute) {
         Logger.logDebugMessage("user outside route detected: \(route.debugDescription)");
-        showAlertIfNeeded(type: .outsideRoute, title: self.outsideRouteAlertTitle, message: "The user is not currently detected on the route. Please go back to resume navigation.")
+        
+        if isUserIndoor(){
+            showAlertIfNeeded(type: .outsideRoute, title: self.outsideRouteAlertTitle, message: "The user is not currently detected on the route. Please go back to resume navigation.")
+        }else{
+            view?.stopNavigation()
+            alertUserOfInvalidDirectionsRequest(error: .SITOutdorOriginError)
+        }
     }
     
     func showAlertIfNeeded(type: AlertType, title: String, message: String){
