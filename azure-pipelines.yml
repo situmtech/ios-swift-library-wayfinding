@@ -36,12 +36,6 @@ steps:
     provisioningProfileLocation: 'secureFiles'
     provProfileSecureFile: Wildcard_Provisioning_Profile.mobileprovision
     removeProfile: true
-    
-- task: Xcode@5
-  inputs:
-    signingOption: 'manual'
-    signingIdentity: '$(APPLE_CERTIFICATE_SIGNING_IDENTITY)'
-    provisioningProfileUuid: '$(APPLE_PROV_PROFILE_UUID)'
 
 - template: azure-templates/upload-sharepoint.yml@sys_kubernetes_templates
   parameters:
