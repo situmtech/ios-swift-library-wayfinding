@@ -62,9 +62,9 @@ steps:
 - task: Xcode@5
   inputs: 
     sdk: 'iphoneos'
-    signingOption: 'manual'
-    signingIdentity: '$(APPLE_CERTIFICATE_SIGNING_IDENTITY)'
-    provisioningProfileUuid: '$(APPLE_PROV_PROFILE_UUID)'
+    signingOption: 'automatic'
+    #signingIdentity: '$(APPLE_CERTIFICATE_SIGNING_IDENTITY)'
+    #provisioningProfileUuid: '$(APPLE_PROV_PROFILE_UUID)'
     scheme: 'SitumWayfinding-Example'
     configuration: '$(buildType)'
     xcodeVersion: 'default'
