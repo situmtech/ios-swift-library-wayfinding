@@ -59,25 +59,25 @@ steps:
     popd
   displayName: Install dependencies
 
-- task: Xcode@5
-  inputs: 
-    sdk: 'iphoneos'
-    signingOption: 'manual'
-    signingIdentity: '$(APPLE_CERTIFICATE_SIGNING_IDENTITY)'
-    provisioningProfileUuid: '$(APPLE_PROV_PROFILE_UUID)'
-    scheme: 'SitumWayfinding-Example'
-    configuration: '$(buildType)'
-    xcodeVersion: 'default'
-    exportPath: '$(agent.buildDirectory)/outputs/$(sdk)/$(configuration)'
-    packageApp: false
-    allowProvisioningUpdates: true
-    actions: clean build
+#- task: Xcode@5
+#  inputs: 
+#    sdk: 'iphoneos'
+#    signingOption: 'manual'
+#    signingIdentity: '$(APPLE_CERTIFICATE_SIGNING_IDENTITY)'
+#    provisioningProfileUuid: '$(APPLE_PROV_PROFILE_UUID)'
+#    scheme: 'SitumWayfinding-Example'
+#    configuration: '$(buildType)'
+#    xcodeVersion: 'default'
+#    exportPath: '$(agent.buildDirectory)/outputs/$(sdk)/$(configuration)'
+#    packageApp: false
+#    allowProvisioningUpdates: true
+#    actions: clean build
 
 
-#- script: |
-#    sudo xcode-select -switch /Applications/Xcode_11.3.1.app
-#    ./scripts/compilation_wayfinding.sh $(buildType)
-#  displayName: Build example app
+- script: |
+    sudo xcode-select -switch /Applications/Xcode_11.3.1.app
+    ./scripts/compilation_wayfinding.sh $(buildType)
+  displayName: Build example app
 
 - script: |
     sudo gem install jazzy
