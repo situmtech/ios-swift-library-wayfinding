@@ -34,7 +34,7 @@ steps:
 - task: InstallAppleProvisioningProfile@1
   inputs:
     provisioningProfileLocation: 'secureFiles'
-    provProfileSecureFile: Wayfinding_Sample_provisioning_profile.mobileprovision
+    provProfileSecureFile: Wayfinding_Sample_provisioning_profile-2.mobileprovision
     removeProfile: true
 
 - template: azure-templates/upload-sharepoint.yml@sys_kubernetes_templates
