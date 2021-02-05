@@ -14,9 +14,6 @@ pr: none
 
 variables:
 - group: Passwords
-  scheme: 'SitumWayfinding-Example'
-  sdk: 'iphoneos'
-  # configuration: 'Release'
 
 resources:
   repositories:
@@ -64,11 +61,10 @@ steps:
 
 - task: Xcode@5
   inputs: 
-    sdk: '$(sdk)'
     signingOption: 'manual'
     signingIdentity: '$(APPLE_CERTIFICATE_SIGNING_IDENTITY)'
     provisioningProfileUuid: '$(APPLE_PROV_PROFILE_UUID)'
-    scheme: '$(scheme)'
+    scheme: 'SitumWayfinding-Example'
     configuration: '$(buildType)'
     xcodeVersion: 'default'
     exportPath: '$(agent.buildDirectory)/outputs/$(sdk)/$(configuration)'
