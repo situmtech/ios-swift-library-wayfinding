@@ -17,9 +17,9 @@ PODS:
     - Nimble (~> 7.0)
   - Protobuf (3.7.0)
   - Quick (1.2.0)
-  - SitumSDK (2.47.1):
+  - SitumSDK (2.50.4):
     - Protobuf (~> 3.7.0)
-  - SitumWayfinding (0.1.9):
+  - SitumWayfinding (0.1.10):
     - GoogleMaps (~> 3.1.0)
     - SitumSDK
 
@@ -51,9 +51,9 @@ SPEC CHECKSUMS:
   Nimble-Snapshots: f5459b5b091678dc942d03ec4741cacb58ba4a52
   Protobuf: 7a877b7f3e5964e3fce995e2eb323dbc6831bb5a
   Quick: 58d203b1c5e27fff7229c4c1ae445ad7069a7a08
-  SitumSDK: 03e2191601c7880348cf797fc77d67f24dca9919
-  SitumWayfinding: f0cac4b7f162851f42ed2720df2ba8f7b691a4b9
+  SitumSDK: 653f5665fd5e882261148b672b1d3ba676e57aea
+  SitumWayfinding: fb60fd621ef606d56b32696e877bdfa68b69be4e
 
 PODFILE CHECKSUM: a798c7f4ae4242918fac6601ae0d0052fb198646
 
-COCOAPODS: 1.9.3
+COCOAPODS: 1.9.1

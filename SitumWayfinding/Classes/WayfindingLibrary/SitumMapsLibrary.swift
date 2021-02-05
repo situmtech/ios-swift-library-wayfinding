@@ -22,7 +22,9 @@ import GoogleMaps
     internal var onBackPressedCallback: ((Any) -> Void)?
     
     /// Credentials object used to authenticate the user before loading the wayfinding module
-    public private(set) var credentials: Credentials?
+    // public private(set) var credentials: Credentials?
+    
+    public private(set) var settings: LibrarySettings?
     
     /**
      Initializes the library and checks the user's credentials.
@@ -30,9 +32,39 @@ import GoogleMaps
      - parameter view: View object that will contain the wayfinding UI
      - parameter viewController: View controller associated with the containing view
      */
-    @objc public init(containedBy view: UIView, controlledBy viewController: UIViewController) {
+    @available(*, deprecated, message: "Please use ", renamed:"init")
+    @objc public convenience init(containedBy view: UIView, controlledBy viewController: UIViewController) {
+        // self.parentViewControler = viewController
+        // self.containerView = view
+
+        // Point to the other init method with
+        self.init(containedBy: view, controlledBy: viewController, withSettings: LibrarySettings.Builder().build()) // Empty or default settings
+    }
+    
+    
+    /**
+     Designated initializer
+     
+    Use this to create an instance of the SitumMapsLibrary.
+     
+    After that, load it into memory
+     TODO: Improve documentation
+     */
+    @objc public init(containedBy view: UIView, controlledBy viewController: UIViewController, withSettings settings: LibrarySettings) {
         self.parentViewControler = viewController
         self.containerView = view
+        self.settings = settings
+    }
+    
+    @objc public func load() throws {
+        // Validate credentials, buildingId and so on..
+        
+        try validateSettings()
+        if let settings = getSettings() {
+            let mapView = settings.googleMap != nil ? settings.googleMap : obtainGMSMapView()
+            prepareForLoading(buildingWithId: settings.buildingId, withMap: mapView)
+            UIUtils().present(the: self.toPresentViewController!, over: self.parentViewControler, in: self.containerView)
+        } // NOTE: else unnecessary: validateSettings already checks settings not nil
     }
 
     /**
@@ -40,8 +72,12 @@ import GoogleMaps
      
      - parameter: credentials: Credentials object used to authenticate against Situm SDK and Google Maps
      */
+    @available(*, deprecated, message: "Use property on LibrarySettings instance instead")
     @objc public func setCredentials(_ credentials: Credentials) {
-        self.credentials = credentials
+        // self.credentials = credentials
+        let settingsBuilder = LibrarySettings.Builder().copy(settings: settings!) // Keep values previosuly specified
+        settingsBuilder.setCredentials(credentials: credentials)
+        settings = settingsBuilder.build()
     }
     
     /**
@@ -50,11 +86,19 @@ import GoogleMaps
      
      - parameter buildingId: Id of the building to be load
      */
+    @available(*, deprecated, message: "Use load instead")
     @objc public func load(buildingWithId buildingId: String?) throws {
-        try validationsPreLoading(buildingWithId: buildingId)
-        let mapView = obtainGMSMapView()
-        prepareForLoading(buildingWithId: buildingId, withMap: mapView)
-        UIUtils().present(the: self.toPresentViewController!, over: self.parentViewControler, in: self.containerView)
+        // Previous implementation
+        // Validate before using buildingId?
+        try validateActiveBuilding(buildingId)
+        if let buildingId = buildingId {
+            // Override settings configuration with new information
+            let settingsBuilder = LibrarySettings.Builder().copy(settings: settings!) // Keep values previosuly specified
+            settingsBuilder.setBuildingId(buildingId: buildingId)
+            settings = settingsBuilder.build()
+            
+            try load()
+        }
     }
     
     /**
@@ -64,6 +108,7 @@ import GoogleMaps
      - parameter buildingId: Id of the building to be load
      - parameter googleMapsMap: Map to be used to present info
      */
+    @available(*, deprecated, message: "Use load instead")
     @objc public func load(buildingWithId buildingId: String?, googleMapsMap gMap:GMSMapView?) throws {
         try validationsPreLoading(buildingWithId: buildingId)
         prepareForLoading(buildingWithId: buildingId, withMap: gMap)
@@ -89,8 +134,13 @@ import GoogleMaps
      
      - returns: A GMSMapView instance which is the same being used by the Wayfinding controller
      */
+    @available(*, deprecated, message: "Use LibrarySettings.getGoogleMap instead")
     public func getGoogleMap() -> GMSMapView? {
         return self.toPresentViewController?.getGoogleMap()
+    }
+    
+    @objc public func getSettings() -> LibrarySettings? {
+        return self.settings
     }
     
     /**
@@ -150,9 +200,22 @@ extension SitumMapsLibrary {
     }
     
     internal func validationsPreLoading(buildingWithId buildingId: String?) throws {
-        try validateUserCredentials(self.credentials)
+        try validateUserCredentials(self.settings?.credentials)
         try validateActiveBuilding(buildingId)
         
+    }
+    
+    internal func validateSettings() throws {
+        // Validate credentials
+        if let settings = getSettings() {
+            try validateUserCredentials(settings.credentials)
+            try validateActiveBuilding(settings.buildingId)
+            
+            
+        } else {
+            // throw an exception if necessary
+            print("Unable to access configuration LibrarySettings. ")
+        }
     }
     
     internal func prepareForLoading(buildingWithId buildingId: String?, withMap googleMapView: GMSMapView?) {

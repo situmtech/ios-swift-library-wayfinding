@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15400" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15404"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17703"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -11,7 +11,7 @@
         <!--Initial Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" userLabel="Initial Controller" customClass="ViewController" customModule="situm_ios_wayfinding_getting_started" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="BYZ-38-t0r" userLabel="Initial Controller" customClass="ViewController" customModule="SitumWayfinding_Example" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="842"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -22,7 +22,7 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kYz-PR-o25">
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kYz-PR-o25">
                                 <rect key="frame" x="132" y="456" width="150" height="30"/>
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <gestureRecognizers/>
@@ -43,6 +43,7 @@
                                 </connections>
                             </button>
                         </subviews>
+                        <viewLayoutGuide key="safeArea" id="rGn-7e-utf"/>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <gestureRecognizers/>
                         <constraints>
@@ -51,7 +52,6 @@
                             <constraint firstItem="LYZ-5T-B5U" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="kp7-7M-nDe"/>
                             <constraint firstItem="LYZ-5T-B5U" firstAttribute="centerX" secondItem="rGn-7e-utf" secondAttribute="centerX" id="n7B-k8-6cW"/>
                         </constraints>
-                        <viewLayoutGuide key="safeArea" id="rGn-7e-utf"/>
                     </view>
                     <connections>
                         <outlet property="loadButton" destination="kYz-PR-o25" id="iNN-Y5-fdK"/>
@@ -65,7 +65,7 @@
         <!--Wayfinding Controller-->
         <scene sceneID="haS-bz-McG">
             <objects>
-                <viewController id="uIe-Uw-TaB" userLabel="Wayfinding Controller" customClass="WayfindingController" customModule="situm_ios_wayfinding_getting_started" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="uIe-Uw-TaB" userLabel="Wayfinding Controller" customClass="WayfindingController" customModule="SitumWayfinding_Example" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="9Js-hL-g4W">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="842"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -75,6 +75,7 @@
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </view>
                         </subviews>
+                        <viewLayoutGuide key="safeArea" id="9lI-Er-HH3"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="ff5-Rh-MIl" firstAttribute="leading" secondItem="9lI-Er-HH3" secondAttribute="leading" id="5kj-lb-zcp"/>
@@ -82,7 +83,6 @@
                             <constraint firstItem="ff5-Rh-MIl" firstAttribute="top" secondItem="9lI-Er-HH3" secondAttribute="top" id="mCi-k4-zNa"/>
                             <constraint firstItem="ff5-Rh-MIl" firstAttribute="bottom" secondItem="9lI-Er-HH3" secondAttribute="bottom" id="puv-OM-N1N"/>
                         </constraints>
-                        <viewLayoutGuide key="safeArea" id="9lI-Er-HH3"/>
                     </view>
                     <connections>
                         <outlet property="containerView" destination="ff5-Rh-MIl" id="yNv-D8-8za"/>
