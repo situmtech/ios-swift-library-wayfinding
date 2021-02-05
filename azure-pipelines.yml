@@ -29,7 +29,7 @@ steps:
 
 - task: InstallAppleCertificate@2
   inputs:
-    certSecureFile: Certificados.p12
+    certSecureFile: Distrib_Certif.p12
 
 - task: InstallAppleProvisioningProfile@1
   inputs:
