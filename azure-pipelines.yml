@@ -62,7 +62,7 @@ steps:
 - task: Xcode@5
   inputs: 
     sdk: 'iphoneos'
-    signingOption: 'automatic'
+    signingOption: 'default'
     #signingIdentity: '$(APPLE_CERTIFICATE_SIGNING_IDENTITY)'
     #provisioningProfileUuid: '$(APPLE_PROV_PROFILE_UUID)'
     scheme: 'SitumWayfinding-Example'
@@ -70,6 +70,7 @@ steps:
     xcodeVersion: 'default'
     exportPath: '$(agent.buildDirectory)/outputs/$(sdk)/$(configuration)'
     packageApp: false
+    allowProvisioningUpdates: true
 
 
 #- script: |
