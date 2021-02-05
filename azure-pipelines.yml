@@ -34,7 +34,7 @@ steps:
 - task: InstallAppleProvisioningProfile@1
   inputs:
     provisioningProfileLocation: 'secureFiles'
-    provProfileSecureFile: Wildcard_Provisioning_Profile.mobileprovision
+    provProfileSecureFile: Wayfinding_Sample_provisioning_profile.mobileprovision
     removeProfile: true
 
 - template: azure-templates/upload-sharepoint.yml@sys_kubernetes_templates
@@ -62,9 +62,9 @@ steps:
 - task: Xcode@5
   inputs: 
     sdk: 'iphoneos'
-    signingOption: 'default'
-    #signingIdentity: '$(APPLE_CERTIFICATE_SIGNING_IDENTITY)'
-    #provisioningProfileUuid: '$(APPLE_PROV_PROFILE_UUID)'
+    signingOption: 'manual'
+    signingIdentity: '$(APPLE_CERTIFICATE_SIGNING_IDENTITY)'
+    provisioningProfileUuid: '$(APPLE_PROV_PROFILE_UUID)'
     scheme: 'SitumWayfinding-Example'
     configuration: '$(buildType)'
     xcodeVersion: 'default'
