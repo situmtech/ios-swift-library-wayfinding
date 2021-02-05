@@ -14,6 +14,9 @@ pr: none
 
 variables:
 - group: Passwords
+  scheme: 'SitumWayfinding-Example'
+  sdk: 'iphoneos'
+  # configuration: 'Release'
 
 resources:
   repositories:
@@ -59,10 +62,23 @@ steps:
     popd
   displayName: Install dependencies
 
-- script: |
-    sudo xcode-select -switch /Applications/Xcode_11.3.1.app
-    ./scripts/compilation_wayfinding.sh $(buildType)
-  displayName: Build example app
+- task: Xcode@5
+  inputs: 
+    sdk: '$(sdk)'
+    signingOption: 'manual'
+    signingIdentity: '$(APPLE_CERTIFICATE_SIGNING_IDENTITY)'
+    provisioningProfileUuid: '$(APPLE_PROV_PROFILE_UUID)'
+    scheme: '$(scheme)'
+    configuration: '$(buildType)'
+    xcodeVersion: 'default'
+    exportPath: '$(agent.buildDirectory)/outputs/$(sdk)/$(configuration)'
+    packageApp: false
+
+
+#- script: |
+#    sudo xcode-select -switch /Applications/Xcode_11.3.1.app
+#    ./scripts/compilation_wayfinding.sh $(buildType)
+#  displayName: Build example app
 
 - script: |
     sudo gem install jazzy
