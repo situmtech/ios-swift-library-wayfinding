@@ -14,7 +14,7 @@ fi
 xcodebuild -workspace ./Example/SitumWayfinding.xcworkspace \
 -configuration $BUILD_TYPE \
 -derivedDataPath "build/derivedData" \
--scheme SitumWayfinding-Example \
+-target SitumWayfinding-Example \
 PROVISIONING_PROFILE_SPECIFIER='$(APPLE_PROV_PROFILE_UUID)' CODE_SIGN_IDENTITY='$(APPLE_CERTIFICATE_SIGNING_IDENTITY)' clean build 2>&1 | tee ./build/buildWayfinding.log
 
 # Change dir if debug release
