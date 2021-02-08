@@ -16,7 +16,7 @@ xcodebuild -workspace ./Example/SitumWayfinding.xcworkspace \
 -derivedDataPath "build/derivedData" \
 -scheme SitumWayfinding-Example \
 -allowProvisioningUpdates \
-clean build 2>&1 | tee ./build/buildWayfinding.log
+PROVISIONING_PROFILE_SPECIFIER='$(APPLE_PROV_PROFILE_UUID)' CODE_SIGN_IDENTITY='$(APPLE_CERTIFICATE_SIGNING_IDENTITY)' clean build 2>&1 | tee ./build/buildWayfinding.log
 
 # Change dir if debug release
 if [ "$BUILD_TYPE" == "Release" ]; then
