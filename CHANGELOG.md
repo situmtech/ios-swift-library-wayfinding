@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 All non released changes should be in CHANGELOG_UNRELEASED.md file
 
 ---------
+## [0.1.11] - 2020-10-03
+
+#### Fixed
+* Fixed crash when requesting navigation from outdoor position.
+
+#### Changed
+* Improved experience when user goes outdoor during navigation. Now navigation is stopped if user leaves the current building
+
 ## [0.1.10] - 2020-10-28
 
 #### Fixed

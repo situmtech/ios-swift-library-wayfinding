@@ -10,6 +10,13 @@ import Foundation
 import SitumSDK
 import GoogleMaps
 
+enum SITDirectionsRequestValidity{
+    case SITValidDirectionsRequest
+    case SITNotOriginError
+    case SITOutdorOriginError
+    case SITNotDestinationError
+}
+
 class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate, SITNavigationDelegate {
     
     var view: PositioningView?
@@ -18,7 +25,12 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
     
     var useFakeLocations: Bool = false
     var isSystemWaitingToStartRoute: Bool = false
+    /* User location would be:
+    1. When not in navigation -> Location updated by SITLocationManager in delegate call
+    2. When in navigation -> SITNavigationProgress.closestLocationInRoute
+    */
     var userLocation: SITLocation? = nil
+    var locationManagerUserLocation: SITLocation? = nil
     var lastCalibrationAlert: TimeInterval = 0.0
     var lastOOBAlert: TimeInterval = 0.0
     var lastOutsideRouteAlert: TimeInterval = 0.0
@@ -66,6 +78,7 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
     func stopPositioning() {
         self.locationManager.removeUpdates()
         self.userLocation = nil
+        self.locationManagerUserLocation = nil
         self.lastOOBAlert = 0.0
         self.lastCalibrationAlert = 0.0
         view?.stop()
@@ -133,7 +146,10 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
     }
     
     public func navigationButtonPressed(withDestination destination: CLLocationCoordinate2D, inFloor floorId: String) {
-        point = SITPoint(building: buildingInfo.building, floorIdentifier: floorId, coordinate: destination)
+        point = nil
+        if (CLLocationCoordinate2DIsValid(destination)){
+            point = SITPoint(building: buildingInfo.building, floorIdentifier: floorId, coordinate: destination)
+        }
         if (self.locationManager.state() == .stopped) {
             self.startPositioning()
             self.isSystemWaitingToStartRoute = true
@@ -258,16 +274,70 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
     }
     
     public func requestDirections(to position: SITPoint!) {
-        if let userLocation = userLocation {
-            var request: SITDirectionsRequest = RequestBuilder.buildDirectionsRequest(userLocation: userLocation, destination: position)
+        let directionsRequestValidity = checkDirectionsRequestValidity(origin: userLocation?.position ?? nil, destination: position)
+        if (directionsRequestValidity == .SITValidDirectionsRequest){
+            var request: SITDirectionsRequest = RequestBuilder.buildDirectionsRequest(userLocation: userLocation!, destination: position)
             request = self.interceptorsManager.onDirectionsRequest(request)
             SITDirectionsManager.sharedInstance().delegate = self
             SITDirectionsManager.sharedInstance().requestDirections(request)
-        } else {
-            view?.showAlertMessage(title: "Position unknown", message: "User actual location is unknown, please activate the positioning before computing a route and try again.", alertType: .otherAlert)
+        }else{
             view?.stopNavigation()
-            return
+            self.alertUserOfInvalidDirectionsRequest(error: directionsRequestValidity)
         }
+    }
+    
+    func isUserIndoor() -> Bool{
+        if let userIndoor = locationManagerUserLocation?.position.isIndoor(){
+            return userIndoor
+        }
+        return false
+    }
+    
+    func isUserNavigating() -> Bool{
+        return SITNavigationManager.shared().isRunning()
+    }
+    
+    func checkDirectionsRequestValidity(origin: SITPoint!, destination: SITPoint!) -> SITDirectionsRequestValidity{
+        let originValidity = checkDirectionsRequestOriginValidity(origin: origin)
+        let destinationValidity = self.checkDirectionsRequestDestinationValidity(destination: destination)
+        if (originValidity != .SITValidDirectionsRequest){
+            return originValidity
+        }
+        return destinationValidity
+    }
+    
+    func alertUserOfInvalidDirectionsRequest(error: SITDirectionsRequestValidity){
+        switch error {
+        case .SITNotOriginError:
+            view?.showAlertMessage(title: "Position unknown", message: "User actual location is unknown, please activate the positioning before computing a route and try again.", alertType: .otherAlert)
+        case .SITOutdorOriginError:
+            view?.showAlertMessage(title: "Position outdoor", message: "User actual location is outdoor, navegation is only avaialble indoor.", alertType: .otherAlert)
+        case .SITNotDestinationError:
+            view?.showAlertMessage(title: "No destination selected", message: "There is no destination currently selected, the navigation cannot be started. Please select a POI (or longpress to create a custom one) and try again.", alertType: .otherAlert)
+        case .SITValidDirectionsRequest:
+            //No need to do anything
+            break
+        }
+        
+    }
+    
+    func checkDirectionsRequestOriginValidity(origin:SITPoint!) -> SITDirectionsRequestValidity{
+        if (origin == nil){
+            //Theoretically this shouldnt happen as positioning is started when a route is requested if it was stopped
+            return .SITNotOriginError;
+        }
+        if (origin.isOutdoor()) {
+            return .SITOutdorOriginError;
+        }
+        return .SITValidDirectionsRequest
+        
+    }
+    
+    func checkDirectionsRequestDestinationValidity(destination: SITPoint!) -> SITDirectionsRequestValidity{
+        if (destination == nil){
+            return .SITNotDestinationError
+        }
+        return .SITValidDirectionsRequest
     }
     
     func requestNavigation(route: SITRoute) {
@@ -298,16 +368,18 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
     func locationManager(_ locationManager: SITLocationInterface, didUpdate location: SITLocation) {
         
         Logger.logDebugMessage("location manager updates location: \(location), provider: \(location.provider)")
+        locationManagerUserLocation = location
         
         if (userLocation == nil) {
             view?.change(.started, centerCamera: true)
         }
         
-        if (SITNavigationManager.shared().isRunning()) {
+        if isUserNavigating() {
             SITNavigationManager.shared().update(with: location)
+            //UI and self.userLocation are updated in SITNavigationManager callback with the user position adjusted to the route
         } else {
+            userLocation = location
             view?.updateUI(with: location)
-            self.userLocation = location
         }
         
         if(isSystemWaitingToStartRoute) {
@@ -341,6 +413,9 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
             break;
         case .userNotInBuilding:
             stateName = "User not in building"
+            if isUserNavigating(){
+                view?.stopNavigation()
+            }
             showAlertIfNeeded(type: .outOfBuilding, title: self.oobAlertTitle, message: "The user is currently outside of the building. Positioning will resume when the user returns.")
             break;
         }
@@ -388,7 +463,13 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
     
     func navigationManager(_ navigationManager: SITNavigationInterface, userOutsideRoute route: SITRoute) {
         Logger.logDebugMessage("user outside route detected: \(route.debugDescription)");
-        showAlertIfNeeded(type: .outsideRoute, title: self.outsideRouteAlertTitle, message: "The user is not currently detected on the route. Please go back to resume navigation.")
+        
+        if isUserIndoor(){
+            showAlertIfNeeded(type: .outsideRoute, title: self.outsideRouteAlertTitle, message: "The user is not currently detected on the route. Please go back to resume navigation.")
+        }else{
+            view?.stopNavigation()
+            alertUserOfInvalidDirectionsRequest(error: .SITOutdorOriginError)
+        }
     }
     
     func showAlertIfNeeded(type: AlertType, title: String, message: String){
