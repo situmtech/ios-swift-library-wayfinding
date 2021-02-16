@@ -24,9 +24,9 @@ class WayfindingController: UIViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         
-        let credentials: Credentials = Credentials(user: "situm@situm.es", apiKey: "1307347f34c8afff89c9c8e0867970aeaff8a8f07276505ca38b48bb7db10c43", googleMapsApiKey: "AIzaSyAAjP-7eUkRTU5cBMAVC8ASgo1z5aBeEdQ")
+        let credentials: Credentials = Credentials(user: "YOUR_EMAIL", apiKey: "YOUR_API_KEY", googleMapsApiKey: "AIzaSyAAjP-7eUkRTU5cBMAVC8ASgo1z5aBeEdQ")
 
-        let buildingId = "7014"
+        let buildingId = "YOUR_BUILDING_ID"
         
         let loadWithNew = true
         
@@ -51,6 +51,14 @@ class WayfindingController: UIViewController {
                     self.performSegue(withIdentifier: "unloadWayfinding", sender: self)
                 }
             )
+
+            self.library?.addLocationRequestInterceptor { (locationRequest: SITLocationRequest) in
+                locationRequest.useGlobalLocation = true;
+                let options: SITOutdoorLocationOptions = SITOutdoorLocationOptions()
+                options.buildingDetector = .SITBLE
+                locationRequest.outdoorLocationOptions = options
+            }
+
             library?.setCredentials(credentials)
             do {
                 try library?.load(buildingWithId: buildingId)
@@ -58,20 +66,6 @@ class WayfindingController: UIViewController {
                 print("An error has ocurred. Your SitumView couldn't be loaded.")
             }
         )
-        self.library?.addLocationRequestInterceptor { (locationRequest: SITLocationRequest) in
-            locationRequest.useGlobalLocation = true;
-            let options: SITOutdoorLocationOptions = SITOutdoorLocationOptions()
-            options.buildingDetector = .SITBLE
-            locationRequest.outdoorLocationOptions = options
-        }
-        
-        
-        library?.setCredentials(credentials)
-        do {
-            try library?.load(buildingWithId: "YOUR_BUILDING_ID")
-        } catch {
-            print("An error has ocurred. Your SitumView couldn't be loaded.")
-        }
         super.viewWillAppear(animated)
     }
 
