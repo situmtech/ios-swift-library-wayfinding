@@ -48,15 +48,20 @@ Go to the Info tab of the Settings of your app. We need to add descriptors for t
 
 In order to use both SitumSDK and GoogleMaps capabilities you need to authenticate yourself.
 This can be done by storing the credentials in a `Credentials` object that will later be forwarded to the `SitumMapsLibrary` initializer.
-You should also provide the `SitumMapsLibrary` with both the UIView and the UIViewController that are gonna contain the wayfinding UI.
-Finally, you just need to call the load() method with a building ID. The following example illustrates this process:
+You should also provide the `SitumMapsLibrary` with the UIView, the UIViewController that are gonna contain the wayfinding UI and some settings to adjust the behaviour of the module.
+Finally, you just need to call the load() method. The following example illustrates this process:
 
 ```
 let credentials = Credentials(user: "YOUR SITUM USER", password:  "YOUR SITUM PASSWORD", googleMapsApiKey: "YOUR GOOGLE MAPS API KEY")
-let library = SitumMapsLibrary(containedBy: containerView, controlledBy: containerViewController)
+let buildingId = "YOUR_BUILDING_ID"
+let settings = LibrarySettings.Builder()
+    .setCredentials(credentials: credentials)
+    .setBuildingId(buildingId: buildingId)
+    .build()
+
+let library = SitumMapsLibrary(containedBy: containerView, controlledBy: containerViewController, withSettings: settings)
 do{
-    library.setCredentials(credentials)
-    try library.load(buildingWithId: self.buildingId)
+    try library.load()
 }catch{
     // PROPERLY MANAGE ERROR
 }
