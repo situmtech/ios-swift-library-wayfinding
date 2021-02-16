@@ -25,26 +25,28 @@ class WayfindingController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         
         let credentials: Credentials = Credentials(user: "YOUR_USER", apiKey: "YOUR_SITUM_APIKEY", googleMapsApiKey: "YOUR_GOOGLEMAPS_APIKEY")
-        self.library = SitumMapsLibrary(containedBy: self.containerView, controlledBy: self)
-        self.library?.setOnBackPressedCallback(
-            {(_ sender: Any) in
-                self.performSegue(withIdentifier: "unloadWayfinding", sender: self)
-            }
-        )
+
+        let buildingId = "YOUR_BUILDING_ID"
+        let settings = LibrarySettings.Builder()
+                .setCredentials(credentials: credentials)
+                .setBuildingId(buildingId: buildingId)
+                .build()
+        self.library = SitumMapsLibrary(containedBy: self.containerView, controlledBy: self, withSettings: settings)
+            
         self.library?.addLocationRequestInterceptor { (locationRequest: SITLocationRequest) in
             locationRequest.useGlobalLocation = true;
             let options: SITOutdoorLocationOptions = SITOutdoorLocationOptions()
             options.buildingDetector = .SITBLE
             locationRequest.outdoorLocationOptions = options
         }
-        
-        
-        library?.setCredentials(credentials)
+            
         do {
-            try library?.load(buildingWithId: "YOUR_BUILDING_ID")
+            try self.library!.load()
+            
         } catch {
-            print("An error has ocurred. Your SitumView couldn't be loaded.")
+            print("An error has ocurred. Your SitumView could not be loaded.")
         }
+
         super.viewWillAppear(animated)
     }
 
