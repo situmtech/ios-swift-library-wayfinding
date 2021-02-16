@@ -24,7 +24,7 @@ class WayfindingController: UIViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         
-        let credentials: Credentials = Credentials(user: "YOUR_EMAIL", apiKey: "YOUR_API_KEY", googleMapsApiKey: "AIzaSyAAjP-7eUkRTU5cBMAVC8ASgo1z5aBeEdQ")
+        let credentials: Credentials = Credentials(user: "YOUR_USER", apiKey: "YOUR_SITUM_APIKEY", googleMapsApiKey: "YOUR_GOOGLEMAPS_APIKEY")
 
         let buildingId = "YOUR_BUILDING_ID"
         

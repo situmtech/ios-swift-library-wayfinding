@@ -12,6 +12,7 @@ import os
 @available(iOS 10.0, *)
 extension OSLog {
     private static let subsystem = Bundle.main.bundleIdentifier!
+    /// default category
     static let defaultCategory = OSLog(subsystem: subsystem, category: "SitumMappingTool")
 }
 

@@ -15,9 +15,13 @@ import GoogleMaps
  */
 @objc public class LibrarySettings: NSObject {
     
+    /// Credentials object
     private(set) var credentials: Credentials?
+    /// String containing the identifier of the building to load
     private(set) var buildingId: String? = ""
+    /// Boolean that indicates if the module should customize its appeareance based on user theme
     private(set) var useDashboardTheme: Bool = true
+    /// Google map view if set by outside world
     private(set) var googleMap: GMSMapView?
     
     
@@ -37,30 +41,35 @@ import GoogleMaps
         
         private var instance: LibrarySettings = LibrarySettings()
         
+        /// Establish credentials. Following the builder pattern it returns an object to itself.
         @discardableResult
         @objc public func setCredentials(credentials: Credentials) -> Builder {
             instance.credentials = credentials
             return self
         }
         
+        /// Establish building identifier. Following the builder pattern it returns an object to itself.
         @discardableResult
         @objc public func setBuildingId(buildingId: String) -> Builder {
             instance.buildingId = buildingId
             return self
         }
-        
+
+        /// Establish if customization is needed. Following the builder pattern it returns an object to itself.
         @discardableResult
         @objc public func setUseDashboardTheme(useDashboardTheme: Bool) -> Builder {
             instance.useDashboardTheme = useDashboardTheme
             return self
         }
         
+        /// Establish google map object. Following the builder pattern it returns an object to itself.
         @discardableResult
         @objc public func setGoogleMap(googleMap: GMSMapView) -> Builder {
             instance.googleMap = googleMap
             return self
         }
         
+        /// Returns an instance of LibrarySettings
         @objc public func build() -> LibrarySettings {
             return instance
         }

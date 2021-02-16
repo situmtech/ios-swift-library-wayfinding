@@ -24,6 +24,7 @@ import GoogleMaps
     /// Credentials object used to authenticate the user before loading the wayfinding module
     // public private(set) var credentials: Credentials?
     
+    /// Settings variable used to configure the module with all needed parameters.
     public private(set) var settings: LibrarySettings?
     
     /**
@@ -47,8 +48,7 @@ import GoogleMaps
      
     Use this to create an instance of the SitumMapsLibrary.
      
-    After that, load it into memory
-     TODO: Improve documentation
+    After that, load it into memory with the load() method.
      */
     @objc public init(containedBy view: UIView, controlledBy viewController: UIViewController, withSettings settings: LibrarySettings) {
         self.parentViewControler = viewController
@@ -56,6 +56,7 @@ import GoogleMaps
         self.settings = settings
     }
     
+    /// try to load the module. This method can throw an exception if needed parameters are not set. See init method to know how to properly configure an instance.
     @objc public func load() throws {
         // Validate credentials, buildingId and so on..
         
@@ -139,6 +140,7 @@ import GoogleMaps
         return self.toPresentViewController?.getGoogleMap()
     }
     
+    /// Retrieve the properties the module has been loaded with.
     @objc public func getSettings() -> LibrarySettings? {
         return self.settings
     }
