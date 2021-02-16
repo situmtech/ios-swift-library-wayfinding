@@ -34,6 +34,7 @@ class UIUtils: NSObject {
 // https://stackoverflow.com/questions/18756640/width-and-height-equal-to-its-superview-using-autolayout-programmatically
 extension UIView {
     
+    /// helper method to adjust module view to supporting view
     func bindFrameToSuperviewBounds() {
         guard let superview = self.superview else {
             print("Error! `superview` was nil – call `addSubview(view: UIView)` before calling `bindFrameToSuperviewBounds()` to fix this.")

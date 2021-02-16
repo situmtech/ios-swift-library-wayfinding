@@ -75,6 +75,11 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
     var routePath: Array<GMSMutablePath> = []
     var loadFinished:Bool = false
     
+    // Customization
+    var organizationTheme: SITOrganizationTheme?
+    @IBOutlet weak var logoIV: UIImageView!
+    
+    
     // Constants
     let DEFAULT_POI_NAME: String = "POI"
     let DEFAULT_BUILDING_NAME: String = "Current Building"
@@ -101,9 +106,28 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
                     self.loadingError = true;
                     self.situmLoadFinished(loadingAlert: loadingAlert)
                 } else {
-                    self.situmLoadFinished(loadingAlert: loadingAlert)
-                    self.presenter = PositioningPresenter(view: self, buildingInfo: self.buildingInfo!, interceptorsManager: self.library?.interceptorsManager ?? InterceptorsManager())
-                    self.initializeUIElements()
+                    
+                    SITCommunicationManager.shared().fetchOrganizationTheme(options: nil, success: { (mapping: [AnyHashable : Any]?) in
+                        print("Success retrieving details of organization")
+                        if mapping != nil {
+                            let organizationDetails = mapping!["results"] as? SITOrganizationTheme
+                            print("Organization Details: \(organizationDetails)")
+                            
+                            // Now we have the organization details and we can work with their values (if any)
+                            self.organizationTheme = organizationDetails!
+                            
+                            self.situmLoadFinished(loadingAlert: loadingAlert)
+                            self.presenter = PositioningPresenter(view: self, buildingInfo: self.buildingInfo!, interceptorsManager: self.library?.interceptorsManager ?? InterceptorsManager())
+                            self.initializeUIElements()
+                        }
+                    }, failure: { (error: Error?) in
+                        print("Failed retrieving details of org")
+                        // Use default values instead of an error
+                        self.loadingError = true
+                        self.situmLoadFinished(loadingAlert: loadingAlert)
+                    })
+                    
+                    
                 }
             }
         }, failure: { (error: Error?) in
@@ -240,8 +264,22 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
     
     func initializeInfoBar() {
         self.infoBarView.isHidden = false
+        
         self.updateInfoBarLabels(mainLabel: self.buildingInfo?.building.name ?? DEFAULT_BUILDING_NAME)
         self.initializeCancelNavigationButton()
+        
+        if organizationTheme?.logo != nil {
+            // Bring the image and save it on cache
+            
+            let logoUrl = "https://dashboard.situm.es" +  organizationTheme!.logo.direction
+            let data = NSData(contentsOf: URL(string: logoUrl)!) as Data?
+            if let data = data {
+                logoIV.image = UIImage.init(data: data)
+            }
+            
+        }
+        
+        
     }
     
     func initializeCancelNavigationButton() {
@@ -457,7 +495,9 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
             loadingIndicator.startAnimating()
             positioningButton.isSelected = false
         case .started:
-            positioningButton.backgroundColor = UIColor(red: 0x00 / 255.0, green: 0x75 / 255.0, blue: 0xc9 / 255.0, alpha: 1)
+            let color = UIColor(red: 0x00 / 255.0, green: 0x75 / 255.0, blue: 0xc9 / 255.0, alpha: 1)
+            positioningButton.backgroundColor = primaryColor(defaultColor: color)
+            
             positioningButton.setImage(UIImage(named: "swf_ic_action_localize", in: bundle, compatibleWith: nil), for: .selected)
             loadingIndicator.stopAnimating()
             positioningButton.isSelected = true
@@ -791,6 +831,10 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
         if let presenter = presenter {
             if presenter.isSameFloor(floorIdentifier: floorIdentifier) {
                 color = UIColor(red: 0x00 / 255.0, green: 0xa1 / 255.0, blue: 0xdf / 255.0, alpha: 1)
+                
+                // Only affected if customization is declared
+                color = primaryColor(defaultColor: color)
+                
             }
         }
         
@@ -896,6 +940,44 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
                 self.mapViewVC = segue.destination
             }
         }
+    }
+    
+    func primaryColor(defaultColor: UIColor) -> UIColor {
+        var color = defaultColor
+        
+        // Override color based on customization
+        if let settings = library?.settings {
+            if settings.useDashboardTheme == true {
+                if let organizationTheme = organizationTheme { // Check if string is a valid string
+                    
+                    color = self.hexStringToUIColor(hex: organizationTheme.themeColors.primary)
+                }
+            }
+        }
+        return color
+    }
+    
+    // Extension hex color to rgb
+    func hexStringToUIColor (hex:String) -> UIColor {
+        var cString:String = hex.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
+
+        if (cString.hasPrefix("#")) {
+            cString.remove(at: cString.startIndex)
+        }
+
+        if ((cString.count) != 6) {
+            return UIColor.gray
+        }
+
+        var rgbValue:UInt64 = 0
+        Scanner(string: cString).scanHexInt64(&rgbValue)
+
+        return UIColor(
+            red: CGFloat((rgbValue & 0xFF0000) >> 16) / 255.0,
+            green: CGFloat((rgbValue & 0x00FF00) >> 8) / 255.0,
+            blue: CGFloat(rgbValue & 0x0000FF) / 255.0,
+            alpha: CGFloat(1.0)
+        )
     }
 
 }
