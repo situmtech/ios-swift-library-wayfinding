@@ -628,14 +628,14 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
     @IBAction
     func navigationButtonPressed(_ sender: Any) {
         Logger.logInfoMessage("Navigation Button Has Been pressed")
-        if (self.lastSelectedMarker != nil) {
+        var destination = kCLLocationCoordinate2DInvalid
+        if let marker = self.lastSelectedMarker {
             self.destinationMarker = self.lastSelectedMarker
-        } else {
-            self.showAlertMessage(title: "No destination selected", message: "There is no destination currently selected, the navigation cannot be started. Please select a POI (or longpress to create a custom one) and try again.", alertType: .otherAlert)
+            destination = marker.position
         }
         self.positioningButton.isHidden = true
         self.changeCancelNavigationButtonVisibility(isVisible: true)
-        self.presenter?.navigationButtonPressed(withDestination: self.destinationMarker!.position, inFloor: self.buildingInfo!.floors[self.selectedLevelIndex].identifier)
+        self.presenter?.navigationButtonPressed(withDestination: destination, inFloor: self.buildingInfo!.floors[self.selectedLevelIndex].identifier)
     }
     
     @IBAction

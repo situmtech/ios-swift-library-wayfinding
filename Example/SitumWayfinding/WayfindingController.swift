@@ -57,6 +57,20 @@ class WayfindingController: UIViewController {
             } catch {
                 print("An error has ocurred. Your SitumView couldn't be loaded.")
             }
+        )
+        self.library?.addLocationRequestInterceptor { (locationRequest: SITLocationRequest) in
+            locationRequest.useGlobalLocation = true;
+            let options: SITOutdoorLocationOptions = SITOutdoorLocationOptions()
+            options.buildingDetector = .SITBLE
+            locationRequest.outdoorLocationOptions = options
+        }
+        
+        
+        library?.setCredentials(credentials)
+        do {
+            try library?.load(buildingWithId: "YOUR_BUILDING_ID")
+        } catch {
+            print("An error has ocurred. Your SitumView couldn't be loaded.")
         }
         super.viewWillAppear(animated)
     }
