@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 All non released changes should be in CHANGELOG_UNRELEASED.md file
 
 ---------
+## [0.1.12] - 2020-02-16
+
+### Added
+* Customize logo and primary color based on profile
+* Updated situm sdk dependency to 2.50.5
+
 ## [0.1.11] - 2020-10-03
 
 #### Fixed
