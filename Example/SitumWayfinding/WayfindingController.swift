@@ -27,45 +27,26 @@ class WayfindingController: UIViewController {
         let credentials: Credentials = Credentials(user: "YOUR_USER", apiKey: "YOUR_SITUM_APIKEY", googleMapsApiKey: "YOUR_GOOGLEMAPS_APIKEY")
 
         let buildingId = "YOUR_BUILDING_ID"
-        
-        let loadWithNew = true
-        
-        if loadWithNew {
-            let settings = LibrarySettings.Builder()
+        let settings = LibrarySettings.Builder()
                 .setCredentials(credentials: credentials)
                 .setBuildingId(buildingId: buildingId)
                 .build()
-            self.library = SitumMapsLibrary(containedBy: self.containerView, controlledBy: self, withSettings: settings)
+        self.library = SitumMapsLibrary(containedBy: self.containerView, controlledBy: self, withSettings: settings)
             
-            do {
-                try self.library!.load()
-                
-            } catch {
-                print("An error has ocurred. Your SitumView could not be loaded.")
-            }
-        } else {
-        
-            self.library = SitumMapsLibrary(containedBy: self.containerView, controlledBy: self)
-            self.library?.setOnBackPressedCallback(
-                {(_ sender: Any) in
-                    self.performSegue(withIdentifier: "unloadWayfinding", sender: self)
-                }
-            )
+        self.library?.addLocationRequestInterceptor { (locationRequest: SITLocationRequest) in
+            locationRequest.useGlobalLocation = true;
+            let options: SITOutdoorLocationOptions = SITOutdoorLocationOptions()
+            options.buildingDetector = .SITBLE
+            locationRequest.outdoorLocationOptions = options
+        }
+            
+        do {
+            try self.library!.load()
+            
+        } catch {
+            print("An error has ocurred. Your SitumView could not be loaded.")
+        }
 
-            self.library?.addLocationRequestInterceptor { (locationRequest: SITLocationRequest) in
-                locationRequest.useGlobalLocation = true;
-                let options: SITOutdoorLocationOptions = SITOutdoorLocationOptions()
-                options.buildingDetector = .SITBLE
-                locationRequest.outdoorLocationOptions = options
-            }
-
-            library?.setCredentials(credentials)
-            do {
-                try library?.load(buildingWithId: buildingId)
-            } catch {
-                print("An error has ocurred. Your SitumView couldn't be loaded.")
-            }
-        )
         super.viewWillAppear(animated)
     }
 
