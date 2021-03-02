@@ -9,7 +9,7 @@ fi
 path_to_project=$1
 sdk_version=$2
 version_string=" s.version = \'${sdk_version}\'"
-url_string=" s.source = { :http => 'https://repo.situm.es/artifactory/libs-release-local/iOS/SitumWayfinding/${sdk_version}/SitumWayfinding.zip' }"
+url_string=" s.source = { :http => 'https://repo.situm.com/artifactory/libs-release-local/iOS/SitumWayfinding/${sdk_version}/SitumWayfinding.zip' }"
 
 cd $path_to_project
 sed -i 'SitumWayfinding.podspec' -e "s,^ s.version .*$,$version_string," SitumWayfinding.podspec

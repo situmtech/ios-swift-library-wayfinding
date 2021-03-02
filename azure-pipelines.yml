@@ -13,6 +13,7 @@ trigger:
 pr: none
 
 variables:
+- group: situmArtifactory
 - group: Passwords
 
 resources:
