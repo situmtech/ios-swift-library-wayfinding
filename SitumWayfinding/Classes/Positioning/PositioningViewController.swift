@@ -53,6 +53,8 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
     var mapOverlay: GMSGroundOverlay = GMSGroundOverlay()
     var userLocationMarker: GMSMarker? = nil
     var userLocationRadiusMarker: GMSMarker? = nil
+    var userLocationRadiusGroundOverlay: GMSGroundOverlay? = nil
+    var userLocationRadiusCircle: GMSCircle? = nil
     var poiMarkers: Array<GMSMarker> = []
     var floorplans: Dictionary<String, UIImage> = [:]
     var poiCategoryIcons: Dictionary<String, UIImage> = [:]
@@ -405,11 +407,22 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
     
     func updateUserMarker(with location: SITLocation) {
         let userLocationMarker = self.userLocationMarkerInMapView(mapView: self.mapView)
-        let userLocationRadiusMarker = self.userLocationRadiusMarkerInMapView(mapView: self.mapView)
+        // let userLocationRadiusMarker = self.userLocationRadiusMarkerInMapView(mapView: self.mapView)
+        let userLocationRadiusMarker = self.userLocationRadiusMarkerInMapView(location: location, mapView: self.mapView)
+        
+        print("radius is: \(location.accuracy)")
+        
         let selectedLevel: SITFloor? = buildingInfo!.floors[selectedLevelIndex]
         if isCameraCentered || location.position.isOutdoor() || selectedLevel?.identifier == location.position.floorIdentifier {
             userLocationMarker.position = location.position.coordinate()
             userLocationRadiusMarker.position = location.position.coordinate()
+            
+            // userLocationRadiusGroundOverlay.position = location.position.coordinate()
+            // userLocationRadiusGroundOverlay.map = self.mapView
+            
+            
+            
+            
             if self.isBearingChangedEnoughToReloadUi(bearing: location.bearing.degrees()) {
                 userLocationMarker.rotation = CLLocationDegrees(location.bearing.degrees())
             }
@@ -427,12 +440,21 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
     }
     
     func makeUserMarkerVisible(visible: Bool) {
+        if visible {
+            self.userLocationRadiusGroundOverlay?.map = mapView
+            self.userLocationRadiusCircle?.map = mapView
+        } else {
+            self.userLocationRadiusGroundOverlay?.map = nil
+            self.userLocationRadiusCircle?.map = nil
+        }
         if (visible && self.userLocationMarkerInMapView(mapView: self.mapView).map == nil) {
             self.userLocationMarkerInMapView(mapView: self.mapView).map = self.mapView
-            self.userLocationRadiusMarkerInMapView(mapView: self.mapView).map = self.mapView
+            // self.userLocationRadiusMarkerInMapView(mapView: self.mapView).map = self.mapView
+             //  self.userLocationRadiusMarkerInMapView(location: nil, mapView: self.mapView).map = self.mapView
         } else if (!visible && self.userLocationMarkerInMapView(mapView: self.mapView).map != nil) {
             self.userLocationMarkerInMapView(mapView: self.mapView).map = nil
-            self.userLocationRadiusMarkerInMapView(mapView: self.mapView).map = nil
+            // self.userLocationRadiusMarkerInMapView(location: nil, mapView: self.mapView).map = nil
+            // self.userLocationRadiusGroundOverlay?.map = nil
         }
     }
     
@@ -863,10 +885,39 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
         return floorIdentifier
     }
     
+    func resizeImage(image: UIImage, targetSize: CGSize) -> UIImage {
+        let size = image.size
+
+        let widthRatio  = targetSize.width  / size.width
+        let heightRatio = targetSize.height / size.height
+
+        // Figure out what our orientation is, and use that to form the rectangle
+        var newSize: CGSize
+        if(widthRatio > heightRatio) {
+            newSize = CGSize(width: size.width * heightRatio, height: size.height * heightRatio)
+        } else {
+            newSize = CGSize(width: size.width * widthRatio,  height: size.height * widthRatio)
+        }
+
+        // This is the rect that we've calculated out and this is what is actually used below
+        let rect = CGRect(x: 0, y: 0, width: newSize.width, height: newSize.height)
+
+        // Actually do the resizing to the rect using the ImageContext stuff
+        UIGraphicsBeginImageContextWithOptions(newSize, false, 1.0)
+        image.draw(in: rect)
+        let newImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+
+        if let resizedImage = newImage  {
+            return resizedImage
+        }
+        return image
+    }
+    
     func userLocationMarkerInMapView(mapView: GMSMapView) -> GMSMarker {
         if (self.userLocationMarker == nil) {
             let marker: GMSMarker = GMSMarker.init()
-            marker.icon = self.userMarkerIcons["swf_location_pointer"]
+            marker.icon = self.userMarkerIcons["swf_location_pointer"]!
             marker.groundAnchor = CGPoint(x: 0.5, y: 0.5)
             marker.isTappable = false;
             marker.zIndex = 2;
@@ -876,16 +927,26 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
         return self.userLocationMarker!;
     }
     
-    func userLocationRadiusMarkerInMapView (mapView: GMSMapView) -> GMSMarker {
-        if (self.userLocationRadiusMarker == nil) {
-            let marker: GMSMarker = GMSMarker.init()
-            marker.icon = self.userMarkerIcons["swf_radius"]
-            marker.groundAnchor = CGPoint(x: 0.5, y: 0.5)
-            marker.isTappable = false;
-            marker.zIndex = 1
-            self.userLocationRadiusMarker = marker
+    func userLocationRadiusMarkerInMapView (location: SITLocation?, mapView: GMSMapView) -> GMSCircle {
+
+        // Remove previous element from map view
+        self.userLocationRadiusCircle?.map = nil
+        
+        // Recreate it
+        if let loc = location {
+            let go = GMSCircle(position: loc.position.coordinate(), radius: CLLocationDistance(loc.accuracy))
+            // go.anchor = CGPoint(x: 0.5, y: 0.5)
+            let color = UIColor(red: 0.71, green: 0.83, blue: 0.94, alpha: 0.50)
+
+            go.strokeColor = color  // to customize color:  self.primaryColor(defaultColor: color)
+            go.fillColor = color
+            go.isTappable = false
+            go.zIndex = 1
+            
+            self.userLocationRadiusCircle = go
         }
-        return self.userLocationRadiusMarker!
+        
+        return self.userLocationRadiusCircle!
     }
     
     func generateAndPrintRoutePathWithRouteSegments(segments: Array<SITRouteSegment>, selectedFloor: SITFloor) {
