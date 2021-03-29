@@ -299,7 +299,7 @@
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-SitumWayfinding_Example/Pods-SitumWayfinding_Example-resources.sh",
 				"${PODS_ROOT}/GoogleMaps/Maps/Frameworks/GoogleMaps.framework/Resources/GoogleMaps.bundle",
-				"${PODS_ROOT}/../../SitumWayfinding/Assets/SitumWayfinding.storyboard",
+				"${BUILT_PRODUCTS_DIR}/SitumWayfinding/SitumWayfinding.framework/SitumWayfinding.storyboardc",
 				"${PODS_ROOT}/../../SitumWayfinding/Assets/Images/ic_action_bluetooth/swf_ic_action_bluetooth.png",
 				"${PODS_ROOT}/../../SitumWayfinding/Assets/Images/ic_action_cancel/swf_ic_action_cancel@1x.png",
 				"${PODS_ROOT}/../../SitumWayfinding/Assets/Images/ic_action_cancel/swf_ic_action_cancel@2x.png",
@@ -527,7 +527,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -573,7 +573,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
@@ -589,6 +589,7 @@
 				DEVELOPMENT_TEAM = ACLL2M4T26;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = SitumWayfinding/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MODULE_NAME = ExampleApp;
 				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.demo.$(PRODUCT_NAME:rfc1034identifier)";
@@ -606,6 +607,7 @@
 				DEVELOPMENT_TEAM = ACLL2M4T26;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = SitumWayfinding/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MODULE_NAME = ExampleApp;
 				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.demo.$(PRODUCT_NAME:rfc1034identifier)";
