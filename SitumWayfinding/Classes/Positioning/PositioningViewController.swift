@@ -53,7 +53,6 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
     var mapOverlay: GMSGroundOverlay = GMSGroundOverlay()
     var userLocationMarker: GMSMarker? = nil
     var userLocationRadiusMarker: GMSMarker? = nil
-    var userLocationRadiusGroundOverlay: GMSGroundOverlay? = nil
     var userLocationRadiusCircle: GMSCircle? = nil
     var poiMarkers: Array<GMSMarker> = []
     var floorplans: Dictionary<String, UIImage> = [:]
@@ -407,7 +406,6 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
     
     func updateUserMarker(with location: SITLocation) {
         let userLocationMarker = self.userLocationMarkerInMapView(mapView: self.mapView)
-        // let userLocationRadiusMarker = self.userLocationRadiusMarkerInMapView(mapView: self.mapView)
         let userLocationRadiusMarker = self.userLocationRadiusMarkerInMapView(location: location, mapView: self.mapView)
         
         print("radius is: \(location.accuracy)")
@@ -441,10 +439,8 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
     
     func makeUserMarkerVisible(visible: Bool) {
         if visible {
-            self.userLocationRadiusGroundOverlay?.map = mapView
             self.userLocationRadiusCircle?.map = mapView
         } else {
-            self.userLocationRadiusGroundOverlay?.map = nil
             self.userLocationRadiusCircle?.map = nil
         }
         if (visible && self.userLocationMarkerInMapView(mapView: self.mapView).map == nil) {
@@ -934,16 +930,15 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
         
         // Recreate it
         if let loc = location {
-            let go = GMSCircle(position: loc.position.coordinate(), radius: CLLocationDistance(loc.accuracy))
-            // go.anchor = CGPoint(x: 0.5, y: 0.5)
+            let accuracyRadius = GMSCircle(position: loc.position.coordinate(), radius: CLLocationDistance(loc.accuracy))
             let color = UIColor(red: 0.71, green: 0.83, blue: 0.94, alpha: 0.50)
 
-            go.strokeColor = color  // to customize color:  self.primaryColor(defaultColor: color)
-            go.fillColor = color
-            go.isTappable = false
-            go.zIndex = 1
+            accuracyRadius.strokeColor = color  // to customize color:  self.primaryColor(defaultColor: color)
+            accuracyRadius.fillColor = color
+            accuracyRadius.isTappable = false
+            accuracyRadius.zIndex = 1
             
-            self.userLocationRadiusCircle = go
+            self.userLocationRadiusCircle = accuracyRadius
         }
         
         return self.userLocationRadiusCircle!
