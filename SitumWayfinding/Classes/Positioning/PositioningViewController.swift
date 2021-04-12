@@ -52,7 +52,6 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
     //Positioning
     var mapOverlay: GMSGroundOverlay = GMSGroundOverlay()
     var userLocationMarker: GMSMarker? = nil
-    var userLocationRadiusMarker: GMSMarker? = nil
     var userLocationRadiusCircle: GMSCircle? = nil
     var poiMarkers: Array<GMSMarker> = []
     var floorplans: Dictionary<String, UIImage> = [:]
@@ -405,26 +404,9 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
     }
     
     func updateUserMarker(with location: SITLocation) {
-        let userLocationMarker = self.userLocationMarkerInMapView(mapView: self.mapView)
-        let userLocationRadiusMarker = self.userLocationRadiusMarkerInMapView(location: location, mapView: self.mapView)
-        
-        print("radius is: \(location.accuracy)")
-        
         let selectedLevel: SITFloor? = buildingInfo!.floors[selectedLevelIndex]
         if isCameraCentered || location.position.isOutdoor() || selectedLevel?.identifier == location.position.floorIdentifier {
-            userLocationMarker.position = location.position.coordinate()
-            userLocationRadiusMarker.position = location.position.coordinate()
-
-            if self.isBearingChangedEnoughToReloadUi(bearing: location.bearing.degrees()) {
-                userLocationMarker.rotation = CLLocationDegrees(location.bearing.degrees())
-            }
-            if location.position.isOutdoor() {
-                userLocationMarker.icon = userMarkerIcons["swf_location_outdoor_pointer"]
-            } else if location.quality == .sitHigh && location.bearingQuality == .sitHigh {
-                userLocationMarker.icon = userMarkerIcons["swf_location_pointer"]
-            } else {
-                userLocationMarker.icon = userMarkerIcons["swf_location"]
-            }
+            updateUserLocation(location:location, mapView: self.mapView, redraw: true)
             self.makeUserMarkerVisible(visible: true) 
         } else {
             makeUserMarkerVisible(visible: false)
@@ -432,15 +414,12 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
     }
     
     func makeUserMarkerVisible(visible: Bool) {
-        if visible {
-            self.userLocationRadiusCircle?.map = mapView
-        } else {
-            self.userLocationRadiusCircle?.map = nil
-        }
-        if (visible && self.userLocationMarkerInMapView(mapView: self.mapView).map == nil) {
-            self.userLocationMarkerInMapView(mapView: self.mapView).map = self.mapView
-        } else if (!visible && self.userLocationMarkerInMapView(mapView: self.mapView).map != nil) {
-            self.userLocationMarkerInMapView(mapView: self.mapView).map = nil
+        if (visible && userLocationMarker?.map == nil) {
+            userLocationMarker?.map = mapView
+            userLocationRadiusCircle?.map = mapView
+        } else if (!visible && userLocationMarker?.map != nil) {
+            userLocationMarker?.map  = nil
+            userLocationRadiusCircle?.map = nil
         }
     }
     
@@ -871,38 +850,59 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
         return floorIdentifier
     }
     
-    func userLocationMarkerInMapView(mapView: GMSMapView) -> GMSMarker {
-        if (self.userLocationMarker == nil) {
+    //If we redraw in map both user marker and accuracy circle they move in sync but a less fluently. If we dont redraw then and use the old objects they move more fluently but unsynced
+    func updateUserLocation(location: SITLocation, mapView: GMSMapView, redraw: Bool){
+        updateUserLocationMarkerInMapView(location:location, mapView: self.mapView, redraw: true)
+        updateUserLocationRadiusCircleInMapView(location: location, mapView: self.mapView, redraw: true)
+    }
+    
+    func updateUserLocationMarkerInMapView(location: SITLocation, mapView: GMSMapView, redraw: Bool) {
+        if (redraw){
+            userLocationMarker?.map=nil
+            userLocationMarker = nil
+        }
+        if (userLocationMarker == nil) {
             let marker: GMSMarker = GMSMarker.init()
             marker.icon = self.userMarkerIcons["swf_location_pointer"]!
             marker.groundAnchor = CGPoint(x: 0.5, y: 0.5)
             marker.isTappable = false;
-            marker.zIndex = 2;
+            marker.zIndex = 1;
             marker.isFlat = true;
-            self.userLocationMarker = marker;
+            userLocationMarker = marker;
         }
-        return self.userLocationMarker!;
+        userLocationMarker?.position = location.position.coordinate()
+
+        if self.isBearingChangedEnoughToReloadUi(bearing: location.bearing.degrees()) {
+            userLocationMarker?.rotation = CLLocationDegrees(location.bearing.degrees())
+        }
+        if location.position.isOutdoor() {
+            userLocationMarker?.icon = userMarkerIcons["swf_location_outdoor_pointer"]
+        } else if location.quality == .sitHigh && location.bearingQuality == .sitHigh {
+            userLocationMarker?.icon = userMarkerIcons["swf_location_pointer"]
+        } else {
+            userLocationMarker?.icon = userMarkerIcons["swf_location"]
+        }
     }
     
-    func userLocationRadiusMarkerInMapView (location: SITLocation?, mapView: GMSMapView) -> GMSCircle {
-
-        // Remove previous element from map view
-        self.userLocationRadiusCircle?.map = nil
+    func updateUserLocationRadiusCircleInMapView (location: SITLocation, mapView: GMSMapView, redraw: Bool) {
         
-        // Recreate it
-        if let loc = location {
-            let accuracyRadius = GMSCircle(position: loc.position.coordinate(), radius: CLLocationDistance(loc.accuracy))
-            let color = UIColor(red: 0.71, green: 0.83, blue: 0.94, alpha: 0.50)
-
-            accuracyRadius.strokeColor = color  // to customize color:  self.primaryColor(defaultColor: color)
-            accuracyRadius.fillColor = color
-            accuracyRadius.isTappable = false
-            accuracyRadius.zIndex = 1
-            
-            self.userLocationRadiusCircle = accuracyRadius
+        if (redraw){
+            // Remove previous element from map view
+            userLocationRadiusCircle?.map = nil
+            userLocationRadiusCircle = nil
         }
-        
-        return self.userLocationRadiusCircle!
+        if (userLocationRadiusCircle == nil){
+            userLocationRadiusCircle = GMSCircle(position: location.position.coordinate(), radius: CLLocationDistance(location.accuracy))
+            let color = UIColor(red: 0.71, green: 0.83, blue: 0.94, alpha: 0.50)
+            
+            userLocationRadiusCircle?.strokeColor = color  // to customize color:  self.primaryColor(defaultColor: color)
+            userLocationRadiusCircle?.fillColor = color
+            userLocationRadiusCircle?.isTappable = false
+            userLocationRadiusCircle?.zIndex = 2
+        }else{
+            userLocationRadiusCircle?.position = location.position.coordinate()
+            userLocationRadiusCircle?.radius = CLLocationDistance(location.accuracy)
+        }
     }
     
     func generateAndPrintRoutePathWithRouteSegments(segments: Array<SITRouteSegment>, selectedFloor: SITFloor) {
