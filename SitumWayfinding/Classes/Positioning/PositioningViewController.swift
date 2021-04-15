@@ -406,7 +406,7 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
     func updateUserMarker(with location: SITLocation) {
         let selectedLevel: SITFloor? = buildingInfo!.floors[selectedLevelIndex]
         if isCameraCentered || location.position.isOutdoor() || selectedLevel?.identifier == location.position.floorIdentifier {
-            updateUserLocation(location:location, mapView: self.mapView, redraw: true)
+            updateUserLocation(location:location, mapView: self.mapView)
             self.makeUserMarkerVisible(visible: true) 
         } else {
             makeUserMarkerVisible(visible: false)
@@ -849,18 +849,16 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
         
         return floorIdentifier
     }
-    
-    //If we redraw in map both user marker and accuracy circle they move in sync but a less fluently. If we dont redraw then and use the old objects they move more fluently but unsynced
-    func updateUserLocation(location: SITLocation, mapView: GMSMapView, redraw: Bool){
-        updateUserLocationMarkerInMapView(location:location, mapView: self.mapView, redraw: true)
-        updateUserLocationRadiusCircleInMapView(location: location, mapView: self.mapView, redraw: true)
+
+    func updateUserLocation(location: SITLocation, mapView: GMSMapView){
+        configureUserLocationMarkerInMapView(location:location, mapView: self.mapView)
+        configureUserLocationRadiusCircleInMapView(location: location, mapView: self.mapView)
+        animateUserLocationMarkerInMapView(location: location)
+        animateUserLocationRadiusCircleInMapView(location: location)
+
     }
     
-    func updateUserLocationMarkerInMapView(location: SITLocation, mapView: GMSMapView, redraw: Bool) {
-        if (redraw){
-            userLocationMarker?.map=nil
-            userLocationMarker = nil
-        }
+    func configureUserLocationMarkerInMapView(location: SITLocation, mapView: GMSMapView) {
         if (userLocationMarker == nil) {
             let marker: GMSMarker = GMSMarker.init()
             marker.icon = self.userMarkerIcons["swf_location_pointer"]!
@@ -870,7 +868,6 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
             marker.isFlat = true;
             userLocationMarker = marker;
         }
-        userLocationMarker?.position = location.position.coordinate()
 
         if self.isBearingChangedEnoughToReloadUi(bearing: location.bearing.degrees()) {
             userLocationMarker?.rotation = CLLocationDegrees(location.bearing.degrees())
@@ -884,13 +881,8 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
         }
     }
     
-    func updateUserLocationRadiusCircleInMapView (location: SITLocation, mapView: GMSMapView, redraw: Bool) {
-        
-        if (redraw){
-            // Remove previous element from map view
-            userLocationRadiusCircle?.map = nil
-            userLocationRadiusCircle = nil
-        }
+    func configureUserLocationRadiusCircleInMapView (location: SITLocation, mapView: GMSMapView) {
+
         if (userLocationRadiusCircle == nil){
             userLocationRadiusCircle = GMSCircle(position: location.position.coordinate(), radius: CLLocationDistance(location.accuracy))
             let color = UIColor(red: 0.71, green: 0.83, blue: 0.94, alpha: 0.50)
@@ -899,10 +891,20 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
             userLocationRadiusCircle?.fillColor = color
             userLocationRadiusCircle?.isTappable = false
             userLocationRadiusCircle?.zIndex = 2
-        }else{
-            userLocationRadiusCircle?.position = location.position.coordinate()
-            userLocationRadiusCircle?.radius = CLLocationDistance(location.accuracy)
         }
+    }
+    
+    func animateUserLocationMarkerInMapView(location: SITLocation){
+        //As GMSCircle doesnt respect user position animations for now we dont animate user position
+        CATransaction.begin()
+        CATransaction.setAnimationDuration(0.0)
+        userLocationMarker?.position = location.position.coordinate()
+        CATransaction.commit()
+    }
+    
+    func animateUserLocationRadiusCircleInMapView (location: SITLocation){
+        userLocationRadiusCircle?.position = location.position.coordinate()
+        userLocationRadiusCircle?.radius = CLLocationDistance(location.accuracy)
     }
     
     func generateAndPrintRoutePathWithRouteSegments(segments: Array<SITRouteSegment>, selectedFloor: SITFloor) {
