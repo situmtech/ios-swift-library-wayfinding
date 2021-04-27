@@ -51,8 +51,6 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
     
     //Positioning
     var mapOverlay: GMSGroundOverlay = GMSGroundOverlay()
-    var userLocationMarker: GMSMarker? = nil
-    var userLocationRadiusCircle: GMSCircle? = nil
     var poiMarkers: Array<GMSMarker> = []
     var floorplans: Dictionary<String, UIImage> = [:]
     var poiCategoryIcons: Dictionary<String, UIImage> = [:]
@@ -65,6 +63,7 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
     var actualZoom: Float = 0.0
     var selectedLevelIndex: Int = 0
     var presenter: PositioningPresenter? = nil
+    var positionPainter: PositionPainterProtocol? = nil
     
     //Navigation
     var lastSelectedMarker: GMSMarker?
@@ -91,7 +90,7 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
+        positionPainter = GoogleMapsPositionPainter(mapView: mapView)
         let loadingAlert = UIAlertController(title:  "Loading", message: "Hold on for a moment", preferredStyle: .actionSheet)
         self.present(loadingAlert, animated: true, completion: {
             if (self.loadFinished){
@@ -406,21 +405,30 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
     func updateUserMarker(with location: SITLocation) {
         let selectedLevel: SITFloor? = buildingInfo!.floors[selectedLevelIndex]
         if isCameraCentered || location.position.isOutdoor() || selectedLevel?.identifier == location.position.floorIdentifier {
-            updateUserLocation(location:location, mapView: self.mapView)
+            let userMarkerImage = getMarkerImage(for: location)
+            positionPainter?.updateUserLocation( with: location, with: userMarkerImage)
+            if PositioningUtils.hasBearingChangedEnoughToReloadUi(newBearing: location.bearing.degrees(),  lastAnimatedBearing: lastAnimatedBearing ) {
+                positionPainter?.updateUserBearing(with: location)
+                lastAnimatedBearing = location.bearing.degrees()
+            }
             self.makeUserMarkerVisible(visible: true) 
         } else {
             makeUserMarkerVisible(visible: false)
         }
     }
     
-    func makeUserMarkerVisible(visible: Bool) {
-        if (visible && userLocationMarker?.map == nil) {
-            userLocationMarker?.map = mapView
-            userLocationRadiusCircle?.map = mapView
-        } else if (!visible && userLocationMarker?.map != nil) {
-            userLocationMarker?.map  = nil
-            userLocationRadiusCircle?.map = nil
+    func getMarkerImage(for location: SITLocation) -> UIImage? {
+        if location.position.isOutdoor() {
+           return  userMarkerIcons["swf_location_outdoor_pointer"]
+        } else if location.quality == .sitHigh && location.bearingQuality == .sitHigh {
+            return userMarkerIcons["swf_location_pointer"]
+        } else {
+            return userMarkerIcons["swf_location"]
         }
+    }
+    
+    func makeUserMarkerVisible(visible: Bool) {
+        positionPainter?.makeUserMarkerVisible(visible: visible)
     }
     
     func removeLastCustomMarkerIfOutsideRoute() {
@@ -456,7 +464,7 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
             let position = location.position
             let cameraUpdate = GMSCameraUpdate.setTarget(position.coordinate())
             mapView.animate(with: cameraUpdate)
-            if isBearingChangedEnoughToReloadUi(bearing: location.bearing.degrees()) {
+            if PositioningUtils.hasBearingChangedEnoughToReloadUi(newBearing: location.bearing.degrees(), lastAnimatedBearing:lastAnimatedBearing) {
                 mapView.animate(toBearing: CLLocationDirection(location.bearing.degrees()))
                 lastAnimatedBearing = location.bearing.degrees()
             }
@@ -795,13 +803,6 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
         return marker
     }
     
-    func isBearingChangedEnoughToReloadUi(bearing: Float) -> Bool {
-        if((bearing < (self.lastAnimatedBearing - 5.0)) || (bearing > (self.lastAnimatedBearing + 5.0))) {
-            return true;
-        }
-        return false;
-    }
-    
     func isUserNavigating() -> Bool {
         return self.destinationMarker != nil
     }
@@ -850,62 +851,7 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
         return floorIdentifier
     }
 
-    func updateUserLocation(location: SITLocation, mapView: GMSMapView){
-        configureUserLocationMarkerInMapView(location:location, mapView: self.mapView)
-        configureUserLocationRadiusCircleInMapView(location: location, mapView: self.mapView)
-        animateUserLocationMarkerInMapView(location: location)
-        animateUserLocationRadiusCircleInMapView(location: location)
-
-    }
     
-    func configureUserLocationMarkerInMapView(location: SITLocation, mapView: GMSMapView) {
-        if (userLocationMarker == nil) {
-            let marker: GMSMarker = GMSMarker.init()
-            marker.icon = self.userMarkerIcons["swf_location_pointer"]!
-            marker.groundAnchor = CGPoint(x: 0.5, y: 0.5)
-            marker.isTappable = false;
-            marker.zIndex = 1;
-            marker.isFlat = true;
-            userLocationMarker = marker;
-        }
-
-        if self.isBearingChangedEnoughToReloadUi(bearing: location.bearing.degrees()) {
-            userLocationMarker?.rotation = CLLocationDegrees(location.bearing.degrees())
-        }
-        if location.position.isOutdoor() {
-            userLocationMarker?.icon = userMarkerIcons["swf_location_outdoor_pointer"]
-        } else if location.quality == .sitHigh && location.bearingQuality == .sitHigh {
-            userLocationMarker?.icon = userMarkerIcons["swf_location_pointer"]
-        } else {
-            userLocationMarker?.icon = userMarkerIcons["swf_location"]
-        }
-    }
-    
-    func configureUserLocationRadiusCircleInMapView (location: SITLocation, mapView: GMSMapView) {
-
-        if (userLocationRadiusCircle == nil){
-            userLocationRadiusCircle = GMSCircle(position: location.position.coordinate(), radius: CLLocationDistance(location.accuracy))
-            let color = UIColor(red: 0.71, green: 0.83, blue: 0.94, alpha: 0.50)
-            
-            userLocationRadiusCircle?.strokeColor = color  // to customize color:  self.primaryColor(defaultColor: color)
-            userLocationRadiusCircle?.fillColor = color
-            userLocationRadiusCircle?.isTappable = false
-            userLocationRadiusCircle?.zIndex = 2
-        }
-    }
-    
-    func animateUserLocationMarkerInMapView(location: SITLocation){
-        //As GMSCircle doesnt respect user position animations for now we dont animate user position
-        CATransaction.begin()
-        CATransaction.setAnimationDuration(0.0)
-        userLocationMarker?.position = location.position.coordinate()
-        CATransaction.commit()
-    }
-    
-    func animateUserLocationRadiusCircleInMapView (location: SITLocation){
-        userLocationRadiusCircle?.position = location.position.coordinate()
-        userLocationRadiusCircle?.radius = CLLocationDistance(location.accuracy)
-    }
     
     func generateAndPrintRoutePathWithRouteSegments(segments: Array<SITRouteSegment>, selectedFloor: SITFloor) {
         for (index, segment) in segments.enumerated() {
