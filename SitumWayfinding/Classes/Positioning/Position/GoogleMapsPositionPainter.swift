@@ -14,8 +14,8 @@ class GoogleMapsPositionPainter:PositionPainterProtocol {
     var userLocationRadiusCircle: GMSCircle? = nil
     var userPositionAnimationTimer: Timer?
     
-    let numberOfInterpolationPoints = 10
-    let interpolationInterval = 0.1 //In seconds
+    let numberOfInterpolationPoints = 15
+    let interpolationTime = 0.5 //In seconds
     let minimunPositionChangeToAnimate = 0.2 //In meters
     
     init(mapView: GMSMapView!) {
@@ -80,6 +80,7 @@ class GoogleMapsPositionPainter:PositionPainterProtocol {
         let endRadius = location.accuracy
         
         var runCount = 0
+        let interpolationInterval =  Double(interpolationTime)/Double(numberOfInterpolationPoints)
         userPositionAnimationTimer = Timer.scheduledTimer(withTimeInterval: interpolationInterval, repeats: true) { timer in
             // To make user position marker and accuracy position circle to move synced we have to animate the changes in same block, instead of separate blocks for each of them
             let fraction = Double(runCount)/Double (self.numberOfInterpolationPoints)
