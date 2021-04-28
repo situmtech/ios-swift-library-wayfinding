@@ -63,7 +63,7 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
     var actualZoom: Float = 0.0
     var selectedLevelIndex: Int = 0
     var presenter: PositioningPresenter? = nil
-    var positionPainter: PositionPainterProtocol? = nil
+    var positionDrawer: PositionDrawerProtocol? = nil
     
     //Navigation
     var lastSelectedMarker: GMSMarker?
@@ -90,7 +90,7 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        positionPainter = GoogleMapsPositionPainter(mapView: mapView)
+        positionDrawer = GoogleMapsPositionDrawer(mapView: mapView)
         let loadingAlert = UIAlertController(title:  "Loading", message: "Hold on for a moment", preferredStyle: .actionSheet)
         self.present(loadingAlert, animated: true, completion: {
             if (self.loadFinished){
@@ -406,9 +406,9 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
         let selectedLevel: SITFloor? = buildingInfo!.floors[selectedLevelIndex]
         if isCameraCentered || location.position.isOutdoor() || selectedLevel?.identifier == location.position.floorIdentifier {
             let userMarkerImage = getMarkerImage(for: location)
-            positionPainter?.updateUserLocation( with: location, with: userMarkerImage)
+            positionDrawer?.updateUserLocation( with: location, with: userMarkerImage)
             if PositioningUtils.hasBearingChangedEnoughToReloadUi(newBearing: location.bearing.degrees(),  lastAnimatedBearing: lastAnimatedBearing ) {
-                positionPainter?.updateUserBearing(with: location)
+                positionDrawer?.updateUserBearing(with: location)
                 lastAnimatedBearing = location.bearing.degrees()
             }
             self.makeUserMarkerVisible(visible: true) 
@@ -428,7 +428,7 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
     }
     
     func makeUserMarkerVisible(visible: Bool) {
-        positionPainter?.makeUserMarkerVisible(visible: visible)
+        positionDrawer?.makeUserMarkerVisible(visible: visible)
     }
     
     func removeLastCustomMarkerIfOutsideRoute() {

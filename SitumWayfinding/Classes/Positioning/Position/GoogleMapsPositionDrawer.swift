@@ -8,7 +8,7 @@
 import Foundation
 import GoogleMaps
 
-class GoogleMapsPositionPainter:PositionPainterProtocol {
+class GoogleMapsPositionDrawer:PositionDrawerProtocol {
     var mapView: GMSMapView!
     var userLocationMarker: GMSMarker? = nil
     var userLocationRadiusCircle: GMSCircle? = nil
