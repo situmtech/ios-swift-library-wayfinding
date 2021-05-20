@@ -407,13 +407,18 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
         if isCameraCentered || location.position.isOutdoor() || selectedLevel?.identifier == location.position.floorIdentifier {
             let userMarkerImage = getMarkerImage(for: location)
             positionDrawer?.updateUserLocation( with: location, with: userMarkerImage)
-            if PositioningUtils.hasBearingChangedEnoughToReloadUi(newBearing: location.bearing.degrees(),  lastAnimatedBearing: lastAnimatedBearing ) {
-                positionDrawer?.updateUserBearing(with: location)
-                lastAnimatedBearing = location.bearing.degrees()
-            }
             self.makeUserMarkerVisible(visible: true) 
         } else {
             makeUserMarkerVisible(visible: false)
+        }
+    }
+    
+    func updateUserBearing(with location: SITLocation) {
+        if isCameraCentered && PositioningUtils.hasBearingChangedEnoughToReloadUi(newBearing: location.bearing.degrees(),  lastAnimatedBearing: lastAnimatedBearing){
+            positionDrawer?.updateUserBearing(with: location)
+            //Relocate camera
+            mapView.animate(toBearing: CLLocationDirection(location.bearing.degrees()))
+            lastAnimatedBearing = location.bearing.degrees()
         }
     }
     
@@ -459,15 +464,10 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
     }
     
     func updateCamera(with location: SITLocation) {
-        lastBearing = location.bearing.degrees()
         if isCameraCentered {
             let position = location.position
             let cameraUpdate = GMSCameraUpdate.setTarget(position.coordinate())
             mapView.animate(with: cameraUpdate)
-            if PositioningUtils.hasBearingChangedEnoughToReloadUi(newBearing: location.bearing.degrees(), lastAnimatedBearing:lastAnimatedBearing) {
-                mapView.animate(toBearing: CLLocationDirection(location.bearing.degrees()))
-                lastAnimatedBearing = location.bearing.degrees()
-            }
         }
     }
     
@@ -666,8 +666,9 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
     
     func updateUI(with location: SITLocation) {
         updateUserMarker(with: location)
-        presenter?.updateLevelSelector(location: location, isCameraCentered: self.isCameraCentered)
         updateCamera(with: location)
+        updateUserBearing(with: location)
+        presenter?.updateLevelSelector(location: location, isCameraCentered: self.isCameraCentered)
     }
     
     func updateInfoBarLabelsIfNotInsideRoute(mainLabel title: String, secondaryLabel subtitle: String = "") {

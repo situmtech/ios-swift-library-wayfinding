@@ -83,8 +83,10 @@ class GoogleMapsPositionDrawer:PositionDrawerProtocol {
         let interpolationInterval =  Double(interpolationTime)/Double(numberOfInterpolationPoints)
         userPositionAnimationTimer = Timer.scheduledTimer(withTimeInterval: interpolationInterval, repeats: true) { timer in
             // To make user position marker and accuracy position circle to move synced we have to animate the changes in same block, instead of separate blocks for each of them
-            let fraction = Double(runCount)/Double (self.numberOfInterpolationPoints)
+            
+            let fraction = Double(runCount+1)/Double (self.numberOfInterpolationPoints)
             let interpolatedLocation = self.interpolatePosition(fraction: fraction, origin: origin, destination: destination)
+            //print("date: ", Date(), " lat:",interpolatedLocation.latitude, " lng: ", interpolatedLocation.longitude, " fraction:", fraction)
             let interpolatedRadius = self.interpolateAccuracyRadius(fraction: fraction, initialRadius: initialRadius, endRadius: Double(endRadius))
             runCount += 1
             CATransaction.begin()
