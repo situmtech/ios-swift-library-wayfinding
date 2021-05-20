@@ -86,7 +86,6 @@ class GoogleMapsPositionDrawer:PositionDrawerProtocol {
             
             let fraction = Double(runCount+1)/Double (self.numberOfInterpolationPoints)
             let interpolatedLocation = self.interpolatePosition(fraction: fraction, origin: origin, destination: destination)
-            //print("date: ", Date(), " lat:",interpolatedLocation.latitude, " lng: ", interpolatedLocation.longitude, " fraction:", fraction)
             let interpolatedRadius = self.interpolateAccuracyRadius(fraction: fraction, initialRadius: initialRadius, endRadius: Double(endRadius))
             runCount += 1
             CATransaction.begin()
