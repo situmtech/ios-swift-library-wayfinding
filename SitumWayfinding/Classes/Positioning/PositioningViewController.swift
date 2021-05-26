@@ -51,8 +51,6 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
     
     //Positioning
     var mapOverlay: GMSGroundOverlay = GMSGroundOverlay()
-    var userLocationMarker: GMSMarker? = nil
-    var userLocationRadiusMarker: GMSMarker? = nil
     var poiMarkers: Array<GMSMarker> = []
     var floorplans: Dictionary<String, UIImage> = [:]
     var poiCategoryIcons: Dictionary<String, UIImage> = [:]
@@ -65,6 +63,7 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
     var actualZoom: Float = 0.0
     var selectedLevelIndex: Int = 0
     var presenter: PositioningPresenter? = nil
+    var positionDrawer: PositionDrawerProtocol? = nil
     
     //Navigation
     var lastSelectedMarker: GMSMarker?
@@ -91,7 +90,7 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
+        positionDrawer = GoogleMapsPositionDrawer(mapView: mapView)
         let loadingAlert = UIAlertController(title:  "Loading", message: "Hold on for a moment", preferredStyle: .actionSheet)
         self.present(loadingAlert, animated: true, completion: {
             if (self.loadFinished){
@@ -404,36 +403,37 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
     }
     
     func updateUserMarker(with location: SITLocation) {
-        let userLocationMarker = self.userLocationMarkerInMapView(mapView: self.mapView)
-        let userLocationRadiusMarker = self.userLocationRadiusMarkerInMapView(mapView: self.mapView)
         let selectedLevel: SITFloor? = buildingInfo!.floors[selectedLevelIndex]
         if isCameraCentered || location.position.isOutdoor() || selectedLevel?.identifier == location.position.floorIdentifier {
-            userLocationMarker.position = location.position.coordinate()
-            userLocationRadiusMarker.position = location.position.coordinate()
-            if self.isBearingChangedEnoughToReloadUi(bearing: location.bearing.degrees()) {
-                userLocationMarker.rotation = CLLocationDegrees(location.bearing.degrees())
-            }
-            if location.position.isOutdoor() {
-                userLocationMarker.icon = userMarkerIcons["swf_location_outdoor_pointer"]
-            } else if location.quality == .sitHigh && location.bearingQuality == .sitHigh {
-                userLocationMarker.icon = userMarkerIcons["swf_location_pointer"]
-            } else {
-                userLocationMarker.icon = userMarkerIcons["swf_location"]
-            }
+            let userMarkerImage = getMarkerImage(for: location)
+            positionDrawer?.updateUserLocation( with: location, with: userMarkerImage)
             self.makeUserMarkerVisible(visible: true) 
         } else {
             makeUserMarkerVisible(visible: false)
         }
     }
     
-    func makeUserMarkerVisible(visible: Bool) {
-        if (visible && self.userLocationMarkerInMapView(mapView: self.mapView).map == nil) {
-            self.userLocationMarkerInMapView(mapView: self.mapView).map = self.mapView
-            self.userLocationRadiusMarkerInMapView(mapView: self.mapView).map = self.mapView
-        } else if (!visible && self.userLocationMarkerInMapView(mapView: self.mapView).map != nil) {
-            self.userLocationMarkerInMapView(mapView: self.mapView).map = nil
-            self.userLocationRadiusMarkerInMapView(mapView: self.mapView).map = nil
+    func updateUserBearing(with location: SITLocation) {
+        if isCameraCentered && PositioningUtils.hasBearingChangedEnoughToReloadUi(newBearing: location.bearing.degrees(),  lastAnimatedBearing: lastAnimatedBearing){
+            positionDrawer?.updateUserBearing(with: location)
+            //Relocate camera
+            mapView.animate(toBearing: CLLocationDirection(location.bearing.degrees()))
+            lastAnimatedBearing = location.bearing.degrees()
         }
+    }
+    
+    func getMarkerImage(for location: SITLocation) -> UIImage? {
+        if location.position.isOutdoor() {
+           return  userMarkerIcons["swf_location_outdoor_pointer"]
+        } else if location.quality == .sitHigh && location.bearingQuality == .sitHigh {
+            return userMarkerIcons["swf_location_pointer"]
+        } else {
+            return userMarkerIcons["swf_location"]
+        }
+    }
+    
+    func makeUserMarkerVisible(visible: Bool) {
+        positionDrawer?.makeUserMarkerVisible(visible: visible)
     }
     
     func removeLastCustomMarkerIfOutsideRoute() {
@@ -464,15 +464,10 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
     }
     
     func updateCamera(with location: SITLocation) {
-        lastBearing = location.bearing.degrees()
         if isCameraCentered {
             let position = location.position
             let cameraUpdate = GMSCameraUpdate.setTarget(position.coordinate())
             mapView.animate(with: cameraUpdate)
-            if isBearingChangedEnoughToReloadUi(bearing: location.bearing.degrees()) {
-                mapView.animate(toBearing: CLLocationDirection(location.bearing.degrees()))
-                lastAnimatedBearing = location.bearing.degrees()
-            }
         }
     }
     
@@ -671,8 +666,9 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
     
     func updateUI(with location: SITLocation) {
         updateUserMarker(with: location)
-        presenter?.updateLevelSelector(location: location, isCameraCentered: self.isCameraCentered)
         updateCamera(with: location)
+        updateUserBearing(with: location)
+        presenter?.updateLevelSelector(location: location, isCameraCentered: self.isCameraCentered)
     }
     
     func updateInfoBarLabelsIfNotInsideRoute(mainLabel title: String, secondaryLabel subtitle: String = "") {
@@ -808,13 +804,6 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
         return marker
     }
     
-    func isBearingChangedEnoughToReloadUi(bearing: Float) -> Bool {
-        if((bearing < (self.lastAnimatedBearing - 5.0)) || (bearing > (self.lastAnimatedBearing + 5.0))) {
-            return true;
-        }
-        return false;
-    }
-    
     func isUserNavigating() -> Bool {
         return self.destinationMarker != nil
     }
@@ -862,31 +851,8 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
         
         return floorIdentifier
     }
+
     
-    func userLocationMarkerInMapView(mapView: GMSMapView) -> GMSMarker {
-        if (self.userLocationMarker == nil) {
-            let marker: GMSMarker = GMSMarker.init()
-            marker.icon = self.userMarkerIcons["swf_location_pointer"]
-            marker.groundAnchor = CGPoint(x: 0.5, y: 0.5)
-            marker.isTappable = false;
-            marker.zIndex = 2;
-            marker.isFlat = true;
-            self.userLocationMarker = marker;
-        }
-        return self.userLocationMarker!;
-    }
-    
-    func userLocationRadiusMarkerInMapView (mapView: GMSMapView) -> GMSMarker {
-        if (self.userLocationRadiusMarker == nil) {
-            let marker: GMSMarker = GMSMarker.init()
-            marker.icon = self.userMarkerIcons["swf_radius"]
-            marker.groundAnchor = CGPoint(x: 0.5, y: 0.5)
-            marker.isTappable = false;
-            marker.zIndex = 1
-            self.userLocationRadiusMarker = marker
-        }
-        return self.userLocationRadiusMarker!
-    }
     
     func generateAndPrintRoutePathWithRouteSegments(segments: Array<SITRouteSegment>, selectedFloor: SITFloor) {
         for (index, segment) in segments.enumerated() {
