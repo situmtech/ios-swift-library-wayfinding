@@ -19,9 +19,9 @@ PODS:
   - Quick (1.2.0)
   - SitumSDK (2.50.9):
     - Protobuf (~> 3.7)
-  - SitumWayfinding (0.1.12):
+  - SitumWayfinding (0.1.13):
     - GoogleMaps (~> 4.2.0)
-    - SitumSDK (~> 2.50.8)
+    - SitumSDK (~> 2.50.9)
 
 DEPENDENCIES:
   - FBSnapshotTestCase (~> 2.1.4)
@@ -52,7 +52,7 @@ SPEC CHECKSUMS:
   Protobuf: 7327d4444215b5f18e560a97f879ff5503c4581c
   Quick: 58d203b1c5e27fff7229c4c1ae445ad7069a7a08
   SitumSDK: e9772ae38e1f11e052bba0a832ede85c36a70fcf
-  SitumWayfinding: da93db3e5a720c02ab1e323e7d0ee3bca57c8645
+  SitumWayfinding: adc4436b9cf57c06fba7bc9b0bc499f862a19908
 
 PODFILE CHECKSUM: a798c7f4ae4242918fac6601ae0d0052fb198646
 
