@@ -5,5 +5,5 @@
 
 ### Changed
 * Minimun iOS Target supporte changed from ios 9 to ios 10
-* Updated situm sdk dependency to 2.50.6
+* Updated situm sdk dependency to 2.50.8
 * Updated Google Maps dependency to 4.2.0
