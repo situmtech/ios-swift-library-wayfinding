@@ -291,11 +291,11 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
     //MARK: Floorplans
     
     func displayMap(forLevel selectedLevelIndex: Int) {
-        let levelIdentifier = buildingInfo!.floors[selectedLevelIndex].identifier
+        let levelIdentifier = buildingInfo!.floors.reversed()[selectedLevelIndex].identifier
         if floorplans[levelIdentifier] != nil {
             displayFloorplan(forLevel: levelIdentifier)
         } else {
-            SITCommunicationManager.shared().fetchMap(from: buildingInfo!.floors[selectedLevelIndex], withCompletion: { imageData in
+            SITCommunicationManager.shared().fetchMap(from: buildingInfo!.floors.reversed()[selectedLevelIndex], withCompletion: { imageData in
                 
                 if let imageData = imageData {
                     let image =  UIImage.init(data: imageData, scale: UIScreen.main.scale)
@@ -358,7 +358,7 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell: UITableViewCell? = tableView.dequeueReusableCell(withIdentifier: "LevelCellIdentifier")
         
-        if let level: SITFloor = buildingInfo?.floors[indexPath.row] {
+        if let level: SITFloor = buildingInfo?.floors.reversed()[indexPath.row] {
             // [06/08/19] This check is here because older buildings without the name field give unexpected nulls casted to string
             let shouldDisplayLevelName = !(level.name.isEmpty || (level.name == "<null>"))
             let textToDisplay: String = shouldDisplayLevelName ? level.name : String(level.floor)
@@ -403,7 +403,7 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
     }
     
     func updateUserMarker(with location: SITLocation) {
-        let selectedLevel: SITFloor? = buildingInfo!.floors[selectedLevelIndex]
+        let selectedLevel: SITFloor? = buildingInfo!.floors.reversed()[selectedLevelIndex]
         if isCameraCentered || location.position.isOutdoor() || selectedLevel?.identifier == location.position.floorIdentifier {
             let userMarkerImage = getMarkerImage(for: location)
             positionDrawer?.updateUserLocation( with: location, with: userMarkerImage)
@@ -577,9 +577,9 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
     
     func mapView(_ mapView: GMSMapView, didLongPressAt coordinate: CLLocationCoordinate2D) {
         if(self.presenter?.shouldShowFakeLocSelector() ?? false) {
-            presenter?.fakeLocationPressed(coordinate: coordinate, floorId: buildingInfo!.floors[selectedLevelIndex].identifier)
+            presenter?.fakeLocationPressed(coordinate: coordinate, floorId: buildingInfo!.floors.reversed()[selectedLevelIndex].identifier)
         } else {
-            self.createAndShowCustomMarkerIfOutsideRoute(atCoordinate: coordinate, atFloor: buildingInfo!.floors[selectedLevelIndex].identifier)
+            self.createAndShowCustomMarkerIfOutsideRoute(atCoordinate: coordinate, atFloor: buildingInfo!.floors.reversed()[selectedLevelIndex].identifier)
         }
     }
     
@@ -630,7 +630,7 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
         }
         self.positioningButton.isHidden = true
         self.changeCancelNavigationButtonVisibility(isVisible: true)
-        self.presenter?.navigationButtonPressed(withDestination: destination, inFloor: self.buildingInfo!.floors[self.selectedLevelIndex].identifier)
+        self.presenter?.navigationButtonPressed(withDestination: destination, inFloor: self.buildingInfo!.floors.reversed()[self.selectedLevelIndex].identifier)
     }
     
     @IBAction
@@ -668,7 +668,7 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
         updateUserMarker(with: location)
         updateCamera(with: location)
         updateUserBearing(with: location)
-        presenter?.updateLevelSelector(location: location, isCameraCentered: self.isCameraCentered)
+        presenter?.updateLevelSelector(location: location, isCameraCentered: self.isCameraCentered, selectedLevel: self.buildingInfo!.floors.reversed()[self.selectedLevelIndex].identifier)
     }
     
     func updateInfoBarLabelsIfNotInsideRoute(mainLabel title: String, secondaryLabel subtitle: String = "") {
@@ -709,7 +709,7 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
         self.changeNavigationButtonVisibility(isVisible: false)
         let floorIdentifier: String = self.getFloorIdFromMarker(selectedMarker: self.destinationMarker!)
         self.showPois(visible: false)
-        if floorIdentifier == buildingInfo?.floors[self.selectedLevelIndex].identifier {
+        if floorIdentifier == buildingInfo?.floors.reversed()[self.selectedLevelIndex].identifier {
             self.destinationMarker?.map = self.mapView
         }
     }
@@ -725,7 +725,7 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
         }
         
         // Filter route steps for floors
-        let selectedFloor = self.buildingInfo?.floors[self.selectedLevelIndex]
+        let selectedFloor = self.buildingInfo?.floors.reversed()[self.selectedLevelIndex]
         
         self.generateAndPrintRoutePathWithRouteSegments(segments: progress.segments(), selectedFloor: selectedFloor!)
         
@@ -833,7 +833,7 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
     func getIndexPath(floorId: String) -> IndexPath? {
         var indexPath: IndexPath? = nil
         for i in 0 ..< self.buildingInfo!.floors.count {
-            if floorId == self.buildingInfo!.floors[i].identifier {
+            if floorId == self.buildingInfo!.floors.reversed()[i].identifier {
                 indexPath = IndexPath(item: i, section: 0);
                 break;
             }
@@ -894,7 +894,7 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
         for polyline in self.polyline {
             polyline.map = nil
         }
-        self.displayPois(onFloor: self.buildingInfo?.floors[self.selectedLevelIndex].identifier)
+        self.displayPois(onFloor: self.buildingInfo?.floors.reversed()[self.selectedLevelIndex].identifier)
         self.removeLastCustomMarker()
         self.destinationMarker?.map = nil
         self.destinationMarker = nil

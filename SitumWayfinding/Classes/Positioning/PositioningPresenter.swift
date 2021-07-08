@@ -348,8 +348,8 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
         SITNavigationManager.shared().update(with: userLocation!)
     }
     
-    func updateLevelSelector(location: SITLocation, isCameraCentered: Bool) {
-        if userLocation?.position.floorIdentifier != location.position.floorIdentifier {
+    func updateLevelSelector(location: SITLocation, isCameraCentered: Bool, selectedLevel: String) {
+        if userLocation?.position.floorIdentifier != selectedLevel {
             view?.reloadTableViewData()
             if isCameraCentered {
                 view?.selectFloor(floorId: location.position.floorIdentifier)
