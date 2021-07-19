@@ -338,7 +338,7 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
             return bInfo.floors.reversed()
         }
         
-        return nil
+        return []
     }
     
     func selectFloor(floorId: String) {
@@ -366,7 +366,7 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell: UITableViewCell? = tableView.dequeueReusableCell(withIdentifier: "LevelCellIdentifier")
         
-        if let level: SITFloor = buildingInfo?.floors.reversed()[indexPath.row] {
+        if let level: SITFloor = orderedFloors(buildingInfo: buildingInfo)?[indexPath.row] {
             // [06/08/19] This check is here because older buildings without the name field give unexpected nulls casted to string
             let shouldDisplayLevelName = !(level.name.isEmpty || (level.name == "<null>"))
             let textToDisplay: String = shouldDisplayLevelName ? level.name : String(level.floor)
@@ -717,7 +717,7 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
         self.changeNavigationButtonVisibility(isVisible: false)
         let floorIdentifier: String = self.getFloorIdFromMarker(selectedMarker: self.destinationMarker!)
         self.showPois(visible: false)
-        if floorIdentifier == buildingInfo?.floors.reversed()[self.selectedLevelIndex].identifier {
+        if floorIdentifier == orderedFloors(buildingInfo: buildingInfo)?[self.selectedLevelIndex].identifier {
             self.destinationMarker?.map = self.mapView
         }
     }
@@ -733,7 +733,7 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
         }
         
         // Filter route steps for floors
-        let selectedFloor = self.buildingInfo?.floors.reversed()[self.selectedLevelIndex]
+        let selectedFloor = orderedFloors(buildingInfo: buildingInfo)?[self.selectedLevelIndex]
         
         self.generateAndPrintRoutePathWithRouteSegments(segments: progress.segments(), selectedFloor: selectedFloor!)
         
@@ -902,7 +902,7 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
         for polyline in self.polyline {
             polyline.map = nil
         }
-        self.displayPois(onFloor: self.buildingInfo?.floors.reversed()[self.selectedLevelIndex].identifier)
+        self.displayPois(onFloor: orderedFloors(buildingInfo:  buildingInfo)?[self.selectedLevelIndex].identifier)
         self.removeLastCustomMarker()
         self.destinationMarker?.map = nil
         self.destinationMarker = nil
