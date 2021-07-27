@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 All non released changes should be in CHANGELOG_UNRELEASED.md file
 
 ---------
+## [0.1.14] - 2020-07-27
+
+### Fixed
+* Fixed issue when automatically changing floors on new locations
+
+### Changed
+* Update levels to order them from lower (bottom) to upper levels (top)
+* Updated situm sdk dependency to 2.51.1
+
 ## [0.1.13] - 2020-05-26
 
 ### Fixed
