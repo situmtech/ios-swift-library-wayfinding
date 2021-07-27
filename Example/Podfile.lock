@@ -1,43 +1,23 @@
 PODS:
-  - FBSnapshotTestCase (2.1.4):
-    - FBSnapshotTestCase/SwiftSupport (= 2.1.4)
-  - FBSnapshotTestCase/Core (2.1.4)
-  - FBSnapshotTestCase/SwiftSupport (2.1.4):
-    - FBSnapshotTestCase/Core
   - GoogleMaps (4.2.0):
     - GoogleMaps/Maps (= 4.2.0)
   - GoogleMaps/Base (4.2.0)
   - GoogleMaps/Maps (4.2.0):
     - GoogleMaps/Base
-  - Nimble (7.3.4)
-  - Nimble-Snapshots (6.3.0):
-    - Nimble-Snapshots/Core (= 6.3.0)
-  - Nimble-Snapshots/Core (6.3.0):
-    - FBSnapshotTestCase (~> 2.0)
-    - Nimble (~> 7.0)
   - Protobuf (3.17.0)
-  - Quick (1.2.0)
-  - SitumSDK (2.50.9):
+  - SitumSDK (2.51.1):
     - Protobuf (~> 3.7)
   - SitumWayfinding (0.1.13):
     - GoogleMaps (~> 4.2.0)
-    - SitumSDK (~> 2.50.9)
+    - SitumSDK (~> 2.51.1)
 
 DEPENDENCIES:
-  - FBSnapshotTestCase (~> 2.1.4)
-  - Nimble (~> 7.0)
-  - Nimble-Snapshots (~> 6.3.0)
-  - Quick (~> 1.2.0)
   - SitumWayfinding (from `../`)
 
 SPEC REPOS:
   trunk:
-    - FBSnapshotTestCase
     - GoogleMaps
-    - Nimble
-    - Nimble-Snapshots
     - Protobuf
-    - Quick
     - SitumSDK
 
 EXTERNAL SOURCES:
@@ -45,15 +25,11 @@ EXTERNAL SOURCES:
     :path: "../"
 
 SPEC CHECKSUMS:
-  FBSnapshotTestCase: 094f9f314decbabe373b87cc339bea235a63e07a
   GoogleMaps: eb03e327edfd70b06de1e6e321653f73712df7ad
-  Nimble: 051e3d8912d40138fa5591c78594f95fb172af37
-  Nimble-Snapshots: f5459b5b091678dc942d03ec4741cacb58ba4a52
   Protobuf: 7327d4444215b5f18e560a97f879ff5503c4581c
-  Quick: 58d203b1c5e27fff7229c4c1ae445ad7069a7a08
-  SitumSDK: e9772ae38e1f11e052bba0a832ede85c36a70fcf
-  SitumWayfinding: adc4436b9cf57c06fba7bc9b0bc499f862a19908
+  SitumSDK: 2564df9a427da437309c3b21e0dbe5383533b69d
+  SitumWayfinding: 6add26ff6b483909d0caf9d59758ddf41ddcf8f8
 
-PODFILE CHECKSUM: a798c7f4ae4242918fac6601ae0d0052fb198646
+PODFILE CHECKSUM: 181eb894514efe3e0119ec84dae5349934aaaa20
 
 COCOAPODS: 1.10.1
