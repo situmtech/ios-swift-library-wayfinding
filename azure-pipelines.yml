@@ -56,7 +56,7 @@ steps:
 - script: |
     pod repo update 
     pushd Example/ 
-    pod install
+    pod install --repo-update
     popd
   displayName: Install dependencies
 
