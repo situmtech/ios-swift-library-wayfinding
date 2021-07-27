@@ -1,5 +1,5 @@
 // https://github.com/Quick/Quick
-
+/*
 import Quick
 import Nimble
 import SitumWayfinding
@@ -48,3 +48,4 @@ class TableOfContentsSpec: QuickSpec {
         }
     }
 }
+*/
