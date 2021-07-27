@@ -5,11 +5,11 @@ PODS:
   - GoogleMaps/Maps (4.2.0):
     - GoogleMaps/Base
   - Protobuf (3.17.0)
-  - SitumSDK (2.51.0):
+  - SitumSDK (2.51.1):
     - Protobuf (~> 3.7)
   - SitumWayfinding (0.1.13):
     - GoogleMaps (~> 4.2.0)
-    - SitumSDK (~> 2.51.0)
+    - SitumSDK (~> 2.51.1)
 
 DEPENDENCIES:
   - SitumWayfinding (from `../`)
@@ -27,8 +27,8 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   GoogleMaps: eb03e327edfd70b06de1e6e321653f73712df7ad
   Protobuf: 7327d4444215b5f18e560a97f879ff5503c4581c
-  SitumSDK: 88cfd1252d12707b14b90eb8fc2319fe1f32699f
-  SitumWayfinding: 2221a949b8685d524f7a69bf8f92ade19e0bd418
+  SitumSDK: 2564df9a427da437309c3b21e0dbe5383533b69d
+  SitumWayfinding: 6add26ff6b483909d0caf9d59758ddf41ddcf8f8
 
 PODFILE CHECKSUM: 181eb894514efe3e0119ec84dae5349934aaaa20
 
