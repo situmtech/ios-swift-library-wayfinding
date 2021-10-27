@@ -78,7 +78,13 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
     var organizationTheme: SITOrganizationTheme?
     @IBOutlet weak var logoIV: UIImageView!
     
-    
+    //Search
+    @IBOutlet weak var searchBar: UISearchBar!
+    var resultsVC : SearchResultsTableViewController?
+    var searchController:UISearchController?
+    let pois = ["Restaurante","Bar","Karting", "Baños"]
+
+
     // Constants
     let DEFAULT_POI_NAME: String = "POI"
     let DEFAULT_BUILDING_NAME: String = "Current Building"
@@ -86,6 +92,19 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        //Seach View Controller
+        let storyboard = UIStoryboard(name: "SitumWayfinding", bundle: nil)
+        resultsVC = storyboard.instantiateViewController(withIdentifier: "searchResultsVC") as? SearchResultsTableViewController
+        searchController = UISearchController(searchResultsController: resultsVC)
+        searchController?.searchResultsUpdater = self
+        searchController?.obscuresBackgroundDuringPresentation = false
+        searchController?.searchBar.placeholder = "Search Pois"
+        searchController?.hidesNavigationBarDuringPresentation = false
+        navbar.topItem?.titleView =  searchController!.searchBar
+        //searchBar = searchController?.searchBar
+        //self.view.addSubview(searchController!.searchBar)
+        definesPresentationContext = true
+
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -208,7 +227,7 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
     }
     
     func initializeNavigationBar() {
-        navbar.topItem?.title = buildingInfo!.building.name
+        //navbar.topItem?.title = buildingInfo!.building.name
     }
     
     func initializeIcons() {
@@ -954,5 +973,28 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
         )
     }
 
+}
+
+extension PositioningViewController: UISearchResultsUpdating {
+    
+    // MARK: - Search methods
+    
+    func filterContentForSearchText(_ searchText: String) {
+        
+        var filteredPois = searchText=="" ? pois : pois.filter { (poi: String) -> Bool in
+            return poi.lowercased().contains(searchText.lowercased())
+        }
+        filteredPois.sort()
+        resultsVC?.filteredPois = filteredPois
+        resultsVC?.updateSearchResults(for: searchController!)
+    }
+    
+    // MARK: - UISearchResultsUpdating delegate methods
+    
+    func updateSearchResults(for searchController: UISearchController) {
+        let searchBar = searchController.searchBar
+        
+        filterContentForSearchText(searchBar.text!)
+    }
 }
 
