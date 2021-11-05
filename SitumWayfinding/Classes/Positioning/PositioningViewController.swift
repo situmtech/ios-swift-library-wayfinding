@@ -863,6 +863,11 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
     
     
     func generateAndPrintRoutePathWithRouteSegments(segments: Array<SITRouteSegment>, selectedFloor: SITFloor) {
+        let styles: [GMSStrokeStyle] = [.solidColor(UIColor(red: 0.25, green: 0.53, blue: 0.83, alpha: 1.00)), .solidColor(.clear)]
+        let scale = 1.0 / mapView.projection.points(forMeters: 1, at: mapView.camera.target)
+        let solidLine = NSNumber(value: 5.0 * Float(scale))
+        let gap = NSNumber(value: 5.0 * Float(scale))
+
         for (index, segment) in segments.enumerated() {
             if segment.floorIdentifier == selectedFloor.identifier {
                 let path: GMSMutablePath = GMSMutablePath()
@@ -876,13 +881,16 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
                 }
                 self.routePath.append(path)
                 let polyline: GMSPolyline = GMSPolyline(path: path)
-                polyline.strokeWidth = 3
+                polyline.strokeWidth = 6
+                polyline.geodesic = true
+                polyline.spans = GMSStyleSpans(polyline.path!, styles, [solidLine, gap], GMSLengthKind.rhumb)
                 self.polyline.append(polyline)
                 polyline.map = self.mapView
             }
         }
     }
-    
+
+
     //MARK: Stop methods
     func stop() {
         self.makeUserMarkerVisible(visible: false)
