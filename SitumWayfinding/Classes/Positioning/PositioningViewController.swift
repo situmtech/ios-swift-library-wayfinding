@@ -883,6 +883,11 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
                 let polyline: GMSPolyline = GMSPolyline(path: path)
                 polyline.strokeWidth = 6
                 polyline.geodesic = true
+                /*
+                    To make the effect of the dotted line we pass as parameters 2 colours (blue and transparent - styles),
+                    the size that the blue and transparent dots must have - solidLine and gap - and the type of logitude value, in this
+                    case rhumb (rumbo).
+                 */
                 polyline.spans = GMSStyleSpans(polyline.path!, styles, [solidLine, gap], GMSLengthKind.rhumb)
                 self.polyline.append(polyline)
                 polyline.map = self.mapView
