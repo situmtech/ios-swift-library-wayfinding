@@ -2,3 +2,6 @@
 
 ### Fixed
 * Change in the design of the route marking line
+
+### Changed
+* Updated situm sdk dependency to 2.51.4
