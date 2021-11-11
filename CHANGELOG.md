@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 All non released changes should be in CHANGELOG_UNRELEASED.md file
 
 ---------
+## [0.1.15] - 2021-11-11
+
+### Fixed
+* Change in the design of the route marking line
+
+### Changed
+* Updated situm sdk dependency to 2.51.4
+
 ## [0.1.14] - 2020-07-27
 
 ### Fixed
