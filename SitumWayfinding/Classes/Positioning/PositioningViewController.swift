@@ -214,7 +214,11 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
     func initializeIcons() {
         poiCategoryIcons = Dictionary()
         let bundle = Bundle(for: type(of: self))
-        if let locationPointer = UIImage(named: "swf_location_pointer", in: bundle, compatibleWith: nil), let locationOutdoorPointer = UIImage(named: "swf_location_outdoor_pointer", in: bundle, compatibleWith: nil), let location = UIImage(named: "swf_location", in: bundle, compatibleWith: nil), let radius = UIImage(named: "swf_radius", in: bundle, compatibleWith: nil) {
+        if var locationPointer = library?.settings?.useDashboardTheme ?? false && library?.settings?.userPositionArrowIcon != nil && library?.settings?.userPositionArrowIcon?.count ?? 0 > 0 ? UIImage(named: library!.settings!.userPositionArrowIcon!, in: bundle, compatibleWith: nil) : UIImage(named: "swf_location_pointer", in: bundle, compatibleWith: nil),
+           let locationOutdoorPointer = UIImage(named: "swf_location_outdoor_pointer", in: bundle, compatibleWith: nil),
+           var location = library?.settings?.useDashboardTheme ?? false && library?.settings?.userPositionIcon != nil && library?.settings?.userPositionIcon?.count ?? 0 > 0 ? UIImage(named: library!.settings!.userPositionIcon!, in: bundle, compatibleWith: nil) : UIImage(named: "swf_location", in: bundle, compatibleWith: nil),
+           var radius = UIImage(named: "swf_radius", in: bundle, compatibleWith: nil) {
+
             userMarkerIcons = [
                 "swf_location_pointer" : locationPointer,
                 "swf_location_outdoor_pointer" : locationOutdoorPointer,
@@ -277,8 +281,6 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
             }
             
         }
-        
-        
     }
     
     func initializeCancelNavigationButton() {
@@ -414,7 +416,7 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
         let selectedLevel: SITFloor? = orderedFloors(buildingInfo: buildingInfo)![selectedLevelIndex]
         if isCameraCentered || location.position.isOutdoor() || selectedLevel?.identifier == location.position.floorIdentifier {
             let userMarkerImage = getMarkerImage(for: location)
-            positionDrawer?.updateUserLocation( with: location, with: userMarkerImage)
+            positionDrawer?.updateUserLocation( with: location, with: userMarkerImage, with: primaryColor(defaultColor: UIColor(red: 0.25, green: 0.53, blue: 0.83, alpha: 0.50)))
             self.makeUserMarkerVisible(visible: true) 
         } else {
             makeUserMarkerVisible(visible: false)
@@ -860,10 +862,9 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
         return floorIdentifier
     }
 
-    
-    
+
     func generateAndPrintRoutePathWithRouteSegments(segments: Array<SITRouteSegment>, selectedFloor: SITFloor) {
-        let styles: [GMSStrokeStyle] = [.solidColor(UIColor(red: 0.25, green: 0.53, blue: 0.83, alpha: 1.00)), .solidColor(.clear)]
+        let styles: [GMSStrokeStyle] = [.solidColor(primaryColor(defaultColor: UIColor(red: 0.25, green: 0.53, blue: 0.83, alpha: 1.00))), .solidColor(.clear)]
         let scale = 1.0 / mapView.projection.points(forMeters: 1, at: mapView.camera.target)
         let solidLine = NSNumber(value: 5.0 * Float(scale))
         let gap = NSNumber(value: 5.0 * Float(scale))
@@ -943,7 +944,22 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
         }
         return color
     }
-    
+
+    func secondaryColor(defaultColor: UIColor) -> UIColor {
+        var color = defaultColor
+
+        // Override color based on customization
+        if let settings = library?.settings {
+            if settings.useDashboardTheme == true {
+                if let organizationTheme = organizationTheme { // Check if string is a valid string
+
+                    color = self.hexStringToUIColor(hex: organizationTheme.themeColors.secondary)
+                }
+            }
+        }
+        return color
+    }
+
     // Extension hex color to rgb
     func hexStringToUIColor (hex:String) -> UIColor {
         var cString:String = hex.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
