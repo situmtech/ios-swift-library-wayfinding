@@ -248,8 +248,8 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
         levelsTableView.dataSource = self
         levelsTableView.delegate = self
         initializeLevelSelector()
-        
-        let indexPath = IndexPath(row: 0, section: 0)
+
+        let indexPath = IndexPath(row: buildingInfo != nil && buildingInfo?.floors != nil && buildingInfo!.floors.count > 1 ? buildingInfo!.floors.count - 1 : 0, section: 0)
         levelsTableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
         tableView(levelsTableView, didSelectRowAt: indexPath)
         levelsTableView.isHidden = false
