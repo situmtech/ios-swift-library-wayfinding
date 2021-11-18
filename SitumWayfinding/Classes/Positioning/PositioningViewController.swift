@@ -214,9 +214,14 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
     func initializeIcons() {
         poiCategoryIcons = Dictionary()
         let bundle = Bundle(for: type(of: self))
-        if var locationPointer = library?.settings?.useDashboardTheme ?? false && library?.settings?.userPositionArrowIcon != nil && library?.settings?.userPositionArrowIcon?.count ?? 0 > 0 ? UIImage(named: library!.settings!.userPositionArrowIcon!, in: bundle, compatibleWith: nil) : UIImage(named: "swf_location_pointer", in: bundle, compatibleWith: nil),
+        var userLocIconName = library?.settings?.useDashboardTheme ?? false && library!.settings?.userPositionIcon?.count ?? 0 > 0 ?  (library!.settings!.userPositionIcon! as NSString).deletingPathExtension : "swf_location"
+        userLocIconName = (userLocIconName as NSString).lastPathComponent
+        var userLocArrowIconName = library?.settings?.useDashboardTheme ?? false && library!.settings?.userPositionArrowIcon?.count ?? 0 > 0 ?  (library!.settings!.userPositionArrowIcon! as NSString).deletingPathExtension : "swf_location_pointer"
+        userLocArrowIconName = (userLocArrowIconName as NSString).lastPathComponent
+
+        if var locationPointer = UIImage(named: userLocArrowIconName, in: bundle, compatibleWith: nil),
            let locationOutdoorPointer = UIImage(named: "swf_location_outdoor_pointer", in: bundle, compatibleWith: nil),
-           var location = library?.settings?.useDashboardTheme ?? false && library?.settings?.userPositionIcon != nil && library?.settings?.userPositionIcon?.count ?? 0 > 0 ? UIImage(named: library!.settings!.userPositionIcon!, in: bundle, compatibleWith: nil) : UIImage(named: "swf_location", in: bundle, compatibleWith: nil),
+           var location = UIImage(named: userLocIconName, in: bundle, compatibleWith: nil),
            var radius = UIImage(named: "swf_radius", in: bundle, compatibleWith: nil) {
 
             userMarkerIcons = [
