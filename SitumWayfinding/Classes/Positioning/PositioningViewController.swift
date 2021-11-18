@@ -950,21 +950,6 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
         return color
     }
 
-    func secondaryColor(defaultColor: UIColor) -> UIColor {
-        var color = defaultColor
-
-        // Override color based on customization
-        if let settings = library?.settings {
-            if settings.useDashboardTheme == true {
-                if let organizationTheme = organizationTheme { // Check if string is a valid string
-
-                    color = self.hexStringToUIColor(hex: organizationTheme.themeColors.secondary)
-                }
-            }
-        }
-        return color
-    }
-
     // Extension hex color to rgb
     func hexStringToUIColor (hex:String) -> UIColor {
         var cString:String = hex.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
