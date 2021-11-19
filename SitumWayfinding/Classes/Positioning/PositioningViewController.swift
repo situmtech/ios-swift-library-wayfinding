@@ -214,8 +214,8 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
     func initializeIcons() {
         poiCategoryIcons = Dictionary()
         let bundle = Bundle(for: type(of: self))
-        var userLocIconName = getIconNameOrDefault(isLocationArrow: false)
-        var userLocArrowIconName = getIconNameOrDefault(isLocationArrow: true)
+        var userLocIconName = getIconNameOrDefault(iconName: library?.settings?.userPositionIcon, defaultIconName: "swf_location")
+        var userLocArrowIconName = getIconNameOrDefault(iconName: library?.settings?.userPositionArrowIcon, defaultIconName: "swf_location_pointer")
 
         if var locationPointer = UIImage(named: userLocArrowIconName, in: bundle, compatibleWith: nil),
            let locationOutdoorPointer = UIImage(named: "swf_location_outdoor_pointer", in: bundle, compatibleWith: nil),
@@ -231,20 +231,8 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
         }
     }
 
-    private func getIconNameOrDefault(isLocationArrow: Bool) -> String {
-        var iconName = isLocationArrow ? "swf_location_pointer" : "swf_location"
-
-        if (library?.settings?.useDashboardTheme ?? false) {
-            if (isLocationArrow && !(library!.settings!.userPositionArrowIcon ?? "").isEmpty) {
-                iconName = library!.settings!.userPositionArrowIcon!
-            }
-
-            if (!isLocationArrow && !(library!.settings!.userPositionIcon ?? "").isEmpty) {
-                iconName = library!.settings!.userPositionIcon!
-            }
-        }
-
-        return iconName
+    private func getIconNameOrDefault(iconName: String?, defaultIconName: String) -> String {
+        (iconName ?? "").isEmpty ? defaultIconName : iconName!
     }
     
     func initializePositioningButton() {
