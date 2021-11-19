@@ -214,10 +214,8 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
     func initializeIcons() {
         poiCategoryIcons = Dictionary()
         let bundle = Bundle(for: type(of: self))
-        var userLocIconName = library?.settings?.useDashboardTheme ?? false && library!.settings?.userPositionIcon?.count ?? 0 > 0 ?  (library!.settings!.userPositionIcon! as NSString).deletingPathExtension : "swf_location"
-        userLocIconName = (userLocIconName as NSString).lastPathComponent
-        var userLocArrowIconName = library?.settings?.useDashboardTheme ?? false && library!.settings?.userPositionArrowIcon?.count ?? 0 > 0 ?  (library!.settings!.userPositionArrowIcon! as NSString).deletingPathExtension : "swf_location_pointer"
-        userLocArrowIconName = (userLocArrowIconName as NSString).lastPathComponent
+        var userLocIconName = getIconNameOrDefault(isLocationArrow: false)
+        var userLocArrowIconName = getIconNameOrDefault(isLocationArrow: true)
 
         if var locationPointer = UIImage(named: userLocArrowIconName, in: bundle, compatibleWith: nil),
            let locationOutdoorPointer = UIImage(named: "swf_location_outdoor_pointer", in: bundle, compatibleWith: nil),
@@ -231,6 +229,22 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
                 "swf_radius" : radius
             ]
         }
+    }
+
+    private func getIconNameOrDefault(isLocationArrow: Bool) -> String {
+        var iconName = isLocationArrow ? "swf_location_pointer" : "swf_location"
+
+        if (library?.settings?.useDashboardTheme ?? false) {
+            if (isLocationArrow && !(library!.settings!.userPositionArrowIcon ?? "").isEmpty) {
+                iconName = library!.settings!.userPositionArrowIcon!
+            }
+
+            if (!isLocationArrow && !(library!.settings!.userPositionIcon ?? "").isEmpty) {
+                iconName = library!.settings!.userPositionIcon!
+            }
+        }
+
+        return iconName
     }
     
     func initializePositioningButton() {
@@ -254,10 +268,20 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
         levelsTableView.delegate = self
         initializeLevelSelector()
 
-        let indexPath = IndexPath(row: buildingInfo != nil && buildingInfo?.floors != nil && buildingInfo!.floors.count > 1 ? buildingInfo!.floors.count - 1 : 0, section: 0)
+        let indexPath = getDefaultFloorFirstLoad()
         levelsTableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
         tableView(levelsTableView, didSelectRowAt: indexPath)
         levelsTableView.isHidden = false
+    }
+
+    private func getDefaultFloorFirstLoad() -> IndexPath {
+        var indexPath = IndexPath(row: 0, section: 0)
+
+        if (buildingInfo?.floors.count ?? 0 > 1) {
+            indexPath.row = buildingInfo!.floors.count - 1
+        }
+
+        return indexPath
     }
     
     func initializeNavigationButton() {
