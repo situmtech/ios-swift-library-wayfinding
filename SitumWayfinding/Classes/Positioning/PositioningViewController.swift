@@ -433,7 +433,7 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
         let selectedLevel: SITFloor? = orderedFloors(buildingInfo: buildingInfo)![selectedLevelIndex]
         if isCameraCentered || location.position.isOutdoor() || selectedLevel?.identifier == location.position.floorIdentifier {
             let userMarkerImage = getMarkerImage(for: location)
-            positionDrawer?.updateUserLocation( with: location, with: userMarkerImage, with: primaryColor(defaultColor: UIColor(red: 0.25, green: 0.53, blue: 0.83, alpha: 0.50)))
+            positionDrawer?.updateUserLocation( with: location, with: userMarkerImage, with: primaryColor(defaultColor: hexStringToUIColor(hex: "#283380")).withAlphaComponent(0.5))
             self.makeUserMarkerVisible(visible: true) 
         } else {
             makeUserMarkerVisible(visible: false)
@@ -881,7 +881,7 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
 
 
     func generateAndPrintRoutePathWithRouteSegments(segments: Array<SITRouteSegment>, selectedFloor: SITFloor) {
-        let styles: [GMSStrokeStyle] = [.solidColor(primaryColor(defaultColor: UIColor(red: 0.25, green: 0.53, blue: 0.83, alpha: 1.00))), .solidColor(.clear)]
+        let styles: [GMSStrokeStyle] = [.solidColor(primaryColor(defaultColor: hexStringToUIColor(hex: "#283380"))), .solidColor(.clear)]
         let scale = 1.0 / mapView.projection.points(forMeters: 1, at: mapView.camera.target)
         let solidLine = NSNumber(value: 5.0 * Float(scale))
         let gap = NSNumber(value: 5.0 * Float(scale))
@@ -954,8 +954,7 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
         if let settings = library?.settings {
             if settings.useDashboardTheme == true {
                 if let organizationTheme = organizationTheme { // Check if string is a valid string
-                    
-                    color = self.hexStringToUIColor(hex: organizationTheme.themeColors.primary)
+                    color = organizationTheme.themeColors.primary.isEmpty ? defaultColor : self.hexStringToUIColor(hex: organizationTheme.themeColors.primary)
                 }
             }
         }

@@ -62,7 +62,7 @@ class GoogleMapsPositionDrawer:PositionDrawerProtocol {
         if (userLocationRadiusCircle == nil){
             userLocationRadiusCircle = GMSCircle(position: location.position.coordinate(), radius: CLLocationDistance(location.accuracy))
             //TODO: color radius accurace
-            let color = radiusCircleColor != nil ? radiusCircleColor?.withAlphaComponent(0.5) : UIColor(red: 0.71, green: 0.83, blue: 0.94, alpha: 0.50)
+            let color = radiusCircleColor
             
             userLocationRadiusCircle?.strokeColor = color
             userLocationRadiusCircle?.fillColor = color

@@ -20,7 +20,7 @@ import GoogleMaps
     /// String containing the identifier of the building to load
     private(set) var buildingId: String? = ""
     /// Boolean that indicates if the module should customize its appeareance based on user theme
-    private(set) var useDashboardTheme: Bool = true
+    @objc var useDashboardTheme: Bool = true
     /// Google map view if set by outside world
     private(set) var googleMap: GMSMapView?
     /// Icon map position
