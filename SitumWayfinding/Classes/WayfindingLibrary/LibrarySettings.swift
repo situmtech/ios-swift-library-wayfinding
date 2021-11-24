@@ -20,13 +20,13 @@ import GoogleMaps
     /// String containing the identifier of the building to load
     private(set) var buildingId: String? = ""
     /// Boolean that indicates if the module should customize its appeareance based on user theme
-    @objc var useDashboardTheme: Bool = true
+    private(set) var useDashboardTheme: Bool = true
     /// Google map view if set by outside world
     private(set) var googleMap: GMSMapView?
     /// Icon map position
-    @objc var userPositionIcon: String? = ""
+    private(set) var userPositionIcon: String? = ""
     /// Icon for arrow position
-    @objc var userPositionArrowIcon: String? = ""
+    private(set) var userPositionArrowIcon: String? = ""
 
     // private(set) var orgDetails: OrganizationTheme?
     private override init() {
