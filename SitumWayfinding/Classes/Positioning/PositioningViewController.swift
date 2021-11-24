@@ -258,7 +258,7 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
         initializeLevelSelector()
 
         let indexPath = getDefaultFloorFirstLoad()
-        levelsTableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
+        levelsTableView.selectRow(at: indexPath, animated: true, scrollPosition: .bottom)
         tableView(levelsTableView, didSelectRowAt: indexPath)
         levelsTableView.isHidden = false
     }
@@ -364,6 +364,7 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
     func selectFloor(floorId: String) {
         if let indexPath = getIndexPath(floorId: floorId) {
             tableView(levelsTableView, didSelectRowAt: indexPath)
+
         }
         isCameraCentered = true
         hideCenterButton()
@@ -434,7 +435,7 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
         let selectedLevel: SITFloor? = orderedFloors(buildingInfo: buildingInfo)![selectedLevelIndex]
         if isCameraCentered || location.position.isOutdoor() || selectedLevel?.identifier == location.position.floorIdentifier {
             let userMarkerImage = getMarkerImage(for: location)
-            positionDrawer?.updateUserLocation( with: location, with: userMarkerImage, with: primaryColor(defaultColor: hexStringToUIColor(hex: DEFAULT_SITUM_COLOR)).withAlphaComponent(0.5))
+            positionDrawer?.updateUserLocation( with: location, with: userMarkerImage, with: primaryColor(defaultColor: hexStringToUIColor(hex: DEFAULT_SITUM_COLOR)).withAlphaComponent(0.4))
             self.makeUserMarkerVisible(visible: true) 
         } else {
             makeUserMarkerVisible(visible: false)
@@ -638,6 +639,7 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
             self.showCenterButton()
             self.updateUI(with: self.presenter!.userLocation!)
         }
+        tableView.scrollToRow(at: indexPath, at: .middle, animated: true)
     }
 
     //MARK: IBActions
