@@ -1,7 +1,7 @@
-## [0.1.16] - 2021-11-18
+## [0.1.16] - 2021-11-30
 
 ### Fixed
-* The highest floor of the building was, wrongfully, the default floor. Now is the lowest again
+* Previously when a building was first shown in the app, the default floor that appeared in the screen was the highest floor. Now this was changed to be the lowest floor
 
 ### Added
 * Added methods in LibrarySettings and SitumMapView to set the user marker from a local asset.
