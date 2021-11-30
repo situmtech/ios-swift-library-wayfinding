@@ -15,6 +15,7 @@ All non released changes should be in CHANGELOG_UNRELEASED.md file
 ### Added
 * Added methods in LibrarySettings and SitumMapView to set the user marker from a local asset.
 * Now the user position error range circle gets its color from the dashboard when the option useDashboardTheme is set to true. The same applies to the navigation path color.
+
 ## [0.1.15] - 2021-11-11
 
 ### Fixed
