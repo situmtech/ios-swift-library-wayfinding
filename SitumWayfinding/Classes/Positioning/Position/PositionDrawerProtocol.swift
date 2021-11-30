@@ -9,7 +9,7 @@ import Foundation
 
 protocol PositionDrawerProtocol{
     
-    func updateUserLocation(with location: SITLocation, with userMarkerImage: UIImage?)
+    func updateUserLocation(with location: SITLocation, with userMarkerImage: UIImage?, with radiusCircleColor: UIColor?)
     func updateUserBearing(with location: SITLocation)
     func makeUserMarkerVisible(visible: Bool)
     

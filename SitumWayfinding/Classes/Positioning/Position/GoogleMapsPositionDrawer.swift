@@ -23,9 +23,9 @@ class GoogleMapsPositionDrawer:PositionDrawerProtocol {
     }
     
     
-    func updateUserLocation(with location: SITLocation, with userMarkerImage: UIImage?){
+    func updateUserLocation(with location: SITLocation, with userMarkerImage: UIImage?, with radiusCircleColor: UIColor?){
         configureUserLocationMarkerInMapView(location:location, userMarkerImage: userMarkerImage, mapView: mapView)
-        configureUserLocationRadiusCircleInMapView(location: location, mapView: mapView)
+        configureUserLocationRadiusCircleInMapView(location: location, mapView: mapView, radiusCircleColor: radiusCircleColor)
         animateUserLocationChangesInMapView(to: location)
     }
     
@@ -54,13 +54,15 @@ class GoogleMapsPositionDrawer:PositionDrawerProtocol {
             userLocationMarker = marker;
         }
         userLocationMarker?.icon = userMarkerImage
+        userLocationMarker?.iconView?.tintColor = UIColor.red
     }
     
-    private func configureUserLocationRadiusCircleInMapView (location: SITLocation, mapView: GMSMapView) {
+    private func configureUserLocationRadiusCircleInMapView (location: SITLocation, mapView: GMSMapView, radiusCircleColor: UIColor?) {
 
         if (userLocationRadiusCircle == nil){
             userLocationRadiusCircle = GMSCircle(position: location.position.coordinate(), radius: CLLocationDistance(location.accuracy))
-            let color = UIColor(red: 0.71, green: 0.83, blue: 0.94, alpha: 0.50)
+            //TODO: color radius accurace
+            let color = radiusCircleColor
             
             userLocationRadiusCircle?.strokeColor = color
             userLocationRadiusCircle?.fillColor = color
