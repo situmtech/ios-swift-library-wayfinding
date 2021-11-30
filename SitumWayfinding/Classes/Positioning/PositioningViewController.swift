@@ -80,6 +80,7 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
     
     
     // Constants
+    let DEFAULT_SITUM_COLOR = "#283380"
     let DEFAULT_POI_NAME: String = "POI"
     let DEFAULT_BUILDING_NAME: String = "Current Building"
     let fakeLocationsOptions = ["0º", "90º", "180º", "270º", "Create marker"]
@@ -214,7 +215,14 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
     func initializeIcons() {
         poiCategoryIcons = Dictionary()
         let bundle = Bundle(for: type(of: self))
-        if let locationPointer = UIImage(named: "swf_location_pointer", in: bundle, compatibleWith: nil), let locationOutdoorPointer = UIImage(named: "swf_location_outdoor_pointer", in: bundle, compatibleWith: nil), let location = UIImage(named: "swf_location", in: bundle, compatibleWith: nil), let radius = UIImage(named: "swf_radius", in: bundle, compatibleWith: nil) {
+        var userLocIconName = getIconNameOrDefault(iconName: library?.settings?.userPositionIcon, defaultIconName: "swf_location")
+        var userLocArrowIconName = getIconNameOrDefault(iconName: library?.settings?.userPositionArrowIcon, defaultIconName: "swf_location_pointer")
+
+        if var locationPointer = UIImage(named: userLocArrowIconName, in: bundle, compatibleWith: nil),
+           let locationOutdoorPointer = UIImage(named: "swf_location_outdoor_pointer", in: bundle, compatibleWith: nil),
+           var location = UIImage(named: userLocIconName, in: bundle, compatibleWith: nil),
+           var radius = UIImage(named: "swf_radius", in: bundle, compatibleWith: nil) {
+
             userMarkerIcons = [
                 "swf_location_pointer" : locationPointer,
                 "swf_location_outdoor_pointer" : locationOutdoorPointer,
@@ -222,6 +230,10 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
                 "swf_radius" : radius
             ]
         }
+    }
+
+    private func getIconNameOrDefault(iconName: String?, defaultIconName: String) -> String {
+        (iconName ?? "").isEmpty ? defaultIconName : iconName!
     }
     
     func initializePositioningButton() {
@@ -244,11 +256,21 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
         levelsTableView.dataSource = self
         levelsTableView.delegate = self
         initializeLevelSelector()
-        
-        let indexPath = IndexPath(row: 0, section: 0)
-        levelsTableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
+
+        let indexPath = getDefaultFloorFirstLoad()
+        levelsTableView.selectRow(at: indexPath, animated: true, scrollPosition: .bottom)
         tableView(levelsTableView, didSelectRowAt: indexPath)
         levelsTableView.isHidden = false
+    }
+
+    private func getDefaultFloorFirstLoad() -> IndexPath {
+        var indexPath = IndexPath(row: 0, section: 0)
+
+        if (buildingInfo?.floors.count ?? 0 > 1) {
+            indexPath.row = buildingInfo!.floors.count - 1
+        }
+
+        return indexPath
     }
     
     func initializeNavigationButton() {
@@ -277,8 +299,6 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
             }
             
         }
-        
-        
     }
     
     func initializeCancelNavigationButton() {
@@ -344,6 +364,7 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
     func selectFloor(floorId: String) {
         if let indexPath = getIndexPath(floorId: floorId) {
             tableView(levelsTableView, didSelectRowAt: indexPath)
+
         }
         isCameraCentered = true
         hideCenterButton()
@@ -414,7 +435,8 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
         let selectedLevel: SITFloor? = orderedFloors(buildingInfo: buildingInfo)![selectedLevelIndex]
         if isCameraCentered || location.position.isOutdoor() || selectedLevel?.identifier == location.position.floorIdentifier {
             let userMarkerImage = getMarkerImage(for: location)
-            positionDrawer?.updateUserLocation( with: location, with: userMarkerImage)
+            let color = UIColor(red: 0x00 / 255.0, green: 0x75 / 255.0, blue: 0xc9 / 255.0, alpha: 1)
+            positionDrawer?.updateUserLocation( with: location, with: userMarkerImage, with: primaryColor(defaultColor: color).withAlphaComponent(0.4))
             self.makeUserMarkerVisible(visible: true) 
         } else {
             makeUserMarkerVisible(visible: false)
@@ -618,6 +640,7 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
             self.showCenterButton()
             self.updateUI(with: self.presenter!.userLocation!)
         }
+        tableView.scrollToRow(at: indexPath, at: .middle, animated: true)
     }
 
     //MARK: IBActions
@@ -860,10 +883,11 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
         return floorIdentifier
     }
 
-    
-    
+
     func generateAndPrintRoutePathWithRouteSegments(segments: Array<SITRouteSegment>, selectedFloor: SITFloor) {
-        let styles: [GMSStrokeStyle] = [.solidColor(UIColor(red: 0.25, green: 0.53, blue: 0.83, alpha: 1.00)), .solidColor(.clear)]
+        let color = UIColor(red: 0x00 / 255.0, green: 0x75 / 255.0, blue: 0xc9 / 255.0, alpha: 1)
+        let styles: [GMSStrokeStyle] = [.solidColor(
+                primaryColor(defaultColor: color)), .solidColor(.clear)]
         let scale = 1.0 / mapView.projection.points(forMeters: 1, at: mapView.camera.target)
         let solidLine = NSNumber(value: 5.0 * Float(scale))
         let gap = NSNumber(value: 5.0 * Float(scale))
@@ -936,14 +960,13 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
         if let settings = library?.settings {
             if settings.useDashboardTheme == true {
                 if let organizationTheme = organizationTheme { // Check if string is a valid string
-                    
-                    color = self.hexStringToUIColor(hex: organizationTheme.themeColors.primary)
+                    color = organizationTheme.themeColors.primary.isEmpty ? defaultColor : self.hexStringToUIColor(hex: organizationTheme.themeColors.primary)
                 }
             }
         }
         return color
     }
-    
+
     // Extension hex color to rgb
     func hexStringToUIColor (hex:String) -> UIColor {
         var cString:String = hex.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
