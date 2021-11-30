@@ -806,7 +806,6 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
                 if error != nil {
                     Logger.logErrorMessage("error retrieving icon data")
                 } else {
-                    
                     DispatchQueue.main.async(execute: {
                         var iconImg: UIImage? = nil
                         if let iconData = iconData {
@@ -997,10 +996,10 @@ extension PositioningViewController: UISearchResultsUpdating, UISearchController
     
     func filterContentForSearchText(_ searchText: String) {
         
-        var filteredPois = searchText=="" ? pois : pois.filter { (poi: String) -> Bool in
-            return poi.lowercased().contains(searchText.lowercased())
+        var filteredPois = searchText.isEmpty ? self.buildingInfo?.indoorPois ?? [] : (self.buildingInfo?.indoorPois ?? []).filter { (poi: SearcheableItem) -> Bool in
+            return poi.name.lowercased().contains(searchText.lowercased())
         }
-        filteredPois.sort()
+        //filteredPois.sort()
         searchResultsController?.filteredPois = filteredPois
         searchResultsController?.updateSearchResults(for: searchController!)
     }

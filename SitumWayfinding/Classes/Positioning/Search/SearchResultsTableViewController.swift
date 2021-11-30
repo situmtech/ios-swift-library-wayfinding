@@ -7,10 +7,26 @@
 
 import Foundation
 
+protocol SearcheableItem {
+    var id: String { get }
+    var name: String { get }
+    var floorlevel: Int { get }
+}
+
+extension SITPOI: SearcheableItem {
+    var id: String {
+        return self.identifier
+    }
+
+    var floorlevel: Int {
+        return 0
+    }
+}
+
 class SearchResultsTableViewController: UITableViewController, UISearchResultsUpdating {
     
     public var searchController : UISearchController?
-    var filteredPois: [String] = []
+    var filteredPois: [SearcheableItem] = []
     private var myTableView: UITableView!
     
     var isSearchBarEmpty: Bool {
@@ -34,16 +50,36 @@ class SearchResultsTableViewController: UITableViewController, UISearchResultsUp
                    cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "SearchCell", for: indexPath) as! SearchTableViewCell
         
-        let name = filteredPois[indexPath.row]
-        cell.name = name
-        cell.distance = "200 m"
-        cell.floor = "1st Floor"
-        cell.icon = UIImage(named: "swf_info")
+        let searchableItem = filteredPois[indexPath.row]
+        cell.name = searchableItem.name
+        cell.distance = ""
+        cell.floor = ""
+        cell.icon = nil
+
+        let currentPOI = (self.parent as! PositioningViewController).buildingInfo?.indoorPois.first(where: { $0.id == searchableItem.id })
+        if (currentPOI != nil) {
+            cell.floor = "\(currentPOI!.position().floorIdentifier)"
+            if (self.parent as! PositioningViewController).poiCategoryIcons[currentPOI!.category.code] != nil {
+                cell.icon = (self.parent as! PositioningViewController).poiCategoryIcons[currentPOI!.category.code]
+            } else {
+                SITCommunicationManager.shared().fetchSelected(false, iconFor: currentPOI!.category, withCompletion: { iconData, error in
+                    if error != nil {
+                        Logger.logErrorMessage("error retrieving icon data")
+                    } else {
+                        DispatchQueue.main.async(execute: {
+                            if let iconData = iconData {
+                                cell.icon = UIImage(data: iconData)
+                            }
+                        })
+                    }
+                })
+            }
+        }
+
         return cell
     }
     
     func updateSearchResults(for searchController: UISearchController) {
-        
         view.isHidden = false //Make results table visible even when search bar is selected
         guard searchController.isActive else {return}
         tableView.reloadData()
