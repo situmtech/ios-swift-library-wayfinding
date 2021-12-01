@@ -93,17 +93,7 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        //Seach View Controller
-        let storyboard = UIStoryboard(name: "SitumWayfinding", bundle: nil)
-        searchResultsController = storyboard.instantiateViewController(withIdentifier: "searchResultsVC") as? SearchResultsTableViewController
-        searchController = UISearchController()
-        searchController?.searchResultsUpdater = self
-        searchController?.delegate = self
-        searchController?.searchBar.delegate = self
-        searchController?.obscuresBackgroundDuringPresentation = false
-        searchController?.searchBar.placeholder = "Search Pois"
-        searchController?.hidesNavigationBarDuringPresentation = false
-        navbar.topItem?.titleView =  searchController!.searchBar
+        initSearchController()
         definesPresentationContext = true
 
     }
@@ -975,13 +965,19 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
 
 }
 
-extension PositioningViewController: UISearchResultsUpdating, UISearchControllerDelegate, UISearchBarDelegate{
-    
-    func dismissSearchResultsController(){
-        searchResultsController!.willMove(toParent: nil)
-        NSLayoutConstraint.deactivate(searchResultViewConstraints!)
-        searchResultsController!.view.removeFromSuperview()
-        searchResultsController!.removeFromParent()
+extension PositioningViewController: UISearchControllerDelegate, UISearchBarDelegate{
+
+    func initSearchController() {
+        let storyboard = UIStoryboard(name: "SitumWayfinding", bundle: nil)
+        searchResultsController = storyboard.instantiateViewController(withIdentifier: "searchResultsVC") as? SearchResultsTableViewController
+        searchController = UISearchController()
+        searchController?.searchResultsUpdater = searchResultsController
+        searchController?.delegate = self
+        searchController?.searchBar.delegate = self
+        searchController?.obscuresBackgroundDuringPresentation = false
+        searchController?.searchBar.placeholder = "Search Pois"
+        searchController?.hidesNavigationBarDuringPresentation = false
+        navbar.topItem?.titleView = searchController!.searchBar
     }
     
     func createSearchResultsContraints(){
@@ -991,28 +987,7 @@ extension PositioningViewController: UISearchResultsUpdating, UISearchController
         let verticalConstraints = NSLayoutConstraint.constraints(withVisualFormat: "V:[navigationBar]-0-[searchResultView]-0-|", options: NSLayoutConstraint.FormatOptions(), metrics: nil, views: views as [String : Any])
         searchResultViewConstraints = horizontalConstraints + verticalConstraints
     }
-    
-    // MARK: - Search methods
-    
-    func filterContentForSearchText(_ searchText: String) {
-        
-        var filteredPois = searchText.isEmpty ? self.buildingInfo?.indoorPois ?? [] : (self.buildingInfo?.indoorPois ?? []).filter { (poi: SearcheableItem) -> Bool in
-            return poi.name.lowercased().contains(searchText.lowercased())
-        }
-        //filteredPois.sort()
-        searchResultsController?.filteredPois = filteredPois
-        searchResultsController?.updateSearchResults(for: searchController!)
-    }
-    
-    // MARK: - UISearchResultsUpdating delegate methods
-    
-    func updateSearchResults(for searchController: UISearchController) {
-        let searchBar = searchController.searchBar
-        filterContentForSearchText(searchBar.text!)
-    }
-    
-    //MARK: - UISearchControllerDelegate
-    
+
     func presentSearchController(_ searchController: UISearchController) {
         // Add the results view controller to the container.
         addChild(searchResultsController!)
@@ -1026,10 +1001,9 @@ extension PositioningViewController: UISearchResultsUpdating, UISearchController
         // Notify the child view controller that the move is complete.
         searchResultsController!.didMove(toParent: self)
     }
-    
-    //MARK: - UISearchBarDelegate
+
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-        dismissSearchResultsController()
+        searchResultsController?.dismissSearchResultsController(constraints: searchResultViewConstraints)
     }
 }
 
