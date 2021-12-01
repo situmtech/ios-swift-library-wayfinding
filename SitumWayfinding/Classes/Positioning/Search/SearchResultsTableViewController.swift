@@ -85,7 +85,7 @@ extension SearchResultsTableViewController: UISearchResultsUpdating {
                     : (parentController.buildingInfo?.indoorPois ?? []).filter { (poi: SearcheableItem) -> Bool in
                 return poi.name.lowercased().contains(searchText.lowercased())
             }
-            //filteredPois.sort() TODO: cuando se calcule la distancia ordenar por ese valor
+            //filteredPois.sort()  TODO: cuando se calcule la distancia ordenar por ese valor
             self.filteredPois = filteredPois
             tableView.reloadData()
         }
