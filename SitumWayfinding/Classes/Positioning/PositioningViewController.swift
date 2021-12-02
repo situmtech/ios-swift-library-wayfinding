@@ -82,7 +82,6 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
     @IBOutlet weak var searchBar: UISearchBar!
     var searchResultsController : SearchResultsTableViewController?
     var searchController:UISearchController?
-    let pois = ["Restaurante","Bar","Karting", "Baños"]
     var searchResultViewConstraints : [NSLayoutConstraint]?
 
 
@@ -115,7 +114,7 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
                     self.loadingError = true;
                     self.situmLoadFinished(loadingAlert: loadingAlert)
                 } else {
-                    
+                    self.searchResultsController?.buildingPOIs = self.buildingInfo!.indoorPois
                     SITCommunicationManager.shared().fetchOrganizationTheme(options: nil, success: { (mapping: [AnyHashable : Any]?) in
                         print("Success retrieving details of organization")
                         if mapping != nil {
