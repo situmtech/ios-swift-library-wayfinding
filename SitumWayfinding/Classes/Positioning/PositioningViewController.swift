@@ -53,7 +53,7 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
     var mapOverlay: GMSGroundOverlay = GMSGroundOverlay()
     var poiMarkers: Array<GMSMarker> = []
     var floorplans: Dictionary<String, UIImage> = [:]
-    var poiCategoryIcons: Dictionary<String, UIImage> = [:]
+    let iconsStore:IconsStore = IconsStore()
     var userMarkerIcons: Dictionary<String, UIImage> = [:]
     var lastBearing: Float = 0.0
     var lastAnimatedBearing: Float = 0.0
@@ -221,7 +221,6 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
     }
     
     func initializeIcons() {
-        poiCategoryIcons = Dictionary()
         let bundle = Bundle(for: type(of: self))
         if let locationPointer = UIImage(named: "swf_location_pointer", in: bundle, compatibleWith: nil), let locationOutdoorPointer = UIImage(named: "swf_location_outdoor_pointer", in: bundle, compatibleWith: nil), let location = UIImage(named: "swf_location", in: bundle, compatibleWith: nil), let radius = UIImage(named: "swf_radius", in: bundle, compatibleWith: nil) {
             userMarkerIcons = [
@@ -787,26 +786,9 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
         let poiMarker = GMSMarker(position: coordinate)
         poiMarker.title = poi.name
         poiMarker.userData = poi
-        if poiCategoryIcons[poi.category.code] != nil {
-            poiMarker.icon = poiCategoryIcons[poi.category.code]
-            poiMarker.map = mapView
-        } else {
-            SITCommunicationManager.shared().fetchSelected(false, iconFor: poi.category, withCompletion: { iconData, error in
-                if error != nil {
-                    Logger.logErrorMessage("error retrieving icon data")
-                } else {
-                    DispatchQueue.main.async(execute: {
-                        var iconImg: UIImage? = nil
-                        if let iconData = iconData {
-                            let newSize = CGFloat(self.mapView.camera.zoom * 3.0)
-                            iconImg = ImageUtils.scaleImageToSize(image: UIImage(data: iconData)!, newSize: CGSize(width: newSize, height: newSize))
-                        }
-                        self.poiCategoryIcons[poi.category.code] = iconImg
-                        poiMarker.icon = iconImg
-                        poiMarker.map = self.mapView
-                    })
-                }
-            })
+        iconsStore.obtainIconFor(category: poi.category) { icon in
+            poiMarker.icon=icon
+            poiMarker.map=self.mapView
         }
         return poiMarker
     }
