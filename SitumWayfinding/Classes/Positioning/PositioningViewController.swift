@@ -947,6 +947,7 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
 
 extension PositioningViewController: UISearchControllerDelegate, UISearchBarDelegate{
 
+    // MARK : Init Search Controller
     func initSearchController() {
         let storyboard = UIStoryboard(name: "SitumWayfinding", bundle: nil)
         searchResultsController = storyboard.instantiateViewController(withIdentifier: "searchResultsVC") as? SearchResultsTableViewController
@@ -967,7 +968,8 @@ extension PositioningViewController: UISearchControllerDelegate, UISearchBarDele
         let verticalConstraints = NSLayoutConstraint.constraints(withVisualFormat: "V:[navigationBar]-0-[searchResultView]-0-|", options: NSLayoutConstraint.FormatOptions(), metrics: nil, views: views as [String : Any])
         searchResultViewConstraints = horizontalConstraints + verticalConstraints
     }
-
+    
+//MARK: UISearchControllerDelegate methods
     func presentSearchController(_ searchController: UISearchController) {
         // Inititialize searchController variables
         self.searchResultsController?.activeBuildingInfo = self.buildingInfo
@@ -985,7 +987,7 @@ extension PositioningViewController: UISearchControllerDelegate, UISearchBarDele
         // Notify the child view controller that the move is complete.
         searchResultsController!.didMove(toParent: self)
     }
-
+//MARK: UISearchBarDelegate methods
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         searchResultsController?.dismissSearchResultsController(constraints: searchResultViewConstraints)
     }
