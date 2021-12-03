@@ -114,7 +114,6 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
                     self.loadingError = true;
                     self.situmLoadFinished(loadingAlert: loadingAlert)
                 } else {
-                    self.searchResultsController?.buildingPOIs = self.buildingInfo!.indoorPois
                     SITCommunicationManager.shared().fetchOrganizationTheme(options: nil, success: { (mapping: [AnyHashable : Any]?) in
                         print("Success retrieving details of organization")
                         if mapping != nil {
@@ -970,6 +969,10 @@ extension PositioningViewController: UISearchControllerDelegate, UISearchBarDele
     }
 
     func presentSearchController(_ searchController: UISearchController) {
+        // Inititialize searchController variables
+        self.searchResultsController?.activeBuildingInfo = self.buildingInfo
+        self.searchResultsController?.iconsStore = iconsStore
+        
         // Add the results view controller to the container.
         addChild(searchResultsController!)
         view.addSubview(searchResultsController!.view)
