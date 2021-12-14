@@ -53,7 +53,7 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
     var mapOverlay: GMSGroundOverlay = GMSGroundOverlay()
     var poiMarkers: Array<GMSMarker> = []
     var floorplans: Dictionary<String, UIImage> = [:]
-    var poiCategoryIcons: Dictionary<String, UIImage> = [:]
+    let iconsStore:IconsStore = IconsStore()
     var userMarkerIcons: Dictionary<String, UIImage> = [:]
     var lastBearing: Float = 0.0
     var lastAnimatedBearing: Float = 0.0
@@ -78,7 +78,13 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
     var organizationTheme: SITOrganizationTheme?
     @IBOutlet weak var logoIV: UIImageView!
     
-    
+    //Search
+    @IBOutlet weak var searchBar: UISearchBar!
+    var searchResultsController : SearchResultsTableViewController?
+    var searchController:UISearchController?
+    var searchResultViewConstraints : [NSLayoutConstraint]?
+
+
     // Constants
     let DEFAULT_SITUM_COLOR = "#283380"
     let DEFAULT_POI_NAME: String = "POI"
@@ -87,6 +93,9 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        initSearchController()
+        definesPresentationContext = true
+
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -106,7 +115,6 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
                     self.loadingError = true;
                     self.situmLoadFinished(loadingAlert: loadingAlert)
                 } else {
-                    
                     SITCommunicationManager.shared().fetchOrganizationTheme(options: nil, success: { (mapping: [AnyHashable : Any]?) in
                         print("Success retrieving details of organization")
                         if mapping != nil {
@@ -209,11 +217,10 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
     }
     
     func initializeNavigationBar() {
-        navbar.topItem?.title = buildingInfo!.building.name
+        //navbar.topItem?.title = buildingInfo!.building.name
     }
     
     func initializeIcons() {
-        poiCategoryIcons = Dictionary()
         let bundle = Bundle(for: type(of: self))
         var userLocIconName = getIconNameOrDefault(iconName: library?.settings?.userPositionIcon, defaultIconName: "swf_location")
         var userLocArrowIconName = getIconNameOrDefault(iconName: library?.settings?.userPositionArrowIcon, defaultIconName: "swf_location_pointer")
@@ -801,27 +808,9 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
         let poiMarker = GMSMarker(position: coordinate)
         poiMarker.title = poi.name
         poiMarker.userData = poi
-        if poiCategoryIcons[poi.category.code] != nil {
-            poiMarker.icon = poiCategoryIcons[poi.category.code]
-            poiMarker.map = mapView
-        } else {
-            SITCommunicationManager.shared().fetchSelected(false, iconFor: poi.category, withCompletion: { iconData, error in
-                if error != nil {
-                    Logger.logErrorMessage("error retrieving icon data")
-                } else {
-                    
-                    DispatchQueue.main.async(execute: {
-                        var iconImg: UIImage? = nil
-                        if let iconData = iconData {
-                            let newSize = CGFloat(self.mapView.camera.zoom * 3.0)
-                            iconImg = ImageUtils.scaleImageToSize(image: UIImage(data: iconData)!, newSize: CGSize(width: newSize, height: newSize))
-                        }
-                        self.poiCategoryIcons[poi.category.code] = iconImg
-                        poiMarker.icon = iconImg
-                        poiMarker.map = self.mapView
-                    })
-                }
-            })
+        iconsStore.obtainIconFor(category: poi.category) { icon in
+            poiMarker.icon=icon
+            poiMarker.map=self.mapView
         }
         return poiMarker
     }
@@ -990,5 +979,53 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
         )
     }
 
+}
+
+extension PositioningViewController: UISearchControllerDelegate, UISearchBarDelegate{
+
+    // MARK : Init Search Controller
+    func initSearchController() {
+        let storyboard = UIStoryboard(name: "SitumWayfinding", bundle: nil)
+        searchResultsController = storyboard.instantiateViewController(withIdentifier: "searchResultsVC") as? SearchResultsTableViewController
+        searchController = UISearchController()
+        searchController?.searchResultsUpdater = searchResultsController
+        searchController?.delegate = self
+        searchController?.searchBar.delegate = self
+        searchController?.obscuresBackgroundDuringPresentation = false
+        searchController?.searchBar.placeholder = "Search Pois"
+        searchController?.hidesNavigationBarDuringPresentation = false
+        navbar.topItem?.titleView = searchController!.searchBar
+    }
+    
+    func createSearchResultsContraints(){
+        //We need to use navbar.topItem?.titleView in constraints instead of navbar because navigation bar dont update properly its height after adding search bar to its titleView: navbar.topItem?.titleView =  searchController!.searchBar
+        let views = ["searchResultView": searchResultsController!.view, "navigationBar": navbar.topItem?.titleView]
+        let horizontalConstraints = NSLayoutConstraint.constraints(withVisualFormat: "H:|-0-[searchResultView]-0-|", options: NSLayoutConstraint.FormatOptions(), metrics: nil, views: views as [String : Any])
+        let verticalConstraints = NSLayoutConstraint.constraints(withVisualFormat: "V:[navigationBar]-0-[searchResultView]-0-|", options: NSLayoutConstraint.FormatOptions(), metrics: nil, views: views as [String : Any])
+        searchResultViewConstraints = horizontalConstraints + verticalConstraints
+    }
+    
+//MARK: UISearchControllerDelegate methods
+    func presentSearchController(_ searchController: UISearchController) {
+        // Inititialize searchController variables
+        self.searchResultsController?.activeBuildingInfo = self.buildingInfo
+        self.searchResultsController?.iconsStore = iconsStore
+        
+        // Add the results view controller to the container.
+        addChild(searchResultsController!)
+        view.addSubview(searchResultsController!.view)
+        
+        // Create and activate the constraints for the child’s view.
+        searchResultsController!.view.translatesAutoresizingMaskIntoConstraints = false
+        createSearchResultsContraints()
+        NSLayoutConstraint.activate(searchResultViewConstraints!)
+        
+        // Notify the child view controller that the move is complete.
+        searchResultsController!.didMove(toParent: self)
+    }
+//MARK: UISearchBarDelegate methods
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        searchResultsController?.dismissSearchResultsController(constraints: searchResultViewConstraints)
+    }
 }
 

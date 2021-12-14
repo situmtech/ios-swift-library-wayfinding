@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 All non released changes should be in CHANGELOG_UNRELEASED.md file
 
 ---------
+## [0.1.17] - 2021-12-14
+
+### Added
+* First version of the search bar. In this version the selection of a result is not yet implemented.
+
 ## [0.1.16] - 2021-11-30
 
 ### Fixed
