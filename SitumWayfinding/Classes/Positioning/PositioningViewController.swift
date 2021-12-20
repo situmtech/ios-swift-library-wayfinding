@@ -13,7 +13,7 @@ import SitumSDK
 
 let SecondsBetweenAlerts = 30.0
 
-class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableViewDataSource, UITableViewDelegate, PositioningView, PositioningController {
+class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableViewDataSource, UITableViewDelegate, PositioningView, PositioningController, WayfindingProtocol {
     
     //MARK PositioningController protocol variables
     var buildingId: String = ""
@@ -314,6 +314,44 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
         self.cancelNavigationButton.layer.borderWidth = 2.0
         self.cancelNavigationButton.layer.borderColor = UIColor.red.cgColor
     }
+    
+    //MARK: POI Selection
+    func select(poi:SITPOI) throws{
+        if let indexpath = getIndexPath(floorId: poi.position().floorIdentifier){
+            changeActive(floorPlan:indexpath)
+        }
+        if let markerPOI = poiMarkers.first(where: {($0.userData as! SITPOI).id == poi.id}){
+            changeMapForProgramaticMarkerSelection(markerPOI)
+            changeUIForMarkerSelection(markerPOI)
+        }else{
+            throw WayfindingError.invalidPOI
+        }
+    }
+    
+    func changeUIForMarkerSelection(_ selectedMarker:GMSMarker){
+        if(!self.isUserNavigating()) {
+            self.changeNavigationButtonVisibility(isVisible: true)
+        }
+        if(self.positioningButton.isSelected) {
+            showCenterButton()
+        }
+        self.removeLastCustomMarkerIfOutsideRoute()
+        self.updateInfoBarLabelsIfNotInsideRoute(mainLabel: selectedMarker.title ?? DEFAULT_POI_NAME, secondaryLabel: self.buildingInfo?.building.name ?? DEFAULT_BUILDING_NAME)
+        self.lastSelectedMarker = selectedMarker
+        isCameraCentered = false
+    }
+
+    //Imitates actions done by google maps when a user select a marker
+    func changeMapForProgramaticMarkerSelection(_ selectedMarker:GMSMarker){
+        CATransaction.begin()
+        CATransaction.setValue(0.5, forKey: kCATransactionAnimationDuration)
+        CATransaction.setCompletionBlock({
+            self.mapView.selectedMarker = selectedMarker
+        })
+        mapView.animate(toLocation: selectedMarker.position)
+        CATransaction.commit()
+        
+    }
 
     //MARK: Floorplans
     
@@ -377,7 +415,7 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
         hideCenterButton()
     }
     
-    func reloadTableViewData() {
+    func reloadFloorPlansTableViewData() {
         levelsTableView.reloadData()
     }
     
@@ -592,17 +630,7 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
     }
     
     func mapView(_ mapView: GMSMapView, didTap marker: GMSMarker) -> Bool {
-        if(!self.isUserNavigating()) {
-            self.changeNavigationButtonVisibility(isVisible: true)
-        }
-        if(self.positioningButton.isSelected) {
-            showCenterButton()
-        }
-        self.removeLastCustomMarkerIfOutsideRoute()
-        self.updateInfoBarLabelsIfNotInsideRoute(mainLabel: marker.title ?? DEFAULT_POI_NAME, secondaryLabel: self.buildingInfo?.building.name ?? DEFAULT_BUILDING_NAME)
-        self.lastSelectedMarker = marker
-        isCameraCentered = false
-        
+        changeUIForMarkerSelection(marker)
         return false
     }
     
@@ -635,20 +663,27 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
         self.present(alert, animated: true, completion: nil)
     }
     
+    //MARK: Floor plan selection
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         self.removeLastCustomMarkerIfOutsideRoute()
         self.changeNavigationButtonVisibility(isVisible: false)
-        let isSameLevel = indexPath.row == self.selectedLevelIndex
-        self.selectedLevelIndex = indexPath.row
-        self.reloadTableViewData()
+        changeActive(floorPlan: indexPath)
+    }
+    
+    func changeActive(floorPlan floorPlanIndex: IndexPath){
+        let isSameLevel = floorPlanIndex.row == self.selectedLevelIndex
+        self.selectedLevelIndex = floorPlanIndex.row
+        self.reloadFloorPlansTableViewData()
         self.displayMap(forLevel: self.selectedLevelIndex)
         if (presenter?.userLocation != nil && !isSameLevel) {
             self.isCameraCentered = false
             self.showCenterButton()
             self.updateUI(with: self.presenter!.userLocation!)
         }
-        tableView.scrollToRow(at: indexPath, at: .middle, animated: true)
+        levelsTableView.scrollToRow(at: floorPlanIndex, at: .middle, animated: true)
     }
+    
 
     //MARK: IBActions
     
@@ -913,7 +948,7 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
     func stop() {
         self.makeUserMarkerVisible(visible: false)
         self.numberBeaconsRangedView.isHidden = true
-        self.reloadTableViewData()
+        self.reloadFloorPlansTableViewData()
         self.hideCenterButton()
         self.change(.stopped, centerCamera: false)
         self.stopNavigation()
@@ -1007,10 +1042,11 @@ extension PositioningViewController: UISearchControllerDelegate, UISearchBarDele
     
 //MARK: UISearchControllerDelegate methods
     func presentSearchController(_ searchController: UISearchController) {
-        // Inititialize searchController variables
-        self.searchResultsController?.activeBuildingInfo = self.buildingInfo
-        self.searchResultsController?.iconsStore = iconsStore
-        
+        // Inititialize searchResultsController variables
+        searchResultsController?.activeBuildingInfo = self.buildingInfo
+        searchResultsController?.iconsStore = iconsStore
+        searchResultsController?.delegate = self
+        searchResultsController?.searchController = searchController
         // Add the results view controller to the container.
         addChild(searchResultsController!)
         view.addSubview(searchResultsController!.view)
@@ -1023,6 +1059,13 @@ extension PositioningViewController: UISearchControllerDelegate, UISearchBarDele
         // Notify the child view controller that the move is complete.
         searchResultsController!.didMove(toParent: self)
     }
+    
+    func willDismissSearchController(_ searchController: UISearchController) {
+        searchResultsController?.willMove(toParent: self)
+        searchResultsController?.view.removeFromSuperview()
+        searchResultsController?.removeFromParent()
+    }
+    
 //MARK: UISearchBarDelegate methods
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         searchResultsController?.dismissSearchResultsController(constraints: searchResultViewConstraints)

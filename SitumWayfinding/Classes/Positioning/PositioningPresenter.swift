@@ -350,12 +350,12 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
     
     func updateLevelSelector(location: SITLocation, isCameraCentered: Bool, selectedLevel: String) {
         if userLocation?.position.floorIdentifier != selectedLevel {
-            view?.reloadTableViewData()
+            view?.reloadFloorPlansTableViewData()
             if isCameraCentered {
                 view?.selectFloor(floorId: location.position.floorIdentifier)
             }
         } else {
-            view?.reloadTableViewData()
+            view?.reloadFloorPlansTableViewData()
         }
     }
     

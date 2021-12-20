@@ -29,7 +29,7 @@ protocol PositioningView {
     
     func stopNavigation()
     
-    func reloadTableViewData()
+    func reloadFloorPlansTableViewData()
     
     func selectFloor(floorId: String)
     

@@ -39,6 +39,8 @@ extension SITPOI: SearcheableItem {
 }
 
 class SearchResultsTableViewController: UITableViewController {
+    var delegate:WayfindingProtocol?
+    var searchController:UISearchController?
     var activeBuildingInfo : SITBuildingInfo?
     var filteredPois: [SearcheableItem] = []
     var iconsStore : IconsStore?
@@ -78,6 +80,17 @@ class SearchResultsTableViewController: UITableViewController {
             cell.icon=image
         }
         return cell
+    }
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let selectedItem = filteredPois[indexPath.row]
+        if selectedItem is SITPOI{
+            do {
+                try delegate?.select(poi: selectedItem as! SITPOI)
+            }catch{
+            }
+        }
+        searchController?.isActive = false
     }
     
     //MARK : UI customization methods
