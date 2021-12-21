@@ -9,6 +9,10 @@
 import Foundation
 import SitumSDK
 
+enum WayfindingError: Error {
+    case invalidPOI
+}
+
 protocol PositioningView {
     
     func change(_ state: SITLocationState, centerCamera: Bool)
@@ -32,6 +36,8 @@ protocol PositioningView {
     func reloadFloorPlansTableViewData()
     
     func select(floor floorId: String)
+    
+    func select(poi:SITPOI) throws
     
     func setCameraCentered()
     

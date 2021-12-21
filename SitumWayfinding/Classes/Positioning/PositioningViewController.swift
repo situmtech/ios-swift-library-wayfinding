@@ -13,7 +13,7 @@ import SitumSDK
 
 let SecondsBetweenAlerts = 30.0
 
-class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableViewDataSource, UITableViewDelegate, PositioningView, PositioningController, WayfindingProtocol {
+class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableViewDataSource, UITableViewDelegate, PositioningView, PositioningController {
     
     //MARK PositioningController protocol variables
     var buildingId: String = ""

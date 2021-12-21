@@ -39,7 +39,7 @@ extension SITPOI: SearcheableItem {
 }
 
 class SearchResultsTableViewController: UITableViewController {
-    var delegate:WayfindingProtocol?
+    var delegate:PositioningView?
     var searchController:UISearchController?
     var activeBuildingInfo : SITBuildingInfo?
     var filteredPois: [SearcheableItem] = []
