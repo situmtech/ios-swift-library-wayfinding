@@ -1031,9 +1031,17 @@ extension PositioningViewController: UISearchControllerDelegate, UISearchBarDele
         searchController?.delegate = self
         searchController?.searchBar.delegate = self
         searchController?.obscuresBackgroundDuringPresentation = false
-        searchController?.searchBar.placeholder = "Search Pois"
+        searchController?.searchBar.placeholder = searchTextPlaceholder()
         searchController?.hidesNavigationBarDuringPresentation = false
         navbar.topItem?.titleView = searchController!.searchBar
+    }
+    
+    func searchTextPlaceholder()->String{
+        if let searchViewPlaceholder = library?.settings?.searchViewPlaceholder, searchViewPlaceholder.count > 0{
+            return searchViewPlaceholder
+        }else{
+            return "Search Pois"
+        }
     }
     
     func createSearchResultsContraints(){
