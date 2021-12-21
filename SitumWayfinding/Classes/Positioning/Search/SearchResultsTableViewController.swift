@@ -90,6 +90,10 @@ class SearchResultsTableViewController: UITableViewController {
             }catch{
             }
         }
+        hideSearchController()
+    }
+    
+    func hideSearchController(){
         searchController?.isActive = false
     }
     
