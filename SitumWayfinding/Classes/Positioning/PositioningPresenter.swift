@@ -222,10 +222,9 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
     
     func centerButtonPressed() {
         if let userLocation = userLocation {
-            
-            view?.selectFloor(floorId: userLocation.position.floorIdentifier)
+            view?.select(floor: userLocation.position.floorIdentifier)
+            view?.setCameraCentered()
             view?.updateUI(with: userLocation)
-            
         }
     }
     
@@ -352,7 +351,7 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
         if userLocation?.position.floorIdentifier != selectedLevel {
             view?.reloadFloorPlansTableViewData()
             if isCameraCentered {
-                view?.selectFloor(floorId: location.position.floorIdentifier)
+                view?.select(floor: location.position.floorIdentifier)
             }
         } else {
             view?.reloadFloorPlansTableViewData()

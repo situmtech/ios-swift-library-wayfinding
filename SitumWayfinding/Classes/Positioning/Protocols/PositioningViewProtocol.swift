@@ -31,7 +31,9 @@ protocol PositioningView {
     
     func reloadFloorPlansTableViewData()
     
-    func selectFloor(floorId: String)
+    func select(floor floorId: String)
+    
+    func setCameraCentered()
     
     func createAndShowCustomMarkerIfOutsideRoute(atCoordinate coordinate: CLLocationCoordinate2D, atFloor floorId: String)
     

@@ -318,7 +318,7 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
     //MARK: POI Selection
     func select(poi:SITPOI) throws{
         if let indexpath = getIndexPath(floorId: poi.position().floorIdentifier){
-            changeActive(floorPlan:indexpath)
+            select(floor:indexpath)
         }
         if let markerPOI = poiMarkers.first(where: {($0.userData as! SITPOI).id == poi.id}){
             changeMapForProgramaticMarkerSelection(markerPOI)
@@ -335,7 +335,6 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
         if(self.positioningButton.isSelected) {
             showCenterButton()
         }
-        self.removeLastCustomMarkerIfOutsideRoute()
         self.updateInfoBarLabelsIfNotInsideRoute(mainLabel: selectedMarker.title ?? DEFAULT_POI_NAME, secondaryLabel: self.buildingInfo?.building.name ?? DEFAULT_BUILDING_NAME)
         self.lastSelectedMarker = selectedMarker
         isCameraCentered = false
@@ -406,11 +405,10 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
         return []
     }
     
-    func selectFloor(floorId: String) {
-        if let indexPath = getIndexPath(floorId: floorId) {
-            tableView(levelsTableView, didSelectRowAt: indexPath)
 
-        }
+    
+    //PositioningView protocol method
+    func setCameraCentered() {
         isCameraCentered = true
         hideCenterButton()
     }
@@ -418,6 +416,33 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
     func reloadFloorPlansTableViewData() {
         levelsTableView.reloadData()
     }
+    
+    //PositioningView protocol method
+    func select(floor floorId: String) {
+        if let indexPath = getIndexPath(floorId: floorId) {
+            tableView(levelsTableView, didSelectRowAt: indexPath)
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        select(floor: indexPath)
+    }
+    
+    func select(floor floorIndex: IndexPath){
+        self.changeNavigationButtonVisibility(isVisible: false)
+        self.removeLastCustomMarkerIfOutsideRoute()
+        let isSameLevel = floorIndex.row == self.selectedLevelIndex
+        self.selectedLevelIndex = floorIndex.row
+        self.reloadFloorPlansTableViewData()
+        self.displayMap(forLevel: self.selectedLevelIndex)
+        if (presenter?.userLocation != nil && !isSameLevel) {
+            self.isCameraCentered = false
+            self.showCenterButton()
+            self.updateUI(with: self.presenter!.userLocation!)
+        }
+        levelsTableView.scrollToRow(at: floorIndex, at: .middle, animated: true)
+    }
+    
     
     //MARK: TableView
     
@@ -661,27 +686,6 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
         }
 
         self.present(alert, animated: true, completion: nil)
-    }
-    
-    //MARK: Floor plan selection
-    
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        self.removeLastCustomMarkerIfOutsideRoute()
-        self.changeNavigationButtonVisibility(isVisible: false)
-        changeActive(floorPlan: indexPath)
-    }
-    
-    func changeActive(floorPlan floorPlanIndex: IndexPath){
-        let isSameLevel = floorPlanIndex.row == self.selectedLevelIndex
-        self.selectedLevelIndex = floorPlanIndex.row
-        self.reloadFloorPlansTableViewData()
-        self.displayMap(forLevel: self.selectedLevelIndex)
-        if (presenter?.userLocation != nil && !isSameLevel) {
-            self.isCameraCentered = false
-            self.showCenterButton()
-            self.updateUI(with: self.presenter!.userLocation!)
-        }
-        levelsTableView.scrollToRow(at: floorPlanIndex, at: .middle, animated: true)
     }
     
 
