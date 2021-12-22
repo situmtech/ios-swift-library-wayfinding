@@ -128,7 +128,7 @@ extension SearchResultsTableViewController: UISearchResultsUpdating {
             return poi.name.lowercased().contains(searchText.lowercased())
         }
         //TODO: cuando se calcule la distancia ordenar por ese valor
-        self.filteredPois = filteredPois.sorted(by: { $0.name < $1.name })
+        self.filteredPois = filteredPois.sorted(by: { $0.name.lowercased() < $1.name.lowercased() })
         tableView.reloadData()
     }
 
