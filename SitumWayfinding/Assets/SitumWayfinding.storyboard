@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="18122" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="19529" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="18093"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19519"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -128,7 +128,7 @@
                                 </constraints>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="center" selectionStyle="default" indentationWidth="0.0" reuseIdentifier="LevelCellIdentifier" textLabel="SKv-g5-SUq" style="IBUITableViewCellStyleDefault" id="RhV-Qt-RAO">
-                                        <rect key="frame" x="0.0" y="24.5" width="50" height="44"/>
+                                        <rect key="frame" x="0.0" y="44.5" width="50" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="RhV-Qt-RAO" id="84E-ER-KYm">
                                             <rect key="frame" x="0.0" y="0.0" width="50" height="44"/>
@@ -192,8 +192,20 @@
                                     <action selector="centerButtonPressed:" destination="Xd8-Bs-mWc" eventType="touchUpInside" id="wNs-W1-v6e"/>
                                 </connections>
                             </button>
+                            <navigationBar contentMode="scaleToFill" translucent="NO" translatesAutoresizingMaskIntoConstraints="NO" id="v9V-A6-0lh">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                                <items>
+                                    <navigationItem title="Title" id="tSR-VH-hRD">
+                                        <barButtonItem key="leftBarButtonItem" title="Back" id="ysb-eJ-ja8">
+                                            <connections>
+                                                <action selector="goBackButtonPressed:" destination="Xd8-Bs-mWc" id="7d9-pf-JP7"/>
+                                            </connections>
+                                        </barButtonItem>
+                                    </navigationItem>
+                                </items>
+                            </navigationBar>
                             <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="0dR-Zj-9Lg" userLabel="IndicationsView">
-                                <rect key="frame" x="0.0" y="44" width="375" height="75"/>
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="75"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Current Indication" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="IVC-BM-fvT">
                                         <rect key="frame" x="18" y="15" width="156" height="21"/>
@@ -222,18 +234,6 @@
                                     <constraint firstItem="IVC-BM-fvT" firstAttribute="top" secondItem="0dR-Zj-9Lg" secondAttribute="top" constant="15" id="vsQ-9J-8YV"/>
                                 </constraints>
                             </view>
-                            <navigationBar contentMode="scaleToFill" translucent="NO" translatesAutoresizingMaskIntoConstraints="NO" id="v9V-A6-0lh">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
-                                <items>
-                                    <navigationItem title="Title" id="tSR-VH-hRD">
-                                        <barButtonItem key="leftBarButtonItem" title="Back" id="ysb-eJ-ja8">
-                                            <connections>
-                                                <action selector="goBackButtonPressed:" destination="Xd8-Bs-mWc" id="7d9-pf-JP7"/>
-                                            </connections>
-                                        </barButtonItem>
-                                    </navigationItem>
-                                </items>
-                            </navigationBar>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
@@ -241,9 +241,9 @@
                             <constraint firstItem="5jv-3Y-QbE" firstAttribute="top" secondItem="v9V-A6-0lh" secondAttribute="bottom" id="6eq-4a-5ot"/>
                             <constraint firstItem="v9V-A6-0lh" firstAttribute="leading" secondItem="4ox-Qr-DiY" secondAttribute="leading" id="Ao0-ui-nZH"/>
                             <constraint firstItem="x1X-sn-fxl" firstAttribute="centerY" secondItem="fnW-Qy-DPF" secondAttribute="centerY" id="AqN-qH-gJy"/>
-                            <constraint firstItem="0dR-Zj-9Lg" firstAttribute="top" secondItem="v9V-A6-0lh" secondAttribute="bottom" id="BcA-C2-NJz"/>
                             <constraint firstAttribute="trailing" secondItem="NVD-JK-oYf" secondAttribute="trailing" constant="16" id="Bhn-Ht-kxb"/>
                             <constraint firstItem="5jv-3Y-QbE" firstAttribute="top" secondItem="7Uq-7g-NAV" secondAttribute="bottom" constant="44" id="ElL-xr-qil"/>
+                            <constraint firstItem="0dR-Zj-9Lg" firstAttribute="top" secondItem="7Uq-7g-NAV" secondAttribute="bottom" id="EtC-Hb-SEx"/>
                             <constraint firstItem="x1X-sn-fxl" firstAttribute="leading" secondItem="fnW-Qy-DPF" secondAttribute="leading" id="Etp-M1-066"/>
                             <constraint firstItem="0dR-Zj-9Lg" firstAttribute="leading" secondItem="4ox-Qr-DiY" secondAttribute="leading" id="GYS-hK-EGH"/>
                             <constraint firstItem="9hw-wj-GeI" firstAttribute="top" secondItem="5jv-3Y-QbE" secondAttribute="bottom" id="J1B-6r-QfW"/>
@@ -304,7 +304,7 @@
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="SearchCell" id="8KY-KK-mXF" customClass="SearchTableViewCell" customModule="SitumWayfinding" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="24.5" width="375" height="50"/>
+                                <rect key="frame" x="0.0" y="44.5" width="375" height="50"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="8KY-KK-mXF" id="Z6g-Fm-MMK">
                                     <rect key="frame" x="0.0" y="0.0" width="375" height="50"/>
