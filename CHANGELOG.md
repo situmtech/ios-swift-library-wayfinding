@@ -10,7 +10,7 @@ All non released changes should be in CHANGELOG_UNRELEASED.md file
 ## [0.1.18] - 2021-12-23
 
 ### Added
-* Implementation of the selection of a search result.
+* Finished the implementation of the search bar.
 * Added a public method setSearchViewPlaceholder in LibrarySettings class.
 
 ## [0.1.17] - 2021-12-14
