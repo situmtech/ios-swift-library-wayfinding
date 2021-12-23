@@ -9,6 +9,10 @@
 import Foundation
 import SitumSDK
 
+enum WayfindingError: Error {
+    case invalidPOI
+}
+
 protocol PositioningView {
     
     func change(_ state: SITLocationState, centerCamera: Bool)
@@ -29,9 +33,13 @@ protocol PositioningView {
     
     func stopNavigation()
     
-    func reloadTableViewData()
+    func reloadFloorPlansTableViewData()
     
-    func selectFloor(floorId: String)
+    func select(floor floorId: String)
+    
+    func select(poi:SITPOI) throws
+    
+    func setCameraCentered()
     
     func createAndShowCustomMarkerIfOutsideRoute(atCoordinate coordinate: CLLocationCoordinate2D, atFloor floorId: String)
     

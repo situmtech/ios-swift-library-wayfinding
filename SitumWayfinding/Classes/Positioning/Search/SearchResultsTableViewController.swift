@@ -39,6 +39,8 @@ extension SITPOI: SearcheableItem {
 }
 
 class SearchResultsTableViewController: UITableViewController {
+    var delegate:PositioningView?
+    var searchController:UISearchController?
     var activeBuildingInfo : SITBuildingInfo?
     var filteredPois: [SearcheableItem] = []
     var iconsStore : IconsStore?
@@ -80,6 +82,21 @@ class SearchResultsTableViewController: UITableViewController {
         return cell
     }
     
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let selectedItem = filteredPois[indexPath.row]
+        if selectedItem is SITPOI{
+            do {
+                try delegate?.select(poi: selectedItem as! SITPOI)
+            }catch{
+            }
+        }
+        hideSearchController()
+    }
+    
+    func hideSearchController(){
+        searchController?.isActive = false
+    }
+    
     //MARK : UI customization methods
     func arrangeForNoResultsFound(the tableView: UITableView){
         let noDataLabel = UITextField(frame: CGRect(x: 0, y: 0, width: tableView.bounds.size.width, height: tableView.bounds.size.width))
@@ -111,7 +128,7 @@ extension SearchResultsTableViewController: UISearchResultsUpdating {
             return poi.name.lowercased().contains(searchText.lowercased())
         }
         //TODO: cuando se calcule la distancia ordenar por ese valor
-        self.filteredPois = filteredPois.sorted(by: { $0.name < $1.name })
+        self.filteredPois = filteredPois.sorted(by: { $0.name.lowercased() < $1.name.lowercased() })
         tableView.reloadData()
     }
 
