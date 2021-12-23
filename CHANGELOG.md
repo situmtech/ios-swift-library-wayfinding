@@ -10,8 +10,15 @@ All non released changes should be in CHANGELOG_UNRELEASED.md file
 ## [0.1.18] - 2021-12-23
 
 ### Added
-* Finished the implementation of the search bar.
+* Finished the implementation of the search bar. This search bar presents the building POIs ordered alphabetically and provides basic filtering capbilities. A selection of a POI implies that:
+ 1) If there was a selected POI it is deselected.
+ 2) The active floor plan is changed to the selected POI floor if neccesary. 
+ 3) The footer bar is uptated to show the POI info.
+ 4) The navigation button to request a route to that POI is displayed.
 * Added a public method setSearchViewPlaceholder in LibrarySettings class.
+
+### Changed
+* Updated situm sdk dependency to 2.51.5
 
 ## [0.1.17] - 2021-12-14
 
