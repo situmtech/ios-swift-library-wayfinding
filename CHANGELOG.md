@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 All non released changes should be in CHANGELOG_UNRELEASED.md file
 
 ---------
+## [0.1.18] - 2021-12-23
+
+### Added
+* Implementation of the selection of a search result.
+* Added a public method setSearchViewPlaceholder in LibrarySettings class.
+
 ## [0.1.17] - 2021-12-14
 
 ### Added
