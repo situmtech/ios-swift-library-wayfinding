@@ -27,6 +27,8 @@ import GoogleMaps
     private(set) var userPositionIcon: String? = ""
     /// Icon for arrow position
     private(set) var userPositionArrowIcon: String? = ""
+    /// Text that will be used as placeholder in the search view component.
+    private(set) var searchViewPlaceholder: String? = ""
 
     // private(set) var orgDetails: OrganizationTheme?
     private override init() {
@@ -83,6 +85,13 @@ import GoogleMaps
             instance.userPositionArrowIcon = userPositionArrowIcon
             return self
         }
+        
+        /// Set the text that will be used as placeholder in the search view component.
+        @discardableResult
+        @objc public func setSearchViewPlaceholder(searchViewPlaceholder: String) -> Builder {
+            instance.searchViewPlaceholder = searchViewPlaceholder
+            return self
+        }
 
         /// Returns an instance of LibrarySettings
         @objc public func build() -> LibrarySettings {
@@ -112,6 +121,10 @@ import GoogleMaps
 
             if settings.userPositionArrowIcon != nil {
                 builderCopy.setUserPositionArrowIcon(userPositionArrowIcon: settings.userPositionArrowIcon!)
+            }
+            
+            if settings.searchViewPlaceholder != nil {
+                builderCopy.setSearchViewPlaceholder(searchViewPlaceholder: settings.searchViewPlaceholder!)
             }
 
             return builderCopy
