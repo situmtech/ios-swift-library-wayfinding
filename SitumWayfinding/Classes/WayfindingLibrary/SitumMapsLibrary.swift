@@ -20,7 +20,7 @@ import GoogleMaps
     private var toPresentViewController: PositioningViewController?
     internal let interceptorsManager: InterceptorsManager = InterceptorsManager()
     internal var onBackPressedCallback: ((Any) -> Void)?
-    internal var wayfindingDelegate: WayfindingDelegate?
+    internal var delegateNotifier: WayfindingDelegateNotifier?
     
     /// Credentials object used to authenticate the user before loading the wayfinding module
     // public private(set) var credentials: Credentials?
@@ -193,8 +193,7 @@ import GoogleMaps
      - parameter delegate: WayfindingDelegate protocol
      */
     public func setWayfindingDelegate(delegate: WayfindingDelegate) {
-        self.wayfindingDelegate = delegate
-        
+        delegateNotifier = WayfindingDelegateNotifier(with: delegate)
     }
     
 }

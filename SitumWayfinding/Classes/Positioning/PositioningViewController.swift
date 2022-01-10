@@ -17,8 +17,10 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
     
     //MARK PositioningController protocol variables
     var buildingId: String = ""
-    var library: SitumMapsLibrary?
-    var wayfindingDelegate: WayfindingDelegate?
+    var library: SitumMapsLibrary? 
+    var delegateNotifier: WayfindingDelegateNotifier? {
+        return library?.delegateNotifier
+    }
 
     //Positioning
     @IBOutlet weak var navbar: UINavigationBar!
@@ -96,9 +98,6 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
         super.viewDidLoad()
         initSearchController()
         definesPresentationContext = true
-        if let wyfDelegate = library?.wayfindingDelegate {
-            self.wayfindingDelegate = wyfDelegate
-        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -373,21 +372,25 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
             showCenterButton()
         }
         isCameraCentered = false
-        if poiMarker != lastSelectedMarker{
-            poiWasSelected(poi: poiMarker.poi!)
+        //Call only if this marker wasnt already the selected one
+        if poiMarker != lastSelectedMarker, let uPoi = poiMarker.poi, let uBuildingInfo=buildingInfo{
+            poiWasSelected(poi: uPoi, buildingInfo: uBuildingInfo)
         }
     }
     
     func poiMarkerWasDeselected(poiMarker:SitumMarker){
-        poiWasDeselected(poi:poiMarker.poi!)
+        if let uPoi=poiMarker.poi ,let uBuildingInfo=buildingInfo{
+            poiWasDeselected(poi:uPoi, buildingInfo: uBuildingInfo)
+        }
     }
     
-    func poiWasSelected(poi:SITPOI){
-        notifyDelegateOnPOISelected(poi: poi)
+    func poiWasSelected(poi:SITPOI, buildingInfo:SITBuildingInfo){
+        delegateNotifier?.notifyOnPOISelected(poi: poi, buildingInfo:buildingInfo)
+            
     }
     
-    func poiWasDeselected(poi:SITPOI){
-        notifyDelegateOnPOIDeselected(poi:poi)
+    func poiWasDeselected(poi:SITPOI, buildingInfo:SITBuildingInfo){
+        delegateNotifier?.notifyOnPOIDeselected(poi:poi, buildingInfo:buildingInfo)
     }
     
     
@@ -474,7 +477,7 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
             return
         }
         if let uBuildingInfo = buildingInfo, let from = orderedFloors(buildingInfo: buildingInfo)?[selectedLevelIndex], let to = orderedFloors(buildingInfo: buildingInfo)?[floorIndex.row]{
-            notifyDelegateOnFloorChanged(from: from, to: to, building: uBuildingInfo.building)
+            delegateNotifier?.notifyOnFloorChanged(from: from, to: to, buildingInfo: uBuildingInfo)
         }
         self.removeLastCustomMarkerIfOutsideRoute()
         self.selectedLevelIndex = floorIndex.row
@@ -1064,52 +1067,6 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
             blue: CGFloat(rgbValue & 0x0000FF) / 255.0,
             alpha: CGFloat(1.0)
         )
-    }
-    
-    /**
-     Method that notifies when a POI has been selected. There are several actions that can result on a POI being selected.
-       1) When the user touch a POI in the screen
-       2) When the user search for POIs and select one of the available results
-     */
-    func notifyDelegateOnPOISelected(poi:SITPOI){
-        print("Poi was selected")
-        if let wyfDelegate = self.wayfindingDelegate {
-            // Find the floor
-            var poiFloor = SITFloor()
-            if let foundFloor = self.buildingInfo!.floors.first(where: {$0.identifier == poi.position().floorIdentifier}) {
-                poiFloor = foundFloor
-            } else {
-                poiFloor.identifier = poi.position().floorIdentifier
-            }
-            wyfDelegate.onPoiSelected(poi: poi, level: poiFloor, building: self.buildingInfo!.building)
-        }
-    }
-
-    /**
-     Method that notifies when a POI has been deselected. There are several actions that can result on a POI being deselected.
-       1) When the user touchs elsewhere in the map
-       2) When a different POI was seleted
-       3) When the user performs a long click on the map
-     */
-    func notifyDelegateOnPOIDeselected(poi:SITPOI){
-        print("Poi was deselected")
-        if let wyfDelegate = self.wayfindingDelegate {
-            wyfDelegate.onPoiDeselected(building: self.buildingInfo!.building)
-            
-        }
-    }
-    
-    /**
-    Method that notifies delegate that the selected floor has changed. The selected floor is the one which plan is shown on the screen. It may differ to the one where the user is positioned. There are several actions than can result on a floor change:
-      1) The user selects a different floor level on the floor selector
-      2) The user search and select a POI thats is in a different floor than the current selected floor
-      3) When the selected floor and the floor where the user is being positioned match if the user position floor changes the selected floor changes accordingly
-     */
-    func notifyDelegateOnFloorChanged(from:SITFloor, to:SITFloor, building:SITBuilding){
-        print("Floor changed")
-        if let wyfDelegate = self.wayfindingDelegate {
-            wyfDelegate.onFloorChanged(from:from, to:to, building: building)
-        }
     }
 
 }

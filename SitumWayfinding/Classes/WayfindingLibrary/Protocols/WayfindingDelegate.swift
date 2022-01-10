@@ -10,8 +10,7 @@ import SitumSDK
  /**
   Delegate that provide access to internal events that happens inside the module
   */
- public protocol WayfindingDelegate: NSObject {
-
+public protocol WayfindingDelegate{
 
      /**
       Method that notifies when a POI has been selected.
@@ -27,4 +26,5 @@ import SitumSDK
       Method that notifies that the selected floor has changed. The selected floor is the one which plan is shown on the screen. It may differ to the one where the user is positioned. 
       */
      func onFloorChanged(from:SITFloor, to:SITFloor, building:SITBuilding)
- }
+    
+}
