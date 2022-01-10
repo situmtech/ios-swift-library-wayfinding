@@ -20,6 +20,7 @@ import GoogleMaps
     private var toPresentViewController: PositioningViewController?
     internal let interceptorsManager: InterceptorsManager = InterceptorsManager()
     internal var onBackPressedCallback: ((Any) -> Void)?
+    internal var wayfindingDelegate: WayfindingDelegate?
     
     /// Credentials object used to authenticate the user before loading the wayfinding module
     // public private(set) var credentials: Credentials?
@@ -185,6 +186,17 @@ import GoogleMaps
     public func addNavigationRequestInterceptor(_ interceptor: @escaping (SITNavigationRequest) -> Void) {
         self.interceptorsManager.addNavigationRequestInterceptor(interceptor)
     }
+    
+    /**
+     Sets a delegate in order to receive events that happen inside the module so the developer can customize the experience of the app
+     
+     - parameter delegate: WayfindingDelegate protocol
+     */
+    public func setWayfindingDelegate(delegate: WayfindingDelegate) {
+        self.wayfindingDelegate = delegate
+        
+    }
+    
 }
 
 extension SitumMapsLibrary {

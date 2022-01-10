@@ -1,0 +1,2 @@
+### Added
+ * New Wayfinding delegate. As a developer you can implement these methods to process internal actions that happen inside the module. In this case we added new methods to customize the experience when a POI is selected and deselected.

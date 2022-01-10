@@ -12,7 +12,7 @@ import SitumWayfinding
 import SitumSDK
 import GoogleMaps
 
-class WayfindingController: UIViewController {
+class WayfindingController: UIViewController, WayfindingDelegate {
     
     @IBOutlet var containerView: UIView!
     
@@ -39,6 +39,7 @@ class WayfindingController: UIViewController {
             options.buildingDetector = .SITBLE
             locationRequest.outdoorLocationOptions = options
         }
+        self.library?.setWayfindingDelegate(delegate: self)
             
         do {
             try self.library!.load()
@@ -53,6 +54,15 @@ class WayfindingController: UIViewController {
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
+    
+    // MARK: Wayfinding Delegate
+         func onPoiDeselected(building: SITBuilding) {
+             print("onPoiDeselected app")
+         }
+
+         func onPoiSelected(poi: SITPOI, level: SITFloor, building: SITBuilding) {
+             print("onPoiSelected")
+         }
 }
 
 

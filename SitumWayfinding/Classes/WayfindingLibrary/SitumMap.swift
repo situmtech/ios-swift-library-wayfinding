@@ -52,4 +52,9 @@ public protocol SitumMap {
      */
     func addNavigationRequestInterceptor(_ interceptor: @escaping (SITNavigationRequest) -> Void)
     
+    /**
+     Sets a delegate that export actions within the module
+     */
+    func setWayfindingDelegate(delegate: WayfindingDelegate)
+    
 }
