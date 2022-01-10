@@ -128,6 +128,21 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
                             self.presenter = PositioningPresenter(view: self, buildingInfo: self.buildingInfo!, interceptorsManager: self.library?.interceptorsManager ?? InterceptorsManager())
                             self.initializeUIElements()
                         }
+                        
+                        // Display first floor of the building
+                        var indexToDisplay = 0;
+                        for (index, element) in self.buildingInfo!.floors.enumerated() {
+                            print(index, ":", element)
+                            if (self.buildingInfo!.floors[index].floor == 0) {
+                                indexToDisplay = index;
+                                break;
+                            }
+                        }
+                        
+                        
+                        
+                        self.select(floor: self.buildingInfo!.floors[indexToDisplay].identifier)
+
                     }, failure: { (error: Error?) in
                         print("Failed retrieving details of org")
                         // Use default values instead of an error
