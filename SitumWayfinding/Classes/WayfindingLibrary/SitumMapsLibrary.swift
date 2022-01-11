@@ -192,8 +192,8 @@ import GoogleMaps
      
      - parameter delegate: OnPoiSelectedListener protocol
      */
-    public func setOnPoiSelectionListener(delegate: OnPoiSelectionListener?) {
-        delegatesNotifier.poiSelectionDelegate=delegate
+    public func setOnPoiSelectionListener(listener: OnPoiSelectionListener?) {
+        delegatesNotifier.poiSelectionDelegate=listener
     }
     
     /**
@@ -201,8 +201,8 @@ import GoogleMaps
      
      - parameter delegate: OnPoiSelectedListener protocol
      */
-    public func setOnFloorChangeListener(delegate: OnFloorChangeListener?) {
-        delegatesNotifier.floorChangeDelegate=delegate
+    public func setOnFloorChangeListener(listener: OnFloorChangeListener?) {
+        delegatesNotifier.floorChangeDelegate=listener
     }
     
 }
