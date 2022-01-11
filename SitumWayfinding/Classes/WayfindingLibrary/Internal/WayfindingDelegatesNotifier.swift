@@ -6,12 +6,9 @@
 //
 
 import Foundation
-class WayfindingDelegateNotifier{
-    var wayfindingDelegate: WayfindingDelegate
-    
-    init(with delegate:WayfindingDelegate){
-        wayfindingDelegate = delegate
-    }
+class WayfindingDelegatesNotifier{
+    var poiSelectionDelegate: OnPoiSelectionListener?
+    var floorChangeDelegate: OnFloorChangeListener?
     
     /**
      Method that notifies when a POI has been selected. There are several actions that can result on a POI being selected.
@@ -26,7 +23,7 @@ class WayfindingDelegateNotifier{
         } else {
             poiFloor.identifier = poi.position().floorIdentifier
         }
-        wayfindingDelegate.onPoiSelected(poi: poi, level: poiFloor, building: buildingInfo.building)
+        poiSelectionDelegate?.onPoiSelected(poi: poi, level: poiFloor, building: buildingInfo.building)
     }
 
     /**
@@ -36,7 +33,7 @@ class WayfindingDelegateNotifier{
        3) When the user performs a long click on the map
      */
     func notifyOnPOIDeselected(poi:SITPOI, buildingInfo:SITBuildingInfo){
-        wayfindingDelegate.onPoiDeselected(building: buildingInfo.building)
+        poiSelectionDelegate?.onPoiDeselected(building: buildingInfo.building)
     }
     
     /**
@@ -46,7 +43,7 @@ class WayfindingDelegateNotifier{
       3) When the selected floor and the floor where the user is being positioned match if the user position floor changes the selected floor changes accordingly
      */
     func notifyOnFloorChanged(from:SITFloor, to:SITFloor, buildingInfo:SITBuildingInfo){
-        wayfindingDelegate.onFloorChanged(from:from, to:to, building: buildingInfo.building)
+        floorChangeDelegate?.onFloorChanged(from:from, to:to, building: buildingInfo.building)
         
     }
 }

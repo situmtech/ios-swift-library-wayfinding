@@ -53,8 +53,13 @@ public protocol SitumMap {
     func addNavigationRequestInterceptor(_ interceptor: @escaping (SITNavigationRequest) -> Void)
     
     /**
-     Sets a delegate that export actions within the module
+     Sets a delegate gets notified when there are changes in the selection, deselection of a POI
      */
-    func setWayfindingDelegate(delegate: WayfindingDelegate)
+    func setOnPoiSelectionListener(delegate: OnPoiSelectionListener?)
+    
+    /**
+     Sets a delegate gets notified when there are changes in the selection, deselection of a POI
+     */
+    func setOnFloorChangeListener(delegate: OnFloorChangeListener?)
     
 }

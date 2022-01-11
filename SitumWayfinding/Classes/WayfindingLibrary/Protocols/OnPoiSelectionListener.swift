@@ -8,9 +8,9 @@ import Foundation
 import SitumSDK
 
  /**
-  Delegate that provide access to internal events that happens inside the module
+  Delegate that get notified about changes in selection/deselection of Pois
   */
-public protocol WayfindingDelegate{
+public protocol OnPoiSelectionListener{
 
      /**
       Method that notifies when a POI has been selected.
@@ -21,10 +21,5 @@ public protocol WayfindingDelegate{
       Method that notifies when a POI has been deselected.
       */
      func onPoiDeselected(building: SITBuilding)
-
-     /**
-      Method that notifies that the selected floor has changed. The selected floor is the one which plan is shown on the screen. It may differ to the one where the user is positioned. 
-      */
-     func onFloorChanged(from:SITFloor, to:SITFloor, building:SITBuilding)
     
 }

@@ -17,9 +17,9 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
     
     //MARK PositioningController protocol variables
     var buildingId: String = ""
-    var library: SitumMapsLibrary? 
-    var delegateNotifier: WayfindingDelegateNotifier? {
-        return library?.delegateNotifier
+    var library: SitumMapsLibrary?
+    var delegateNotifier: WayfindingDelegatesNotifier? {
+        return library?.delegatesNotifier
     }
 
     //Positioning

@@ -20,7 +20,7 @@ import GoogleMaps
     private var toPresentViewController: PositioningViewController?
     internal let interceptorsManager: InterceptorsManager = InterceptorsManager()
     internal var onBackPressedCallback: ((Any) -> Void)?
-    internal var delegateNotifier: WayfindingDelegateNotifier?
+    internal var delegatesNotifier = WayfindingDelegatesNotifier()
     
     /// Credentials object used to authenticate the user before loading the wayfinding module
     // public private(set) var credentials: Credentials?
@@ -188,12 +188,21 @@ import GoogleMaps
     }
     
     /**
-     Sets a delegate in order to receive events that happen inside the module so the developer can customize the experience of the app
+     Sets a delegate that get notified about changes in selection/deselection of Pois
      
-     - parameter delegate: WayfindingDelegate protocol
+     - parameter delegate: OnPoiSelectedListener protocol
      */
-    public func setWayfindingDelegate(delegate: WayfindingDelegate) {
-        delegateNotifier = WayfindingDelegateNotifier(with: delegate)
+    public func setOnPoiSelectionListener(delegate: OnPoiSelectionListener?) {
+        delegatesNotifier.poiSelectionDelegate=delegate
+    }
+    
+    /**
+     Sets a delegate  that get notified about changes in the selected floor. 
+     
+     - parameter delegate: OnPoiSelectedListener protocol
+     */
+    public func setOnFloorChangeListener(delegate: OnFloorChangeListener?) {
+        delegatesNotifier.floorChangeDelegate=delegate
     }
     
 }
