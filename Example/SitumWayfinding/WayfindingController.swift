@@ -12,7 +12,7 @@ import SitumWayfinding
 import SitumSDK
 import GoogleMaps
 
-class WayfindingController: UIViewController, WayfindingDelegate {
+class WayfindingController: UIViewController, OnPoiSelectionListener, OnFloorChangeListener {
     
     @IBOutlet var containerView: UIView!
     
@@ -39,7 +39,8 @@ class WayfindingController: UIViewController, WayfindingDelegate {
             options.buildingDetector = .SITBLE
             locationRequest.outdoorLocationOptions = options
         }
-        self.library?.setWayfindingDelegate(delegate: self)
+        self.library?.setOnPoiSelectionListener(listener: self)
+        self.library?.setOnFloorChangeListener(listener:self)
             
         do {
             try self.library!.load()
@@ -56,13 +57,16 @@ class WayfindingController: UIViewController, WayfindingDelegate {
     }
     
     // MARK: Wayfinding Delegate
-         func onPoiDeselected(building: SITBuilding) {
-             print("onPoiDeselected app")
-         }
-
-         func onPoiSelected(poi: SITPOI, level: SITFloor, building: SITBuilding) {
-             print("onPoiSelected")
-         }
+    func onPoiDeselected(building: SITBuilding) {
+        print("onPoiDeselected app")
+    }
+    
+    func onPoiSelected(poi: SITPOI, level: SITFloor, building: SITBuilding) {
+        print("onPoiSelected")
+    }
+    func onFloorChanged(from: SITFloor, to: SITFloor, building: SITBuilding) {
+        print("onFloorChanged from \(from.floor) to \(to.floor)")
+    }
 }
 
 
