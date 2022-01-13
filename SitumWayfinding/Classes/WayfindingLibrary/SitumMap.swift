@@ -58,7 +58,7 @@ public protocol SitumMap {
     func setOnPoiSelectionListener(listener: OnPoiSelectionListener?)
     
     /**
-     Sets a delegate gets notified when there are changes in the selection, deselection of a POI
+     Sets a delegate that gets notified about changes in the selected floor. 
      */
     func setOnFloorChangeListener(listener: OnFloorChangeListener?)
     
