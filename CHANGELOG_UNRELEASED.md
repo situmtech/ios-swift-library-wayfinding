@@ -3,4 +3,4 @@
  * Added protocol OnFloorChangeListener and method setOnFloorChangeListener on SitumMap protocol. As a developer you can set a listener and implement the protocol method to get notified of changes in the selected floor
 
  ### Changed
- * Now changes on the selected floor doesnt causes the deselction of the selected Poi
+ * Now changes on the selected floor doesn't causes the deselection of the selected Poi
