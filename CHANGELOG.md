@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 All non released changes should be in CHANGELOG_UNRELEASED.md file
 
 ---------
+## [0.1.19] - 2022-01-14
+
+### Added
+ * Added protocol OnPoiSelectionListener and method setOnPoiSelectionListener on SitumMap protocol. As a developer you can set a listener and implement the protocol methods to get notified of selection/deselection of Pois
+ * Added protocol OnFloorChangeListener and method setOnFloorChangeListener on SitumMap protocol. As a developer you can set a listener and implement the protocol method to get notified of changes in the selected floor
+
+ ### Changed
+ * Now changes on the selected floor doesn't causes the deselection of the selected Poi
+
 ## [0.1.18] - 2021-12-23
 
 ### Added
