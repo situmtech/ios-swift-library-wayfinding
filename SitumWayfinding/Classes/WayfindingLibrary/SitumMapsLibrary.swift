@@ -20,6 +20,7 @@ import GoogleMaps
     private var toPresentViewController: PositioningViewController?
     internal let interceptorsManager: InterceptorsManager = InterceptorsManager()
     internal var onBackPressedCallback: ((Any) -> Void)?
+    internal var delegatesNotifier = WayfindingDelegatesNotifier()
     
     /// Credentials object used to authenticate the user before loading the wayfinding module
     // public private(set) var credentials: Credentials?
@@ -185,6 +186,25 @@ import GoogleMaps
     public func addNavigationRequestInterceptor(_ interceptor: @escaping (SITNavigationRequest) -> Void) {
         self.interceptorsManager.addNavigationRequestInterceptor(interceptor)
     }
+    
+    /**
+     Sets a delegate that get notified about changes in selection/deselection of Pois
+     
+     - parameter delegate: OnPoiSelectedListener protocol
+     */
+    public func setOnPoiSelectionListener(listener: OnPoiSelectionListener?) {
+        delegatesNotifier.poiSelectionDelegate=listener
+    }
+    
+    /**
+     Sets a delegate  that get notified about changes in the selected floor. 
+     
+     - parameter delegate: OnPoiSelectedListener protocol
+     */
+    public func setOnFloorChangeListener(listener: OnFloorChangeListener?) {
+        delegatesNotifier.floorChangeDelegate=listener
+    }
+    
 }
 
 extension SitumMapsLibrary {

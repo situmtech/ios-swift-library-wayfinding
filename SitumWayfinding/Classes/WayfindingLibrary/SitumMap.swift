@@ -52,4 +52,14 @@ public protocol SitumMap {
      */
     func addNavigationRequestInterceptor(_ interceptor: @escaping (SITNavigationRequest) -> Void)
     
+    /**
+     Sets a delegate gets notified when there are changes in the selection, deselection of a POI
+     */
+    func setOnPoiSelectionListener(listener: OnPoiSelectionListener?)
+    
+    /**
+     Sets a delegate that gets notified about changes in the selected floor. 
+     */
+    func setOnFloorChangeListener(listener: OnFloorChangeListener?)
+    
 }
