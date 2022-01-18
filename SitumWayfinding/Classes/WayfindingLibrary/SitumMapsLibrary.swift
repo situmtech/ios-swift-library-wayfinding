@@ -204,7 +204,15 @@ import GoogleMaps
     public func setOnFloorChangeListener(listener: OnFloorChangeListener?) {
         delegatesNotifier.floorChangeDelegate=listener
     }
-    
+
+    /**
+     Sets a delegate that get notified when the map is ready to interact and fully loaded.
+     
+     - parameter listener: OnMapReadyListener
+     */
+    public func setOnMapReadyCallback(listener: OnMapReadyListener?) {
+        delegatesNotifier.mapReadyDelegate = listener
+    }
 }
 
 extension SitumMapsLibrary {

@@ -9,6 +9,7 @@ import Foundation
 class WayfindingDelegatesNotifier{
     var poiSelectionDelegate: OnPoiSelectionListener?
     var floorChangeDelegate: OnFloorChangeListener?
+    var mapReadyDelegate: OnMapReadyListener?
     
     /**
      Method that notifies when a POI has been selected. There are several actions that can result on a POI being selected.
@@ -44,6 +45,9 @@ class WayfindingDelegatesNotifier{
      */
     func notifyOnFloorChanged(from:SITFloor, to:SITFloor, buildingInfo:SITBuildingInfo){
         floorChangeDelegate?.onFloorChanged(from:from, to:to, building: buildingInfo.building)
-        
+    }
+
+    func notifyOnMapReady(map: SitumMap) {
+        mapReadyDelegate?.onMapReady(map: map)
     }
 }
