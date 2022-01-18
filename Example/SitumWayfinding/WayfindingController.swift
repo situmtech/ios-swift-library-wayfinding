@@ -12,7 +12,7 @@ import SitumWayfinding
 import SitumSDK
 import GoogleMaps
 
-class WayfindingController: UIViewController, OnPoiSelectionListener, OnFloorChangeListener {
+class WayfindingController: UIViewController, OnPoiSelectionListener, OnFloorChangeListener, OnMapReadyListener {
     
     @IBOutlet var containerView: UIView!
     
@@ -40,11 +40,11 @@ class WayfindingController: UIViewController, OnPoiSelectionListener, OnFloorCha
             locationRequest.outdoorLocationOptions = options
         }
         self.library?.setOnPoiSelectionListener(listener: self)
-        self.library?.setOnFloorChangeListener(listener:self)
-            
+        self.library?.setOnFloorChangeListener(listener: self)
+        self.library?.setOnMapReadyCallback(listener: self)
+
         do {
             try self.library!.load()
-            
         } catch {
             print("An error has ocurred. Your SitumView could not be loaded.")
         }
@@ -66,6 +66,10 @@ class WayfindingController: UIViewController, OnPoiSelectionListener, OnFloorCha
     }
     func onFloorChanged(from: SITFloor, to: SITFloor, building: SITBuilding) {
         print("onFloorChanged from \(from.floor) to \(to.floor)")
+    }
+
+    func onMapReady(map: SitumMap) {
+        print("map ready to interact \(map)")
     }
 }
 
