@@ -326,19 +326,27 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     //MARK: POI Selection
     
     //Programatic POI selection, a POI can also be selected by the user tapping on it in the  phone screen
-    func select(poi:SITPOI) throws{
+    func select(poi: SITPOI) throws {
+        try select(poi: poi, success: {})
+    }
+
+    func select(poi: SITPOI, success: @escaping () -> Void) throws {
         if let indexpath = getIndexPath(floorId: poi.position().floorIdentifier){
-            select(floor:indexpath)
+            select(floor: indexpath)
         }
         if let markerPoi = poiMarkers.first(where: {($0.userData as! SITPOI).id == poi.id}){
-            select(marker:SitumMarker(from: markerPoi))
+            select(marker: SitumMarker(from: markerPoi), success: success)
         }else{
             throw WayfindingError.invalidPOI
         }
     }
-    
+
+    func select(marker: SitumMarker) {
+        select(marker: marker, success: {})
+    }
+
     //Imitates actions done by google maps when a user select a marker
-    func select(marker:SitumMarker){
+    func select(marker:SitumMarker, success: @escaping () -> Void){
         //TODO Extender para que sexa valido tamen para os custom markers
         if marker != lastSelectedMarker{
             deselect(marker: lastSelectedMarker)
@@ -351,10 +359,10 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
                 self.poiMarkerWasSelected(poiMarker:marker)
             }
             self.lastSelectedMarker = marker
+            success()
         })
         self.mapView.animate(toLocation: marker.gmsMarker.position)
         CATransaction.commit()
-        
     }
     
     func deselect(marker:SitumMarker?){
@@ -392,7 +400,6 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     
     func poiWasSelected(poi:SITPOI, buildingInfo:SITBuildingInfo){
         delegateNotifier?.notifyOnPOISelected(poi: poi, buildingInfo:buildingInfo)
-            
     }
     
     func poiWasDeselected(poi:SITPOI, buildingInfo:SITBuildingInfo){

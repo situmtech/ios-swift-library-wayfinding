@@ -193,7 +193,7 @@ import GoogleMaps
      - parameter delegate: OnPoiSelectedListener protocol
      */
     public func setOnPoiSelectionListener(listener: OnPoiSelectionListener?) {
-        delegatesNotifier.poiSelectionDelegate=listener
+        delegatesNotifier.poiSelectionDelegate = listener
     }
     
     /**
@@ -212,6 +212,17 @@ import GoogleMaps
      */
     public func setOnMapReadyCallback(listener: OnMapReadyListener?) {
         delegatesNotifier.mapReadyDelegate = listener
+    }
+
+    public func selectPoi(poi: SITPOI, callback: ActionListener? = nil) {
+        callback?.onActionStarted()
+        do {
+            try self.toPresentViewController?.select(poi: poi) {
+                callback?.onActionConcluded()
+            }
+        } catch {
+            callback?.onActionError(reason: error)
+        }
     }
 }
 

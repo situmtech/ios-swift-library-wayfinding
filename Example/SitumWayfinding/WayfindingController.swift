@@ -17,6 +17,8 @@ class WayfindingController: UIViewController, OnPoiSelectionListener, OnFloorCha
     @IBOutlet var containerView: UIView!
     
     var library: SitumMapsLibrary?
+    var selectFirstPOIAutomatically: Bool = false
+    let buildingId = "YOUR_BUILDING_ID"
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -26,7 +28,6 @@ class WayfindingController: UIViewController, OnPoiSelectionListener, OnFloorCha
         
         let credentials: Credentials = Credentials(user: "YOUR_USER", apiKey: "YOUR_SITUM_APIKEY", googleMapsApiKey: "YOUR_GOOGLEMAPS_APIKEY")
 
-        let buildingId = "YOUR_BUILDING_ID"
         let settings = LibrarySettings.Builder()
                 .setCredentials(credentials: credentials)
                 .setBuildingId(buildingId: buildingId)
@@ -70,6 +71,33 @@ class WayfindingController: UIViewController, OnPoiSelectionListener, OnFloorCha
 
     func onMapReady(map: SitumMap) {
         print("map ready to interact \(map)")
+
+        if (selectFirstPOIAutomatically) {
+            // get pois of the same building loaded in viewWillAppear
+            SITCommunicationManager.shared().fetchBuildingInfo(buildingId, withOptions: nil, success: { mapping in
+                guard mapping != nil, let buildingInfo = mapping!["results"] as? SITBuildingInfo else {return}
+
+                // select the first poi of the building
+                let point = buildingInfo.indoorPois[0]
+                self.library!.selectPoi(poi: point, callback: self)
+            }, failure: { error in
+                print("fetchBuildingInfoError \(error)")
+            })
+        }
+    }
+}
+
+extension WayfindingController: ActionListener {
+    public func onActionStarted() {
+        print("POI: selection started")
+    }
+
+    public func onActionConcluded() {
+        print("POI: selection succeeded")
+    }
+
+    public func onActionError(reason: Error) {
+        print("POI: selection error \(reason)")
     }
 }
 

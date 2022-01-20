@@ -13,6 +13,7 @@ import SitumSDK
 class ViewController: UIViewController {
    
     @IBOutlet var loadButton: UIButton!
+    private var selectPOI: Bool = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,7 +28,21 @@ class ViewController: UIViewController {
     }
     
     @IBAction func onPressLoadButton(_ sender: Any) {
+        selectPOI = false
         self.performSegue(withIdentifier: "loadWayfindingSegue", sender: self)
+    }
+    
+    @IBAction func loadAndSelectTapped(_ sender: Any) {
+        selectPOI = true
+        self.performSegue(withIdentifier: "loadWayfindingSegue", sender: self)
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "loadWayfindingSegue" {
+            if let vc = segue.destination as? WayfindingController {
+                vc.selectFirstPOIAutomatically = selectPOI
+            }
+        }
     }
 }
 

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="19529" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17703"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19519"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -42,6 +42,25 @@
                                     <action selector="onPressLoadButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="S2G-KR-pc4"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xXD-lc-Tl4">
+                                <rect key="frame" x="81.5" y="507" width="251" height="28"/>
+                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <gestureRecognizers/>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                <inset key="contentEdgeInsets" minX="10" minY="5" maxX="10" maxY="5"/>
+                                <state key="normal" title="Load Wayfinding and select POI">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </state>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                        <integer key="value" value="5"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                                <connections>
+                                    <action selector="loadAndSelectTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="wZ0-O9-GB8"/>
+                                    <action selector="onPressLoadButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="723-rd-QDT"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="rGn-7e-utf"/>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -49,6 +68,8 @@
                         <constraints>
                             <constraint firstItem="kYz-PR-o25" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" constant="50" id="1r5-7C-ZwI"/>
                             <constraint firstItem="kYz-PR-o25" firstAttribute="centerX" secondItem="rGn-7e-utf" secondAttribute="centerX" id="33j-dw-Nqw"/>
+                            <constraint firstItem="xXD-lc-Tl4" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="ZNb-D0-a8I"/>
+                            <constraint firstItem="xXD-lc-Tl4" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" constant="100" id="eaO-qA-0eH"/>
                             <constraint firstItem="LYZ-5T-B5U" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="kp7-7M-nDe"/>
                             <constraint firstItem="LYZ-5T-B5U" firstAttribute="centerX" secondItem="rGn-7e-utf" secondAttribute="centerX" id="n7B-k8-6cW"/>
                         </constraints>
