@@ -75,5 +75,5 @@ public protocol SitumMap {
        - poi: the SITPOI you want to select
        - completion: callback called when operation complete either successfully or with an error
      */
-    func selectPoi(poi: SITPOI, completion: @escaping (Result<Void, WayfindingError>) -> Void)
+    func selectPoi(poi: SITPOI, completion: @escaping (Result<Void, Error>) -> Void)
 }

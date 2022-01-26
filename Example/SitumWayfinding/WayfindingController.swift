@@ -85,7 +85,16 @@ class WayfindingController: UIViewController, OnPoiSelectionListener, OnFloorCha
                     case .success:
                         print("POI: selection succeeded")
                     case .failure(let reason):
-                        print("POI: selection error \(reason))")
+                        if let error = reason as? WayfindingError {
+                            switch error {
+                            case .invalidPOI:
+                                print("POI: selection error, invalid POI \(reason))")
+                            case .unknown:
+                                print("POI: unknown error \(reason))")
+                            }
+                        } else {
+                            print("POI: generic error \(reason))")
+                        }
                     }
                 }
             }, failure: { error in

@@ -220,21 +220,13 @@ import GoogleMaps
        - poi: the SITPOI you want to select
        - completion: callback called when operation complete either successfully or with an error
      */
-    public func selectPoi(poi: SITPOI, completion: @escaping (Result<Void, WayfindingError>) -> Void) {
+    public func selectPoi(poi: SITPOI, completion: @escaping (Result<Void, Error>) -> Void) {
         do {
             try self.toPresentViewController?.select(poi: poi) {
                 completion(.success(()))
             }
         } catch {
-            completion(.failure(self.wayfindindError(from: error)))
-        }
-    }
-
-    private func wayfindindError(from error: Error) -> WayfindingError {
-        if let error = error as? WayfindingError {
-            return error
-        } else {
-            return WayfindingError.unknown
+            completion(.failure(error))
         }
     }
 }
