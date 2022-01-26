@@ -9,8 +9,9 @@
 import Foundation
 import SitumSDK
 
-enum WayfindingError: Error {
+public enum WayfindingError: Error {
     case invalidPOI
+    case unknown
 }
 
 protocol PositioningView {

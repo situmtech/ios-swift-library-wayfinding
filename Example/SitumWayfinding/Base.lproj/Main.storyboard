@@ -17,13 +17,13 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Wayfinding Example" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LYZ-5T-B5U">
-                                <rect key="frame" x="111" y="409" width="192" height="24"/>
+                                <rect key="frame" x="111" y="359" width="192" height="24"/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kYz-PR-o25">
-                                <rect key="frame" x="132" y="456" width="150" height="30"/>
+                                <rect key="frame" x="132" y="406" width="150" height="30"/>
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <gestureRecognizers/>
                                 <constraints>
@@ -43,7 +43,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xXD-lc-Tl4">
-                                <rect key="frame" x="81.5" y="507" width="251" height="28"/>
+                                <rect key="frame" x="81.5" y="457" width="251" height="28"/>
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <gestureRecognizers/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
@@ -66,11 +66,11 @@
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <gestureRecognizers/>
                         <constraints>
-                            <constraint firstItem="kYz-PR-o25" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" constant="50" id="1r5-7C-ZwI"/>
+                            <constraint firstItem="kYz-PR-o25" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="1r5-7C-ZwI"/>
                             <constraint firstItem="kYz-PR-o25" firstAttribute="centerX" secondItem="rGn-7e-utf" secondAttribute="centerX" id="33j-dw-Nqw"/>
                             <constraint firstItem="xXD-lc-Tl4" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="ZNb-D0-a8I"/>
-                            <constraint firstItem="xXD-lc-Tl4" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" constant="100" id="eaO-qA-0eH"/>
-                            <constraint firstItem="LYZ-5T-B5U" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="kp7-7M-nDe"/>
+                            <constraint firstItem="xXD-lc-Tl4" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" constant="50" id="eaO-qA-0eH"/>
+                            <constraint firstItem="LYZ-5T-B5U" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" constant="-50" id="kp7-7M-nDe"/>
                             <constraint firstItem="LYZ-5T-B5U" firstAttribute="centerX" secondItem="rGn-7e-utf" secondAttribute="centerX" id="n7B-k8-6cW"/>
                         </constraints>
                     </view>

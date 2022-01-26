@@ -12,8 +12,11 @@ import Foundation
  */
 public protocol OnMapReadyListener {
     /**
-     Method that notifies when the map is fully loaded. This will be called after call load() on library when all
-     the resources are loaded, and the user can start to interact with the map.
+     Method that notifies that it is safe to perform operations over the map. After the SitumMapsLibrary load() method
+     is called, the module has to load the map on screen and obtain cartographic information. During this time the
+     module is not properly initialized and operations over the map are not guaranteed to end as expected.
+
+     - parameter map: instance of the SitumMapsLibrary prepared to perform operations
      */
     func onMapReady(map: SitumMap)
 }

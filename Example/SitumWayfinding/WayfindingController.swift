@@ -18,16 +18,17 @@ class WayfindingController: UIViewController, OnPoiSelectionListener, OnFloorCha
     
     var library: SitumMapsLibrary?
     var selectFirstPOIAutomatically: Bool = false
-    let buildingId = "YOUR_BUILDING_ID"
+    var buildingId = ""
     
     override func viewDidLoad() {
         super.viewDidLoad()
     }
 
     override func viewWillAppear(_ animated: Bool) {
-        
+
         let credentials: Credentials = Credentials(user: "YOUR_USER", apiKey: "YOUR_SITUM_APIKEY", googleMapsApiKey: "YOUR_GOOGLEMAPS_APIKEY")
 
+        buildingId = "YOUR_BUILDING_ID"
         let settings = LibrarySettings.Builder()
                 .setCredentials(credentials: credentials)
                 .setBuildingId(buildingId: buildingId)
@@ -42,7 +43,7 @@ class WayfindingController: UIViewController, OnPoiSelectionListener, OnFloorCha
         }
         self.library?.setOnPoiSelectionListener(listener: self)
         self.library?.setOnFloorChangeListener(listener: self)
-        self.library?.setOnMapReadyCallback(listener: self)
+        self.library?.setOnMapReadyListener(listener: self)
 
         do {
             try self.library!.load()
@@ -79,25 +80,18 @@ class WayfindingController: UIViewController, OnPoiSelectionListener, OnFloorCha
 
                 // select the first poi of the building
                 let point = buildingInfo.indoorPois[0]
-                self.library!.selectPoi(poi: point, callback: self)
+                self.library!.selectPoi(poi: point) { result in
+                    switch result {
+                    case .success:
+                        print("POI: selection succeeded")
+                    case .failure(let reason):
+                        print("POI: selection error \(reason))")
+                    }
+                }
             }, failure: { error in
                 print("fetchBuildingInfoError \(error)")
             })
         }
-    }
-}
-
-extension WayfindingController: ActionListener {
-    public func onActionStarted() {
-        print("POI: selection started")
-    }
-
-    public func onActionConcluded() {
-        print("POI: selection succeeded")
-    }
-
-    public func onActionError(reason: Error) {
-        print("POI: selection error \(reason)")
     }
 }
 

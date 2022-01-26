@@ -206,22 +206,35 @@ import GoogleMaps
     }
 
     /**
-     Sets a delegate that get notified when the map is ready to interact and fully loaded.
+     Sets a delegate that get notified when the map is ready to interact with and fully loaded.
      
      - parameter listener: OnMapReadyListener
      */
-    public func setOnMapReadyCallback(listener: OnMapReadyListener?) {
+    public func setOnMapReadyListener(listener: OnMapReadyListener?) {
         delegatesNotifier.mapReadyDelegate = listener
     }
 
-    public func selectPoi(poi: SITPOI, callback: ActionListener? = nil) {
-        callback?.onActionStarted()
+    /**
+     Select a poi in the map
+     - parameters:
+       - poi: the SITPOI you want to select
+       - completion: callback called when operation complete either successfully or with an error
+     */
+    public func selectPoi(poi: SITPOI, completion: @escaping (Result<Void, WayfindingError>) -> Void) {
         do {
             try self.toPresentViewController?.select(poi: poi) {
-                callback?.onActionConcluded()
+                completion(.success(()))
             }
         } catch {
-            callback?.onActionError(reason: error)
+            completion(.failure(self.wayfindindError(from: error)))
+        }
+    }
+
+    private func wayfindindError(from error: Error) -> WayfindingError {
+        if let error = error as? WayfindingError {
+            return error
+        } else {
+            return WayfindingError.unknown
         }
     }
 }
