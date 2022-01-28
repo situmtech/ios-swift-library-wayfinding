@@ -193,7 +193,7 @@ import GoogleMaps
      - parameter delegate: OnPoiSelectedListener protocol
      */
     public func setOnPoiSelectionListener(listener: OnPoiSelectionListener?) {
-        delegatesNotifier.poiSelectionDelegate=listener
+        delegatesNotifier.poiSelectionDelegate = listener
     }
     
     /**
@@ -204,7 +204,31 @@ import GoogleMaps
     public func setOnFloorChangeListener(listener: OnFloorChangeListener?) {
         delegatesNotifier.floorChangeDelegate=listener
     }
-    
+
+    /**
+     Sets a delegate that get notified when the map is ready to interact with and fully loaded.
+     
+     - parameter listener: OnMapReadyListener
+     */
+    public func setOnMapReadyListener(listener: OnMapReadyListener?) {
+        delegatesNotifier.mapReadyDelegate = listener
+    }
+
+    /**
+     Select a poi in the map
+     - parameters:
+       - poi: the SITPOI you want to select
+       - completion: callback called when operation complete either successfully or with an error
+     */
+    public func selectPoi(poi: SITPOI, completion: @escaping (Result<Void, Error>) -> Void) {
+        do {
+            try self.toPresentViewController?.select(poi: poi) {
+                completion(.success(()))
+            }
+        } catch {
+            completion(.failure(error))
+        }
+    }
 }
 
 extension SitumMapsLibrary {

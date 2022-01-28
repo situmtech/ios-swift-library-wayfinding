@@ -61,5 +61,19 @@ public protocol SitumMap {
      Sets a delegate that gets notified about changes in the selected floor. 
      */
     func setOnFloorChangeListener(listener: OnFloorChangeListener?)
-    
+
+    /**
+     Sets a delegate that get notified when the map is ready to interact with and fully loaded.
+
+     - parameter listener: OnMapReadyListener
+     */
+    func setOnMapReadyListener(listener: OnMapReadyListener?)
+
+    /**
+     Select a poi in the map
+     - parameters:
+       - poi: the SITPOI you want to select
+       - completion: callback called when operation complete either successfully or with an error
+     */
+    func selectPoi(poi: SITPOI, completion: @escaping (Result<Void, Error>) -> Void)
 }
