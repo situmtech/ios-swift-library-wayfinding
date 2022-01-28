@@ -9,10 +9,6 @@
 import Foundation
 import SitumSDK
 
-enum WayfindingError: Error {
-    case invalidPOI
-}
-
 protocol PositioningView {
     
     func change(_ state: SITLocationState, centerCamera: Bool)
