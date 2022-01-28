@@ -13,7 +13,7 @@ import SitumSDK
 
 let SecondsBetweenAlerts = 30.0
 
-class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableViewDataSource, UITableViewDelegate, PositioningView, PositioningController {
+class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableViewDataSource, UITableViewDelegate, PositioningView, PositioningController {
     
     //MARK PositioningController protocol variables
     var buildingId: String = ""
@@ -87,6 +87,8 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
     var searchController:UISearchController?
     var searchResultViewConstraints : [NSLayoutConstraint]?
 
+    // readiness of map
+    private var mapReadinessChecker: SitumMapReadinessChecker!
 
     // Constants
     let DEFAULT_SITUM_COLOR = "#283380"
@@ -98,6 +100,12 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
         super.viewDidLoad()
         initSearchController()
         definesPresentationContext = true
+        mapReadinessChecker = SitumMapReadinessChecker { [weak self] in
+            guard let instance = self else { return }
+            if let library = instance.library {
+                instance.delegateNotifier?.notifyOnMapReady(map: library)
+            }
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -113,6 +121,7 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
         SITCommunicationManager.shared().fetchBuildingInfo(self.buildingId, withOptions: nil, success: { (mapping: [AnyHashable : Any]?) in
             if (mapping != nil) {
                 self.buildingInfo = mapping!["results"] as? SITBuildingInfo
+                self.mapReadinessChecker.buildingInfoLoaded()
                 if self.buildingInfo!.floors.count <= 0 {
                     self.loadingError = true;
                     self.situmLoadFinished(loadingAlert: loadingAlert)
@@ -136,8 +145,6 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
                         self.loadingError = true
                         self.situmLoadFinished(loadingAlert: loadingAlert)
                     })
-                    
-                    
                 }
             }
         }, failure: { (error: Error?) in
@@ -306,7 +313,6 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
             if let data = data {
                 logoIV.image = UIImage.init(data: data)
             }
-            
         }
     }
     
@@ -320,19 +326,27 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
     //MARK: POI Selection
     
     //Programatic POI selection, a POI can also be selected by the user tapping on it in the  phone screen
-    func select(poi:SITPOI) throws{
+    func select(poi: SITPOI) throws {
+        try select(poi: poi, success: {})
+    }
+
+    func select(poi: SITPOI, success: @escaping () -> Void) throws {
         if let indexpath = getIndexPath(floorId: poi.position().floorIdentifier){
-            select(floor:indexpath)
+            select(floor: indexpath)
         }
         if let markerPoi = poiMarkers.first(where: {($0.userData as! SITPOI).id == poi.id}){
-            select(marker:SitumMarker(from: markerPoi))
+            select(marker: SitumMarker(from: markerPoi), success: success)
         }else{
             throw WayfindingError.invalidPOI
         }
     }
-    
+
+    func select(marker: SitumMarker) {
+        select(marker: marker, success: {})
+    }
+
     //Imitates actions done by google maps when a user select a marker
-    func select(marker:SitumMarker){
+    func select(marker:SitumMarker, success: @escaping () -> Void){
         //TODO Extender para que sexa valido tamen para os custom markers
         if marker != lastSelectedMarker{
             deselect(marker: lastSelectedMarker)
@@ -345,10 +359,10 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
                 self.poiMarkerWasSelected(poiMarker:marker)
             }
             self.lastSelectedMarker = marker
+            success()
         })
         self.mapView.animate(toLocation: marker.gmsMarker.position)
         CATransaction.commit()
-        
     }
     
     func deselect(marker:SitumMarker?){
@@ -386,33 +400,35 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
     
     func poiWasSelected(poi:SITPOI, buildingInfo:SITBuildingInfo){
         delegateNotifier?.notifyOnPOISelected(poi: poi, buildingInfo:buildingInfo)
-            
     }
     
     func poiWasDeselected(poi:SITPOI, buildingInfo:SITBuildingInfo){
         delegateNotifier?.notifyOnPOIDeselected(poi:poi, buildingInfo:buildingInfo)
     }
     
-    
     //MARK: Floorplans
 
-    
     func displayMap(forLevel selectedLevelIndex: Int) {
         let levelIdentifier = orderedFloors(buildingInfo: buildingInfo)![selectedLevelIndex].identifier
         if floorplans[levelIdentifier] != nil {
             displayFloorplan(forLevel: levelIdentifier)
+            self.mapReadinessChecker.currentFloorMapLoaded()
         } else {
-            SITCommunicationManager.shared().fetchMap(from: orderedFloors(buildingInfo: buildingInfo)![selectedLevelIndex], withCompletion: { imageData in
+            let wasMapFetched = SITCommunicationManager.shared().fetchMap(from: orderedFloors(buildingInfo: buildingInfo)![selectedLevelIndex], withCompletion: { imageData in
                 
                 if let imageData = imageData {
                     let image =  UIImage.init(data: imageData, scale: UIScreen.main.scale)
                     let scaledImage = ImageUtils.scaleImage(image: image!)
                     self.floorplans[levelIdentifier] = scaledImage
                     self.displayFloorplan(forLevel: levelIdentifier)
+                    self.mapReadinessChecker.currentFloorMapLoaded()
                 } else {
                     self.showAlertMessage(title: "Empty floorplan", message: "An unexpected error ocurred while downloading the floorplan. Please try again.", alertType: .otherAlert)
                 }
             })
+            if !wasMapFetched {
+                self.showAlertMessage(title: "Empty floorplan", message: "An unexpected error ocurred while downloading the floorplan. Please try again.", alertType: .otherAlert)
+            }
         }
     }
     
@@ -447,8 +463,6 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
         
         return []
     }
-    
-
     
     //PositioningView protocol method
     func setCameraCentered() {
@@ -490,8 +504,7 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
         }
         levelsTableView.scrollToRow(at: floorIndex, at: .middle, animated: true)
     }
-    
-    
+
     //MARK: TableView
     
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -739,7 +752,10 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
 
         self.present(alert, animated: true, completion: nil)
     }
-    
+
+    func mapViewSnapshotReady(_ mapView: GMSMapView) {
+        mapReadinessChecker.setMapAsReady()
+    }
 
     //MARK: IBActions
     
@@ -962,7 +978,6 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
         return floorIdentifier
     }
 
-
     func generateAndPrintRoutePathWithRouteSegments(segments: Array<SITRouteSegment>, selectedFloor: SITFloor) {
         let color = UIColor(red: 0x00 / 255.0, green: 0x75 / 255.0, blue: 0xc9 / 255.0, alpha: 1)
         let styles: [GMSStrokeStyle] = [.solidColor(
@@ -998,8 +1013,8 @@ class PositioningViewController: UIViewController ,GMSMapViewDelegate, UITableVi
         }
     }
 
-
     //MARK: Stop methods
+
     func stop() {
         self.makeUserMarkerVisible(visible: false)
         self.numberBeaconsRangedView.isHidden = true
