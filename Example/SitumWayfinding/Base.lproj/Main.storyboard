@@ -5,6 +5,7 @@
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19519"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -17,65 +18,102 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Wayfinding Example" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LYZ-5T-B5U">
-                                <rect key="frame" x="111" y="359" width="192" height="24"/>
+                                <rect key="frame" x="111.5" y="30" width="191.5" height="24"/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kYz-PR-o25">
-                                <rect key="frame" x="132" y="406" width="150" height="30"/>
-                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <gestureRecognizers/>
-                                <constraints>
-                                    <constraint firstAttribute="width" secondItem="kYz-PR-o25" secondAttribute="height" multiplier="5:1" id="9Xs-9f-ES5"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
-                                <state key="normal" title="Load Wayfinding">
-                                    <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                </state>
-                                <userDefinedRuntimeAttributes>
-                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
-                                        <integer key="value" value="5"/>
-                                    </userDefinedRuntimeAttribute>
-                                </userDefinedRuntimeAttributes>
-                                <connections>
-                                    <action selector="onPressLoadButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="S2G-KR-pc4"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xXD-lc-Tl4">
-                                <rect key="frame" x="81.5" y="457" width="251" height="28"/>
-                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <gestureRecognizers/>
-                                <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
-                                <inset key="contentEdgeInsets" minX="10" minY="5" maxX="10" maxY="5"/>
-                                <state key="normal" title="Load Wayfinding and select POI">
-                                    <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                </state>
-                                <userDefinedRuntimeAttributes>
-                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
-                                        <integer key="value" value="5"/>
-                                    </userDefinedRuntimeAttribute>
-                                </userDefinedRuntimeAttributes>
-                                <connections>
-                                    <action selector="loadAndSelectTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="wZ0-O9-GB8"/>
-                                    <action selector="onPressLoadButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="723-rd-QDT"/>
-                                </connections>
-                            </button>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="30" translatesAutoresizingMaskIntoConstraints="NO" id="ieK-q5-HVl">
+                                <rect key="frame" x="20" y="84" width="374" height="144"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kYz-PR-o25">
+                                        <rect key="frame" x="116" y="0.0" width="142" height="28"/>
+                                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <gestureRecognizers/>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                        <inset key="contentEdgeInsets" minX="10" minY="5" maxX="10" maxY="5"/>
+                                        <state key="normal" title="Load Wayfinding">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        </state>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                                <integer key="value" value="5"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
+                                        <connections>
+                                            <action selector="loadTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="ST3-Ml-Gh4"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xXD-lc-Tl4">
+                                        <rect key="frame" x="61.5" y="58" width="251" height="28"/>
+                                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <gestureRecognizers/>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                        <inset key="contentEdgeInsets" minX="10" minY="5" maxX="10" maxY="5"/>
+                                        <state key="normal" title="Load Wayfinding and select POI">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        </state>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                                <integer key="value" value="5"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
+                                        <connections>
+                                            <action selector="loadAndSelectTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="wZ0-O9-GB8"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ey9-zA-wx2">
+                                        <rect key="frame" x="43" y="116" width="288" height="28"/>
+                                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <gestureRecognizers/>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                        <inset key="contentEdgeInsets" minX="10" minY="5" maxX="10" maxY="5"/>
+                                        <state key="normal" title="Load Wayfinding and navigate to POI">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        </state>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                                <integer key="value" value="5"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
+                                        <connections>
+                                            <action selector="loadAndNavigateTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="jLO-sh-BlP"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                            </stackView>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="zvr-7g-CxO">
+                                <rect key="frame" x="0.0" y="298.5" width="414" height="509.5"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                            </tableView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="List of available POIs" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TUz-42-YwY">
+                                <rect key="frame" x="20" y="268" width="374" height="20.5"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="rGn-7e-utf"/>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <gestureRecognizers/>
                         <constraints>
-                            <constraint firstItem="kYz-PR-o25" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="1r5-7C-ZwI"/>
-                            <constraint firstItem="kYz-PR-o25" firstAttribute="centerX" secondItem="rGn-7e-utf" secondAttribute="centerX" id="33j-dw-Nqw"/>
-                            <constraint firstItem="xXD-lc-Tl4" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="ZNb-D0-a8I"/>
-                            <constraint firstItem="xXD-lc-Tl4" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" constant="50" id="eaO-qA-0eH"/>
-                            <constraint firstItem="LYZ-5T-B5U" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" constant="-50" id="kp7-7M-nDe"/>
+                            <constraint firstItem="ieK-q5-HVl" firstAttribute="top" secondItem="LYZ-5T-B5U" secondAttribute="bottom" constant="30" id="1Uq-iX-031"/>
+                            <constraint firstItem="rGn-7e-utf" firstAttribute="trailing" secondItem="TUz-42-YwY" secondAttribute="trailing" constant="20" id="1dl-ej-bui"/>
+                            <constraint firstItem="rGn-7e-utf" firstAttribute="trailing" secondItem="ieK-q5-HVl" secondAttribute="trailing" constant="20" id="4Rw-Jl-WZM"/>
+                            <constraint firstItem="TUz-42-YwY" firstAttribute="top" secondItem="ieK-q5-HVl" secondAttribute="bottom" constant="40" id="Bac-UE-ejq"/>
+                            <constraint firstItem="LYZ-5T-B5U" firstAttribute="top" secondItem="rGn-7e-utf" secondAttribute="top" constant="30" id="CWs-qc-DfG"/>
+                            <constraint firstItem="rGn-7e-utf" firstAttribute="bottom" secondItem="zvr-7g-CxO" secondAttribute="bottom" id="Fn2-Iu-aeb"/>
+                            <constraint firstItem="rGn-7e-utf" firstAttribute="trailing" secondItem="zvr-7g-CxO" secondAttribute="trailing" id="L69-eY-4GU"/>
+                            <constraint firstItem="ieK-q5-HVl" firstAttribute="leading" secondItem="rGn-7e-utf" secondAttribute="leading" constant="20" id="Zmi-cy-xRT"/>
+                            <constraint firstItem="zvr-7g-CxO" firstAttribute="leading" secondItem="rGn-7e-utf" secondAttribute="leading" id="gBj-Z6-83T"/>
                             <constraint firstItem="LYZ-5T-B5U" firstAttribute="centerX" secondItem="rGn-7e-utf" secondAttribute="centerX" id="n7B-k8-6cW"/>
+                            <constraint firstItem="TUz-42-YwY" firstAttribute="leading" secondItem="rGn-7e-utf" secondAttribute="leading" constant="20" id="nnK-k6-qee"/>
+                            <constraint firstItem="zvr-7g-CxO" firstAttribute="top" secondItem="TUz-42-YwY" secondAttribute="bottom" constant="10" id="vkg-Se-JnS"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="loadButton" destination="kYz-PR-o25" id="iNN-Y5-fdK"/>
+                        <outlet property="tableView" destination="zvr-7g-CxO" id="8Yk-zt-9Q0"/>
                         <segue destination="uIe-Uw-TaB" kind="show" identifier="loadWayfindingSegue" id="JYy-W1-OV2"/>
                     </connections>
                 </viewController>
@@ -115,4 +153,9 @@
             <point key="canvasLocation" x="1342.0289855072465" y="137.94642857142856"/>
         </scene>
     </scenes>
+    <resources>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
 </document>

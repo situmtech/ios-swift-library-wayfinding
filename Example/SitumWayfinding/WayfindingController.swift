@@ -15,31 +15,30 @@ import GoogleMaps
 class WayfindingController: UIViewController, OnPoiSelectionListener, OnFloorChangeListener, OnMapReadyListener {
     
     @IBOutlet var containerView: UIView!
-    
+
+    var action: WYFAction?
+    var credentials: Credentials!
+    var buildingId: String!
+
     var library: SitumMapsLibrary?
-    var selectFirstPOIAutomatically: Bool = false
-    var buildingId = ""
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
     }
 
     override func viewWillAppear(_ animated: Bool) {
-
-        let credentials: Credentials = Credentials(user: "YOUR_USER", apiKey: "YOUR_SITUM_APIKEY", googleMapsApiKey: "YOUR_GOOGLEMAPS_APIKEY")
-
-        buildingId = "YOUR_BUILDING_ID"
         let settings = LibrarySettings.Builder()
                 .setCredentials(credentials: credentials)
                 .setBuildingId(buildingId: buildingId)
                 .build()
         self.library = SitumMapsLibrary(containedBy: self.containerView, controlledBy: self, withSettings: settings)
-            
+
         self.library?.addLocationRequestInterceptor { (locationRequest: SITLocationRequest) in
-            locationRequest.useGlobalLocation = true;
             let options: SITOutdoorLocationOptions = SITOutdoorLocationOptions()
             options.buildingDetector = .SITBLE
             locationRequest.outdoorLocationOptions = options
+            // setting building ID disable indoor-outdoor positioning
+            locationRequest.buildingID = self.buildingId
         }
         self.library?.setOnPoiSelectionListener(listener: self)
         self.library?.setOnFloorChangeListener(listener: self)
@@ -73,33 +72,48 @@ class WayfindingController: UIViewController, OnPoiSelectionListener, OnFloorCha
     func onMapReady(map: SitumMap) {
         print("map ready to interact \(map)")
 
-        if (selectFirstPOIAutomatically) {
-            // get pois of the same building loaded in viewWillAppear
-            SITCommunicationManager.shared().fetchBuildingInfo(buildingId, withOptions: nil, success: { mapping in
-                guard mapping != nil, let buildingInfo = mapping!["results"] as? SITBuildingInfo else {return}
+        if let action = action {
+            switch action {
+            case .selectPoi(let poi):
+                selectPoi(poi: poi)
+            case .navigateToPoi(let poi):
+                self.navigateToPoi(poi: poi)
+            }
+        }
+    }
 
-                // select the first poi of the building
-                let point = buildingInfo.indoorPois[0]
-                self.library!.selectPoi(poi: point) { result in
-                    switch result {
-                    case .success:
-                        print("POI: selection succeeded")
-                    case .failure(let reason):
-                        if let error = reason as? WayfindingError {
-                            switch error {
-                            case .invalidPOI:
-                                print("POI: selection error, invalid POI \(reason))")
-                            case .unknown:
-                                print("POI: unknown error \(reason))")
-                            }
-                        } else {
-                            print("POI: generic error \(reason))")
-                        }
-                    }
-                }
-            }, failure: { error in
-                print("fetchBuildingInfoError \(error)")
-            })
+    private func selectPoi(poi: SITPOI) {
+        self.library?.selectPoi(poi: poi) { [weak self] result in
+            switch result {
+            case .success:
+                print("POI: selection succeeded")
+            case .failure(let reason):
+                self?.processSelectionError(error: reason)
+            }
+        }
+    }
+
+    private func navigateToPoi(poi: SITPOI) {
+        self.library?.navigateToPoi(poi: poi) { [weak self] result in
+            switch result {
+            case .success:
+                print("POI: navigation started")
+            case .failure(let reason):
+                self?.processSelectionError(error: reason)
+            }
+        }
+    }
+
+    private func processSelectionError(error: Error) {
+        if let error = error as? WayfindingError {
+            switch error {
+            case .invalidPOI:
+                print("POI: selection error, invalid POI \(error))")
+            case .unknown:
+                print("POI: unknown error \(error))")
+            }
+        } else {
+            print("POI: generic error \(error))")
         }
     }
 }

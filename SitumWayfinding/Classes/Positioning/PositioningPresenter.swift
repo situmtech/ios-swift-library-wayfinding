@@ -42,6 +42,8 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
     let compassCalibrationAlertTitle = "Compass calibration needed"
     let oobAlertTitle = "User outside building"
     let outsideRouteAlertTitle = "User ouside route"
+
+    private var positioningStartedCompletion: (() -> Void)? = nil
     
     init(view: PositioningView, buildingInfo: SITBuildingInfo, interceptorsManager: InterceptorsManager) {
         self.view = view
@@ -49,7 +51,8 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
         self.interceptorsManager = interceptorsManager
     }
     
-    func startPositioning() {
+    func startPositioning(completion: (() -> Void)? = nil) {
+        positioningStartedCompletion = completion
         initializeLocationManagers()
         requestLocationUpdates()
     }
@@ -220,7 +223,7 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
         }
     }
     
-    func centerButtonPressed() {
+    func centerLocatedUserInView() {
         if let userLocation = userLocation {
             view?.select(floor: userLocation.position.floorIdentifier)
             view?.setCameraCentered()
@@ -365,10 +368,10 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
     }
     
     func locationManager(_ locationManager: SITLocationInterface, didUpdate location: SITLocation) {
-        
+
         Logger.logDebugMessage("location manager updates location: \(location), provider: \(location.provider)")
         locationManagerUserLocation = location
-        
+
         if (userLocation == nil) {
             view?.change(.started, centerCamera: true)
         }
@@ -385,6 +388,8 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
             self.isSystemWaitingToStartRoute = false
             self.requestDirections(to: self.point)
         }
+
+        positioningStartedOrFailed()
     }
     
     
@@ -392,6 +397,7 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
         Logger.logErrorMessage("Location error problem: \(error.debugDescription)")
         view?.stop()
         view?.showAlertMessage(title: "Error", message: error!.localizedDescription, alertType: .otherAlert)
+        positioningStartedOrFailed()
     }
     
     func locationManager(_ locationManager: SITLocationInterface, didUpdate state: SITLocationState) {
@@ -419,6 +425,11 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
             break;
         }
         Logger.logDebugMessage("Location manager updates state: \(stateName)")
+    }
+
+    func positioningStartedOrFailed() {
+        positioningStartedCompletion?()
+        positioningStartedCompletion = nil
     }
     
     //MARK: DirectionsDelegate methods

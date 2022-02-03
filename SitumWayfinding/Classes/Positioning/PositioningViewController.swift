@@ -168,7 +168,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
             }
         }
     }
-    
+
     func situmLoadFinished(loadingAlert : UIAlertController){
         loadingAlert.dismiss(animated: true) {
             if (self.loadingError){
@@ -768,6 +768,10 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     @IBAction
     func navigationButtonPressed(_ sender: Any) {
         Logger.logInfoMessage("Navigation Button Has Been pressed")
+        startNavigation()
+    }
+
+    func startNavigation() {
         var destination = kCLLocationCoordinate2DInvalid
         if let marker = self.lastSelectedMarker {
             self.destinationMarker = marker
@@ -780,12 +784,14 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     
     @IBAction
     func goBackButtonPressed(_ sender: Any) {
+        //TODO maybe this code should be in viewDidDisappear or viewWillDissaper and ensure all starting services,
+        // positioning, navigation... are stopped
         self.presenter?.stopPositioning()
         self.presenter?.view = nil
         if let callback: (Any) -> Void = self.library?.onBackPressedCallback {
             callback(sender)
         } else {
-            self.navigationController?.popViewController(animated: true)
+            self.dismiss(animated: true)
         }
     }
     
@@ -797,7 +803,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     @IBAction
     func centerButtonPressed(_ sender: UIButton) {
 //        self.changeNavigationButtonVisibility(isVisible: false)
-        presenter?.centerButtonPressed()
+        presenter?.centerLocatedUserInView()
     }
     
     //MARK: PositioningView protocol methods
