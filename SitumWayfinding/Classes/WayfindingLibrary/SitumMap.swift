@@ -81,7 +81,6 @@ public protocol SitumMap {
      Navigate to a poi in the map
      - parameters:
        - poi: navigation goes toward this SITPOI
-       - completion: callback called when operation complete either successfully or with an error
      */
-    func navigateToPoi(poi: SITPOI, completion: @escaping (Result<Void, Error>) -> Void)
+    func navigateToPoi(poi: SITPOI)
 }

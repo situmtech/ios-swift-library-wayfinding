@@ -145,7 +145,7 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
         }
     }
 
-    public func startPositioningAndComputeRoute(withDestination destination: CLLocationCoordinate2D, inFloor floorId: String) {
+    public func startPositioningAndNavigate(withDestination destination: CLLocationCoordinate2D, inFloor floorId: String) {
         point = nil
         if (CLLocationCoordinate2DIsValid(destination)){
             point = SITPoint(building: buildingInfo.building, floorIdentifier: floorId, coordinate: destination)

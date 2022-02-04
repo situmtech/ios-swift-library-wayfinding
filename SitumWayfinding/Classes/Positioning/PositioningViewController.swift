@@ -779,8 +779,9 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         }
         self.positioningButton.isHidden = true
         self.changeCancelNavigationButtonVisibility(isVisible: true)
-        self.presenter?.startPositioningAndComputeRoute(withDestination: destination,
+        self.presenter?.startPositioningAndNavigate(withDestination: destination,
             inFloor: orderedFloors(buildingInfo: buildingInfo)![self.selectedLevelIndex].identifier)
+        self.presenter?.centerViewInUserLocation()
     }
     
     @IBAction

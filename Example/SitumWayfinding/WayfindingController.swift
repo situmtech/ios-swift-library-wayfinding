@@ -94,14 +94,7 @@ class WayfindingController: UIViewController, OnPoiSelectionListener, OnFloorCha
     }
 
     private func navigateToPoi(poi: SITPOI) {
-        self.library?.navigateToPoi(poi: poi) { [weak self] result in
-            switch result {
-            case .success:
-                print("POI: navigation started")
-            case .failure(let reason):
-                self?.processSelectionError(error: reason)
-            }
-        }
+        self.library?.navigateToPoi(poi: poi)
     }
 
     private func processSelectionError(error: Error) {

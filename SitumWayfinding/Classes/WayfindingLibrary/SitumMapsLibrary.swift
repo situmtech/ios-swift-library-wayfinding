@@ -218,20 +218,16 @@ import GoogleMaps
      Navigate to a poi in the map
      - parameters:
        - poi: navigation goes toward this SITPOI
-       - completion: callback called when operation complete either successfully or with an error
      */
-    public func navigateToPoi(poi: SITPOI, completion: @escaping (Result<Void, Error>) -> Void) {
-        guard let positioningController = toPresentViewController,
-            let presenter = positioningController.presenter else { return }
+    public func navigateToPoi(poi: SITPOI) {
+        guard let positioningController = toPresentViewController else { return }
 
         selectPoi(poi: poi) { result in
             switch result {
             case .success:
                 positioningController.startNavigation()
-                presenter.centerViewInUserLocation()
-                completion(.success(()))
-            case .failure(let error):
-                completion(.failure(error))
+            case .failure:
+                break
             }
         }
     }
