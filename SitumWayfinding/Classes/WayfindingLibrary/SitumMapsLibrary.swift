@@ -227,11 +227,9 @@ import GoogleMaps
         selectPoi(poi: poi) { result in
             switch result {
             case .success:
-                presenter.startPositioning {
-                    positioningController.startNavigation()
-                    presenter.centerLocatedUserInView()
-                    completion(.success(()))
-                }
+                positioningController.startNavigation()
+                presenter.centerViewInUserLocation()
+                completion(.success(()))
             case .failure(let error):
                 completion(.failure(error))
             }

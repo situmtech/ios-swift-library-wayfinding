@@ -83,7 +83,7 @@ class ViewController: UIViewController {
     private func showUnselectedPoiError() {
         let alert = UIAlertController(
             title: "Select POI",
-            message: "You must select a POI in the list of available POIs to do given action",
+            message: "You must select a POI in the list of available POIs to perform the action",
             preferredStyle: .alert
         )
         alert.addAction(UIAlertAction(title: "Ok", style: .default))

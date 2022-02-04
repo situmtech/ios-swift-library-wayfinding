@@ -779,19 +779,22 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         }
         self.positioningButton.isHidden = true
         self.changeCancelNavigationButtonVisibility(isVisible: true)
-        self.presenter?.navigationButtonPressed(withDestination: destination, inFloor: orderedFloors(buildingInfo: buildingInfo)![self.selectedLevelIndex].identifier)
+        self.presenter?.startPositioningAndComputeRoute(withDestination: destination,
+            inFloor: orderedFloors(buildingInfo: buildingInfo)![self.selectedLevelIndex].identifier)
     }
     
     @IBAction
     func goBackButtonPressed(_ sender: Any) {
-        //TODO maybe this code should be in viewDidDisappear or viewWillDissaper and ensure all starting services,
-        // positioning, navigation... are stopped
         self.presenter?.stopPositioning()
         self.presenter?.view = nil
         if let callback: (Any) -> Void = self.library?.onBackPressedCallback {
             callback(sender)
         } else {
-            self.dismiss(animated: true)
+            if let navigationController = self.navigationController {
+                navigationController.popViewController(animated: true)
+            } else {
+                self.dismiss(animated: true)
+            }
         }
     }
     
@@ -803,7 +806,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     @IBAction
     func centerButtonPressed(_ sender: UIButton) {
 //        self.changeNavigationButtonVisibility(isVisible: false)
-        presenter?.centerLocatedUserInView()
+        presenter?.centerViewInUserLocation()
     }
     
     //MARK: PositioningView protocol methods
