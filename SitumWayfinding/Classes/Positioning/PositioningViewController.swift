@@ -1047,6 +1047,9 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         self.removeLastCustomMarker()
         self.destinationMarker?.setMapView(mapView: nil)
         self.destinationMarker = nil
+
+        // hide selected point
+        self.mapView.selectedMarker = nil
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
