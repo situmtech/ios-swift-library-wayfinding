@@ -215,6 +215,24 @@ import GoogleMaps
     }
 
     /**
+     Navigate to a poi in the map
+     - parameters:
+       - poi: navigation goes toward this SITPOI
+     */
+    public func navigateToPoi(poi: SITPOI) {
+        guard let positioningController = toPresentViewController else { return }
+
+        selectPoi(poi: poi) { result in
+            switch result {
+            case .success:
+                positioningController.startNavigation()
+            case .failure:
+                break
+            }
+        }
+    }
+
+    /**
      Select a poi in the map
      - parameters:
        - poi: the SITPOI you want to select
