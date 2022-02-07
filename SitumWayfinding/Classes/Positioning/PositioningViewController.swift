@@ -168,7 +168,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
             }
         }
     }
-    
+
     func situmLoadFinished(loadingAlert : UIAlertController){
         loadingAlert.dismiss(animated: true) {
             if (self.loadingError){
@@ -768,6 +768,10 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     @IBAction
     func navigationButtonPressed(_ sender: Any) {
         Logger.logInfoMessage("Navigation Button Has Been pressed")
+        startNavigation()
+    }
+
+    func startNavigation() {
         var destination = kCLLocationCoordinate2DInvalid
         if let marker = self.lastSelectedMarker {
             self.destinationMarker = marker
@@ -775,7 +779,9 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         }
         self.positioningButton.isHidden = true
         self.changeCancelNavigationButtonVisibility(isVisible: true)
-        self.presenter?.navigationButtonPressed(withDestination: destination, inFloor: orderedFloors(buildingInfo: buildingInfo)![self.selectedLevelIndex].identifier)
+        self.presenter?.startPositioningAndNavigate(withDestination: destination,
+            inFloor: orderedFloors(buildingInfo: buildingInfo)![self.selectedLevelIndex].identifier)
+        self.presenter?.centerViewInUserLocation()
     }
     
     @IBAction
@@ -785,7 +791,11 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         if let callback: (Any) -> Void = self.library?.onBackPressedCallback {
             callback(sender)
         } else {
-            self.navigationController?.popViewController(animated: true)
+            if let navigationController = self.navigationController {
+                navigationController.popViewController(animated: true)
+            } else {
+                self.dismiss(animated: true)
+            }
         }
     }
     
@@ -797,7 +807,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     @IBAction
     func centerButtonPressed(_ sender: UIButton) {
 //        self.changeNavigationButtonVisibility(isVisible: false)
-        presenter?.centerButtonPressed()
+        presenter?.centerViewInUserLocation()
     }
     
     //MARK: PositioningView protocol methods
@@ -1037,6 +1047,9 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         self.removeLastCustomMarker()
         self.destinationMarker?.setMapView(mapView: nil)
         self.destinationMarker = nil
+
+        // hide selected point
+        self.mapView.selectedMarker = nil
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
