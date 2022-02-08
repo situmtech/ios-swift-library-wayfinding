@@ -215,25 +215,18 @@ import GoogleMaps
     }
 
     /**
-     Navigate to a poi in the map
+     Navigate to a poi in the map. This will start positioning, calculate the route to destination, center view in the
+     location of the user and show instructions on how to reach that poi to the user
      - parameters:
        - poi: navigation goes toward this SITPOI
      */
     public func navigateToPoi(poi: SITPOI) {
         guard let positioningController = toPresentViewController else { return }
-
-        selectPoi(poi: poi) { result in
-            switch result {
-            case .success:
-                positioningController.startNavigation()
-            case .failure:
-                break
-            }
-        }
+        positioningController.startNavigation(to: poi)
     }
 
     /**
-     Select a poi in the map
+     Select a poi in the map centering view in the poi and showing the label (if any) on top of poi icon
      - parameters:
        - poi: the SITPOI you want to select
        - completion: callback called when operation complete either successfully or with an error
@@ -246,6 +239,20 @@ import GoogleMaps
         } catch {
             completion(.failure(error))
         }
+    }
+
+    /**
+     Navigate to a location with coordinates latitude and longitude. This will start positioning, calculate the route
+     to destination and show instructions on how to reach location to the user
+     - parameters:
+       - floor: floor that contains the point to navigate
+       - lat: latitude of the point
+       - lng: longitude of the point
+     */
+    public func navigateToLocation(floor: SITFloor, lat: Double, lng: Double) {
+        guard let positioningController = toPresentViewController else { return }
+        let location = CLLocationCoordinate2D(latitude: lat, longitude: lng)
+        positioningController.startNavigation(to: location, in: floor)
     }
 }
 

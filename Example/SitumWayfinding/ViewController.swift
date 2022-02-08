@@ -17,6 +17,8 @@ class ViewController: UIViewController {
     
     private var credentials: Credentials!
     private var buildingId: String = ""
+    private var currentFloor: SITFloor? = nil
+    private var location: (lat: String, lng: String)!
     private var pois: [SITPOI]? = nil
     private var selectedPoi: SITPOI? = nil
     private var action: WYFAction?
@@ -35,6 +37,7 @@ class ViewController: UIViewController {
             googleMapsApiKey: "YOUR_GOOGLEMAPS_APIKEY"
         )
         buildingId = "YOUR_BUILDING_ID"
+        location = (lat: "YOUR_LATITUDE", lng: "YOUR_LONGITUDE")
 
         loadPois()
     }
@@ -69,6 +72,21 @@ class ViewController: UIViewController {
         action = .navigateToPoi(selectedPoi)
         self.performSegue(withIdentifier: "loadWayfindingSegue", sender: self)
     }
+
+    @IBAction func loadAndNavigateToLocation(_ sender: Any) {
+        guard let floor = currentFloor else {
+            self.showError(title: "Navigate to Location", message: "You must wait until building is downloaded")
+            return
+        }
+        guard let lat = Double(location.lat), let lng = Double(location.lng) else {
+            self.showError(title: "Latitude or longitude incorrect",
+                message: "You set latitude and longitude in code (ViewController.location) to a correct value")
+            return
+        }
+
+        action = .navigateToLocation(floor: floor, lat: lat, lng: lng)
+        self.performSegue(withIdentifier: "loadWayfindingSegue", sender: self)
+    }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "loadWayfindingSegue" {
@@ -81,9 +99,14 @@ class ViewController: UIViewController {
     }
 
     private func showUnselectedPoiError() {
+        self.showError(title: "Select POI",
+            message: "You must select a POI in the list of available POIs to perform the action")
+    }
+
+    private func showError(title: String, message: String) {
         let alert = UIAlertController(
-            title: "Select POI",
-            message: "You must select a POI in the list of available POIs to perform the action",
+            title: title,
+            message: message,
             preferredStyle: .alert
         )
         alert.addAction(UIAlertAction(title: "Ok", style: .default))
@@ -95,6 +118,9 @@ class ViewController: UIViewController {
         SITCommunicationManager.shared().fetchBuildingInfo(buildingId, withOptions: nil, success: { [weak self] mapping in
             guard mapping != nil, let buildingInfo = mapping!["results"] as? SITBuildingInfo else {return}
             self?.pois = buildingInfo.indoorPois
+            if buildingInfo.floors.count > 0 {
+                self?.currentFloor = buildingInfo.floors[0]
+            }
             self?.tableView.reloadData()
         }, failure: { error in
             print("fetchBuildingInfo \(error)")
@@ -137,5 +163,5 @@ extension ViewController: UITableViewDelegate {
 }
 
 enum WYFAction {
-    case selectPoi(SITPOI), navigateToPoi(SITPOI)
+    case selectPoi(SITPOI), navigateToPoi(SITPOI), navigateToLocation(floor: SITFloor, lat: Double, lng: Double)
 }

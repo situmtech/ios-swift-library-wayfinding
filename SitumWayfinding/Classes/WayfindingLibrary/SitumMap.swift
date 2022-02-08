@@ -70,7 +70,7 @@ public protocol SitumMap {
     func setOnMapReadyListener(listener: OnMapReadyListener?)
 
     /**
-     Select a poi in the map
+     Select a poi in the map centering view in the poi and showing the label (if any) on top of poi icon
      - parameters:
        - poi: the SITPOI you want to select
        - completion: callback called when operation complete either successfully or with an error
@@ -78,9 +78,21 @@ public protocol SitumMap {
     func selectPoi(poi: SITPOI, completion: @escaping (Result<Void, Error>) -> Void)
 
     /**
-     Navigate to a poi in the map
+     Navigate to a poi in the map. This will start positioning, calculate the route to destination, center view in the
+     location of the user and show instructions on how to reach that poi to the user
      - parameters:
        - poi: navigation goes toward this SITPOI
      */
     func navigateToPoi(poi: SITPOI)
+
+
+    /**
+     Navigate to a location with coordinates latitude and longitude. This will start positioning, calculate the route
+     to destination and show instructions on how to reach location to the user
+     - parameters:
+       - floor: floor that contains the point to navigate
+       - lat: latitude of the point
+       - lng: longitude of the point
+     */
+    func navigateToLocation(floor: SITFloor, lat: Double, lng: Double)
 }
