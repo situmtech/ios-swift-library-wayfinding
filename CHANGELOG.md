@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 All non released changes should be in CHANGELOG_UNRELEASED.md file
 
 ---------
+## [0.1.21] - 2022-02-07
+
+### Addded
+* Added method navigateToPoi(poi,completion) on SitumMapLibrary to navigate towards a POI on the map. A callback could 
+be passed as a parameter to know when the navigation was started (since the action is asynchronous)
+
 ## [0.1.20] - 2022-01-28
 
 ### Addded

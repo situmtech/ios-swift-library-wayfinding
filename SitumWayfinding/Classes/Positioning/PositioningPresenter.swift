@@ -44,7 +44,7 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
     let compassCalibrationAlertTitle = "Compass calibration needed"
     let oobAlertTitle = "User outside building"
     let outsideRouteAlertTitle = "User ouside route"
-    
+
     init(view: PositioningView, buildingInfo: SITBuildingInfo, interceptorsManager: InterceptorsManager) {
         self.view = view
         self.buildingInfo = buildingInfo
@@ -146,8 +146,8 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
             self.stopPositioning()
         }
     }
-    
-    public func navigationButtonPressed(withDestination destination: CLLocationCoordinate2D, inFloor floorId: String) {
+
+    public func startPositioningAndNavigate(withDestination destination: CLLocationCoordinate2D, inFloor floorId: String) {
         point = nil
         if (CLLocationCoordinate2DIsValid(destination)){
             point = SITPoint(building: buildingInfo.building, floorIdentifier: floorId, coordinate: destination)
@@ -159,7 +159,7 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
             self.requestDirections(to: point)
         }
     }
-    
+
     public func alertViewClosed(_ alertType:AlertType = .otherAlert) {
         self.updateLastAlertVisibleDate(type: alertType)
     }
@@ -222,7 +222,7 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
         }
     }
     
-    func centerButtonPressed() {
+    func centerViewInUserLocation() {
         if let userLocation = userLocation {
             view?.select(floor: userLocation.position.floorIdentifier)
             view?.setCameraCentered()
@@ -367,10 +367,10 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
     }
     
     func locationManager(_ locationManager: SITLocationInterface, didUpdate location: SITLocation) {
-        
+
         Logger.logDebugMessage("location manager updates location: \(location), provider: \(location.provider)")
         locationManagerUserLocation = location
-        
+
         if (userLocation == nil) {
             view?.change(.started, centerCamera: true)
         }
@@ -422,18 +422,20 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
         }
         Logger.logDebugMessage("Location manager updates state: \(stateName)")
     }
-    
+
     //MARK: DirectionsDelegate methods
     
     func directionsManager(_ manager: SITDirectionsInterface, didFailProcessingRequest request: SITDirectionsRequest, withError error: Error?) {
         view?.showAlertMessage(title: "Unable to compute route", message: "An unexpected error was found while computing the route. Please try again.", alertType: .otherAlert)
         Logger.logErrorMessage("directions request failed with error: \(error.debugDescription)");
+        self.stopNavigation()
     }
     
     func directionsManager(_ manager: SITDirectionsInterface, didProcessRequest request: SITDirectionsRequest, withResponse route: SITRoute) {
         if (route.routeSteps.count == 0) {
             view?.showAlertMessage(title: "Unable to compute route", message: "There is no route between the selected locations. Try to compute a different route or to switch accessibility mode", alertType: .otherAlert)
             Logger.logDebugMessage("Unable to find a path for request: \(request.debugDescription)")
+            self.stopNavigation()
         } else {
             view?.showRoute(route: route)
             self.directionsRequest = request
