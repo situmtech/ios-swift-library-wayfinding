@@ -21,6 +21,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     var delegateNotifier: WayfindingDelegatesNotifier? {
         return library?.delegatesNotifier
     }
+    var useRemoteConfig: Bool = false
 
     //Positioning
     @IBOutlet weak var navbar: UINavigationBar!
@@ -137,6 +138,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
                             
                             self.situmLoadFinished(loadingAlert: loadingAlert)
                             self.presenter = PositioningPresenter(view: self, buildingInfo: self.buildingInfo!, interceptorsManager: self.library?.interceptorsManager ?? InterceptorsManager())
+                            self.presenter?.useRemoteConfig = ((self.library?.settings?.useRemoteConfig) != nil)
                             self.initializeUIElements()
                         }
                     }, failure: { (error: Error?) in

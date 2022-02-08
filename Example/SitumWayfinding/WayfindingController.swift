@@ -32,6 +32,7 @@ class WayfindingController: UIViewController, OnPoiSelectionListener, OnFloorCha
         let settings = LibrarySettings.Builder()
                 .setCredentials(credentials: credentials)
                 .setBuildingId(buildingId: buildingId)
+                .setUseRemoteConfig(useRemoteConfig: true)
                 .build()
         self.library = SitumMapsLibrary(containedBy: self.containerView, controlledBy: self, withSettings: settings)
             
