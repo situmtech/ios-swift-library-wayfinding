@@ -70,7 +70,8 @@ public protocol SitumMap {
     func setOnMapReadyListener(listener: OnMapReadyListener?)
 
     /**
-     Select a poi in the map centering view in the poi and showing the label (if any) on top of poi icon
+     Select a given poi. This method will perform the proper actions over the User Interface to make that Poi the
+     selected one
      - parameters:
        - poi: the SITPOI you want to select
        - completion: callback called when operation complete either successfully or with an error
@@ -78,8 +79,10 @@ public protocol SitumMap {
     func selectPoi(poi: SITPOI, completion: @escaping (Result<Void, Error>) -> Void)
 
     /**
-     Navigate to a poi in the map. This will start positioning, calculate the route to destination, center view in the
-     location of the user and show instructions on how to reach that poi to the user
+     Start the navigation to a poi in the current building. This will:
+        * Start the positioning if needed
+        * Calculate and draw the route from the current user location to the poi.
+        * Provide the step-by-step instructions to reach the poi.
      - parameters:
        - poi: navigation goes toward this SITPOI
      */
@@ -87,10 +90,13 @@ public protocol SitumMap {
 
 
     /**
-     Navigate to a location with coordinates latitude and longitude. This will start positioning, calculate the route
-     to destination and show instructions on how to reach location to the user
+     Start the navigation to a given a location in the current building. The location will be determined by its floor,
+     its latitude and its longitude. This will:
+        * Start the positioning if needed
+        * Calculate and draw the route from the current user location to the location.
+        * Provide the step-by-step instructions to reach the location.
      - parameters:
-       - floor: floor that contains the point to navigate
+       - floor: floor of the location
        - lat: latitude of the point
        - lng: longitude of the point
      */
