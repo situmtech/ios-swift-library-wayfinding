@@ -88,7 +88,6 @@ public protocol SitumMap {
      */
     func navigateToPoi(poi: SITPOI)
 
-
     /**
      Start the navigation to a given a location in the current building. The location will be determined by its floor,
      its latitude and its longitude. This will:
@@ -97,8 +96,8 @@ public protocol SitumMap {
         * Provide the step-by-step instructions to reach the location.
      - parameters:
        - floor: floor of the location
-       - lat: latitude of the point
-       - lng: longitude of the point
+       - lat: latitude of the location
+       - lng: longitude of the location
      */
     func navigateToLocation(floor: SITFloor, lat: Double, lng: Double)
 }
