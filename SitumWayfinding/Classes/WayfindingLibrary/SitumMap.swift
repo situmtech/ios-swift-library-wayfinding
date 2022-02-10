@@ -70,7 +70,8 @@ public protocol SitumMap {
     func setOnMapReadyListener(listener: OnMapReadyListener?)
 
     /**
-     Select a poi in the map
+     Select a given poi. This method will perform the proper actions over the User Interface to make that Poi the
+     selected one
      - parameters:
        - poi: the SITPOI you want to select
        - completion: callback called when operation complete either successfully or with an error
@@ -78,9 +79,25 @@ public protocol SitumMap {
     func selectPoi(poi: SITPOI, completion: @escaping (Result<Void, Error>) -> Void)
 
     /**
-     Navigate to a poi in the map
+     Start the navigation to a poi in the current building. This will:
+        * Start the positioning if needed
+        * Calculate and draw the route from the current user location to the poi.
+        * Provide the step-by-step instructions to reach the poi.
      - parameters:
        - poi: navigation goes toward this SITPOI
      */
     func navigateToPoi(poi: SITPOI)
+
+    /**
+     Start the navigation to a given a location in the current building. The location will be determined by its floor,
+     its latitude and its longitude. This will:
+        * Start the positioning if needed
+        * Calculate and draw the route from the current user location to the location.
+        * Provide the step-by-step instructions to reach the location.
+     - parameters:
+       - floor: floor of the location
+       - lat: latitude of the location
+       - lng: longitude of the location
+     */
+    func navigateToLocation(floor: SITFloor, lat: Double, lng: Double)
 }
