@@ -77,7 +77,9 @@ class WayfindingController: UIViewController, OnPoiSelectionListener, OnFloorCha
             case .selectPoi(let poi):
                 selectPoi(poi: poi)
             case .navigateToPoi(let poi):
-                self.navigateToPoi(poi: poi)
+                self.library?.navigateToPoi(poi: poi)
+            case .navigateToLocation(let floor, let lat, let lng):
+                self.library?.navigateToLocation(floor: floor, lat: lat, lng: lng)
             }
         }
     }
@@ -91,10 +93,6 @@ class WayfindingController: UIViewController, OnPoiSelectionListener, OnFloorCha
                 self?.processSelectionError(error: reason)
             }
         }
-    }
-
-    private func navigateToPoi(poi: SITPOI) {
-        self.library?.navigateToPoi(poi: poi)
     }
 
     private func processSelectionError(error: Error) {
