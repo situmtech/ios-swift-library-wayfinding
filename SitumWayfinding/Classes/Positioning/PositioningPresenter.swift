@@ -38,7 +38,7 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
     var directionsRequest: SITDirectionsRequest? = nil
     var route: SITRoute? = nil
     var locationManager: SITLocationManager = SITLocationManager.sharedInstance()
-    
+
     let compassCalibrationAlertTitle = "Compass calibration needed"
     let oobAlertTitle = "User outside building"
     let outsideRouteAlertTitle = "User ouside route"
@@ -83,10 +83,14 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
         self.lastCalibrationAlert = 0.0
         view?.stop()
     }
-    
+
     func stopNavigation() {
-        self.lastOutsideRouteAlert = 0.0
+        resetLastOutsideRouteAlert()
         view?.stopNavigation()
+    }
+
+    func resetLastOutsideRouteAlert() {
+        self.lastOutsideRouteAlert = 0.0
     }
     
     public func shouldShowFakeLocSelector() -> Bool {
@@ -390,8 +394,12 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
     
     func locationManager(_ locationManager: SITLocationInterface, didFailWithError error: Error?) {
         Logger.logErrorMessage("Location error problem: \(error.debugDescription)")
-        view?.stop()
         view?.showAlertMessage(title: "Error", message: error!.localizedDescription, alertType: .otherAlert)
+        if isUserNavigating() {
+            view?.stopNavigation(with: error ?? WayfindingError.unknown)
+        } else {
+            view?.stop()
+        }
     }
     
     func locationManager(_ locationManager: SITLocationInterface, didUpdate state: SITLocationState) {
@@ -426,14 +434,14 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
     func directionsManager(_ manager: SITDirectionsInterface, didFailProcessingRequest request: SITDirectionsRequest, withError error: Error?) {
         view?.showAlertMessage(title: "Unable to compute route", message: "An unexpected error was found while computing the route. Please try again.", alertType: .otherAlert)
         Logger.logErrorMessage("directions request failed with error: \(error.debugDescription)");
-        self.stopNavigation()
+        self.view?.stopNavigation(with: error ?? WayfindingError.unknown)
     }
     
     func directionsManager(_ manager: SITDirectionsInterface, didProcessRequest request: SITDirectionsRequest, withResponse route: SITRoute) {
         if (route.routeSteps.count == 0) {
             view?.showAlertMessage(title: "Unable to compute route", message: "There is no route between the selected locations. Try to compute a different route or to switch accessibility mode", alertType: .otherAlert)
             Logger.logDebugMessage("Unable to find a path for request: \(request.debugDescription)")
-            self.stopNavigation()
+            self.view?.stopNavigation(with: WayfindingError.unknown)
         } else {
             view?.showRoute(route: route)
             self.directionsRequest = request
@@ -447,7 +455,7 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
     
     func navigationManager(_ navigationManager: SITNavigationInterface, didFailWithError error: Error) {
         Logger.logErrorMessage("Navigation error: \(error)")
-        self.stopNavigation()
+        self.view?.stopNavigation(with: error)
     }
     
     func navigationManager(_ navigationManager: SITNavigationInterface, didUpdate progress: SITNavigationProgress, on route: SITRoute) {
@@ -459,7 +467,7 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
     func navigationManager(_ navigationManager: SITNavigationInterface, destinationReachedOn route: SITRoute) {
         Logger.logDebugMessage("Destination reached")
         view?.showAlertMessage(title: "Destination Reached", message: "You've arrived to your destination", alertType: .otherAlert)
-        view?.stopNavigation()
+        self.view?.finishNavigation(status: .destinationReached)
     }
     
     func navigationManager(_ navigationManager: SITNavigationInterface, userOutsideRoute route: SITRoute) {

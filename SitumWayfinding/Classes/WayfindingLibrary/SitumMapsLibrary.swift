@@ -215,6 +215,15 @@ import GoogleMaps
     }
 
     /**
+     Sets a delegate that get notified with events related to Navigation
+
+     - parameter listener: OnNavigationChangeListener
+     */
+    public func setNavigationListener(listener: OnNavigationChangeListener?) {
+        delegatesNotifier.navigationDelegate = listener
+    }
+
+    /**
      Start the navigation to a poi in the current building. This will:
         * Start the positioning if needed
         * Calculate and draw the route from the current user location to the poi.

@@ -38,5 +38,8 @@ protocol PositioningView {
     func setCameraCentered()
     
     func createAndShowCustomMarkerIfOutsideRoute(atCoordinate coordinate: CLLocationCoordinate2D, atFloor floorId: String)
-    
+
+    func stopNavigation(with error: Error)
+
+    func finishNavigation(status: NavigationStatus)
 }

@@ -12,7 +12,7 @@ import SitumWayfinding
 import SitumSDK
 import GoogleMaps
 
-class WayfindingController: UIViewController, OnPoiSelectionListener, OnFloorChangeListener, OnMapReadyListener {
+class WayfindingController: UIViewController {
     
     @IBOutlet var containerView: UIView!
 
@@ -43,6 +43,7 @@ class WayfindingController: UIViewController, OnPoiSelectionListener, OnFloorCha
         self.library?.setOnPoiSelectionListener(listener: self)
         self.library?.setOnFloorChangeListener(listener: self)
         self.library?.setOnMapReadyListener(listener: self)
+        self.library?.setNavigationListener(listener: self)
 
         do {
             try self.library!.load()
@@ -56,19 +57,26 @@ class WayfindingController: UIViewController, OnPoiSelectionListener, OnFloorCha
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
-    
-    // MARK: Wayfinding Delegate
+}
+
+// MARK: Wayfinding Delegates
+extension WayfindingController: OnPoiSelectionListener {
     func onPoiDeselected(building: SITBuilding) {
         print("onPoiDeselected app")
     }
-    
+
     func onPoiSelected(poi: SITPOI, level: SITFloor, building: SITBuilding) {
         print("onPoiSelected")
     }
+}
+
+extension WayfindingController: OnFloorChangeListener {
     func onFloorChanged(from: SITFloor, to: SITFloor, building: SITBuilding) {
         print("onFloorChanged from \(from.floor) to \(to.floor)")
     }
+}
 
+extension WayfindingController: OnMapReadyListener {
     func onMapReady(map: SitumMap) {
         print("map ready to interact \(map)")
 
@@ -106,6 +114,20 @@ class WayfindingController: UIViewController, OnPoiSelectionListener, OnFloorCha
         } else {
             print("POI: generic error \(error))")
         }
+    }
+}
+
+extension WayfindingController: OnNavigationChangeListener {
+    func onNavigationRequested(navigation: Navigation) {
+        print("Navigation: starts with destination \(navigation.destination)")
+    }
+    
+    func onNavigationError(error: Error, navigation: Navigation) {
+        print("Navigation: to \(navigation.destination) fails with error \(error)")
+    }
+    
+    func onNavigationFinished(navigation: Navigation) {
+        print("Navigation: finished with status \(navigation.status)")
     }
 }
 
