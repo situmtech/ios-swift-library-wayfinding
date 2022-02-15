@@ -74,7 +74,7 @@ public protocol SitumMap {
 
      - parameter listener: OnNavigationChangeListener
      */
-    func setNavigationListener(listener: OnNavigationChangeListener?)
+    func setOnNavigationListener(listener: OnNavigationListener?)
 
     /**
      Select a given poi. This method will perform the proper actions over the User Interface to make that Poi the

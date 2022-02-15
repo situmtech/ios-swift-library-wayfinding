@@ -35,3 +35,7 @@ Carthage/Build
 # `pod install` in .travis.yml
 #
 Example/Pods/
+
+# documentation build path
+docs/
+*.zip

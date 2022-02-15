@@ -219,7 +219,7 @@ import GoogleMaps
 
      - parameter listener: OnNavigationChangeListener
      */
-    public func setNavigationListener(listener: OnNavigationChangeListener?) {
+    public func setOnNavigationListener(listener: OnNavigationListener?) {
         delegatesNotifier.navigationDelegate = listener
     }
 

@@ -43,7 +43,7 @@ class WayfindingController: UIViewController {
         self.library?.setOnPoiSelectionListener(listener: self)
         self.library?.setOnFloorChangeListener(listener: self)
         self.library?.setOnMapReadyListener(listener: self)
-        self.library?.setNavigationListener(listener: self)
+        self.library?.setOnNavigationListener(listener: self)
 
         do {
             try self.library!.load()
@@ -117,12 +117,12 @@ extension WayfindingController: OnMapReadyListener {
     }
 }
 
-extension WayfindingController: OnNavigationChangeListener {
+extension WayfindingController: OnNavigationListener {
     func onNavigationRequested(navigation: Navigation) {
         print("Navigation: starts with destination \(navigation.destination)")
     }
     
-    func onNavigationError(error: Error, navigation: Navigation) {
+    func onNavigationError(navigation: Navigation, error: Error) {
         print("Navigation: to \(navigation.destination) fails with error \(error)")
     }
     

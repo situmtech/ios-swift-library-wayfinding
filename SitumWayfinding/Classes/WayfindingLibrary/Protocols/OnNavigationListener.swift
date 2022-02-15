@@ -12,7 +12,7 @@ import SitumSDK
 /**
  Delegate that get notified about navigation events
  */
-public protocol OnNavigationChangeListener {
+public protocol OnNavigationListener {
     /**
      Called when a navigation request was made either by user or by the library. Status of navigation object will be
      requested
@@ -21,10 +21,10 @@ public protocol OnNavigationChangeListener {
     func onNavigationRequested(navigation: Navigation)
     /**
      Called when navigation fails due an error. Status of navigation object will be error
-     - Parameter error: error that makes navigation fail
      - Parameter navigation: navigation object
+     - Parameter error: error that makes navigation fail
      */
-    func onNavigationError(error: Error, navigation: Navigation)
+    func onNavigationError(navigation: Navigation, error: Error)
     /**
      Called when navigation finishes either by user cancelation or user reaching the destination. Status of navigation
      object will be destinationReached or canceled
@@ -39,13 +39,23 @@ public protocol OnNavigationChangeListener {
  */
 public protocol Navigation {
     /**
-     Current status of the current navigation
+     Current status of the ongoing navigation
      */
     var status: NavigationStatus { get set }
     /**
-     Destination of the current navigation either a SITPOI or a SITPoint
+     Destination of the current navigation
      */
     var destination: Destination { get set }
+}
+
+/**
+ This represent the destination of a navigation towards a POI or a location
+ */
+public protocol Destination {
+    /**
+     Either a POI or a location
+     */
+    var category: Category { get set }
     /**
      Point of the current destination
      */
@@ -61,10 +71,16 @@ public protocol Navigation {
 }
 
 /**
- This represent the destination of a navigation towards a POI or a location
+ Type of destination
  */
-public enum Destination {
+public enum Category {
+    /**
+     Destination is a POI with a SITPOI inside
+     */
     case poi(SITPOI)
+    /**
+     Destination is a location with a SITPoint inside
+     */
     case location(SITPoint)
 }
 
@@ -72,17 +88,33 @@ public enum Destination {
  Current status of the navigation
  */
 public enum NavigationStatus {
+    /**
+     Navigation was requested by user/developer
+     */
     case requested
+    /**
+     An error has occurred on the ongoing Navigation
+     */
     case error
+    /**
+     The destination was reached by user
+     */
     case destinationReached
+    /**
+     The ongoing navigation was cancelled by the user/developer
+     */
     case canceled
 }
 
 internal struct WYFNavigation: Navigation {
     var status: NavigationStatus
     var destination: Destination
+}
+
+internal struct WYFDestination: Destination {
+    var category: Category
     var point: SITPoint {
-        switch destination {
+        switch category {
         case .poi(let poi):
             return poi.position()
         case .location(let point):
@@ -90,16 +122,15 @@ internal struct WYFNavigation: Navigation {
         }
     }
     var identifier: String?  {
-        guard case .poi(let poi) = destination else { return nil }
+        guard case .poi(let poi) = category else { return nil }
         return poi.identifier
     }
     var name: String? {
-        guard case .poi(let poi) = destination else { return nil }
+        guard case .poi(let poi) = category else { return nil }
         return poi.name
     }
 
-    init(status: NavigationStatus, destination: Destination) {
-        self.status = status
-        self.destination = destination
+    init(category: Category) {
+        self.category = category
     }
 }

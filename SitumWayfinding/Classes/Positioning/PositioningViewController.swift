@@ -1142,7 +1142,7 @@ extension PositioningViewController {
         do {
             try self.select(poi: poi) { [weak self] in
                 self?.startNavigation()
-                self?.notifyNavigationRequested(destination: .poi(poi))
+                self?.notifyNavigationRequested(category: .poi(poi))
             }
         } catch {
             Logger.logErrorMessage("poi \(poi) is not a valid poi in this building")
@@ -1160,19 +1160,19 @@ extension PositioningViewController {
             positioningVC.startNavigation()
             let point = SITPoint(building: positioningVC.buildingInfo!.building, floorIdentifier: floor.identifier,
                 coordinate: location)
-            positioningVC.notifyNavigationRequested(destination: .location(point))
+            positioningVC.notifyNavigationRequested(category: .location(point))
         }
     }
 
     func startNavigationByUser() {
         self.startNavigation()
-        if let destination = getDestinationFromLastMarker() {
-            notifyNavigationRequested(destination: destination)
+        if let category = getCategoryFromLastMarker() {
+            notifyNavigationRequested(category: category)
         }
     }
 
-    private func notifyNavigationRequested(destination: Destination) {
-        let navigation = WYFNavigation(status: .requested, destination: destination)
+    private func notifyNavigationRequested(category: Category) {
+        let navigation = WYFNavigation(status: .requested, destination: WYFDestination(category: category))
         delegateNotifier?.navigationDelegate?.onNavigationRequested(navigation: navigation)
     }
 
@@ -1198,16 +1198,16 @@ extension PositioningViewController {
     }
 
     func stopNavigation(with error: Error) {
-        if let destination = getDestinationFromLastMarker() {
-            let navigation = WYFNavigation(status: .error, destination: destination)
-            self.delegateNotifier?.navigationDelegate?.onNavigationError(error: error, navigation: navigation)
+        if let category = getCategoryFromLastMarker() {
+            let navigation = WYFNavigation(status: .error, destination: WYFDestination(category: category))
+            self.delegateNotifier?.navigationDelegate?.onNavigationError(navigation: navigation, error: error)
         }
         stopNavigation()
     }
 
     func finishNavigation(status: NavigationStatus) {
-        if let destination = getDestinationFromLastMarker() {
-            let navigation = WYFNavigation(status: status, destination: destination)
+        if let category = getCategoryFromLastMarker() {
+            let navigation = WYFNavigation(status: status, destination: WYFDestination(category: category))
             self.delegateNotifier?.navigationDelegate?.onNavigationFinished(navigation: navigation)
         }
         stopNavigation()
@@ -1231,7 +1231,7 @@ extension PositioningViewController {
         self.mapView.selectedMarker = nil
     }
 
-    private func getDestinationFromLastMarker() -> Destination? {
+    private func getCategoryFromLastMarker() -> Category? {
         guard let marker = self.lastSelectedMarker else { return nil }
         
         if marker.isPoiMarker() {
