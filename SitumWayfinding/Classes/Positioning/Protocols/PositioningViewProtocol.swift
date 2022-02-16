@@ -13,7 +13,11 @@ protocol PositioningView {
     
     func change(_ state: SITLocationState, centerCamera: Bool)
     
-    func stop()
+    /**
+     Stop positioning and navigation at once. If error is not supplied navigation will stop with an status of
+     cancelled, otherwise it will stop with error in parameter and status error
+     */
+    func stopPositioningAndNavigation(error: Error?)
     
     func showNumberOfBeaconsRanged(text: Int)
     
@@ -27,7 +31,7 @@ protocol PositioningView {
     
     func updateProgress(progress: SITNavigationProgress)
     
-    func stopNavigation()
+    func stopNavigation(status: NavigationStatus)
     
     func reloadFloorPlansTableViewData()
     
@@ -38,8 +42,5 @@ protocol PositioningView {
     func setCameraCentered()
     
     func createAndShowCustomMarkerIfOutsideRoute(atCoordinate coordinate: CLLocationCoordinate2D, atFloor floorId: String)
-
-    func stopNavigation(with error: Error)
-
-    func finishNavigation(status: NavigationStatus)
+    
 }

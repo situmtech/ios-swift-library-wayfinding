@@ -81,12 +81,7 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
         self.locationManagerUserLocation = nil
         self.lastOOBAlert = 0.0
         self.lastCalibrationAlert = 0.0
-        view?.stop()
-    }
-
-    func stopNavigation() {
-        resetLastOutsideRouteAlert()
-        view?.stopNavigation()
+        view?.stopPositioningAndNavigation(error: nil)
     }
 
     func resetLastOutsideRouteAlert() {
@@ -284,7 +279,7 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
             SITDirectionsManager.sharedInstance().delegate = self
             SITDirectionsManager.sharedInstance().requestDirections(request)
         }else{
-            view?.stopNavigation()
+            view?.stopNavigation(status: .error(NavigationError.invalidDirections))
             self.alertUserOfInvalidDirectionsRequest(error: directionsRequestValidity)
         }
     }
@@ -395,11 +390,7 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
     func locationManager(_ locationManager: SITLocationInterface, didFailWithError error: Error?) {
         Logger.logErrorMessage("Location error problem: \(error.debugDescription)")
         view?.showAlertMessage(title: "Error", message: error!.localizedDescription, alertType: .otherAlert)
-        if isUserNavigating() {
-            view?.stopNavigation(with: error ?? WayfindingError.unknown)
-        } else {
-            view?.stop()
-        }
+        view?.stopPositioningAndNavigation(error: error ?? WayfindingError.unknown)
     }
     
     func locationManager(_ locationManager: SITLocationInterface, didUpdate state: SITLocationState) {
@@ -421,7 +412,7 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
         case .userNotInBuilding:
             stateName = "User not in building"
             if isUserNavigating(){
-                view?.stopNavigation()
+                view?.stopNavigation(status: .error(NavigationError.invalidDirections))
             }
             showAlertIfNeeded(type: .outOfBuilding, title: self.oobAlertTitle, message: "The user is currently outside of the building. Positioning will resume when the user returns.")
             break;
@@ -434,14 +425,14 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
     func directionsManager(_ manager: SITDirectionsInterface, didFailProcessingRequest request: SITDirectionsRequest, withError error: Error?) {
         view?.showAlertMessage(title: "Unable to compute route", message: "An unexpected error was found while computing the route. Please try again.", alertType: .otherAlert)
         Logger.logErrorMessage("directions request failed with error: \(error.debugDescription)");
-        self.view?.stopNavigation(with: error ?? WayfindingError.unknown)
+        self.view?.stopNavigation(status: .error(error ?? WayfindingError.unknown))
     }
     
     func directionsManager(_ manager: SITDirectionsInterface, didProcessRequest request: SITDirectionsRequest, withResponse route: SITRoute) {
         if (route.routeSteps.count == 0) {
             view?.showAlertMessage(title: "Unable to compute route", message: "There is no route between the selected locations. Try to compute a different route or to switch accessibility mode", alertType: .otherAlert)
             Logger.logDebugMessage("Unable to find a path for request: \(request.debugDescription)")
-            self.view?.stopNavigation(with: WayfindingError.unknown)
+            self.view?.stopNavigation(status: .error(NavigationError.unableToComputeRoute))
         } else {
             view?.showRoute(route: route)
             self.directionsRequest = request
@@ -455,7 +446,7 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
     
     func navigationManager(_ navigationManager: SITNavigationInterface, didFailWithError error: Error) {
         Logger.logErrorMessage("Navigation error: \(error)")
-        self.view?.stopNavigation(with: error)
+        self.view?.stopNavigation(status: .error(error))
     }
     
     func navigationManager(_ navigationManager: SITNavigationInterface, didUpdate progress: SITNavigationProgress, on route: SITRoute) {
@@ -467,7 +458,7 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
     func navigationManager(_ navigationManager: SITNavigationInterface, destinationReachedOn route: SITRoute) {
         Logger.logDebugMessage("Destination reached")
         view?.showAlertMessage(title: "Destination Reached", message: "You've arrived to your destination", alertType: .otherAlert)
-        self.view?.finishNavigation(status: .destinationReached)
+        self.view?.stopNavigation(status: .destinationReached)
     }
     
     func navigationManager(_ navigationManager: SITNavigationInterface, userOutsideRoute route: SITRoute) {
@@ -476,7 +467,7 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
         if isUserIndoor(){
             showAlertIfNeeded(type: .outsideRoute, title: self.outsideRouteAlertTitle, message: "The user is not currently detected on the route. Please go back to resume navigation.")
         }else{
-            view?.stopNavigation()
+            view?.stopNavigation(status: .error(NavigationError.userOutsideBuilding))
             alertUserOfInvalidDirectionsRequest(error: .SITOutdorOriginError)
         }
     }

@@ -118,10 +118,10 @@ import GoogleMaps
     }
     
     /**
-       Stops Stum Navigation
+       Stops Situm Navigation
      */
     @objc public func stopNavigation(){
-        self.toPresentViewController?.presenter?.stopNavigation()
+        self.toPresentViewController?.stopNavigation(status: .canceled)
     }
     
     /**

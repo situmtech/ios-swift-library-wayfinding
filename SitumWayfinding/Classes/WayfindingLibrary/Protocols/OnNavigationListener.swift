@@ -95,7 +95,7 @@ public enum NavigationStatus {
     /**
      An error has occurred on the ongoing Navigation
      */
-    case error
+    case error(Error)
     /**
      The destination was reached by user
      */
@@ -104,6 +104,24 @@ public enum NavigationStatus {
      The ongoing navigation was cancelled by the user/developer
      */
     case canceled
+}
+
+/**
+ Error that navigation could raise
+ */
+public enum NavigationError: Error {
+    /**
+     Error raised when SITUM could not calculate route to destination
+     */
+    case unableToComputeRoute
+    /**
+     Error raised when position of user is incompatible with route calculation
+     */
+    case invalidDirections
+    /**
+     This error could happened when a user goes outside the current route (in the context of a navigation to a point)
+     */
+    case userOutsideBuilding
 }
 
 internal struct WYFNavigation: Navigation {

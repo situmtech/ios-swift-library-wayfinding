@@ -13,7 +13,7 @@ import SitumSDK
 
 let SecondsBetweenAlerts = 30.0
 
-class PositioningViewController: UIViewController, PositioningView, PositioningController {
+class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableViewDataSource, UITableViewDelegate, PositioningView, PositioningController {
     
     //MARK PositioningController protocol variables
     var buildingId: String = ""
@@ -95,9 +95,7 @@ class PositioningViewController: UIViewController, PositioningView, PositioningC
     let DEFAULT_POI_NAME: String = "POI"
     let DEFAULT_BUILDING_NAME: String = "Current Building"
     let fakeLocationsOptions = ["0º", "90º", "180º", "270º", "Create marker"]
-
-
-    // MARK: UIViewController methods
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         initSearchController()
@@ -171,14 +169,6 @@ class PositioningViewController: UIViewController, PositioningView, PositioningC
         }
     }
 
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if let identifier = segue.identifier {
-            if identifier == "mapContainerSegueID"{
-                self.mapViewVC = segue.destination
-            }
-        }
-    }
-
     func situmLoadFinished(loadingAlert : UIAlertController){
         loadingAlert.dismiss(animated: true) {
             if (self.loadingError){
@@ -188,7 +178,7 @@ class PositioningViewController: UIViewController, PositioningView, PositioningC
         loadFinished = true
     }
     
-    // MARK: Initializers
+    //MARK: Initializers
     func initializeUIElements() {
         initializeMapView()
         initializePositioningUIElements()
@@ -515,6 +505,39 @@ class PositioningViewController: UIViewController, PositioningView, PositioningC
         levelsTableView.scrollToRow(at: floorIndex, at: .middle, animated: true)
     }
 
+    //MARK: TableView
+    
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 1
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return buildingInfo!.floors.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell: UITableViewCell? = tableView.dequeueReusableCell(withIdentifier: "LevelCellIdentifier")
+        
+        if let level: SITFloor = orderedFloors(buildingInfo: buildingInfo)?[indexPath.row] {
+            // [06/08/19] This check is here because older buildings without the name field give unexpected nulls casted to string
+            let shouldDisplayLevelName = !(level.name.isEmpty || (level.name == "<null>"))
+            let textToDisplay: String = shouldDisplayLevelName ? level.name : String(level.floor)
+            cell?.textLabel?.text = String(format: "%@", textToDisplay)
+            cell?.backgroundColor = self.getBackgroundColor(row: indexPath.row, floorIdentifier: level.identifier)
+        }
+        return cell!
+    }
+    
+    func initializeLevelSelector() {
+        if self.buildingInfo!.floors.count < 5 {
+            self.levelsTableHeightConstaint.constant = CGFloat(Double(self.buildingInfo!.floors.count) * 43.5)
+        } else {
+            self.levelsTableHeightConstaint.constant = CGFloat(5 * 43.5)
+        }
+        self.levelsTableView.layoutIfNeeded()
+        self.levelsTableView.reloadData()
+    }
+    
     //MARK: Markers
     
     func displayDestinationMarker(floor: String?) {
@@ -665,6 +688,74 @@ class PositioningViewController: UIViewController, PositioningView, PositioningC
             self.infoIconImage.isHidden = false
         }
     }
+    
+    //MARK: MapViewDelegate
+    
+    func mapView(_ mapView: GMSMapView, willMove gesture: Bool) {
+        Logger.logDebugMessage("Map will move with gesture: \(gesture)")
+        if isCameraCentered && gesture {
+            isCameraCentered = false
+            showCenterButton()
+        }
+    }
+    
+    func mapView(_ mapView: GMSMapView, didChange position: GMSCameraPosition) {
+        if position.zoom < 15 {
+            positioningButton.isHidden = true
+            centerButton.isHidden = true
+            levelsTableView.isHidden = true
+        } else {
+            if isCameraCentered || presenter?.userLocation == nil {
+                hideCenterButton()
+            } else {
+                showCenterButton()
+            }
+            levelsTableView.isHidden = false
+        }
+        
+        if(presenter?.shouldCameraPositionBeDraggedInsideBuildingBounds(position: position.target) ?? false) {
+            if let cameraInsideBounds = presenter?.modifyCameraToBeInsideBuildingBounds(camera: position) {
+                mapView.animate(to: cameraInsideBounds)
+            }
+        }
+    }
+    
+    func mapView(_ mapView: GMSMapView, didTap marker: GMSMarker) -> Bool {
+        select(marker: SitumMarker(from: marker))
+        return true
+    }
+    
+    func mapView(_ mapView: GMSMapView, didTapAt coordinate: CLLocationCoordinate2D) {
+        deselect(marker: lastSelectedMarker)
+    }
+    
+    func mapView(_ mapView: GMSMapView, didLongPressAt coordinate: CLLocationCoordinate2D) {
+        if(self.presenter?.shouldShowFakeLocSelector() ?? false) {
+            presenter?.fakeLocationPressed(coordinate: coordinate, floorId: orderedFloors(buildingInfo: buildingInfo)![selectedLevelIndex].identifier)
+        } else {
+            deselect(marker: lastSelectedMarker)
+            self.createAndShowCustomMarkerIfOutsideRoute(atCoordinate: coordinate, atFloor: orderedFloors(buildingInfo: buildingInfo)![selectedLevelIndex].identifier)
+        }
+    }
+    
+    func showFakeLocationsAlert() {
+        let alert = UIAlertController(title: "Long press actions", message: "Select an action:", preferredStyle: .alert)
+
+        alert.addAction(UIAlertAction(title: "Cancel", style: .default, handler: { _ in
+            self.presenter?.alertViewClosed(.otherAlert)
+        }))
+        for (buttonIndex, text) in fakeLocationsOptions.enumerated() {
+            alert.addAction(UIAlertAction(title: text, style: .default, handler: { _ in
+                self.presenter?.fakeLocOptionSelected(atIndex: buttonIndex)
+            }))
+        }
+
+        self.present(alert, animated: true, completion: nil)
+    }
+
+    func mapViewSnapshotReady(_ mapView: GMSMapView) {
+        mapReadinessChecker.setMapAsReady()
+    }
 
     //MARK: IBActions
     
@@ -678,6 +769,59 @@ class PositioningViewController: UIViewController, PositioningView, PositioningC
     func navigationButtonPressed(_ sender: Any) {
         Logger.logInfoMessage("Navigation Button Has Been pressed")
         startNavigationByUser()
+    }
+    
+    func startNavigationByUser() {
+        self.startNavigation()
+        if let category = getCategoryFromMarker(marker: self.lastSelectedMarker) {
+            let navigation = WYFNavigation(status: .requested, destination: WYFDestination(category: category))
+            self.delegateNotifier?.navigationDelegate?.onNavigationRequested(navigation: navigation)
+        }
+    }
+
+    func startNavigation(to poi: SITPOI) {
+        do {
+            try self.select(poi: poi) { [weak self] in
+                self?.startNavigation()
+                let navigation = WYFNavigation(status: .requested, destination: WYFDestination(category: .poi(poi)))
+                self?.delegateNotifier?.navigationDelegate?.onNavigationRequested(navigation: navigation)
+            }
+        } catch {
+            Logger.logErrorMessage("poi \(poi) is not a valid poi in this building")
+        }
+    }
+
+    func startNavigation(to location: CLLocationCoordinate2D, in floor: SITFloor) {
+        guard let indexPath = getIndexPath(floorId: floor.identifier) else {
+            return
+        }
+        select(floor: indexPath)
+        let gsmMarker = self.createMarker(withCoordinate: location, floorId: floor.identifier)
+        let marker = SitumMarker(from: gsmMarker)
+        select(marker: marker) { [weak self] in
+            guard let positioningVC = self else { return }
+            self?.startNavigation()
+            let point = SITPoint(building: positioningVC.buildingInfo!.building, floorIdentifier: floor.identifier,
+                coordinate: location)
+            let navigation = WYFNavigation(status: .requested, destination: WYFDestination(category: .location(point)))
+            self?.delegateNotifier?.navigationDelegate?.onNavigationRequested(navigation: navigation)
+        }
+    }
+
+    /**
+     Start navigation to selected marker. If no marker is selected this method will do nothing
+     */
+    private func startNavigation() {
+        var destination = kCLLocationCoordinate2DInvalid
+        if let marker = self.lastSelectedMarker {
+            self.destinationMarker = marker
+            destination = marker.gmsMarker.position
+        }
+        self.positioningButton.isHidden = true
+        self.changeCancelNavigationButtonVisibility(isVisible: true)
+        self.presenter?.startPositioningAndNavigate(withDestination: destination,
+            inFloor: orderedFloors(buildingInfo: buildingInfo)![self.selectedLevelIndex].identifier)
+        self.presenter?.centerViewInUserLocation()
     }
     
     @IBAction
@@ -920,14 +1064,78 @@ class PositioningViewController: UIViewController, PositioningView, PositioningC
     }
 
     //MARK: Stop methods
-
-    func stop() {
+    
+    func stopNavigationByUser() {
+        stopNavigation(status: .canceled)
+    }
+    
+    func stopPositioningAndNavigation(error: Error? = nil) {
         self.makeUserMarkerVisible(visible: false)
         self.numberBeaconsRangedView.isHidden = true
         self.reloadFloorPlansTableViewData()
         self.hideCenterButton()
         self.change(.stopped, centerCamera: false)
-        self.stopNavigation()
+        if let error = error {
+            self.stopNavigation(status: .error(error))
+        } else {
+            self.stopNavigation(status: .canceled)
+        }
+    }
+    
+    func stopNavigation(status: NavigationStatus) {
+        presenter?.resetLastOutsideRouteAlert()
+        SITNavigationManager.shared().removeUpdates()
+        self.indicationsView.isHidden = true
+        self.changeCancelNavigationButtonVisibility(isVisible: false)
+        self.changeNavigationButtonVisibility(isVisible: false)
+        self.updateInfoBarLabels(mainLabel: self.buildingInfo?.building.name ?? DEFAULT_BUILDING_NAME)
+        for polyline in self.polyline {
+            polyline.map = nil
+        }
+        self.displayPois(onFloor: orderedFloors(buildingInfo:  buildingInfo)?[self.selectedLevelIndex].identifier)
+        self.removeLastCustomMarker()
+        self.destinationMarker?.setMapView(mapView: nil)
+        self.notifyEndOfNavigation(status: status, marker: self.destinationMarker)
+        self.destinationMarker = nil
+
+        // hide selected point
+        self.mapView.selectedMarker = nil
+    }
+    
+    private func notifyEndOfNavigation(status: NavigationStatus, marker: SitumMarker?) {
+        guard let category = self.getCategoryFromMarker(marker: self.destinationMarker) else { return }
+        let navigation = WYFNavigation(status: status, destination: WYFDestination(category: category))
+    
+        if case .error(let error) = status {
+            self.delegateNotifier?.navigationDelegate?.onNavigationError(navigation: navigation, error: error)
+        } else {
+            self.delegateNotifier?.navigationDelegate?.onNavigationFinished(navigation: navigation)
+        }
+    }
+    
+    private func getCategoryFromMarker(marker: SitumMarker?) -> Category? {
+        guard let marker = marker else { return nil }
+        
+        if marker.isPoiMarker() {
+            return .poi(marker.poi!)
+        } else {
+            let coordinate = CLLocationCoordinate2D(
+                latitude: marker.gmsMarker.position.latitude,
+                longitude: marker.gmsMarker.position.longitude
+            )
+            let floorId = getFloorIdFromMarker(marker: marker)
+            let point = SITPoint(building: buildingInfo!.building, floorIdentifier: floorId,
+                coordinate: coordinate)
+            return .location(point)
+        }
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if let identifier = segue.identifier {
+            if identifier == "mapContainerSegueID"{
+                self.mapViewVC = segue.destination
+            }
+        }
     }
     
     func primaryColor(defaultColor: UIColor) -> UIColor {
@@ -1030,222 +1238,6 @@ extension PositioningViewController: UISearchControllerDelegate, UISearchBarDele
 //MARK: UISearchBarDelegate methods
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         searchResultsController?.dismissSearchResultsController(constraints: searchResultViewConstraints)
-    }
-}
-
-// MARK: TableView
-extension PositioningViewController: UITableViewDataSource, UITableViewDelegate {
-    func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
-    }
-
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return buildingInfo!.floors.count
-    }
-
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell: UITableViewCell? = tableView.dequeueReusableCell(withIdentifier: "LevelCellIdentifier")
-
-        if let level: SITFloor = orderedFloors(buildingInfo: buildingInfo)?[indexPath.row] {
-            // [06/08/19] This check is here because older buildings without the name field give unexpected nulls casted to string
-            let shouldDisplayLevelName = !(level.name.isEmpty || (level.name == "<null>"))
-            let textToDisplay: String = shouldDisplayLevelName ? level.name : String(level.floor)
-            cell?.textLabel?.text = String(format: "%@", textToDisplay)
-            cell?.backgroundColor = self.getBackgroundColor(row: indexPath.row, floorIdentifier: level.identifier)
-        }
-        return cell!
-    }
-
-    func initializeLevelSelector() {
-        if self.buildingInfo!.floors.count < 5 {
-            self.levelsTableHeightConstaint.constant = CGFloat(Double(self.buildingInfo!.floors.count) * 43.5)
-        } else {
-            self.levelsTableHeightConstaint.constant = CGFloat(5 * 43.5)
-        }
-        self.levelsTableView.layoutIfNeeded()
-        self.levelsTableView.reloadData()
-    }
-}
-
-// MARK: MapViewDelegate
-extension PositioningViewController: GMSMapViewDelegate {
-    func mapView(_ mapView: GMSMapView, willMove gesture: Bool) {
-        Logger.logDebugMessage("Map will move with gesture: \(gesture)")
-        if isCameraCentered && gesture {
-            isCameraCentered = false
-            showCenterButton()
-        }
-    }
-
-    func mapView(_ mapView: GMSMapView, didChange position: GMSCameraPosition) {
-        if position.zoom < 15 {
-            positioningButton.isHidden = true
-            centerButton.isHidden = true
-            levelsTableView.isHidden = true
-        } else {
-            if isCameraCentered || presenter?.userLocation == nil {
-                hideCenterButton()
-            } else {
-                showCenterButton()
-            }
-            levelsTableView.isHidden = false
-        }
-
-        if(presenter?.shouldCameraPositionBeDraggedInsideBuildingBounds(position: position.target) ?? false) {
-            if let cameraInsideBounds = presenter?.modifyCameraToBeInsideBuildingBounds(camera: position) {
-                mapView.animate(to: cameraInsideBounds)
-            }
-        }
-    }
-
-    func mapView(_ mapView: GMSMapView, didTap marker: GMSMarker) -> Bool {
-        select(marker: SitumMarker(from: marker))
-        return true
-    }
-
-    func mapView(_ mapView: GMSMapView, didTapAt coordinate: CLLocationCoordinate2D) {
-        deselect(marker: lastSelectedMarker)
-    }
-
-    func mapView(_ mapView: GMSMapView, didLongPressAt coordinate: CLLocationCoordinate2D) {
-        if(self.presenter?.shouldShowFakeLocSelector() ?? false) {
-            presenter?.fakeLocationPressed(coordinate: coordinate, floorId: orderedFloors(buildingInfo: buildingInfo)![selectedLevelIndex].identifier)
-        } else {
-            deselect(marker: lastSelectedMarker)
-            self.createAndShowCustomMarkerIfOutsideRoute(atCoordinate: coordinate, atFloor: orderedFloors(buildingInfo: buildingInfo)![selectedLevelIndex].identifier)
-        }
-    }
-
-    func showFakeLocationsAlert() {
-        let alert = UIAlertController(title: "Long press actions", message: "Select an action:", preferredStyle: .alert)
-
-        alert.addAction(UIAlertAction(title: "Cancel", style: .default, handler: { _ in
-            self.presenter?.alertViewClosed(.otherAlert)
-        }))
-        for (buttonIndex, text) in fakeLocationsOptions.enumerated() {
-            alert.addAction(UIAlertAction(title: text, style: .default, handler: { _ in
-                self.presenter?.fakeLocOptionSelected(atIndex: buttonIndex)
-            }))
-        }
-
-        self.present(alert, animated: true, completion: nil)
-    }
-
-    func mapViewSnapshotReady(_ mapView: GMSMapView) {
-        mapReadinessChecker.setMapAsReady()
-    }
-}
-
-// MARK: Navigation methods
-extension PositioningViewController {
-    func startNavigation(to poi: SITPOI) {
-        do {
-            try self.select(poi: poi) { [weak self] in
-                self?.startNavigation()
-                self?.notifyNavigationRequested(category: .poi(poi))
-            }
-        } catch {
-            Logger.logErrorMessage("poi \(poi) is not a valid poi in this building")
-        }
-    }
-
-    func startNavigation(to location: CLLocationCoordinate2D, in floor: SITFloor) {
-        guard let indexPath = getIndexPath(floorId: floor.identifier) else { return }
-
-        select(floor: indexPath)
-        let gsmMarker = self.createMarker(withCoordinate: location, floorId: floor.identifier)
-        select(marker: SitumMarker(from: gsmMarker)) { [weak self] in
-            guard let positioningVC = self else { return }
-
-            positioningVC.startNavigation()
-            let point = SITPoint(building: positioningVC.buildingInfo!.building, floorIdentifier: floor.identifier,
-                coordinate: location)
-            positioningVC.notifyNavigationRequested(category: .location(point))
-        }
-    }
-
-    func startNavigationByUser() {
-        self.startNavigation()
-        if let category = getCategoryFromLastMarker() {
-            notifyNavigationRequested(category: category)
-        }
-    }
-
-    private func notifyNavigationRequested(category: Category) {
-        let navigation = WYFNavigation(status: .requested, destination: WYFDestination(category: category))
-        delegateNotifier?.navigationDelegate?.onNavigationRequested(navigation: navigation)
-    }
-
-    /**
-     Start navigation to selected marker. If no marker is selected this method will do nothing
-     */
-    private func startNavigation() {
-        var destination = kCLLocationCoordinate2DInvalid
-        if let marker = self.lastSelectedMarker {
-            self.destinationMarker = marker
-            destination = marker.gmsMarker.position
-        }
-        self.positioningButton.isHidden = true
-        self.changeCancelNavigationButtonVisibility(isVisible: true)
-        self.presenter?.startPositioningAndNavigate(withDestination: destination,
-            inFloor: orderedFloors(buildingInfo: buildingInfo)![self.selectedLevelIndex].identifier)
-        self.presenter?.centerViewInUserLocation()
-    }
-
-    func stopNavigationByUser() {
-        presenter?.resetLastOutsideRouteAlert()
-        finishNavigation(status: .canceled)
-    }
-
-    func stopNavigation(with error: Error) {
-        if let category = getCategoryFromLastMarker() {
-            let navigation = WYFNavigation(status: .error, destination: WYFDestination(category: category))
-            self.delegateNotifier?.navigationDelegate?.onNavigationError(navigation: navigation, error: error)
-        }
-        stopNavigation()
-    }
-
-    func finishNavigation(status: NavigationStatus) {
-        if let category = getCategoryFromLastMarker() {
-            let navigation = WYFNavigation(status: status, destination: WYFDestination(category: category))
-            self.delegateNotifier?.navigationDelegate?.onNavigationFinished(navigation: navigation)
-        }
-        stopNavigation()
-    }
-
-    func stopNavigation() {
-        SITNavigationManager.shared().removeUpdates()
-        self.indicationsView.isHidden = true
-        self.changeCancelNavigationButtonVisibility(isVisible: false)
-        self.changeNavigationButtonVisibility(isVisible: false)
-        self.updateInfoBarLabels(mainLabel: self.buildingInfo?.building.name ?? DEFAULT_BUILDING_NAME)
-        for polyline in self.polyline {
-            polyline.map = nil
-        }
-        self.displayPois(onFloor: orderedFloors(buildingInfo:  buildingInfo)?[self.selectedLevelIndex].identifier)
-        self.removeLastCustomMarker()
-        self.destinationMarker?.setMapView(mapView: nil)
-        self.destinationMarker = nil
-
-        // hide selected point
-        self.mapView.selectedMarker = nil
-    }
-
-    private func getCategoryFromLastMarker() -> Category? {
-        guard let marker = self.lastSelectedMarker else { return nil }
-        
-        if marker.isPoiMarker() {
-            return .poi(marker.poi!)
-        } else {
-            let coordinate = CLLocationCoordinate2D(
-                latitude: marker.gmsMarker.position.latitude,
-                longitude: marker.gmsMarker.position.longitude
-            )
-            let floorId = getFloorIdFromMarker(marker: marker)
-            let point = SITPoint(building: buildingInfo!.building, floorIdentifier: floorId,
-                coordinate: coordinate)
-            return .location(point)
-        }
     }
 }
 

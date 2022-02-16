@@ -67,10 +67,6 @@ do{
 }
 ```
 
-## Build documentation
-Install [Jazzy](https://github.com/realm/jazzy). From the root folder execute `./scripts/generate_appledoc.sh`
-
-
 ## License
 
 SitumWayfinding is available under the MIT license. See the LICENSE file for more info.

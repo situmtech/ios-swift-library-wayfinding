@@ -3,6 +3,9 @@
 ### Added
 * Added method navigateToLocation(floor, lat, lng) on SitumMapLibrary to navigate to a location in the current building.
 The location is specified by a floor, a latitude and a longitude
-* Add OnNavigationListener protocol to listen for events related to navigation and the ability to hook up with custom
-callbacks. This will give information about navigation either made by user or by developer. This will include an object
-Navigation which holds information about the current status and the destination.
+* Added protocol OnNavigationListener and a method setOnNavigationListener on SitumMapsLibrary. As a developer you can 
+set a listener and implement the protocol methods to get notified of events during navigation (onNavigationRequested, 
+onNavigationError and onNavigationFinished). Each of the protocol methods will receive an object that complies to 
+protocol Navigation.
+* Added protocol Navigation that holds information about the current status of the navigation and the navigation 
+destination.
