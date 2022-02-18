@@ -19,6 +19,7 @@ class WayfindingController: UIViewController, OnPoiSelectionListener, OnFloorCha
     var action: WYFAction?
     var credentials: Credentials!
     var buildingId: String!
+    var useRemoteConfig: Bool = false
 
     var library: SitumMapsLibrary?
 
@@ -30,6 +31,7 @@ class WayfindingController: UIViewController, OnPoiSelectionListener, OnFloorCha
         let settings = LibrarySettings.Builder()
                 .setCredentials(credentials: credentials)
                 .setBuildingId(buildingId: buildingId)
+                .setUseRemoteConfig(useRemoteConfig: useRemoteConfig)
                 .build()
         self.library = SitumMapsLibrary(containedBy: self.containerView, controlledBy: self, withSettings: settings)
 

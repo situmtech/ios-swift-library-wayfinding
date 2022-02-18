@@ -29,7 +29,9 @@ import GoogleMaps
     private(set) var userPositionArrowIcon: String? = ""
     /// Text that will be used as placeholder in the search view component.
     private(set) var searchViewPlaceholder: String? = ""
-
+    /// Boolean to configure if location system should use the remote configuration (true) or not (false). See https://situm.com/docs/07-remote-configuration/ to learn more on how to use this functionality.
+    private (set) var useRemoteConfig: Bool = false
+    
     // private(set) var orgDetails: OrganizationTheme?
     private override init() {
 
@@ -92,6 +94,13 @@ import GoogleMaps
             instance.searchViewPlaceholder = searchViewPlaceholder
             return self
         }
+        
+        /// Establish the usage of remote configuration to initialize the location system (customizable in dashboard)
+        @discardableResult
+        @objc public func setUseRemoteConfig(useRemoteConfig: Bool) -> Builder {
+            instance.useRemoteConfig = useRemoteConfig
+            return self
+        }
 
         /// Returns an instance of LibrarySettings
         @objc public func build() -> LibrarySettings {
@@ -125,6 +134,10 @@ import GoogleMaps
             
             if settings.searchViewPlaceholder != nil {
                 builderCopy.setSearchViewPlaceholder(searchViewPlaceholder: settings.searchViewPlaceholder!)
+            }
+            
+            if settings.useRemoteConfig != nil {
+                builderCopy.setUseRemoteConfig(useRemoteConfig: settings.useRemoteConfig)
             }
 
             return builderCopy
