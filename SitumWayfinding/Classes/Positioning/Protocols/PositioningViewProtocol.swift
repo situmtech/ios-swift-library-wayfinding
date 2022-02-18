@@ -13,11 +13,7 @@ protocol PositioningView {
     
     func change(_ state: SITLocationState, centerCamera: Bool)
     
-    /**
-     Stop positioning and navigation at once. If error is not supplied navigation will stop with an status of
-     cancelled, otherwise it will stop with error in parameter and status error
-     */
-    func stopPositioningAndNavigation(error: Error?)
+    func cleanLocationUI()
     
     func showNumberOfBeaconsRanged(text: Int)
     

@@ -108,8 +108,8 @@ extension WayfindingController: OnMapReadyListener {
             switch error {
             case .invalidPOI:
                 print("POI: selection error, invalid POI \(error))")
-            case .unknown:
-                print("POI: unknown error \(error))")
+            default:
+                print("POI: wayfinding error \(error)")
             }
         } else {
             print("POI: generic error \(error))")

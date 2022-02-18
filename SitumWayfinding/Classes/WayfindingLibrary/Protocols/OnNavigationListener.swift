@@ -55,7 +55,7 @@ public protocol Destination {
     /**
      Either a POI or a location
      */
-    var category: Category { get set }
+    var category: DestinationCategory { get set }
     /**
      Point of the current destination
      */
@@ -73,7 +73,7 @@ public protocol Destination {
 /**
  Type of destination
  */
-public enum Category {
+public enum DestinationCategory {
     /**
      Destination is a POI with a SITPOI inside
      */
@@ -111,17 +111,78 @@ public enum NavigationStatus {
  */
 public enum NavigationError: Error {
     /**
-     Error raised when SITUM could not calculate route to destination
+     Error raised when actual position of user is unknown
+     */
+    case positionUnknown
+    /**
+     Error raised when actual location of user is outdoor, navigation is only available indoor
+     */
+    case outdoorOrigin
+    /**
+     Error raised when user request navigation without select a valid destination
+     */
+    case noDestinationSelected
+    /**
+     Error raised when SITUM could not calculate route to destination due an internal error
      */
     case unableToComputeRoute
     /**
-     Error raised when position of user is incompatible with route calculation
+     Error raised when there is no route available between user position and destination
      */
-    case invalidDirections
+    case noAvailableRoute
     /**
-     This error could happened when a user goes outside the current route (in the context of a navigation to a point)
+     Error raised when a user goes outside the current route and is located out of building
      */
-    case userOutsideBuilding
+    case outsideBuilding
+    /**
+     Error raised when a problem with location service happened. Contains the inner location error
+     */
+    case locationError(Error?)
+}
+
+extension NavigationError: LocalizedError {
+    /**
+     Description of error
+     */
+    public var errorDescription: String? {
+        switch self {
+        case .positionUnknown:
+            return "User actual location is unknown, please activate the positioning before computing a route and try again."
+        case .outdoorOrigin:
+            return "User actual location is outdoor, navegation is only avaialble indoor."
+        case .noDestinationSelected:
+            return "There is no destination currently selected, the navigation cannot be started. Please select a POI (or longpress to create a custom one) and try again."
+        case .unableToComputeRoute:
+            return "An unexpected error was found while computing the route. Please try again."
+        case .noAvailableRoute:
+            return "There is no route between the selected locations. Try to compute a different route or to switch accessibility mode"
+        case .outsideBuilding:
+            return "The user is not currently detected on the route and is out of the building. Please go back to resume navigation."
+        case .locationError(let error):
+            return error?.localizedDescription
+        }
+    }
+    /**
+     Code of error
+     */
+    public var _code: Int {
+        switch self {
+        case .positionUnknown:
+            return 10_101
+        case .outdoorOrigin:
+            return 10_102
+        case .noDestinationSelected:
+            return 10_103
+        case .unableToComputeRoute:
+            return 10_104
+        case .noAvailableRoute:
+            return 10_105
+        case .outsideBuilding:
+            return 10_106
+        case .locationError:
+            return 10_107
+        }
+    }
 }
 
 internal struct WYFNavigation: Navigation {
@@ -130,7 +191,7 @@ internal struct WYFNavigation: Navigation {
 }
 
 internal struct WYFDestination: Destination {
-    var category: Category
+    var category: DestinationCategory
     var point: SITPoint {
         switch category {
         case .poi(let poi):
@@ -148,7 +209,7 @@ internal struct WYFDestination: Destination {
         return poi.name
     }
 
-    init(category: Category) {
+    init(category: DestinationCategory) {
         self.category = category
     }
 }

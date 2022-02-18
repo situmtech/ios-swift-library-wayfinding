@@ -890,7 +890,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     
     func showAlertMessage(title: String, message: String, alertType:AlertType) {
         
-        let alert = UIAlertController(title: title, message: message,         preferredStyle: .alert)
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
 
         alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: { _ in
             self.presenter?.alertViewClosed(alertType)
@@ -1069,17 +1069,12 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         stopNavigation(status: .canceled)
     }
     
-    func stopPositioningAndNavigation(error: Error? = nil) {
+    func cleanLocationUI() {
         self.makeUserMarkerVisible(visible: false)
         self.numberBeaconsRangedView.isHidden = true
         self.reloadFloorPlansTableViewData()
         self.hideCenterButton()
         self.change(.stopped, centerCamera: false)
-        if let error = error {
-            self.stopNavigation(status: .error(error))
-        } else {
-            self.stopNavigation(status: .canceled)
-        }
     }
     
     func stopNavigation(status: NavigationStatus) {
@@ -1108,12 +1103,34 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     
         if case .error(let error) = status {
             self.delegateNotifier?.navigationDelegate?.onNavigationError(navigation: navigation, error: error)
+            if let error = error as? NavigationError {
+                switch error {
+                case .positionUnknown:
+                    self.showAlertMessage(title: "Position unknown", message: error.localizedDescription, alertType: .otherAlert)
+                case .outdoorOrigin:
+                    self.showAlertMessage(title: "Position outdoor", message: error.localizedDescription, alertType: .otherAlert)
+                case .noDestinationSelected:
+                    self.showAlertMessage(title: "No destination selected", message: error.localizedDescription, alertType: .otherAlert)
+                case .unableToComputeRoute:
+                    self.showAlertMessage(title: "Unable to compute route", message: error.localizedDescription, alertType: .otherAlert)
+                case .noAvailableRoute:
+                    self.showAlertMessage(title: "Unable to compute route", message: error.localizedDescription, alertType: .otherAlert)
+                case .outsideBuilding:
+                    self.showAlertMessage(title: "Unable to compute route", message: error.localizedDescription, alertType: .otherAlert)
+                case .locationError(let error):
+                    let errorMessage = error?.localizedDescription ?? WayfindingError.unknown.localizedDescription
+                    self.showAlertMessage(title: "Error", message: errorMessage, alertType: .otherAlert)
+                }
+            }
         } else {
+            if case .destinationReached = status {
+                self.showAlertMessage(title: "Destination Reached", message: "You've arrived to your destination", alertType: .otherAlert)
+            }
             self.delegateNotifier?.navigationDelegate?.onNavigationFinished(navigation: navigation)
         }
     }
     
-    private func getCategoryFromMarker(marker: SitumMarker?) -> Category? {
+    private func getCategoryFromMarker(marker: SitumMarker?) -> DestinationCategory? {
         guard let marker = marker else { return nil }
         
         if marker.isPoiMarker() {
