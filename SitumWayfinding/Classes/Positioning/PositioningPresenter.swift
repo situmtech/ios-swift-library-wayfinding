@@ -31,7 +31,9 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
     var directionsRequest: SITDirectionsRequest? = nil
     var route: SITRoute? = nil
     var locationManager: SITLocationManager = SITLocationManager.sharedInstance()
-
+    
+    var useRemoteConfig: Bool = false
+    
     let compassCalibrationAlertTitle = "Compass calibration needed"
     let oobAlertTitle = "User outside building"
     let outsideRouteAlertTitle = "User ouside route"
@@ -64,7 +66,7 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
     func requestLocationUpdates() {
         var request: SITLocationRequest = RequestBuilder.buildLocationRequest(buildingId: buildingInfo.building.identifier)
         request = self.interceptorsManager.onLocationRequest(request)
-        self.locationManager.requestLocationUpdates(request)
+        self.locationManager.requestLocationUpdates(SITServices.isUsingRemoteConfig() && useRemoteConfig ? nil: request)
         view?.change(.calculating, centerCamera: true)
     }
     

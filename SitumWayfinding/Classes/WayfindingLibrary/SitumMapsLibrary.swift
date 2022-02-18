@@ -65,6 +65,7 @@ import GoogleMaps
         if let settings = getSettings() {
             let mapView = settings.googleMap != nil ? settings.googleMap : obtainGMSMapView()
             prepareForLoading(buildingWithId: settings.buildingId, withMap: mapView)
+            SITServices.setUseRemoteConfig(settings.useRemoteConfig)
             UIUtils().present(the: self.toPresentViewController!, over: self.parentViewControler, in: self.containerView)
         } // NOTE: else unnecessary: validateSettings already checks settings not nil
     }

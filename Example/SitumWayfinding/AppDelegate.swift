@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import SitumSDK
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {

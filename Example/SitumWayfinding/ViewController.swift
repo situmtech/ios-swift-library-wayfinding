@@ -23,6 +23,9 @@ class ViewController: UIViewController {
     private var selectedPoi: SITPOI? = nil
     private var action: WYFAction?
     private let cellId = "cell"
+    
+    @IBOutlet weak var remoteConfigSwitch: UISwitch!
+    
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -94,6 +97,7 @@ class ViewController: UIViewController {
                 vc.credentials = credentials
                 vc.buildingId = buildingId
                 vc.action = action
+                vc.useRemoteConfig = remoteConfigSwitch.isOn
             }
         }
     }
