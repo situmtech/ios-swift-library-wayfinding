@@ -10,13 +10,6 @@ import Foundation
 import SitumSDK
 import GoogleMaps
 
-enum SITDirectionsRequestValidity{
-    case SITValidDirectionsRequest
-    case SITNotOriginError
-    case SITOutdorOriginError
-    case SITNotDestinationError
-}
-
 class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate, SITNavigationDelegate {
     
     var view: PositioningView?
@@ -296,44 +289,31 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
     }
     
     func checkDirectionsRequestValidity(origin: SITPoint!, destination: SITPoint!) -> NavigationError? {
-        let originValidity = checkDirectionsRequestOriginValidity(origin: origin)
-        let destinationValidity = self.checkDirectionsRequestDestinationValidity(destination: destination)
-        if (originValidity != .SITValidDirectionsRequest){
-            return self.directionRequestValidityToNavigationError(error: originValidity)
+        let originError = checkIfOriginIsValid(origin: origin)
+        if (originError != nil){
+            return originError
         }
-        return self.directionRequestValidityToNavigationError(error: destinationValidity)
+        
+        let destinationError = self.checkIfDestinationIsValid(destination: destination)
+        return destinationError
     }
     
-    func directionRequestValidityToNavigationError(error: SITDirectionsRequestValidity) -> NavigationError? {
-        switch error {
-        case .SITNotOriginError:
-            return NavigationError.positionUnknown
-        case .SITOutdorOriginError:
-            return NavigationError.outdoorOrigin
-        case .SITNotDestinationError:
-            return NavigationError.noDestinationSelected
-        case .SITValidDirectionsRequest:
-            return nil
-        }
-    }
-    
-    func checkDirectionsRequestOriginValidity(origin:SITPoint!) -> SITDirectionsRequestValidity{
+    func checkIfOriginIsValid(origin:SITPoint!) -> NavigationError? {
         if (origin == nil){
             //Theoretically this shouldnt happen as positioning is started when a route is requested if it was stopped
-            return .SITNotOriginError;
+            return .positionUnknown
         }
         if (origin.isOutdoor()) {
-            return .SITOutdorOriginError;
+            return .outdoorOrigin
         }
-        return .SITValidDirectionsRequest
-        
+        return nil
     }
     
-    func checkDirectionsRequestDestinationValidity(destination: SITPoint!) -> SITDirectionsRequestValidity{
+    func checkIfDestinationIsValid(destination: SITPoint!) -> NavigationError? {
         if (destination == nil){
-            return .SITNotDestinationError
+            return .noDestinationSelected
         }
-        return .SITValidDirectionsRequest
+        return nil
     }
     
     func requestNavigation(route: SITRoute) {
