@@ -12,7 +12,7 @@ import SitumWayfinding
 import SitumSDK
 import GoogleMaps
 
-class WayfindingController: UIViewController, OnPoiSelectionListener, OnFloorChangeListener, OnMapReadyListener {
+class WayfindingController: UIViewController {
     
     @IBOutlet var containerView: UIView!
 
@@ -45,6 +45,7 @@ class WayfindingController: UIViewController, OnPoiSelectionListener, OnFloorCha
         self.library?.setOnPoiSelectionListener(listener: self)
         self.library?.setOnFloorChangeListener(listener: self)
         self.library?.setOnMapReadyListener(listener: self)
+        self.library?.setOnNavigationListener(listener: self)
 
         do {
             try self.library!.load()
@@ -58,19 +59,26 @@ class WayfindingController: UIViewController, OnPoiSelectionListener, OnFloorCha
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
-    
-    // MARK: Wayfinding Delegate
+}
+
+// MARK: Wayfinding Delegates
+extension WayfindingController: OnPoiSelectionListener {
     func onPoiDeselected(building: SITBuilding) {
         print("onPoiDeselected app")
     }
-    
+
     func onPoiSelected(poi: SITPOI, level: SITFloor, building: SITBuilding) {
         print("onPoiSelected")
     }
+}
+
+extension WayfindingController: OnFloorChangeListener {
     func onFloorChanged(from: SITFloor, to: SITFloor, building: SITBuilding) {
         print("onFloorChanged from \(from.floor) to \(to.floor)")
     }
+}
 
+extension WayfindingController: OnMapReadyListener {
     func onMapReady(map: SitumMap) {
         print("map ready to interact \(map)")
 
@@ -102,12 +110,26 @@ class WayfindingController: UIViewController, OnPoiSelectionListener, OnFloorCha
             switch error {
             case .invalidPOI:
                 print("POI: selection error, invalid POI \(error))")
-            case .unknown:
-                print("POI: unknown error \(error))")
+            default:
+                print("POI: wayfinding error \(error)")
             }
         } else {
             print("POI: generic error \(error))")
         }
+    }
+}
+
+extension WayfindingController: OnNavigationListener {
+    func onNavigationRequested(navigation: Navigation) {
+        print("Navigation: starts with destination \(navigation.destination)")
+    }
+    
+    func onNavigationError(navigation: Navigation, error: Error) {
+        print("Navigation: to \(navigation.destination) fails with error \(error)")
+    }
+    
+    func onNavigationFinished(navigation: Navigation) {
+        print("Navigation: finished with status \(navigation.status)")
     }
 }
 

@@ -774,13 +774,23 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     @IBAction
     func navigationButtonPressed(_ sender: Any) {
         Logger.logInfoMessage("Navigation Button Has Been pressed")
-        startNavigation()
+        startNavigationByUser()
+    }
+    
+    func startNavigationByUser() {
+        self.startNavigation()
+        if let category = getCategoryFromMarker(marker: self.lastSelectedMarker) {
+            let navigation = WYFNavigation(status: .requested, destination: WYFDestination(category: category))
+            self.delegateNotifier?.navigationDelegate?.onNavigationRequested(navigation: navigation)
+        }
     }
 
     func startNavigation(to poi: SITPOI) {
         do {
             try self.select(poi: poi) { [weak self] in
                 self?.startNavigation()
+                let navigation = WYFNavigation(status: .requested, destination: WYFDestination(category: .poi(poi)))
+                self?.delegateNotifier?.navigationDelegate?.onNavigationRequested(navigation: navigation)
             }
         } catch {
             Logger.logErrorMessage("poi \(poi) is not a valid poi in this building")
@@ -793,8 +803,14 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         }
         select(floor: indexPath)
         let gsmMarker = self.createMarker(withCoordinate: location, floorId: floor.identifier)
-        select(marker: SitumMarker(from: gsmMarker)) { [weak self] in
+        let marker = SitumMarker(from: gsmMarker)
+        select(marker: marker) { [weak self] in
+            guard let positioningVC = self else { return }
             self?.startNavigation()
+            let point = SITPoint(building: positioningVC.buildingInfo!.building, floorIdentifier: floor.identifier,
+                coordinate: location)
+            let navigation = WYFNavigation(status: .requested, destination: WYFDestination(category: .location(point)))
+            self?.delegateNotifier?.navigationDelegate?.onNavigationRequested(navigation: navigation)
         }
     }
 
@@ -831,7 +847,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     
     @IBAction
     func stopNavigatingButtonPressed(_ sender: UIButton) {
-        presenter?.stopNavigation()
+        stopNavigationByUser()
     }
     
     @IBAction
@@ -880,7 +896,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     
     func showAlertMessage(title: String, message: String, alertType:AlertType) {
         
-        let alert = UIAlertController(title: title, message: message,         preferredStyle: .alert)
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
 
         alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: { _ in
             self.presenter?.alertViewClosed(alertType)
@@ -1054,17 +1070,21 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     }
 
     //MARK: Stop methods
-
-    func stop() {
+    
+    func stopNavigationByUser() {
+        stopNavigation(status: .canceled)
+    }
+    
+    func cleanLocationUI() {
         self.makeUserMarkerVisible(visible: false)
         self.numberBeaconsRangedView.isHidden = true
         self.reloadFloorPlansTableViewData()
         self.hideCenterButton()
         self.change(.stopped, centerCamera: false)
-        self.stopNavigation()
     }
     
-    func stopNavigation() {
+    func stopNavigation(status: NavigationStatus) {
+        presenter?.resetLastOutsideRouteAlert()
         SITNavigationManager.shared().removeUpdates()
         self.indicationsView.isHidden = true
         self.changeCancelNavigationButtonVisibility(isVisible: false)
@@ -1076,10 +1096,61 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         self.displayPois(onFloor: orderedFloors(buildingInfo:  buildingInfo)?[self.selectedLevelIndex].identifier)
         self.removeLastCustomMarker()
         self.destinationMarker?.setMapView(mapView: nil)
+        self.notifyEndOfNavigation(status: status, marker: self.destinationMarker)
         self.destinationMarker = nil
 
         // hide selected point
         self.mapView.selectedMarker = nil
+    }
+    
+    private func notifyEndOfNavigation(status: NavigationStatus, marker: SitumMarker?) {
+        guard let category = self.getCategoryFromMarker(marker: self.destinationMarker) else { return }
+        let navigation = WYFNavigation(status: status, destination: WYFDestination(category: category))
+    
+        if case .error(let error) = status {
+            self.delegateNotifier?.navigationDelegate?.onNavigationError(navigation: navigation, error: error)
+            if let error = error as? NavigationError {
+                switch error {
+                case .positionUnknown:
+                    self.showAlertMessage(title: "Position unknown", message: error.localizedDescription, alertType: .otherAlert)
+                case .outdoorOrigin:
+                    self.showAlertMessage(title: "Position outdoor", message: error.localizedDescription, alertType: .otherAlert)
+                case .noDestinationSelected:
+                    self.showAlertMessage(title: "No destination selected", message: error.localizedDescription, alertType: .otherAlert)
+                case .unableToComputeRoute:
+                    self.showAlertMessage(title: "Unable to compute route", message: error.localizedDescription, alertType: .otherAlert)
+                case .noAvailableRoute:
+                    self.showAlertMessage(title: "Unable to compute route", message: error.localizedDescription, alertType: .otherAlert)
+                case .outsideBuilding:
+                    self.showAlertMessage(title: "Unable to compute route", message: error.localizedDescription, alertType: .otherAlert)
+                case .locationError(let error):
+                    let errorMessage = error?.localizedDescription ?? WayfindingError.unknown.localizedDescription
+                    self.showAlertMessage(title: "Error", message: errorMessage, alertType: .otherAlert)
+                }
+            }
+        } else {
+            if case .destinationReached = status {
+                self.showAlertMessage(title: "Destination Reached", message: "You've arrived to your destination", alertType: .otherAlert)
+            }
+            self.delegateNotifier?.navigationDelegate?.onNavigationFinished(navigation: navigation)
+        }
+    }
+    
+    private func getCategoryFromMarker(marker: SitumMarker?) -> DestinationCategory? {
+        guard let marker = marker else { return nil }
+        
+        if marker.isPoiMarker() {
+            return .poi(marker.poi!)
+        } else {
+            let coordinate = CLLocationCoordinate2D(
+                latitude: marker.gmsMarker.position.latitude,
+                longitude: marker.gmsMarker.position.longitude
+            )
+            let floorId = getFloorIdFromMarker(marker: marker)
+            let point = SITPoint(building: buildingInfo!.building, floorIdentifier: floorId,
+                coordinate: coordinate)
+            return .location(point)
+        }
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
