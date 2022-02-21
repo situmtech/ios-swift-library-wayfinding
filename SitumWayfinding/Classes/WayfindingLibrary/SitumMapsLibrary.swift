@@ -119,10 +119,10 @@ import GoogleMaps
     }
     
     /**
-       Stops Stum Navigation
+       Stops Situm Navigation
      */
     @objc public func stopNavigation(){
-        self.toPresentViewController?.presenter?.stopNavigation()
+        self.toPresentViewController?.stopNavigation(status: .canceled)
     }
     
     /**
@@ -213,6 +213,15 @@ import GoogleMaps
      */
     public func setOnMapReadyListener(listener: OnMapReadyListener?) {
         delegatesNotifier.mapReadyDelegate = listener
+    }
+
+    /**
+     Sets a delegate that get notified with events related to Navigation
+
+     - parameter listener: OnNavigationChangeListener
+     */
+    public func setOnNavigationListener(listener: OnNavigationListener?) {
+        delegatesNotifier.navigationDelegate = listener
     }
 
     /**

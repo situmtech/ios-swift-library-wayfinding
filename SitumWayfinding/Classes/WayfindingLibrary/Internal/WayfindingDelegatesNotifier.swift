@@ -10,6 +10,7 @@ class WayfindingDelegatesNotifier{
     var poiSelectionDelegate: OnPoiSelectionListener?
     var floorChangeDelegate: OnFloorChangeListener?
     var mapReadyDelegate: OnMapReadyListener?
+    var navigationDelegate: OnNavigationListener?
     
     /**
      Method that notifies when a POI has been selected. There are several actions that can result on a POI being selected.
