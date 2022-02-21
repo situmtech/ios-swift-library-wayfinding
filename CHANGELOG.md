@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 All non released changes should be in CHANGELOG_UNRELEASED.md file
 
 ---------
+## [0.2.0] - 2022-02-21
+### Added
+* Added protocol OnNavigationListener and a method setOnNavigationListener on SitumMapsLibrary. As a developer you can 
+set a listener and implement the protocol methods to get notified of events during navigation (onNavigationRequested, 
+onNavigationError and onNavigationFinished). Each of the protocol methods will receive an object that complies to 
+protocol Navigation.
+* Added protocol Navigation that holds information about the current status of the navigation and the navigation 
+destination.
+
 ## [0.1.22] - 2022-02-21
 # Added
 * Added method navigateToLocation(floor, lat, lng) on SitumMapLibrary to navigate to a location in the current building.
