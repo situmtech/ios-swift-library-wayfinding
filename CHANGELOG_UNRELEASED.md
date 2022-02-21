@@ -1,4 +1,4 @@
-## [0.2.0] - 2022-02-18
+## [0.2.0] - 2022-02-21
 
 ### Added
 * Added method navigateToLocation(floor, lat, lng) on SitumMapLibrary to navigate to a location in the current building.
@@ -11,3 +11,4 @@ onNavigationError and onNavigationFinished). Each of the protocol methods will r
 protocol Navigation.
 * Added protocol Navigation that holds information about the current status of the navigation and the navigation 
 destination.
+
