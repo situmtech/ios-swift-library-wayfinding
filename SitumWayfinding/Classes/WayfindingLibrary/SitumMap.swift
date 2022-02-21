@@ -70,6 +70,13 @@ public protocol SitumMap {
     func setOnMapReadyListener(listener: OnMapReadyListener?)
 
     /**
+     Sets a delegate that get notified with events related to Navigation
+
+     - parameter listener: OnNavigationChangeListener
+     */
+    func setOnNavigationListener(listener: OnNavigationListener?)
+
+    /**
      Select a given poi. This method will perform the proper actions over the User Interface to make that Poi the
      selected one
      - parameters:

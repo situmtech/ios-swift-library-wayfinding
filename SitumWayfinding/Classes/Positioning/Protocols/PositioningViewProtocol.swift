@@ -13,7 +13,7 @@ protocol PositioningView {
     
     func change(_ state: SITLocationState, centerCamera: Bool)
     
-    func stop()
+    func cleanLocationUI()
     
     func showNumberOfBeaconsRanged(text: Int)
     
@@ -27,7 +27,7 @@ protocol PositioningView {
     
     func updateProgress(progress: SITNavigationProgress)
     
-    func stopNavigation()
+    func stopNavigation(status: NavigationStatus)
     
     func reloadFloorPlansTableViewData()
     

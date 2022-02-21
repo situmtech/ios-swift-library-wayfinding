@@ -90,7 +90,7 @@ class ViewController: UIViewController {
         action = .navigateToLocation(floor: floor, lat: lat, lng: lng)
         self.performSegue(withIdentifier: "loadWayfindingSegue", sender: self)
     }
-    
+
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "loadWayfindingSegue" {
             if let vc = segue.destination as? WayfindingController {
