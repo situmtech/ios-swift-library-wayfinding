@@ -21,6 +21,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     var delegateNotifier: WayfindingDelegatesNotifier? {
         return library?.delegatesNotifier
     }
+    var useRemoteConfig: Bool = false
 
     //Positioning
     @IBOutlet weak var navbar: UINavigationBar!
@@ -137,6 +138,11 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
                             
                             self.situmLoadFinished(loadingAlert: loadingAlert)
                             self.presenter = PositioningPresenter(view: self, buildingInfo: self.buildingInfo!, interceptorsManager: self.library?.interceptorsManager ?? InterceptorsManager())
+                            if let lib = self.library {
+                                if let set = lib.settings {
+                                    self.presenter?.useRemoteConfig = set.useRemoteConfig
+                                }
+                            }
                             self.initializeUIElements()
                         }
                     }, failure: { (error: Error?) in
@@ -771,7 +777,31 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         startNavigation()
     }
 
-    func startNavigation() {
+    func startNavigation(to poi: SITPOI) {
+        do {
+            try self.select(poi: poi) { [weak self] in
+                self?.startNavigation()
+            }
+        } catch {
+            Logger.logErrorMessage("poi \(poi) is not a valid poi in this building")
+        }
+    }
+
+    func startNavigation(to location: CLLocationCoordinate2D, in floor: SITFloor) {
+        guard let indexPath = getIndexPath(floorId: floor.identifier) else {
+            return
+        }
+        select(floor: indexPath)
+        let gsmMarker = self.createMarker(withCoordinate: location, floorId: floor.identifier)
+        select(marker: SitumMarker(from: gsmMarker)) { [weak self] in
+            self?.startNavigation()
+        }
+    }
+
+    /**
+     Start navigation to selected marker. If no marker is selected this method will do nothing
+     */
+    private func startNavigation() {
         var destination = kCLLocationCoordinate2DInvalid
         if let marker = self.lastSelectedMarker {
             self.destinationMarker = marker

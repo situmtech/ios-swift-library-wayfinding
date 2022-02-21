@@ -65,6 +65,7 @@ import GoogleMaps
         if let settings = getSettings() {
             let mapView = settings.googleMap != nil ? settings.googleMap : obtainGMSMapView()
             prepareForLoading(buildingWithId: settings.buildingId, withMap: mapView)
+            SITServices.setUseRemoteConfig(settings.useRemoteConfig)
             UIUtils().present(the: self.toPresentViewController!, over: self.parentViewControler, in: self.containerView)
         } // NOTE: else unnecessary: validateSettings already checks settings not nil
     }
@@ -215,25 +216,21 @@ import GoogleMaps
     }
 
     /**
-     Navigate to a poi in the map
+     Start the navigation to a poi in the current building. This will:
+        * Start the positioning if needed
+        * Calculate and draw the route from the current user location to the poi.
+        * Provide the step-by-step instructions to reach the poi.
      - parameters:
        - poi: navigation goes toward this SITPOI
      */
     public func navigateToPoi(poi: SITPOI) {
         guard let positioningController = toPresentViewController else { return }
-
-        selectPoi(poi: poi) { result in
-            switch result {
-            case .success:
-                positioningController.startNavigation()
-            case .failure:
-                break
-            }
-        }
+        positioningController.startNavigation(to: poi)
     }
 
     /**
-     Select a poi in the map
+     Select a given poi. This method will perform the proper actions over the User Interface to make that Poi the
+     selected one
      - parameters:
        - poi: the SITPOI you want to select
        - completion: callback called when operation complete either successfully or with an error
@@ -246,6 +243,23 @@ import GoogleMaps
         } catch {
             completion(.failure(error))
         }
+    }
+
+    /**
+     Start the navigation to a given a location in the current building. The location will be determined by its floor,
+     its latitude and its longitude. This will:
+        * Start the positioning if needed
+        * Calculate and draw the route from the current user location to the location.
+        * Provide the step-by-step instructions to reach the location.
+     - parameters:
+       - floor: floor of the location
+       - lat: latitude of the location
+       - lng: longitude of the location
+     */
+    public func navigateToLocation(floor: SITFloor, lat: Double, lng: Double) {
+        guard let positioningController = toPresentViewController else { return }
+        let location = CLLocationCoordinate2D(latitude: lat, longitude: lng)
+        positioningController.startNavigation(to: location, in: floor)
     }
 }
 
