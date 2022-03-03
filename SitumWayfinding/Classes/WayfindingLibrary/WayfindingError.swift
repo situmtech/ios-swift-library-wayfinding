@@ -26,9 +26,9 @@ extension WayfindingError {
     public var errorDescription: String? {
         switch self {
         case .invalidPOI:
-            return "The poi selected is not valid in this building"
+            return NSLocalizedString("wayfindingError.invalidPoi", comment: "")
         case .unknown:
-            return "An unknown error happened"
+            return NSLocalizedString("wayfindingError.unknown", comment: "")
         }
     }
     /**

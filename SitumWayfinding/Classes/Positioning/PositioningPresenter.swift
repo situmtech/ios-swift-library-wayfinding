@@ -34,9 +34,12 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
     
     var useRemoteConfig: Bool = false
     
-    let compassCalibrationAlertTitle = "Compass calibration needed"
-    let oobAlertTitle = "User outside building"
-    let outsideRouteAlertTitle = "User ouside route"
+    let compassCalibrationAlertTitle = NSLocalizedString("positioning.calibrationNeeded.alert.title",
+        comment: "The user needs to calibrate the compass")
+    let oobAlertTitle = NSLocalizedString("positioning.outsideBuilding.alert.title",
+        comment: "Alert title to show user is outside of building")
+    let outsideRouteAlertTitle = NSLocalizedString("positioning.outsideRoute.alert.title",
+        comment: "Alert title to show user is outside of route")
 
     init(view: PositioningView, buildingInfo: SITBuildingInfo, interceptorsManager: InterceptorsManager) {
         self.view = view
@@ -387,14 +390,16 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
             break;
         case .compassNeedsCalibration:
             stateName = "Compass needs calibration"
-            showAlertIfNeeded(type: .compassCalibrationNeeded, title: self.compassCalibrationAlertTitle, message: "Your device's compass isn't calibrated right now. Please recalibrate it to obtain the best navigation experience.")
+            showAlertIfNeeded(type: .compassCalibrationNeeded, title: self.compassCalibrationAlertTitle,
+                message: NSLocalizedString("positioning.calibrationNeeded.alert.message", comment: ""))
             break;
         case .userNotInBuilding:
             stateName = "User not in building"
             if isUserNavigating(){
                 view?.stopNavigation(status: .error(NavigationError.outsideBuilding))
             }
-            showAlertIfNeeded(type: .outOfBuilding, title: self.oobAlertTitle, message: "The user is currently outside of the building. Positioning will resume when the user returns.")
+            showAlertIfNeeded(type: .outOfBuilding, title: self.oobAlertTitle,
+                message: NSLocalizedString("positioning.outsideBuilding.alert.message", comment: "") )
             break;
         }
         Logger.logDebugMessage("Location manager updates state: \(stateName)")
@@ -442,7 +447,9 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
         Logger.logDebugMessage("user outside route detected: \(route.debugDescription)");
         
         if isUserIndoor(){
-            showAlertIfNeeded(type: .outsideRoute, title: self.outsideRouteAlertTitle, message: "The user is not currently detected on the route. Please go back to resume navigation.")
+            let message = NSLocalizedString("positioning.outsideBuilding.alert.message",
+                comment: "Alert message to show user is outside of route")
+            showAlertIfNeeded(type: .outsideRoute, title: self.outsideRouteAlertTitle, message: message)
         }else{
             view?.stopNavigation(status: .error(NavigationError.outsideBuilding))
         }

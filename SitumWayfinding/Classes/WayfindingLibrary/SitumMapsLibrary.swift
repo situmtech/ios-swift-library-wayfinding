@@ -316,13 +316,17 @@ extension SitumMapsLibrary {
         if let credentials = credentials {
             CredentialsStrategy.checkCredentials(credentials: credentials)
         } else {
-            throw UnsupportedConfigurationError.missingCredentials(message: "You must set your auth info with setCredentials() before calling load(buildingWithId:)")
+            let message = NSLocalizedString("situmMapsLibrary.error.credentials",
+                comment: "Error when user does not set credentials")
+            throw UnsupportedConfigurationError.missingCredentials(message: message)
         }
     }
     
     internal func validateActiveBuilding(_ buildingId: String?) throws {
         if(buildingId == nil || buildingId!.isEmpty) {
-            throw UnsupportedConfigurationError.invalidActiveBuilding(message: "The building ID in plist file is not correct. Please add a valid ID with key: es.situm.sdk.ACTIVE_BUILDING_ID")
+            let message = NSLocalizedString("situmMapsLibrary.error.invalidBuilding",
+                comment: "Error when user does not set correctly building id")
+            throw UnsupportedConfigurationError.invalidActiveBuilding(message: message)
         }
     }
     
