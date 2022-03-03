@@ -1,0 +1,116 @@
+/* Alert message after an error retrieving a building happens */
+"alert.error.building.message" = "An unexpected error ocurred while downloading the building's information. Please try again.";
+
+/* Alert title after an error retrieving a building happens */
+"alert.error.building.title" = "Error obtaining building info";
+
+/* Alert title for generic errors  */
+"alert.error.title" = "Error";
+
+/* Message of alert when loading library */
+"alert.loading.message" = "Hold on for a moment";
+
+/* Title of alert when loading library */
+"alert.loading.title" = "Loading";
+
+/* Generic cancel action  */
+"cancel" = "Cancel";
+
+/* No comment provided by engineer. */
+"navigationError.noAvailableRoute" = "There is no route between the selected locations. Try to compute a different route or to switch accessibility mode";
+
+/* No comment provided by engineer. */
+"navigationError.noDestinationSelected" = "There is no destination currently selected, the navigation cannot be started. Please select a POI (or longpress to create a custom one) and try again.";
+
+/* No comment provided by engineer. */
+"navigationError.outdoorOrigin" = "User actual location is outdoor, navegation is only avaialble indoor.";
+
+/* No comment provided by engineer. */
+"navigationError.outsideBuilding" = "The user is not currently detected on the route and is out of the building. Please go back to resume navigation.";
+
+/* No comment provided by engineer. */
+"navigationError.positionUnknown" = "User actual location is unknown, please activate the positioning before computing a route and try again.";
+
+/* No comment provided by engineer. */
+"navigationError.unableToComputeRoute" = "An unexpected error was found while computing the route. Please try again.";
+
+/* Generic ok action */
+"ok" = "Ok";
+
+/* Button to go back when the user is in the positioning controller (where the map is shown) */
+"positioning.back" = "Back";
+
+/* No comment provided by engineer. */
+"positioning.calibrationNeeded.alert.message" = "Your device's compass isn't calibrated right now. Please recalibrate it to obtain the best navigation experience.";
+
+/* The user needs to calibrate the compass */
+"positioning.calibrationNeeded.alert.title" = "Compass calibration needed";
+
+/* Button to center map in current location of user */
+"positioning.center" = "Center";
+
+/* No comment provided by engineer. */
+"positioning.createMarker" = "Create marker";
+
+/* Shown to user when select a destination (destination is any free point that user selects on the map) */
+"positioning.customDestination" = "Custom destination";
+
+/* Alert message to show to the user when destination was reached */
+"positioning.destinationReached.alert.message" = "You've arrived to your destination";
+
+/* Alert title to show to the user when destination was reached */
+"positioning.destinationReached.alert.title" = "Destination Reached";
+
+/* Alert title error when download the floor plan fails */
+"positioning.error.emptyFloor.alert.message" = "An unexpected error ocurred while downloading the floorplan. Please try again.";
+
+/* Alert title error when download the floor plan fails */
+"positioning.error.emptyFloor.alert.title" = "Empty floorplan";
+
+/* Alert title error when the user does not select a destination */
+"positioning.error.noDestinationSelected.alert.title" = "No destination selected";
+
+/* Alert title error when the user is outdoor */
+"positioning.error.positionOutdoor.alert.title" = "Position outdoor";
+
+/* Alert title error when the user position is unknown */
+"positioning.error.positionUnknown.alert.title" = "Position unknown";
+
+/* Alert title error when WayFinding cannot compute route to destination */
+"positioning.error.unableToComputeRoute.alert.title" = "Unable to compute route";
+
+/* Alert message to show for a long press action */
+"positioning.longPressAction.alert.message" = "Select an action:";
+
+/* Alert title to show for a long press action */
+"positioning.longPressAction.alert.title" = "Long press actions";
+
+/* Show to the user distance to next point */
+"positioning.navigationProgress" = "%.1fm remaining";
+
+/* Used to show the user the number of beacons that library detects nearby */
+"positioning.numBeacons" = "%d beacons";
+
+/* Alert message to show user is outside of route */
+"positioning.outsideBuilding.alert.message" = "The user is currently outside of the building. Positioning will resume when the user returns.";
+
+/* Alert title to show user is outside of building */
+"positioning.outsideBuilding.alert.title" = "User outside building";
+
+/* Alert title to show user is outside of route */
+"positioning.outsideRoute.alert.title" = "User outside route";
+
+/* Placeholder for searching pois */
+"positioning.searchPois" = "Search Pois";
+
+/* Error when user does not set credentials */
+"situmMapsLibrary.error.credentials" = "You must set your auth info with setCredentials() before calling load(buildingWithId:)";
+
+/* Error when user does not set correctly building id */
+"situmMapsLibrary.error.invalidBuilding" = "The building ID in plist file is not correct. Please add a valid ID with key: es.situm.sdk.ACTIVE_BUILDING_ID";
+
+/* No comment provided by engineer. */
+"wayfindingError.invalidPoi" = "The poi selected is not valid in this building";
+
+/* No comment provided by engineer. */
+"wayfindingError.unknown" = "An unknown error happened";

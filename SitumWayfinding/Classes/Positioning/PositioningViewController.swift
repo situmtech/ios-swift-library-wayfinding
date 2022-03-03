@@ -29,6 +29,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     @IBOutlet weak var levelsTableView: UITableView!
     @IBOutlet weak var levelsTableHeightConstaint: NSLayoutConstraint!
     @IBOutlet weak var centerButton: UIButton!
+    @IBOutlet weak var backButton: UIBarButtonItem!
     @IBOutlet weak var numberBeaconsRangedView: UIView!
     @IBOutlet weak var numberBeaconsRangedLabel: UILabel!
     @IBOutlet weak var loadingIndicator: UIActivityIndicatorView!
@@ -95,10 +96,20 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     let DEFAULT_SITUM_COLOR = "#283380"
     let DEFAULT_POI_NAME: String = "POI"
     let DEFAULT_BUILDING_NAME: String = "Current Building"
-    let fakeLocationsOptions = ["0º", "90º", "180º", "270º", "Create marker"]
+    let fakeLocationsOptions = [
+        "0º",
+        "90º",
+        "180º",
+        "270º",
+        NSLocalizedString("positioning.createMarker", comment: "")
+    ]
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        backButton.title = NSLocalizedString("positioning.back",
+            comment: "Button to go back when the user is in the positioning controller (where the map is shown)")
+        centerButton.setTitle(NSLocalizedString("positioning.center",
+            comment: "Button to center map in current location of user"), for: .normal)
         initSearchController()
         definesPresentationContext = true
         mapReadinessChecker = SitumMapReadinessChecker { [weak self] in
@@ -112,7 +123,9 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         positionDrawer = GoogleMapsPositionDrawer(mapView: mapView)
-        let loadingAlert = UIAlertController(title:  "Loading", message: "Hold on for a moment", preferredStyle: .actionSheet)
+        let loading = NSLocalizedString("alert.loading.title", comment: "Alert title when loading library")
+        let message = NSLocalizedString("alert.loading.message", comment: "Alert message when loading library")
+        let loadingAlert = UIAlertController(title: loading, message: message, preferredStyle: .actionSheet)
         self.present(loadingAlert, animated: true, completion: {
             if (self.loadFinished){
                 self.situmLoadFinished(loadingAlert: loadingAlert)
@@ -178,7 +191,11 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     func situmLoadFinished(loadingAlert : UIAlertController){
         loadingAlert.dismiss(animated: true) {
             if (self.loadingError){
-                self.showAlertMessage(title: "Error obtaining building info", message: "An unexpected error ocurred while downloading the building's information. Please try again.",alertType: .otherAlert)
+                let title = NSLocalizedString("alert.error.building.title",
+                    comment: "Alert title after an error retrieving a building happens")
+                let message = NSLocalizedString("alert.error.building.message",
+                    comment: "Alert message after an error retrieving a building happens")
+                self.showAlertMessage(title: title, message: message, alertType: .otherAlert)
             }
         }
         loadFinished = true
@@ -420,6 +437,10 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
             displayFloorplan(forLevel: levelIdentifier)
             self.mapReadinessChecker.currentFloorMapLoaded()
         } else {
+            let title = NSLocalizedString("positioning.error.emptyFloor.alert.title",
+                comment: "Alert title error when download the floor plan fails")
+            let message = NSLocalizedString("positioning.error.emptyFloor.alert.message",
+                comment: "Alert title error when download the floor plan fails")
             let wasMapFetched = SITCommunicationManager.shared().fetchMap(from: orderedFloors(buildingInfo: buildingInfo)![selectedLevelIndex], withCompletion: { imageData in
                 
                 if let imageData = imageData {
@@ -429,11 +450,11 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
                     self.displayFloorplan(forLevel: levelIdentifier)
                     self.mapReadinessChecker.currentFloorMapLoaded()
                 } else {
-                    self.showAlertMessage(title: "Empty floorplan", message: "An unexpected error ocurred while downloading the floorplan. Please try again.", alertType: .otherAlert)
+                    self.showAlertMessage(title: title, message: message, alertType: .otherAlert)
                 }
             })
             if !wasMapFetched {
-                self.showAlertMessage(title: "Empty floorplan", message: "An unexpected error ocurred while downloading the floorplan. Please try again.", alertType: .otherAlert)
+                self.showAlertMessage(title: title, message: message, alertType: .otherAlert)
             }
         }
     }
@@ -745,9 +766,13 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     }
     
     func showFakeLocationsAlert() {
-        let alert = UIAlertController(title: "Long press actions", message: "Select an action:", preferredStyle: .alert)
+        let title = NSLocalizedString("positioning.longPressAction.alert.title",
+            comment: "Alert title to show for a long press action")
+        let message = NSLocalizedString("positioning.longPressAction.alert.message",
+            comment: "Alert message to show for a long press action")
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
 
-        alert.addAction(UIAlertAction(title: "Cancel", style: .default, handler: { _ in
+        alert.addAction(UIAlertAction(title: NSLocalizedString("cancel", comment: "Generic cancel action "), style: .default, handler: { _ in
             self.presenter?.alertViewClosed(.otherAlert)
         }))
         for (buttonIndex, text) in fakeLocationsOptions.enumerated() {
@@ -862,7 +887,9 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         if (self.numberBeaconsRangedView.isHidden) {
             self.numberBeaconsRangedView.isHidden = false
         }
-        self.numberBeaconsRangedLabel.text = String(format: "%d beacons", text)
+        let format = NSLocalizedString("positioning.numBeacons",
+            comment: "Used to show the user the number of beacons that library detects nearby")
+        self.numberBeaconsRangedLabel.text = String(format: format, text)
     }
     
     func updateUI(with location: SITLocation) {
@@ -897,8 +924,9 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     func showAlertMessage(title: String, message: String, alertType:AlertType) {
         
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-
-        alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: { _ in
+    
+        let title = NSLocalizedString("ok", comment: "Generic ok action")
+        alert.addAction(UIAlertAction(title: title, style: .default, handler: { _ in
             self.presenter?.alertViewClosed(alertType)
         }))
 
@@ -918,7 +946,11 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     func updateProgress(progress: SITNavigationProgress) {
         self.progress = progress;
         self.indicationsView.isHidden = false
-        self.updateInfoBarLabels(mainLabel: self.destinationMarker?.gmsMarker.title ?? DEFAULT_POI_NAME, secondaryLabel: String(format: "%.1fm remaining", progress.distanceToGoal))
+        let localizedFormat = NSLocalizedString("positioning.navigationProgress",
+            comment: "Show to the user distance to next point")
+        let secondaryLabel = String(format: localizedFormat, progress.distanceToGoal)
+        self.updateInfoBarLabels(mainLabel: self.destinationMarker?.gmsMarker.title ?? DEFAULT_POI_NAME,
+            secondaryLabel: secondaryLabel)
         
         // Update route based on this information
         for line in self.polyline {
@@ -952,7 +984,9 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         if(!self.isUserNavigating()) {
             self.removeLastCustomMarkerIfOutsideRoute()
             self.lastCustomMarker = SitumMarker(from:  self.createMarker(withCoordinate: coordinate, floorId: floorId))
-            self.updateInfoBarLabels(mainLabel: "Custom destination", secondaryLabel: self.buildingInfo?.building.name ?? DEFAULT_BUILDING_NAME)
+            let mainLabel = NSLocalizedString("positioning.customDestination",
+                comment: "Shown to user when select a destination (destination is any free point that user selects on the map)")
+            self.updateInfoBarLabels(mainLabel: mainLabel, secondaryLabel: self.buildingInfo?.building.name ?? DEFAULT_BUILDING_NAME)
             self.changeNavigationButtonVisibility(isVisible: true)
             self.lastSelectedMarker = self.lastCustomMarker
         }
@@ -980,7 +1014,8 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     
     func createMarker(withCoordinate coordinate: CLLocationCoordinate2D, floorId floor: String) -> GMSMarker {
         let marker: GMSMarker = GMSMarker(position: coordinate)
-        marker.title = "Custom destination"
+        marker.title = NSLocalizedString("positioning.customDestination",
+            comment: "Shown to user when select a destination (destination is any free point that user selects on the map)")
         marker.userData = floor
         marker.map = self.mapView
         
@@ -1112,25 +1147,34 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
             if let error = error as? NavigationError {
                 switch error {
                 case .positionUnknown:
-                    self.showAlertMessage(title: "Position unknown", message: error.localizedDescription, alertType: .otherAlert)
+                    let title = NSLocalizedString("positioning.error.positionUnknown.alert.title",
+                        comment: "Alert title error when the user position is unknown")
+                    self.showAlertMessage(title: title, message: error.localizedDescription, alertType: .otherAlert)
                 case .outdoorOrigin:
-                    self.showAlertMessage(title: "Position outdoor", message: error.localizedDescription, alertType: .otherAlert)
+                    let title = NSLocalizedString("positioning.error.positionOutdoor.alert.title",
+                        comment: "Alert title error when the user is outdoor")
+                    self.showAlertMessage(title: title, message: error.localizedDescription, alertType: .otherAlert)
                 case .noDestinationSelected:
-                    self.showAlertMessage(title: "No destination selected", message: error.localizedDescription, alertType: .otherAlert)
-                case .unableToComputeRoute:
-                    self.showAlertMessage(title: "Unable to compute route", message: error.localizedDescription, alertType: .otherAlert)
-                case .noAvailableRoute:
-                    self.showAlertMessage(title: "Unable to compute route", message: error.localizedDescription, alertType: .otherAlert)
-                case .outsideBuilding:
-                    self.showAlertMessage(title: "Unable to compute route", message: error.localizedDescription, alertType: .otherAlert)
+                    let title = NSLocalizedString("positioning.error.noDestinationSelected.alert.title",
+                        comment: "Alert title error when the user does not select a destination")
+                    self.showAlertMessage(title: title, message: error.localizedDescription, alertType: .otherAlert)
+                case .unableToComputeRoute, .noAvailableRoute, .outsideBuilding:
+                    let title = NSLocalizedString("positioning.error.unableToComputeRoute.alert.title",
+                        comment: "Alert title error when WayFinding cannot compute route to destination")
+                    self.showAlertMessage(title: title, message: error.localizedDescription, alertType: .otherAlert)
                 case .locationError(let error):
                     let errorMessage = error?.localizedDescription ?? WayfindingError.unknown.localizedDescription
-                    self.showAlertMessage(title: "Error", message: errorMessage, alertType: .otherAlert)
+                    let title = NSLocalizedString("alert.error.title", comment: "Alert title for generic errors ")
+                    self.showAlertMessage(title: title, message: errorMessage, alertType: .otherAlert)
                 }
             }
         } else {
             if case .destinationReached = status {
-                self.showAlertMessage(title: "Destination Reached", message: "You've arrived to your destination", alertType: .otherAlert)
+                let title = NSLocalizedString("positioning.destinationReached.alert.title",
+                    comment: "Alert title to show to the user when destination was reached")
+                let message = NSLocalizedString("positioning.destinationReached.alert.message",
+                    comment: "Alert message to show to the user when destination was reached")
+                self.showAlertMessage(title: title, message: message, alertType: .otherAlert)
             }
             self.delegateNotifier?.navigationDelegate?.onNavigationFinished(navigation: navigation)
         }
@@ -1220,7 +1264,7 @@ extension PositioningViewController: UISearchControllerDelegate, UISearchBarDele
         if let searchViewPlaceholder = library?.settings?.searchViewPlaceholder, searchViewPlaceholder.count > 0{
             return searchViewPlaceholder
         }else{
-            return "Search Pois"
+            return NSLocalizedString("positioning.searchPois", comment: "Placeholder for searching pois")
         }
     }
     
