@@ -21,6 +21,16 @@ import GoogleMaps
     internal let interceptorsManager: InterceptorsManager = InterceptorsManager()
     internal var onBackPressedCallback: ((Any) -> Void)?
     internal var delegatesNotifier = WayfindingDelegatesNotifier()
+    static internal var bundle: Bundle = {
+        let libraryBundle = Bundle(for: SitumMapsLibrary.self)
+        guard let resourceBundleURL = libraryBundle.url(forResource: "SitumWayfinding", withExtension: "bundle") else {
+            fatalError("SitumWayfinding.bundle not found!")
+        }
+        guard let resourceBundle = Bundle(url: resourceBundleURL) else {
+            fatalError("Cannot access MySDK.bundle!")
+        }
+        return resourceBundle
+    }()
     
     /// Credentials object used to authenticate the user before loading the wayfinding module
     // public private(set) var credentials: Credentials?
@@ -317,6 +327,7 @@ extension SitumMapsLibrary {
             CredentialsStrategy.checkCredentials(credentials: credentials)
         } else {
             let message = NSLocalizedString("situmMapsLibrary.error.credentials",
+                bundle: SitumMapsLibrary.bundle,
                 comment: "Error when user does not set credentials")
             throw UnsupportedConfigurationError.missingCredentials(message: message)
         }
@@ -325,6 +336,7 @@ extension SitumMapsLibrary {
     internal func validateActiveBuilding(_ buildingId: String?) throws {
         if(buildingId == nil || buildingId!.isEmpty) {
             let message = NSLocalizedString("situmMapsLibrary.error.invalidBuilding",
+                bundle: SitumMapsLibrary.bundle,
                 comment: "Error when user does not set correctly building id")
             throw UnsupportedConfigurationError.invalidActiveBuilding(message: message)
         }

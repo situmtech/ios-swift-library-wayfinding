@@ -353,6 +353,7 @@
 				"${PODS_ROOT}/../../SitumWayfinding/Assets/Images/logo/swf_logo@2x.png",
 				"${PODS_ROOT}/../../SitumWayfinding/Assets/Images/logo/swf_logo@3x.png",
 				"${PODS_ROOT}/../../SitumWayfinding/Assets/Images/radius/swf_radius.png",
+				"${PODS_CONFIGURATION_BUILD_DIR}/SitumWayfinding/SitumWayfinding.bundle",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
@@ -379,6 +380,7 @@
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/swf_logo@2x.png",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/swf_logo@3x.png",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/swf_radius.png",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/SitumWayfinding.bundle",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;

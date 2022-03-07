@@ -147,17 +147,17 @@ extension NavigationError: LocalizedError {
     public var errorDescription: String? {
         switch self {
         case .positionUnknown:
-            return NSLocalizedString("navigationError.positionUnknown", comment: "")
+            return NSLocalizedString("navigationError.positionUnknown", bundle: SitumMapsLibrary.bundle, comment: "")
         case .outdoorOrigin:
-            return NSLocalizedString("navigationError.outdoorOrigin", comment: "")
+            return NSLocalizedString("navigationError.outdoorOrigin", bundle: SitumMapsLibrary.bundle, comment: "")
         case .noDestinationSelected:
-            return NSLocalizedString("navigationError.noDestinationSelected", comment: "")
+            return NSLocalizedString("navigationError.noDestinationSelected", bundle: SitumMapsLibrary.bundle, comment: "")
         case .unableToComputeRoute:
-            return NSLocalizedString("navigationError.unableToComputeRoute", comment: "")
+            return NSLocalizedString("navigationError.unableToComputeRoute", bundle: SitumMapsLibrary.bundle, comment: "")
         case .noAvailableRoute:
-            return NSLocalizedString("navigationError.noAvailableRoute", comment: "")
+            return NSLocalizedString("navigationError.noAvailableRoute", bundle: SitumMapsLibrary.bundle, comment: "")
         case .outsideBuilding:
-            return NSLocalizedString("navigationError.outsideBuilding", comment: "")
+            return NSLocalizedString("navigationError.outsideBuilding", bundle: SitumMapsLibrary.bundle, comment: "")
         case .locationError(let error):
             return error?.localizedDescription
         }

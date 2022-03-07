@@ -26,9 +26,9 @@ extension WayfindingError {
     public var errorDescription: String? {
         switch self {
         case .invalidPOI:
-            return NSLocalizedString("wayfindingError.invalidPoi", comment: "")
+            return NSLocalizedString("wayfindingError.invalidPoi", bundle: SitumMapsLibrary.bundle, comment: "")
         case .unknown:
-            return NSLocalizedString("wayfindingError.unknown", comment: "")
+            return NSLocalizedString("wayfindingError.unknown", bundle: SitumMapsLibrary.bundle, comment: "")
         }
     }
     /**

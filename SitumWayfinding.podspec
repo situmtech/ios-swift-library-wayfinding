@@ -29,8 +29,12 @@ Pod::Spec.new do |s|
   s.resources = [
     'SitumWayfinding/Assets/*.storyboard',
     'SitumWayfinding/Assets/Images/**/*.png',
-    'SitumWayfinding/Localizations/**/*',
   ]
+  s.resource_bundles = {
+    'SitumWayfinding' => [
+        'SitumWayfinding/Localizations/**/*',
+    ]
+  }
   s.dependency 'GoogleMaps', '~> 4.2.0'
   s.dependency 'SitumSDK', '~> 2.52.0'
 

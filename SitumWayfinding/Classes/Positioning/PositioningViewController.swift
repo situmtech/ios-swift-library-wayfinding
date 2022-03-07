@@ -101,14 +101,16 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         "90º",
         "180º",
         "270º",
-        NSLocalizedString("positioning.createMarker", comment: "")
+        NSLocalizedString("positioning.createMarker", bundle: SitumMapsLibrary.bundle, comment: "")
     ]
     
     override func viewDidLoad() {
         super.viewDidLoad()
         backButton.title = NSLocalizedString("positioning.back",
+            bundle: SitumMapsLibrary.bundle,
             comment: "Button to go back when the user is in the positioning controller (where the map is shown)")
         centerButton.setTitle(NSLocalizedString("positioning.center",
+            bundle: SitumMapsLibrary.bundle,
             comment: "Button to center map in current location of user"), for: .normal)
         initSearchController()
         definesPresentationContext = true
@@ -123,8 +125,12 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         positionDrawer = GoogleMapsPositionDrawer(mapView: mapView)
-        let loading = NSLocalizedString("alert.loading.title", comment: "Alert title when loading library")
-        let message = NSLocalizedString("alert.loading.message", comment: "Alert message when loading library")
+        let loading = NSLocalizedString("alert.loading.title",
+            bundle: SitumMapsLibrary.bundle,
+            comment: "Alert title when loading library")
+        let message = NSLocalizedString("alert.loading.message",
+            bundle: SitumMapsLibrary.bundle,
+            comment: "Alert message when loading library")
         let loadingAlert = UIAlertController(title: loading, message: message, preferredStyle: .actionSheet)
         self.present(loadingAlert, animated: true, completion: {
             if (self.loadFinished){
@@ -192,8 +198,10 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         loadingAlert.dismiss(animated: true) {
             if (self.loadingError){
                 let title = NSLocalizedString("alert.error.building.title",
+                    bundle: SitumMapsLibrary.bundle,
                     comment: "Alert title after an error retrieving a building happens")
                 let message = NSLocalizedString("alert.error.building.message",
+                    bundle: SitumMapsLibrary.bundle,
                     comment: "Alert message after an error retrieving a building happens")
                 self.showAlertMessage(title: title, message: message, alertType: .otherAlert)
             }
@@ -438,8 +446,10 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
             self.mapReadinessChecker.currentFloorMapLoaded()
         } else {
             let title = NSLocalizedString("positioning.error.emptyFloor.alert.title",
+                bundle: SitumMapsLibrary.bundle,
                 comment: "Alert title error when download the floor plan fails")
             let message = NSLocalizedString("positioning.error.emptyFloor.alert.message",
+                bundle: SitumMapsLibrary.bundle,
                 comment: "Alert title error when download the floor plan fails")
             let wasMapFetched = SITCommunicationManager.shared().fetchMap(from: orderedFloors(buildingInfo: buildingInfo)![selectedLevelIndex], withCompletion: { imageData in
                 
@@ -767,12 +777,17 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     
     func showFakeLocationsAlert() {
         let title = NSLocalizedString("positioning.longPressAction.alert.title",
+            bundle: SitumMapsLibrary.bundle,
             comment: "Alert title to show for a long press action")
         let message = NSLocalizedString("positioning.longPressAction.alert.message",
+            bundle: SitumMapsLibrary.bundle,
             comment: "Alert message to show for a long press action")
+        let cancel = NSLocalizedString("cancel",
+            bundle: SitumMapsLibrary.bundle,
+            comment: "Generic cancel action ")
+        
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-
-        alert.addAction(UIAlertAction(title: NSLocalizedString("cancel", comment: "Generic cancel action "), style: .default, handler: { _ in
+        alert.addAction(UIAlertAction(title: cancel, style: .default, handler: { _ in
             self.presenter?.alertViewClosed(.otherAlert)
         }))
         for (buttonIndex, text) in fakeLocationsOptions.enumerated() {
@@ -888,6 +903,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
             self.numberBeaconsRangedView.isHidden = false
         }
         let format = NSLocalizedString("positioning.numBeacons",
+            bundle: SitumMapsLibrary.bundle,
             comment: "Used to show the user the number of beacons that library detects nearby")
         self.numberBeaconsRangedLabel.text = String(format: format, text)
     }
@@ -925,7 +941,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
     
-        let title = NSLocalizedString("ok", comment: "Generic ok action")
+        let title = NSLocalizedString("ok", bundle: SitumMapsLibrary.bundle, comment: "Generic ok action")
         alert.addAction(UIAlertAction(title: title, style: .default, handler: { _ in
             self.presenter?.alertViewClosed(alertType)
         }))
@@ -947,6 +963,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         self.progress = progress;
         self.indicationsView.isHidden = false
         let localizedFormat = NSLocalizedString("positioning.navigationProgress",
+            bundle: SitumMapsLibrary.bundle,
             comment: "Show to the user distance to next point")
         let secondaryLabel = String(format: localizedFormat, progress.distanceToGoal)
         self.updateInfoBarLabels(mainLabel: self.destinationMarker?.gmsMarker.title ?? DEFAULT_POI_NAME,
@@ -985,6 +1002,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
             self.removeLastCustomMarkerIfOutsideRoute()
             self.lastCustomMarker = SitumMarker(from:  self.createMarker(withCoordinate: coordinate, floorId: floorId))
             let mainLabel = NSLocalizedString("positioning.customDestination",
+                bundle: SitumMapsLibrary.bundle,
                 comment: "Shown to user when select a destination (destination is any free point that user selects on the map)")
             self.updateInfoBarLabels(mainLabel: mainLabel, secondaryLabel: self.buildingInfo?.building.name ?? DEFAULT_BUILDING_NAME)
             self.changeNavigationButtonVisibility(isVisible: true)
@@ -1015,6 +1033,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     func createMarker(withCoordinate coordinate: CLLocationCoordinate2D, floorId floor: String) -> GMSMarker {
         let marker: GMSMarker = GMSMarker(position: coordinate)
         marker.title = NSLocalizedString("positioning.customDestination",
+            bundle: SitumMapsLibrary.bundle,
             comment: "Shown to user when select a destination (destination is any free point that user selects on the map)")
         marker.userData = floor
         marker.map = self.mapView
@@ -1148,31 +1167,39 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
                 switch error {
                 case .positionUnknown:
                     let title = NSLocalizedString("positioning.error.positionUnknown.alert.title",
+                        bundle: SitumMapsLibrary.bundle,
                         comment: "Alert title error when the user position is unknown")
                     self.showAlertMessage(title: title, message: error.localizedDescription, alertType: .otherAlert)
                 case .outdoorOrigin:
                     let title = NSLocalizedString("positioning.error.positionOutdoor.alert.title",
+                        bundle: SitumMapsLibrary.bundle,
                         comment: "Alert title error when the user is outdoor")
                     self.showAlertMessage(title: title, message: error.localizedDescription, alertType: .otherAlert)
                 case .noDestinationSelected:
                     let title = NSLocalizedString("positioning.error.noDestinationSelected.alert.title",
+                        bundle: SitumMapsLibrary.bundle,
                         comment: "Alert title error when the user does not select a destination")
                     self.showAlertMessage(title: title, message: error.localizedDescription, alertType: .otherAlert)
                 case .unableToComputeRoute, .noAvailableRoute, .outsideBuilding:
                     let title = NSLocalizedString("positioning.error.unableToComputeRoute.alert.title",
+                        bundle: SitumMapsLibrary.bundle,
                         comment: "Alert title error when WayFinding cannot compute route to destination")
                     self.showAlertMessage(title: title, message: error.localizedDescription, alertType: .otherAlert)
                 case .locationError(let error):
                     let errorMessage = error?.localizedDescription ?? WayfindingError.unknown.localizedDescription
-                    let title = NSLocalizedString("alert.error.title", comment: "Alert title for generic errors ")
+                    let title = NSLocalizedString("alert.error.title",
+                        bundle: SitumMapsLibrary.bundle,
+                        comment: "Alert title for generic errors ")
                     self.showAlertMessage(title: title, message: errorMessage, alertType: .otherAlert)
                 }
             }
         } else {
             if case .destinationReached = status {
                 let title = NSLocalizedString("positioning.destinationReached.alert.title",
+                    bundle: SitumMapsLibrary.bundle,
                     comment: "Alert title to show to the user when destination was reached")
                 let message = NSLocalizedString("positioning.destinationReached.alert.message",
+                    bundle: SitumMapsLibrary.bundle,
                     comment: "Alert message to show to the user when destination was reached")
                 self.showAlertMessage(title: title, message: message, alertType: .otherAlert)
             }
@@ -1264,7 +1291,9 @@ extension PositioningViewController: UISearchControllerDelegate, UISearchBarDele
         if let searchViewPlaceholder = library?.settings?.searchViewPlaceholder, searchViewPlaceholder.count > 0{
             return searchViewPlaceholder
         }else{
-            return NSLocalizedString("positioning.searchPois", comment: "Placeholder for searching pois")
+            return NSLocalizedString("positioning.searchPois",
+                bundle: SitumMapsLibrary.bundle,
+                comment: "Placeholder for searching pois")
         }
     }
     
