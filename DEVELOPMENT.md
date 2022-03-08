@@ -9,7 +9,7 @@ https://github.com/Flinesoft/BartyCrouch#configuration)
 
 Cheatsheet:
 ```bash
-bartycrouhc update # search for all NSLocalizedString in project and update Localizable.strings accordingly
+bartycrouch update # search for all NSLocalizedString in project and update Localizable.strings accordingly
 bartycrouch lint # check the content of Localizable.strings for empty values and duplicates
 ```
 
