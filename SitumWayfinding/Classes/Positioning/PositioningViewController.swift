@@ -782,7 +782,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         let message = NSLocalizedString("positioning.longPressAction.alert.message",
             bundle: SitumMapsLibrary.bundle,
             comment: "Alert message to show for a long press action")
-        let cancel = NSLocalizedString("cancel",
+        let cancel = NSLocalizedString("generic.cancel",
             bundle: SitumMapsLibrary.bundle,
             comment: "Generic cancel action ")
         
@@ -941,7 +941,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
     
-        let title = NSLocalizedString("ok", bundle: SitumMapsLibrary.bundle, comment: "Generic ok action")
+        let title = NSLocalizedString("generic.ok", bundle: SitumMapsLibrary.bundle, comment: "Generic ok action")
         alert.addAction(UIAlertAction(title: title, style: .default, handler: { _ in
             self.presenter?.alertViewClosed(alertType)
         }))

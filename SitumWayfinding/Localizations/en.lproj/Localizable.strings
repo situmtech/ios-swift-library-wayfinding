@@ -14,7 +14,10 @@
 "alert.loading.title" = "Loading";
 
 /* Generic cancel action  */
-"cancel" = "Cancel";
+"generic.cancel" = "Cancel";
+
+/* Generic ok action */
+"generic.ok" = "Ok";
 
 /* No comment provided by engineer. */
 "navigationError.noAvailableRoute" = "There is no route between the selected locations. Try to compute a different route or to switch accessibility mode";
@@ -33,9 +36,6 @@
 
 /* No comment provided by engineer. */
 "navigationError.unableToComputeRoute" = "An unexpected error was found while computing the route. Please try again.";
-
-/* Generic ok action */
-"ok" = "Ok";
 
 /* Button to go back when the user is in the positioning controller (where the map is shown) */
 "positioning.back" = "Back";
@@ -71,10 +71,10 @@
 "positioning.error.noDestinationSelected.alert.title" = "No destination selected";
 
 /* Alert title error when the user is outdoor */
-"positioning.error.positionOutdoor.alert.title" = "Position outdoor";
+"positioning.error.positionOutdoor.alert.title" = "Outdoor position";
 
 /* Alert title error when the user position is unknown */
-"positioning.error.positionUnknown.alert.title" = "Position unknown";
+"positioning.error.positionUnknown.alert.title" = "Unknown position";
 
 /* Alert title error when WayFinding cannot compute route to destination */
 "positioning.error.unableToComputeRoute.alert.title" = "Unable to compute route";
@@ -107,7 +107,7 @@
 "situmMapsLibrary.error.credentials" = "You must set your auth info with setCredentials() before calling load(buildingWithId:)";
 
 /* Error when user does not set correctly building id */
-"situmMapsLibrary.error.invalidBuilding" = "The building ID in plist file is not correct. Please add a valid ID with key: es.situm.sdk.ACTIVE_BUILDING_ID";
+"situmMapsLibrary.error.invalidBuilding" = "The builidng ID is not correct. Please add a valid building ID in LibrarySettings";
 
 /* No comment provided by engineer. */
 "wayfindingError.invalidPoi" = "The poi selected is not valid in this building";

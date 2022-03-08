@@ -14,7 +14,10 @@
 "alert.loading.title" = "Cargando";
 
 /* Generic cancel action  */
-"cancel" = "Cancelar";
+"generic.cancel" = "Cancelar";
+
+/* Generic ok action */
+"generic.ok" = "Ok";
 
 /* No comment provided by engineer. */
 "navigationError.noAvailableRoute" = "No existe una ruta entre las localizaciones seleccionadas. Intenta otra ruta o cambia al modo de accesibilidad";
@@ -32,10 +35,7 @@
 "navigationError.positionUnknown" = "La localización actual es desconocida, por favor activa el posicionamiento antes de calcular la ruta y vuelve a intentarlo.";
 
 /* No comment provided by engineer. */
-"navigationError.unableToComputeRoute" = "Un error inesperado ha ocurrida mientras se calculaba la ruta. Por favor, vuelve a intentarlo.";
-
-/* Generic ok action */
-"ok" = "Ok";
+"navigationError.unableToComputeRoute" = "Un error inesperado ha ocurrido mientras se calculaba la ruta. Por favor, vuelve a intentarlo.";
 
 /* Button to go back when the user is in the positioning controller (where the map is shown) */
 "positioning.back" = "Atrás";
@@ -107,7 +107,7 @@
 "situmMapsLibrary.error.credentials" = "Necesitas establecer la información de autenticación con setCredentials() antes de llamar a load(buildingWithId:)";
 
 /* Error when user does not set credentials */
-"situmMapsLibrary.error.invalidBuilding" = "El identificador de edificio en el archivo plist no es correcto. Por favor, introduce un identificado válido con la clave: es.situm.sdk.ACTIVE_BUILDING_ID ";
+"situmMapsLibrary.error.invalidBuilding" = "El identificador del edificio no es correcto. Por favor, introduce un identificador correcto en LibrarySettings";
 
 /* No comment provided by engineer. */
 "wayfindingError.invalidPoi" = "El poi seleccionado no es válido en este edificio";
