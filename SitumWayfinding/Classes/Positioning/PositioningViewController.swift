@@ -971,11 +971,34 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         let poiMarker = GMSMarker(position: coordinate)
         poiMarker.title = poi.name
         poiMarker.userData = poi
-        iconsStore.obtainIconFor(category: poi.category) { icon in
-            poiMarker.icon=icon
-            poiMarker.map=self.mapView
+        iconsStore.obtainIconFor(category: poi.category) { item in
+            if let icon = item {
+                let customMarker = CustomMarkerView(markerImage: icon)
+                
+                if self.showTextPois() {
+                    customMarker.titlePoi(
+                        title: poi.name.uppercased(),
+                        size: 12.0,
+                        color: UIColor(hex: "#5b5b5bff") ?? UIColor.gray,
+                        weight: .medium
+                    )
+                }
+                poiMarker.icon = customMarker.getIcon()
+            }
+            
+            poiMarker.map = self.mapView
         }
         return poiMarker
+    }
+    
+    func showTextPois() -> Bool {
+        if let settings = self.library?.settings {
+            if let showText = settings.showTextPois {
+                return showText
+            }
+        }
+        
+        return false
     }
     
     func createMarker(withCoordinate coordinate: CLLocationCoordinate2D, floorId floor: String) -> GMSMarker {

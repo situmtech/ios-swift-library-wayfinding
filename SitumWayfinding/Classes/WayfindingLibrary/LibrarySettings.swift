@@ -32,6 +32,9 @@ import GoogleMaps
     /// Boolean to configure if location system should use the remote configuration (true) or not (false). See https://situm.com/docs/07-remote-configuration/ to learn more on how to use this functionality.
     private (set) var useRemoteConfig: Bool = false
     
+    /// Boolen configure if show name POI above it
+    private (set) var showTextPois: Bool? = true
+    
     // private(set) var orgDetails: OrganizationTheme?
     private override init() {
 
@@ -101,6 +104,13 @@ import GoogleMaps
             instance.useRemoteConfig = useRemoteConfig
             return self
         }
+        
+        /// Establish if show name of POI above it
+        @discardableResult
+        @objc public func setShowTextPois(showTextPois: Bool) -> Builder {
+            instance.showTextPois = showTextPois
+            return self
+        }
 
         /// Returns an instance of LibrarySettings
         @objc public func build() -> LibrarySettings {
@@ -139,6 +149,8 @@ import GoogleMaps
             if settings.useRemoteConfig != nil {
                 builderCopy.setUseRemoteConfig(useRemoteConfig: settings.useRemoteConfig)
             }
+
+            builderCopy.setShowTextPois(showTextPois: settings.showTextPois ?? false)
 
             return builderCopy
         }
