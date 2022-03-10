@@ -1,5 +1,10 @@
 # SitumWayfinding develompent
 
+## Enable localizations in apps 
+In order to see the localizations of the module WayFinding in the app, you must configure localization for the languages
+that you need to support. To do that in your app go to Project (click on root folder in project navigator) 
+-> Info -> Localizations, and click in the `+` icon to add the language you want to support.
+
 ## Localization treatment
 To make localization easy [BartyCrouch](https://github.com/Flinesoft/BartyCrouch) is used. You need to install it first
 before use https://github.com/Flinesoft/BartyCrouch#installation. There is a file `.bartycrouch.toml` in the root 
@@ -19,10 +24,6 @@ A useful script to set in `.git/hooks/pre-commit` is the following:
 /usr/local/bin/bartycrouch update
 /usr/local/bin/bartycrouch lint -w # -w fails on warning to avoid commit 
 ```
-
-In order to see the localizations of the module WayFinding in the app, you must configure localization for the languages
-that you need to support. To do that in your app go to Project (click on root folder in project navigator) 
--> Info -> Localizations, and click in the `+` icon to add the language you want to support.
 
 ## Documentation
 The documentation is made with [jazzy](https://github.com/realm/jazzy). In order to build documentation execute
