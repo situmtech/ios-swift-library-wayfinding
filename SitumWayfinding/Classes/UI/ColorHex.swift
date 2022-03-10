@@ -1,7 +1,7 @@
 import Foundation
 
 extension UIColor {
-    public convenience init?(hex: String) {
+    convenience init?(hex: String) {
         let r, g, b, a: CGFloat
 
         if hex.hasPrefix("#") {
