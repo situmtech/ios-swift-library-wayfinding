@@ -20,6 +20,10 @@ A useful script to set in `.git/hooks/pre-commit` is the following:
 /usr/local/bin/bartycrouch lint -w # -w fails on warning to avoid commit 
 ```
 
+In order to see the localizations of the module WayFinding in the app, you must configure localization for the languages
+that you need to support. To do that in your app go to Project (click on root folder in project navigator) 
+-> Info -> Localizations, and click in the `+` icon to add the language you want to support.
+
 ## Documentation
 The documentation is made with [jazzy](https://github.com/realm/jazzy). In order to build documentation execute
 the following from the root of the project:
