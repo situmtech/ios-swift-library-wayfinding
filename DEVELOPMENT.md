@@ -6,6 +6,10 @@ that you need to support. To do that in your app go to Project (click on root fo
 -> Info -> Localizations, and click in the `+` icon to add the language you want to support.
 
 ## Localization treatment
+A bundle is used to store string localization files of SitumWayfinding library. Because of this when you translate a
+string in the library you must make reference to library bundle.  
+Use `NSLocalizedString("key", bundle: SitumMapsLibrary.bundle, comment: "")` to reference library bundle.
+
 To make localization easy [BartyCrouch](https://github.com/Flinesoft/BartyCrouch) is used. You need to install it first
 before use https://github.com/Flinesoft/BartyCrouch#installation. There is a file `.bartycrouch.toml` in the root 
 directory of the project with configuration for this library. It is configured to only localize files under 

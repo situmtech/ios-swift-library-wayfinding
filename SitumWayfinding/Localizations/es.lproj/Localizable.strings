@@ -103,6 +103,15 @@
 /* Placeholder for searching pois */
 "positioning.searchPois" = "Buscar Pois";
 
+/* No comment provided by engineer. */
+"search.distance" = "Distancia";
+
+/* No comment provided by engineer. */
+"search.floor" = "Piso";
+
+/* No comment provided by engineer. */
+"search.noResultFound" = "No se ha encontrado ningún resultado";
+
 /* Error when user does not set credentials */
 "situmMapsLibrary.error.credentials" = "Necesitas establecer la información de autenticación con setCredentials() antes de llamar a load(buildingWithId:)";
 
