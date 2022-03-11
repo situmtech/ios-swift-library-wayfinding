@@ -973,13 +973,12 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         poiMarker.userData = poi
         iconsStore.obtainIconFor(category: poi.category) { item in
             if let icon = item {
-                poiMarker.icon = icon.setTitlePoi(
-                    title: poi.name.uppercased(),
-                    size: 12.0,
-                    color: UIColor(hex: "#5b5b5bff") ?? UIColor.gray,
-                    weight: .medium,
-                    displayFont: self.showTextPois()
-                )
+                if self.showTextPois() {
+                    let color = UIColor(hex: "#5b5b5bff") ?? UIColor.gray
+                    poiMarker.icon = icon.setTitle(title: poi.name.uppercased(), size: 12.0, color: color, weight: .medium)
+                } else {
+                    poiMarker.icon = icon
+                }
             }
             
             poiMarker.map = self.mapView

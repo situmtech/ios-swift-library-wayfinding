@@ -1,7 +1,7 @@
 import Foundation
 
 extension UIImage {
-    func setTitlePoi(title: String, size: CGFloat, color: UIColor, weight: UIFont.Weight, displayFont: Bool) -> UIImage {
+    func setTitle(title: String, size: CGFloat, color: UIColor, weight: UIFont.Weight) -> UIImage {
         let subView = UIView()
         
         let font = UIFont.systemFont(ofSize: size, weight: weight)
@@ -17,7 +17,7 @@ extension UIImage {
         )
         subView.backgroundColor = UIColor.clear
         
-        return prepareIconPoi(subView: subView, displayFont: displayFont)
+        return prepareIconPoi(subView: subView)
     }
     
     private func getLabel(font: UIFont, color: UIColor, title: String) -> UILabel {
@@ -56,7 +56,7 @@ extension UIImage {
         return titleLabel
     }
     
-    private func prepareIconPoi(subView: UIView, displayFont: Bool) -> UIImage {
+    private func prepareIconPoi(subView: UIView) -> UIImage {
         let markerImgView = UIImageView()
         let mainView = UIView()
         
@@ -82,13 +82,9 @@ extension UIImage {
         
         UIGraphicsBeginImageContextWithOptions(mainView.bounds.size, false, UIScreen.main.scale)
         
-        if displayFont {
-            mainView.layer.render(in: UIGraphicsGetCurrentContext()!)
-            let icon : UIImage = UIGraphicsGetImageFromCurrentImageContext()!
-            UIGraphicsEndImageContext()
-            return icon
-        } else {
-            return self
-        }
+        mainView.layer.render(in: UIGraphicsGetCurrentContext()!)
+        let icon : UIImage = UIGraphicsGetImageFromCurrentImageContext()!
+        UIGraphicsEndImageContext()
+        return icon
     }
 }
