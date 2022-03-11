@@ -1,17 +1,23 @@
 import Foundation
 
-class CustomMarkerView {
-    private let subView = UIView()
-    private let mainView = UIView()
-    private let markerImgView = UIImageView()
-    
-    private var markerImage: UIImage
-    private var padding: CGFloat = 8.0
-    private var titleLabel: UILabel?
-    private var displayFont = false
-    
-    init(markerImage: UIImage) {
-        self.markerImage = markerImage
+extension UIImage {
+    func setTitlePoi(title: String, size: CGFloat, color: UIColor, weight: UIFont.Weight, displayFont: Bool) -> UIImage {
+        let subView = UIView()
+        
+        let font = UIFont.systemFont(ofSize: size, weight: weight)
+        
+        let titleLabel = self.getLabel(font: font, color: color, title: title)
+        
+        subView.addSubview(titleLabel)
+        subView.frame = CGRect(
+            x: 0.0,
+            y: 0.0,
+            width: 2 * 4.0 + titleLabel.frame.width,
+            height: 2 * 4.0 + titleLabel.frame.height
+        )
+        subView.backgroundColor = UIColor.clear
+        
+        return prepareIconPoi(subView: subView, displayFont: displayFont)
     }
     
     private func getLabel(font: UIFont, color: UIColor, title: String) -> UILabel {
@@ -50,31 +56,17 @@ class CustomMarkerView {
         return titleLabel
     }
     
-    func titlePoi(title: String, size: CGFloat, color: UIColor, weight: UIFont.Weight) {
-        self.displayFont = true
+    private func prepareIconPoi(subView: UIView, displayFont: Bool) -> UIImage {
+        let markerImgView = UIImageView()
+        let mainView = UIView()
         
-        let font = UIFont.systemFont(ofSize: size, weight: weight)
-        
-        let titleLabel = self.getLabel(font: font, color: color, title: title)
-        
-        self.subView.addSubview(titleLabel)
-        self.subView.frame = CGRect(
-            x: 0.0,
-            y: 0.0,
-            width: 2 * 4.0 + titleLabel.frame.width,
-            height: 2 * 4.0 + titleLabel.frame.height
-        )
-        self.subView.backgroundColor = UIColor.clear
-    }
-    
-    func getIcon() -> UIImage {
         markerImgView.frame = CGRect(
-            x: subView.center.x - self.markerImage.size.width / 2,
+            x: subView.center.x - self.size.width / 2,
             y: subView.frame.height,
-            width: self.markerImage.size.width,
-            height: self.markerImage.size.height
+            width: self.size.width,
+            height: self.size.height
         )
-        markerImgView.image = self.markerImage
+        markerImgView.image = self
         markerImgView.contentMode = .scaleAspectFit
 
         mainView.addSubview(markerImgView)
@@ -96,7 +88,7 @@ class CustomMarkerView {
             UIGraphicsEndImageContext()
             return icon
         } else {
-            return markerImage
+            return self
         }
     }
 }

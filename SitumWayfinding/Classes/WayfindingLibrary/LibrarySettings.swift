@@ -32,7 +32,7 @@ import GoogleMaps
     /// Boolean to configure if location system should use the remote configuration (true) or not (false). See https://situm.com/docs/07-remote-configuration/ to learn more on how to use this functionality.
     private (set) var useRemoteConfig: Bool = false
     
-    /// Boolen configure if show name POI above it
+    /// Boolean that configure if the name of the POIs is shown above its icons when painting them on the map
     private (set) var showTextPois: Bool? = true
     
     // private(set) var orgDetails: OrganizationTheme?
@@ -105,7 +105,7 @@ import GoogleMaps
             return self
         }
         
-        /// Establish if show name of POI above it
+        /// Boolean that configure if the name of the POIs is shown above its icons when painting them on the map
         @discardableResult
         @objc public func setShowTextPois(showTextPois: Bool) -> Builder {
             instance.showTextPois = showTextPois

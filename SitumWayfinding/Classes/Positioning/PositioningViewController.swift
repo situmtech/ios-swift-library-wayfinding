@@ -973,17 +973,13 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         poiMarker.userData = poi
         iconsStore.obtainIconFor(category: poi.category) { item in
             if let icon = item {
-                let customMarker = CustomMarkerView(markerImage: icon)
-                
-                if self.showTextPois() {
-                    customMarker.titlePoi(
-                        title: poi.name.uppercased(),
-                        size: 12.0,
-                        color: UIColor(hex: "#5b5b5bff") ?? UIColor.gray,
-                        weight: .medium
-                    )
-                }
-                poiMarker.icon = customMarker.getIcon()
+                poiMarker.icon = icon.setTitlePoi(
+                    title: poi.name.uppercased(),
+                    size: 12.0,
+                    color: UIColor(hex: "#5b5b5bff") ?? UIColor.gray,
+                    weight: .medium,
+                    displayFont: self.showTextPois()
+                )
             }
             
             poiMarker.map = self.mapView
@@ -992,10 +988,8 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     }
     
     func showTextPois() -> Bool {
-        if let settings = self.library?.settings {
-            if let showText = settings.showTextPois {
+        if let settings = self.library?.settings, let showText = settings.showTextPois {
                 return showText
-            }
         }
         
         return false
