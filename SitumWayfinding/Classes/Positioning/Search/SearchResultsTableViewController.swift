@@ -12,6 +12,7 @@ protocol SearcheableItem {
     var name: String { get }
     //TODO make it more generic
     func floor(activeBuildingInfo: SITBuildingInfo?) -> String
+    func distance() -> String
     func obtainIconImage(iconsStore:IconsStore?, completion:@escaping(UIImage?) -> Void)
 }
 
@@ -22,8 +23,17 @@ extension SITPOI: SearcheableItem {
     }
 
     func floor(activeBuildingInfo: SITBuildingInfo?) -> String {
-        let floor = activeBuildingInfo?.floors.first(where: { $0.identifier ==  self.position().floorIdentifier })
-        return floor?.floor != nil ? "Floor \(floor!.floor)" : ""
+        guard let floor = activeBuildingInfo?.floors.first(where: { $0.identifier ==  self.position().floorIdentifier }) else {
+            return ""
+        }
+        return "\(NSLocalizedString("search.floor", bundle: SitumMapsLibrary.bundle, comment: "")) \(floor.floor)"
+    }
+    
+    func distance() -> String {
+        // TODO en proxima tarea se debe calcular este valor
+        // localized string to use in the future for distance
+        let _ = NSLocalizedString("search.distance", bundle: SitumMapsLibrary.bundle, comment: "")
+        return ""
     }
 
     //TODO migrate to await-async
@@ -44,7 +54,6 @@ class SearchResultsTableViewController: UITableViewController {
     var activeBuildingInfo : SITBuildingInfo?
     var filteredPois: [SearcheableItem] = []
     var iconsStore : IconsStore?
-    let noResultsFoundText = "No se ha encontrado ningún resultado."
     
     private var myTableView: UITableView!
 
@@ -74,7 +83,7 @@ class SearchResultsTableViewController: UITableViewController {
 
         let searchableItem = filteredPois[indexPath.row]
         cell.name = searchableItem.name
-        cell.distance = "" //TODO en proxima tarea se debe calcular este valor
+        cell.distance = searchableItem.distance()
         cell.floor = searchableItem.floor(activeBuildingInfo: activeBuildingInfo)
         searchableItem.obtainIconImage(iconsStore: iconsStore) { image in
             cell.icon=image
@@ -100,7 +109,7 @@ class SearchResultsTableViewController: UITableViewController {
     //MARK : UI customization methods
     func arrangeForNoResultsFound(the tableView: UITableView){
         let noDataLabel = UITextField(frame: CGRect(x: 0, y: 0, width: tableView.bounds.size.width, height: tableView.bounds.size.width))
-        noDataLabel.text          = noResultsFoundText
+        noDataLabel.text          = NSLocalizedString("search.noResultFound", bundle: SitumMapsLibrary.bundle, comment: "")
         noDataLabel.textAlignment = .center
         tableView.backgroundView  = noDataLabel
         tableView.backgroundColor = UIColor.white

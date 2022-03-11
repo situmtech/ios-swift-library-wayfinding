@@ -33,10 +33,6 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
     var locationManager: SITLocationManager = SITLocationManager.sharedInstance()
     
     var useRemoteConfig: Bool = false
-    
-    let compassCalibrationAlertTitle = "Compass calibration needed"
-    let oobAlertTitle = "User outside building"
-    let outsideRouteAlertTitle = "User ouside route"
 
     init(view: PositioningView, buildingInfo: SITBuildingInfo, interceptorsManager: InterceptorsManager) {
         self.view = view
@@ -387,14 +383,26 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
             break;
         case .compassNeedsCalibration:
             stateName = "Compass needs calibration"
-            showAlertIfNeeded(type: .compassCalibrationNeeded, title: self.compassCalibrationAlertTitle, message: "Your device's compass isn't calibrated right now. Please recalibrate it to obtain the best navigation experience.")
+            let compassCalibrationAlertTitle = NSLocalizedString("positioning.calibrationNeeded.alert.title",
+                bundle: SitumMapsLibrary.bundle,
+                comment: "The user needs to calibrate the compass")
+            showAlertIfNeeded(type: .compassCalibrationNeeded, title: compassCalibrationAlertTitle,
+                message: NSLocalizedString("positioning.calibrationNeeded.alert.message",
+                    bundle: SitumMapsLibrary.bundle,
+                    comment: ""))
             break;
         case .userNotInBuilding:
             stateName = "User not in building"
             if isUserNavigating(){
                 view?.stopNavigation(status: .error(NavigationError.outsideBuilding))
             }
-            showAlertIfNeeded(type: .outOfBuilding, title: self.oobAlertTitle, message: "The user is currently outside of the building. Positioning will resume when the user returns.")
+            let oobAlertTitle = NSLocalizedString("positioning.outsideBuilding.alert.title",
+                bundle: SitumMapsLibrary.bundle,
+                comment: "Alert title to show user is outside of building")
+            showAlertIfNeeded(type: .outOfBuilding, title: oobAlertTitle,
+                message: NSLocalizedString("positioning.outsideBuilding.alert.message",
+                    bundle: SitumMapsLibrary.bundle,
+                    comment: "") )
             break;
         }
         Logger.logDebugMessage("Location manager updates state: \(stateName)")
@@ -442,7 +450,13 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
         Logger.logDebugMessage("user outside route detected: \(route.debugDescription)");
         
         if isUserIndoor(){
-            showAlertIfNeeded(type: .outsideRoute, title: self.outsideRouteAlertTitle, message: "The user is not currently detected on the route. Please go back to resume navigation.")
+            let message = NSLocalizedString("positioning.outsideBuilding.alert.message",
+                bundle: SitumMapsLibrary.bundle,
+                comment: "Alert message to show user is outside of route")
+            let outsideRouteAlertTitle = NSLocalizedString("positioning.outsideRoute.alert.title",
+                bundle: SitumMapsLibrary.bundle,
+                comment: "Alert title to show user is outside of route")
+            showAlertIfNeeded(type: .outsideRoute, title: outsideRouteAlertTitle, message: message)
         }else{
             view?.stopNavigation(status: .error(NavigationError.outsideBuilding))
         }

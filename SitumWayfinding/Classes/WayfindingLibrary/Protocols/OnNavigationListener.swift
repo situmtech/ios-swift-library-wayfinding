@@ -147,17 +147,17 @@ extension NavigationError: LocalizedError {
     public var errorDescription: String? {
         switch self {
         case .positionUnknown:
-            return "User actual location is unknown, please activate the positioning before computing a route and try again."
+            return NSLocalizedString("navigationError.positionUnknown", bundle: SitumMapsLibrary.bundle, comment: "")
         case .outdoorOrigin:
-            return "User actual location is outdoor, navegation is only avaialble indoor."
+            return NSLocalizedString("navigationError.outdoorOrigin", bundle: SitumMapsLibrary.bundle, comment: "")
         case .noDestinationSelected:
-            return "There is no destination currently selected, the navigation cannot be started. Please select a POI (or longpress to create a custom one) and try again."
+            return NSLocalizedString("navigationError.noDestinationSelected", bundle: SitumMapsLibrary.bundle, comment: "")
         case .unableToComputeRoute:
-            return "An unexpected error was found while computing the route. Please try again."
+            return NSLocalizedString("navigationError.unableToComputeRoute", bundle: SitumMapsLibrary.bundle, comment: "")
         case .noAvailableRoute:
-            return "There is no route between the selected locations. Try to compute a different route or to switch accessibility mode"
+            return NSLocalizedString("navigationError.noAvailableRoute", bundle: SitumMapsLibrary.bundle, comment: "")
         case .outsideBuilding:
-            return "The user is not currently detected on the route and is out of the building. Please go back to resume navigation."
+            return NSLocalizedString("navigationError.outsideBuilding", bundle: SitumMapsLibrary.bundle, comment: "")
         case .locationError(let error):
             return error?.localizedDescription
         }

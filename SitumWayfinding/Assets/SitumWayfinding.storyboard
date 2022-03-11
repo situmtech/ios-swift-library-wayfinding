@@ -267,6 +267,7 @@
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="backButton" destination="ysb-eJ-ja8" id="Tse-P7-KFK"/>
                         <outlet property="cancelNavigationButton" destination="0tN-NH-EBq" id="SkR-PT-9nf"/>
                         <outlet property="centerButton" destination="x1X-sn-fxl" id="mzE-8y-1mR"/>
                         <outlet property="currentIndicationLabel" destination="IVC-BM-fvT" id="8Sh-au-DXE"/>
