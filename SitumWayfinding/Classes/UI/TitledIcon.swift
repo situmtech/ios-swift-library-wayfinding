@@ -24,11 +24,15 @@ extension UIImage {
         let sizeFrame = CGRect(x: 4.0, y: 4.0, width: 150.0, height: font.lineHeight)
         let titleLabel : UILabel = UILabel(frame: sizeFrame)
         
+        let shadow = NSShadow()
+        shadow.shadowOffset = CGSize(width: 2, height: 2)
+        shadow.shadowColor = UIColor.white
+        
         let textFontAttributes: [NSAttributedString.Key : Any]  = [
-            NSAttributedString.Key.font : font,
-            NSAttributedString.Key.foregroundColor: color,
-            NSAttributedString.Key.strokeColor: UIColor.white,
-            NSAttributedString.Key.strokeWidth: -2
+            .font : font,
+            .shadow: shadow,
+            .strokeWidth: -2,
+            .foregroundColor: color,
         ]
         
         let mutableString = NSMutableAttributedString(string: title, attributes: textFontAttributes)
