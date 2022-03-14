@@ -23,16 +23,12 @@ extension UIImage {
     private func getLabel(font: UIFont, color: UIColor, title: String) -> UILabel {
         let sizeFrame = CGRect(x: 4.0, y: 4.0, width: 150.0, height: font.lineHeight)
         let titleLabel : UILabel = UILabel(frame: sizeFrame)
-        
-        let shadow = NSShadow()
-        shadow.shadowOffset = CGSize(width: 2, height: 2)
-        shadow.shadowColor = UIColor.white
-        
+    
         let textFontAttributes: [NSAttributedString.Key : Any]  = [
             .font : font,
-            .shadow: shadow,
+            .strokeColor: UIColor.white,
             .strokeWidth: -2,
-            .foregroundColor: color,
+            .foregroundColor: color
         ]
         
         let mutableString = NSMutableAttributedString(string: title, attributes: textFontAttributes)
