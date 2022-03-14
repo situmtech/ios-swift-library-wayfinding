@@ -33,7 +33,7 @@ import GoogleMaps
     private (set) var useRemoteConfig: Bool = false
     
     /// Boolean that configure if the name of the POIs is shown above its icons when painting them on the map
-    private (set) var showTextPois: Bool? = true
+    private (set) var showPoiNames: Bool? = true
     
     // private(set) var orgDetails: OrganizationTheme?
     private override init() {
@@ -107,8 +107,8 @@ import GoogleMaps
         
         /// Boolean that configure if the name of the POIs is shown above its icons when painting them on the map
         @discardableResult
-        @objc public func setShowTextPois(showTextPois: Bool) -> Builder {
-            instance.showTextPois = showTextPois
+        @objc public func setShowPoiNames(showPoiNames: Bool) -> Builder {
+            instance.showPoiNames = showPoiNames
             return self
         }
 
@@ -150,7 +150,7 @@ import GoogleMaps
                 builderCopy.setUseRemoteConfig(useRemoteConfig: settings.useRemoteConfig)
             }
 
-            builderCopy.setShowTextPois(showTextPois: settings.showTextPois ?? false)
+            builderCopy.setShowPoiNames(showPoiNames: settings.showPoiNames ?? false)
 
             return builderCopy
         }

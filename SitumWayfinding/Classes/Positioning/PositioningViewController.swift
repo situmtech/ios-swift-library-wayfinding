@@ -1027,7 +1027,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
             if let icon = item {
                 let color = UIColor(hex: "#5b5b5bff") ?? UIColor.gray
                 let title = poi.name.uppercased()
-                poiMarker.icon = self.showTextPois() ?
+                poiMarker.icon = self.showPoiNames() ?
                     icon.setTitle(title: title, size: 12.0, color: color, weight: .medium) :
                     icon
             }
@@ -1036,9 +1036,9 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         return poiMarker
     }
     
-    func showTextPois() -> Bool {
-        if let settings = self.library?.settings, let showText = settings.showTextPois {
-                return showText
+    func showPoiNames() -> Bool {
+        if let settings = self.library?.settings, let showText = settings.showPoiNames {
+            return showText
         }
         
         return false
