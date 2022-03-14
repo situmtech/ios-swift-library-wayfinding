@@ -1030,8 +1030,8 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
                 poiMarker.icon = self.showTextPois() ?
                     icon.setTitle(title: title, size: 12.0, color: color, weight: .medium) :
                     icon
-                poiMarker.map = self.mapView
             }
+            poiMarker.map = self.mapView
         }
         return poiMarker
     }
