@@ -1028,7 +1028,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
                 let color = UIColor(hex: "#5b5b5bff") ?? UIColor.gray
                 let title = poi.name.uppercased()
                 poiMarker.icon = self.showPoiNames() ?
-                icon.setTitle(title: title, size: 12.0, color: color, weight: .heavy) :
+                icon.setTitle(title: title, size: 12.0, color: color, weight: .semibold) :
                     icon
             }
             poiMarker.map = self.mapView

@@ -26,9 +26,8 @@ extension UIImage {
     
         let textFontAttributes: [NSAttributedString.Key : Any]  = [
             .font : font,
-            .strokeColor: UIColor.white,
-            .strokeWidth: -2,
-            .foregroundColor: color
+            .foregroundColor: color,
+            .backgroundColor: UIColor.white
         ]
         
         let mutableString = NSMutableAttributedString(string: title, attributes: textFontAttributes)
