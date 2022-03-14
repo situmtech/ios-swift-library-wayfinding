@@ -1023,11 +1023,25 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         let poiMarker = GMSMarker(position: coordinate)
         poiMarker.title = poi.name
         poiMarker.userData = poi
-        iconsStore.obtainIconFor(category: poi.category) { icon in
-            poiMarker.icon=icon
-            poiMarker.map=self.mapView
+        iconsStore.obtainIconFor(category: poi.category) { item in
+            if let icon = item {
+                let color = UIColor(hex: "#5b5b5bff") ?? UIColor.gray
+                let title = poi.name.uppercased()
+                poiMarker.icon = self.showPoiNames() ?
+                icon.setTitle(title: title, size: 12.0, color: color, weight: .semibold) :
+                    icon
+            }
+            poiMarker.map = self.mapView
         }
         return poiMarker
+    }
+    
+    func showPoiNames() -> Bool {
+        if let settings = self.library?.settings, let showText = settings.showPoiNames {
+            return showText
+        }
+        
+        return false
     }
     
     func createMarker(withCoordinate coordinate: CLLocationCoordinate2D, floorId floor: String) -> GMSMarker {
@@ -1239,36 +1253,13 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         if let settings = library?.settings {
             if settings.useDashboardTheme == true {
                 if let organizationTheme = organizationTheme { // Check if string is a valid string
-                    color = organizationTheme.themeColors.primary.isEmpty ? defaultColor : self.hexStringToUIColor(hex: organizationTheme.themeColors.primary)
+                    let generalColor = UIColor(hex: organizationTheme.themeColors.primary) ?? UIColor.gray
+                    color = organizationTheme.themeColors.primary.isEmpty ? defaultColor : generalColor
                 }
             }
         }
         return color
     }
-
-    // Extension hex color to rgb
-    func hexStringToUIColor (hex:String) -> UIColor {
-        var cString:String = hex.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
-
-        if (cString.hasPrefix("#")) {
-            cString.remove(at: cString.startIndex)
-        }
-
-        if ((cString.count) != 6) {
-            return UIColor.gray
-        }
-
-        var rgbValue:UInt64 = 0
-        Scanner(string: cString).scanHexInt64(&rgbValue)
-
-        return UIColor(
-            red: CGFloat((rgbValue & 0xFF0000) >> 16) / 255.0,
-            green: CGFloat((rgbValue & 0x00FF00) >> 8) / 255.0,
-            blue: CGFloat(rgbValue & 0x0000FF) / 255.0,
-            alpha: CGFloat(1.0)
-        )
-    }
-
 }
 
 extension PositioningViewController: UISearchControllerDelegate, UISearchBarDelegate{
