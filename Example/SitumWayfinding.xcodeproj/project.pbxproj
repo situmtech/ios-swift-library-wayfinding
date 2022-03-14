@@ -57,6 +57,7 @@
 		87DA24DF57187B9EDCD8A06B /* Pods-SitumWayfinding_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SitumWayfinding_Example.debug.xcconfig"; path = "Target Support Files/Pods-SitumWayfinding_Example/Pods-SitumWayfinding_Example.debug.xcconfig"; sourceTree = "<group>"; };
 		8B54116471FA3975AF6EC8F1 /* Pods_SitumWayfinding_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SitumWayfinding_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9ED9CFBA6AF02E01E1C341BF /* Pods-SitumWayfinding_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SitumWayfinding_Example.release.xcconfig"; path = "Target Support Files/Pods-SitumWayfinding_Example/Pods-SitumWayfinding_Example.release.xcconfig"; sourceTree = "<group>"; };
+		D7EC26F127DA18A200ABD5A7 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Main.strings; sourceTree = "<group>"; };
 		DEA375CE0ED3393820EC8160 /* SitumWayfinding.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = SitumWayfinding.podspec; path = ../SitumWayfinding.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 /* End PBXFileReference section */
 
@@ -249,6 +250,7 @@
 				English,
 				en,
 				Base,
+				es,
 			);
 			mainGroup = 607FACC71AFB9204008FA782;
 			productRefGroup = 607FACD11AFB9204008FA782 /* Products */;
@@ -353,6 +355,7 @@
 				"${PODS_ROOT}/../../SitumWayfinding/Assets/Images/logo/swf_logo@2x.png",
 				"${PODS_ROOT}/../../SitumWayfinding/Assets/Images/logo/swf_logo@3x.png",
 				"${PODS_ROOT}/../../SitumWayfinding/Assets/Images/radius/swf_radius.png",
+				"${PODS_CONFIGURATION_BUILD_DIR}/SitumWayfinding/SitumWayfinding.bundle",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
@@ -379,6 +382,7 @@
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/swf_logo@2x.png",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/swf_logo@3x.png",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/swf_radius.png",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/SitumWayfinding.bundle",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -421,6 +425,7 @@
 			isa = PBXVariantGroup;
 			children = (
 				607FACDA1AFB9204008FA782 /* Base */,
+				D7EC26F127DA18A200ABD5A7 /* es */,
 			);
 			name = Main.storyboard;
 			sourceTree = "<group>";

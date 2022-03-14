@@ -1,0 +1,25 @@
+[update]
+tasks = ["code", "normalize"]
+
+[update.code]
+codePaths = ["SitumWayfinding/"]
+subpathsToIgnore = [".git", "carthage", "pods", "build", ".build", "docs"]
+localizablePaths = ["SitumWayfinding/"]
+defaultToKeys = false
+additive = true
+unstripped = false
+plistArguments = true
+ignoreKeys = ["#bartycrouch-ignore!", "#bc-ignore!", "#i!"]
+
+[update.normalize]
+paths = ["SitumWayfinding/"]
+subpathsToIgnore = [".git", "carthage", "pods", "build", ".build", "docs"]
+sourceLocale = "en"
+harmonizeWithSource = true
+sortByKeys = true
+
+[lint]
+paths = ["SitumWayfinding/"]
+subpathsToIgnore = [".git", "carthage", "pods", "build", ".build", "docs"]
+duplicateKeys = true
+emptyValues = true
