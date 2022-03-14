@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 All non released changes should be in CHANGELOG_UNRELEASED.md file
 
 ---------
+## [0.3.0] - 2022-03-14
+
+### Added:
+* The setShowTextPois method has been added in SitumMapsLibrary. This method allows that the name of each POIs is shown on the map above the POI icon. If it is set to true, the POI name is seen above the POI icon, if it is set to false, only the POI icon appears.
+* Added localization for spanish language in Wayfinding
+
 ## [0.2.0] - 2022-02-21
 ### Added
 * Added protocol OnNavigationListener and a method setOnNavigationListener on SitumMapsLibrary. As a developer you can 
