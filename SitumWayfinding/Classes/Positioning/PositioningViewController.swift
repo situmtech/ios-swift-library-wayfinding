@@ -999,14 +999,21 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     
     func createAndShowCustomMarkerIfOutsideRoute(atCoordinate coordinate: CLLocationCoordinate2D, atFloor floorId: String) {
         if(!self.isUserNavigating()) {
-            self.removeLastCustomMarkerIfOutsideRoute()
-            self.lastCustomMarker = SitumMarker(from:  self.createMarker(withCoordinate: coordinate, floorId: floorId))
-            let mainLabel = NSLocalizedString("positioning.customDestination",
-                bundle: SitumMapsLibrary.bundle,
-                comment: "Shown to user when select a destination (destination is any free point that user selects on the map)")
-            self.updateInfoBarLabels(mainLabel: mainLabel, secondaryLabel: self.buildingInfo?.building.name ?? DEFAULT_BUILDING_NAME)
-            self.changeNavigationButtonVisibility(isVisible: true)
-            self.lastSelectedMarker = self.lastCustomMarker
+            if inside(coordinate: coordinate) {
+                self.removeLastCustomMarkerIfOutsideRoute()
+                self.lastCustomMarker = SitumMarker(from:  self.createMarker(withCoordinate: coordinate, floorId: floorId))
+                let mainLabel = NSLocalizedString(
+                    "positioning.customDestination",
+                    bundle: SitumMapsLibrary.bundle,
+                    comment: "Shown to user when select a destination (destination is any free point that user selects on the map)"
+                )
+                self.updateInfoBarLabels(mainLabel: mainLabel, secondaryLabel: self.buildingInfo?.building.name ?? DEFAULT_BUILDING_NAME)
+                self.changeNavigationButtonVisibility(isVisible: true)
+                self.lastSelectedMarker = self.lastCustomMarker
+            } else {
+                let toast = Toast.text(title: "", subtitle: "Punto inválido, todos los puntos deben estar dentro o cerca del edificio.")
+                toast.show()
+            }
         }
     }
     
@@ -1053,6 +1060,33 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         marker.map = self.mapView
         
         return marker
+    }
+    
+    func inside(coordinate: CLLocationCoordinate2D) -> Bool {
+        var intersections = 0
+        
+        let bounds: SITBounds = buildingInfo!.building.bounds()
+        
+        let coordinates = [bounds.northEast, bounds.northWest, bounds.southEast, bounds.southWest]
+        
+        var prev: CLLocationCoordinate2D = coordinates[coordinates.count - 1]
+        
+        for coordinateBound in coordinates {
+            if ((prev.latitude <= coordinate.latitude && coordinate.latitude < coordinateBound.latitude) ||
+                (prev.latitude >= coordinate.latitude && coordinate.latitude > coordinateBound.latitude)) {
+                let dy = coordinateBound.latitude - prev.latitude
+                let dx = coordinateBound.longitude - prev.longitude
+                let x = (coordinate.latitude - prev.latitude) / dy * dx + prev.longitude
+                
+                if x > coordinate.longitude {
+                    intersections += 1
+                }
+            }
+            
+            prev = coordinateBound
+        }
+        
+        return intersections % 2 == 1
     }
     
     func isUserNavigating() -> Bool {
