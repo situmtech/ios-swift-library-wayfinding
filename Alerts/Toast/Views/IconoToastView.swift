@@ -1,5 +1,5 @@
 class IconToastView : UIStackView {
-    public static var defaultImageTint: UIColor {
+    static var defaultImageTint: UIColor {
         if #available(iOS 13.0, *) {
             return .label
         } else {

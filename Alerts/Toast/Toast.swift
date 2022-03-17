@@ -59,7 +59,7 @@ class Toast {
         show(after: time)
     }
     
-    public func show(after delay: TimeInterval = 0) {
+    func show(after delay: TimeInterval = 0) {
         config.view?.addSubview(view) ?? topController()?.view.addSubview(view)
         view.createView(for: self)
         
@@ -72,7 +72,7 @@ class Toast {
         }
     }
     
-    @objc public func close(after time: TimeInterval = 0, completion: (() -> Void)? = nil) {
+    @objc func close(after time: TimeInterval = 0, completion: (() -> Void)? = nil) {
         UIView.animate(withDuration: config.animationTime, delay: time, options: [.curveEaseIn, .allowUserInteraction], animations: {
             self.view.transform = self.initialTransform
         }, completion: { _ in
