@@ -104,6 +104,9 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         NSLocalizedString("positioning.createMarker", bundle: SitumMapsLibrary.bundle, comment: "")
     ]
     
+    // Toast
+    private let toast = Toast.text(title: "", subtitle: "Punto inválido, todos los puntos deben estar dentro o cerca del edificio.")
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         backButton.title = NSLocalizedString("positioning.back",
@@ -1011,8 +1014,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
                 self.changeNavigationButtonVisibility(isVisible: true)
                 self.lastSelectedMarker = self.lastCustomMarker
             } else {
-                let toast = Toast.text(title: "", subtitle: "Punto inválido, todos los puntos deben estar dentro o cerca del edificio.")
-                toast.show()
+                self.toast.show()
             }
         }
     }
@@ -1063,30 +1065,10 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     }
     
     func inside(coordinate: CLLocationCoordinate2D) -> Bool {
-        var intersections = 0
-        
-        let bounds: SITBounds = buildingInfo!.building.bounds()
-        
-        let coordinates = [bounds.northEast, bounds.northWest, bounds.southEast, bounds.southWest]
-        
-        var prev: CLLocationCoordinate2D = coordinates[coordinates.count - 1]
-        
-        for coordinateBound in coordinates {
-            if ((prev.latitude <= coordinate.latitude && coordinate.latitude < coordinateBound.latitude) ||
-                (prev.latitude >= coordinate.latitude && coordinate.latitude > coordinateBound.latitude)) {
-                let dy = coordinateBound.latitude - prev.latitude
-                let dx = coordinateBound.longitude - prev.longitude
-                let x = (coordinate.latitude - prev.latitude) / dy * dx + prev.longitude
-                
-                if x > coordinate.longitude {
-                    intersections += 1
-                }
-            }
-            
-            prev = coordinateBound
-        }
-        
-        return intersections % 2 == 1
+        let bounds: SITBounds = self.buildingInfo!.building.bounds()
+        let isOutsideLatitude: Bool = coordinate.latitude < bounds.southWest.latitude || coordinate.latitude > bounds.northEast.latitude
+        let isOutsideLongitude: Bool = coordinate.longitude < bounds.southWest.longitude || coordinate.longitude > bounds.northEast.longitude
+        return (!isOutsideLatitude && !isOutsideLongitude)
     }
     
     func isUserNavigating() -> Bool {
