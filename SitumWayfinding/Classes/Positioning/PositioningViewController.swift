@@ -1055,6 +1055,16 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         return marker
     }
     
+    func inside(coordinate: CLLocationCoordinate2D) -> Bool {
+        let bounds: SITBounds = self.buildingInfo!.building.bounds()
+        
+        let isOutsideLatitude: Bool = coordinate.latitude < bounds.southWest.latitude || coordinate.latitude > bounds.northEast.latitude
+        
+        let isOutsideLongitude: Bool = coordinate.longitude < bounds.southWest.longitude || coordinate.longitude > bounds.northEast.longitude
+        
+        return (!isOutsideLatitude && !isOutsideLongitude)
+    }
+    
     func isUserNavigating() -> Bool {
         return self.destinationMarker != nil
     }
