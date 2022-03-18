@@ -104,6 +104,12 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         NSLocalizedString("positioning.createMarker", bundle: SitumMapsLibrary.bundle, comment: "")
     ]
     
+    // Toast
+    private let toast = Toast(
+        title: "",
+        subtitle: "Punto inválido, todos los puntos deben estar dentro o cerca del edificio."
+    )
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         backButton.title = NSLocalizedString("positioning.back",
@@ -999,14 +1005,20 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     
     func createAndShowCustomMarkerIfOutsideRoute(atCoordinate coordinate: CLLocationCoordinate2D, atFloor floorId: String) {
         if(!self.isUserNavigating()) {
-            self.removeLastCustomMarkerIfOutsideRoute()
-            self.lastCustomMarker = SitumMarker(from:  self.createMarker(withCoordinate: coordinate, floorId: floorId))
-            let mainLabel = NSLocalizedString("positioning.customDestination",
-                bundle: SitumMapsLibrary.bundle,
-                comment: "Shown to user when select a destination (destination is any free point that user selects on the map)")
-            self.updateInfoBarLabels(mainLabel: mainLabel, secondaryLabel: self.buildingInfo?.building.name ?? DEFAULT_BUILDING_NAME)
-            self.changeNavigationButtonVisibility(isVisible: true)
-            self.lastSelectedMarker = self.lastCustomMarker
+            if inside(coordinate: coordinate) {
+                self.removeLastCustomMarkerIfOutsideRoute()
+                self.lastCustomMarker = SitumMarker(from:  self.createMarker(withCoordinate: coordinate, floorId: floorId))
+                let mainLabel = NSLocalizedString(
+                    "positioning.customDestination",
+                    bundle: SitumMapsLibrary.bundle,
+                    comment: "Shown to user when select a destination (destination is any free point that user selects on the map)"
+                )
+                self.updateInfoBarLabels(mainLabel: mainLabel, secondaryLabel: self.buildingInfo?.building.name ?? DEFAULT_BUILDING_NAME)
+                self.changeNavigationButtonVisibility(isVisible: true)
+                self.lastSelectedMarker = self.lastCustomMarker
+            } else {
+                self.toast.show()
+            }
         }
     }
     
