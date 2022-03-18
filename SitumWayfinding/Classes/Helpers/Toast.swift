@@ -20,10 +20,10 @@ class Toast {
     
     func show(type: UINotificationFeedbackGenerator.FeedbackType, time: TimeInterval = 0) {
         UINotificationFeedbackGenerator().notificationOccurred(type)
-        show(after: time)
+        showInterval(after: time)
     }
     
-    func show(after delay: TimeInterval = 0) {
+    func showInterval(after delay: TimeInterval = 0) {
         config.view?.addSubview(view) ?? topController()?.view.addSubview(view)
         view.createView(for: self)
         
