@@ -105,10 +105,10 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     ]
     
     // Toast
-    private let toast = Toast(
+    /*private let toast = Toast(
         title: "",
         subtitle: "Punto inválido, todos los puntos deben estar dentro o cerca del edificio."
-    )
+    )*/
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -1004,7 +1004,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     }
     
     func createAndShowCustomMarkerIfOutsideRoute(atCoordinate coordinate: CLLocationCoordinate2D, atFloor floorId: String) {
-        if(!self.isUserNavigating()) {
+        /*if(!self.isUserNavigating()) {
             if inside(coordinate: coordinate) {
                 self.removeLastCustomMarkerIfOutsideRoute()
                 self.lastCustomMarker = SitumMarker(from:  self.createMarker(withCoordinate: coordinate, floorId: floorId))
@@ -1019,7 +1019,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
             } else {
                 self.toast.show()
             }
-        }
+        }*/
     }
     
     // MARK: SitumMapsLibrary methods
