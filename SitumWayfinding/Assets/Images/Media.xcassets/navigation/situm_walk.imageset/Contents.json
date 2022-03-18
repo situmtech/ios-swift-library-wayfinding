@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "situm_walk.svg",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

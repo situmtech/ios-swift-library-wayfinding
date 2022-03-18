@@ -1,6 +1,8 @@
 import Foundation
 
 extension UIColor {
+    static let primary: UIColor = UIColor(hex: "#283380FF")!
+    
     convenience init?(hex: String) {
         let r, g, b, a: CGFloat
 

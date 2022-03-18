@@ -19,6 +19,15 @@
 /* Generic ok action */
 "generic.ok" = "Ok";
 
+/* Less than x minutes */
+"navigation.lessThanMinutes" = "menos de %d min";
+
+/* Remaining time in hours */
+"navigation.remainingHours" = "%d h";
+
+/* Remaining time in minutes */
+"navigation.remainingMinutes" = "%d min";
+
 /* No comment provided by engineer. */
 "navigationError.noAvailableRoute" = "No existe una ruta entre las localizaciones seleccionadas. Intenta otra ruta o cambia al modo de accesibilidad";
 
