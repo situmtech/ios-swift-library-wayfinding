@@ -18,7 +18,7 @@ class Toast {
         view.transform = initialTransform
     }
     
-    /*func show(type: UINotificationFeedbackGenerator.FeedbackType, time: TimeInterval = 0) {
+    func show(type: UINotificationFeedbackGenerator.FeedbackType, time: TimeInterval = 0) {
         UINotificationFeedbackGenerator().notificationOccurred(type)
         show(after: time)
     }
@@ -31,12 +31,12 @@ class Toast {
             self.view.transform = .identity
         } completion: { [self] _ in
             if config.autoHide {
-                close(after: config.displayTime)
+                //close(after: config.displayTime)
             }
         }
     }
     
-    func close(after time: TimeInterval = 0, completion: (() -> Void)? = nil) {
+    /*func close(after time: TimeInterval = 0, completion: (() -> Void)? = nil) {
         UIView.animate(withDuration: config.animationTime, delay: time, options: [.curveEaseIn, .allowUserInteraction], animations: {
             self.view.transform = self.initialTransform
         }, completion: { _ in
