@@ -18,7 +18,7 @@ class Toast {
         view.transform = initialTransform
     }
     
-    func show(type: UINotificationFeedbackGenerator.FeedbackType, time: TimeInterval = 0) {
+    /*func show(type: UINotificationFeedbackGenerator.FeedbackType, time: TimeInterval = 0) {
         UINotificationFeedbackGenerator().notificationOccurred(type)
         show(after: time)
     }
@@ -43,7 +43,7 @@ class Toast {
             self.view.removeFromSuperview()
             completion?()
         })
-    }
+    }*/
     
     private func topController() -> UIViewController? {
         let keyWindow = UIApplication.shared.windows.filter {$0.isKeyWindow}.first
