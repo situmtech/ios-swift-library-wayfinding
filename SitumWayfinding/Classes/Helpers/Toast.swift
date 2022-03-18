@@ -27,13 +27,7 @@ class Toast {
         config.view?.addSubview(view) ?? topController()?.view.addSubview(view)
         view.createView(for: self)
         
-        UIView.animate(withDuration: config.animationTime, delay: delay, options: [.curveEaseOut, .allowUserInteraction]) {
-            self.view.transform = .identity
-        } completion: { [self] _ in
-            if config.autoHide {
-                //close(after: config.displayTime)
-            }
-        }
+       
     }
     
     /*func close(after time: TimeInterval = 0, completion: (() -> Void)? = nil) {
