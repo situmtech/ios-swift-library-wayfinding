@@ -23,6 +23,9 @@
 "navigation.lessThanMinutes" = "menos de %d min";
 
 /* No comment provided by engineer. */
+"navigation.loadingRoute" = "Calculando ruta...";
+
+/* No comment provided by engineer. */
 "navigation.nextInstruction" = "Después";
 
 /* Remaining time in hours */
@@ -132,6 +135,3 @@
 
 /* No comment provided by engineer. */
 "wayfindingError.unknown" = "Ha ocurrido un error inesperado";
-
-/* No comment provided by engineer. */
-"navigation.loadingRoute" = "Calculando ruta...";
