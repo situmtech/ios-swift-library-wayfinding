@@ -23,6 +23,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     var useRemoteConfig: Bool = false
     //Positioning
     @IBOutlet weak var navbar: UINavigationBar!
+    @IBOutlet weak var mapContainerViewTopConstraint: NSLayoutConstraint!
     @IBOutlet weak var positioningButton: UIButton!
     @IBOutlet weak var levelsTableView: UITableView!
     @IBOutlet weak var levelsTableHeightConstaint: NSLayoutConstraint!
@@ -33,8 +34,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     @IBOutlet weak var loadingIndicator: UIActivityIndicatorView!
     //Navigation
     @IBOutlet weak var indicationsView: UIView!
-    @IBOutlet weak var currentIndicationLabel: UILabel!
-    @IBOutlet weak var nextIndicationLabel: UILabel!
+    weak var indicationsViewController: IndicationsViewController?
     @IBOutlet weak var navigationButton: UIButton!
     
     @IBOutlet weak var infoBarMap: UIView!
@@ -68,6 +68,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     var lastSelectedMarker: SitumMarker?
     var lastCustomMarker: SitumMarker?
     var destinationMarker: SitumMarker?
+    var destinationString: String { return self.destinationMarker?.gmsMarker.title ?? DEFAULT_POI_NAME }
     var polyline: Array<GMSPolyline> = []
     var routePath: Array<GMSMutablePath> = []
     var loadFinished: Bool = false
@@ -94,6 +95,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        mapContainerViewTopConstraint.constant = 44
         backButton.title = NSLocalizedString("positioning.back",
             bundle: SitumMapsLibrary.bundle,
             comment: "Button to go back when the user is in the positioning controller (where the map is shown)")
@@ -319,7 +321,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     }
     
     func initializeInfoBar() {
-        self.showInfoBarMap()
+        self.showDefaultUI()
         self.containerInfoBarMap?.setLabels(primary: self.buildingName)
         if organizationTheme?.logo != nil {
             // Bring the image and save it on cache
@@ -832,6 +834,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         self.presenter?.startPositioningAndNavigate(withDestination: destination,
             inFloor: orderedFloors(buildingInfo: buildingInfo)![self.selectedLevelIndex].identifier)
         self.presenter?.centerViewInUserLocation()
+        self.indicationsViewController?.setDestination(destination: destinationString)
     }
     
     @IBAction
@@ -906,11 +909,9 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     }
     
     func updateProgress(progress: SITNavigationProgress) {
-        self.indicationsView.isHidden = false
-        // TODO destination marker goes to top indication
-        let title = self.destinationMarker?.gmsMarker.title ?? DEFAULT_POI_NAME
         self.containerInfoBarNavigation?.setProgress(progress: progress)
-        self.showInfoBarNavigation()
+        self.indicationsViewController?.setInstructions(progress: progress, destination: destinationString)
+        self.showNavigationUI()
         
         // Update route based on this information
         for line in self.polyline {
@@ -919,17 +920,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         
         // Filter route steps for floors
         let selectedFloor = orderedFloors(buildingInfo: buildingInfo)?[self.selectedLevelIndex]
-        
         self.generateAndPrintRoutePathWithRouteSegments(segments: progress.segments(), selectedFloor: selectedFloor!)
-        
-        if (self.indicationsView.isHidden) {
-            self.indicationsView.isHidden = false
-        }
-        // Update information on the instruction
-        self.currentIndicationLabel.text = progress.currentIndication.humanReadableMessage()
-        // Update distance and time
-        self.nextIndicationLabel.text = progress.nextIndication.humanReadableMessage()
-        
         let location: SITLocation = progress.closestLocationInRoute
         self.updateUI(with: location)
     }
@@ -1093,9 +1084,8 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     func stopNavigation(status: NavigationStatus) {
         presenter?.resetLastOutsideRouteAlert()
         SITNavigationManager.shared().removeUpdates()
-        self.indicationsView.isHidden = true
         self.changeNavigationButtonVisibility(isVisible: false)
-        self.showInfoBarMap()
+        self.showDefaultUI()
         self.containerInfoBarMap?.setLabels(primary: self.buildingName)
         for polyline in self.polyline {
             polyline.map = nil
@@ -1188,6 +1178,9 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
             if identifier == "infoBarNavigationSegue" {
                 containerInfoBarNavigation = segue.destination as? InfoBarNavigationViewController
             }
+            if identifier == "topIndicationsSegue" {
+                indicationsViewController = segue.destination as? IndicationsViewController
+            }
         }
     }
     
@@ -1207,16 +1200,22 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     }
 }
 
-//MARK: Info bottom bar display
+//MARK: Change between ui of different modes (default, navigation)
 extension PositioningViewController {
-    func showInfoBarMap() {
+    func showDefaultUI() {
+        self.mapContainerViewTopConstraint.constant = 44
         self.infoBarMap.isHidden = false
         self.infoBarNavigation.isHidden = true
+        self.indicationsView.isHidden = true
+        self.navbar.isHidden = false
     }
     
-    func showInfoBarNavigation() {
+    func showNavigationUI() {
+        self.mapContainerViewTopConstraint.constant = 0
         self.infoBarMap.isHidden = true
         self.infoBarNavigation.isHidden = false
+        self.indicationsView.isHidden = false
+        self.navbar.isHidden = true
     }
 }
 

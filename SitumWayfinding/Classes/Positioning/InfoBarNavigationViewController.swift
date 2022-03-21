@@ -33,7 +33,7 @@ class InfoBarNavigationViewController: UIViewController {
         self.separatorLabel.textColor = .primary
         self.separatorLabel.font = .normal
     
-        self.topSeparator.backgroundColor = .primary.withAlphaComponent(0.5)
+        self.topSeparator.backgroundColor = .primaryDiminished
     
         self.distanceRemainingImage.image = UIImage(named: "situm_walk",
             in: SitumMapsLibrary.bundle, compatibleWith: nil)

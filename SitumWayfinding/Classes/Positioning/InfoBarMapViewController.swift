@@ -22,7 +22,7 @@ class InfoBarMapViewController: UIViewController {
         super.viewDidLoad()
         
         mainLabel.translatesAutoresizingMaskIntoConstraints = false
-        topSeparator.backgroundColor = .primary.withAlphaComponent(0.5)
+        topSeparator.backgroundColor = .primaryDiminished
     }
     
     func setLogo(image: UIImage?) {

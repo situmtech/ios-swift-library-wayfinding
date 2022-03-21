@@ -22,6 +22,9 @@
 /* Less than x minutes */
 "navigation.lessThanMinutes" = "less than %d min";
 
+/* No comment provided by engineer. */
+"navigation.nextInstruction" = "Then";
+
 /* Remaining time in hours */
 "navigation.remainingHours" = "%d h";
 
@@ -94,9 +97,6 @@
 /* Alert title to show for a long press action */
 "positioning.longPressAction.alert.title" = "Long press actions";
 
-/* Show to the user distance to next point */
-"positioning.navigationProgress" = "%.1fm remaining";
-
 /* Used to show the user the number of beacons that library detects nearby */
 "positioning.numBeacons" = "%d beacons";
 
@@ -132,3 +132,6 @@
 
 /* No comment provided by engineer. */
 "wayfindingError.unknown" = "An unknown error happened";
+
+/* No comment provided by engineer. */
+"navigation.loadingRoute" = "Loading route...";
