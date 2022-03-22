@@ -123,3 +123,6 @@
 
 /* No comment provided by engineer. */
 "wayfindingError.unknown" = "An unknown error happened";
+
+/* No comment provided by engineer. */
+"error.limit.floor" = "Invalid point, all points must be inside or near the building.";

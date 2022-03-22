@@ -1011,13 +1011,9 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
                 self.changeNavigationButtonVisibility(isVisible: true)
                 self.lastSelectedMarker = self.lastCustomMarker
             } else {
+                let message = NSLocalizedString("error.limit.floor", bundle: SitumMapsLibrary.bundle, comment: "")
                 self.view.hideAllToasts()
-                
-                self.view.makeToast(
-                    "Punto inválido, todos los puntos deben estar dentro o cerca del edificio.",
-                    duration: 3.0,
-                    position: .bottom
-                )
+                self.view.makeToast(message, duration: 3.0, position: .bottom)
             }
         }
     }
