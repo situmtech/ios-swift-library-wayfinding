@@ -321,7 +321,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     }
     
     func initializeInfoBar() {
-        self.showDefaultUI()
+        self.showPositioningUI()
         self.containerInfoBarMap?.setLabels(primary: self.buildingName)
         if organizationTheme?.logo != nil {
             // Bring the image and save it on cache
@@ -1085,7 +1085,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         presenter?.resetLastOutsideRouteAlert()
         SITNavigationManager.shared().removeUpdates()
         self.changeNavigationButtonVisibility(isVisible: false)
-        self.showDefaultUI()
+        self.showPositioningUI()
         self.containerInfoBarMap?.setLabels(primary: self.buildingName)
         for polyline in self.polyline {
             polyline.map = nil
@@ -1202,7 +1202,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
 
 //MARK: Change between ui of different modes (default, navigation)
 extension PositioningViewController {
-    func showDefaultUI() {
+    func showPositioningUI() {
         self.mapContainerViewTopConstraint.constant = 44
         self.infoBarMap.isHidden = false
         self.infoBarNavigation.isHidden = true

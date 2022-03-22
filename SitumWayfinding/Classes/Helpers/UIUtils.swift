@@ -59,10 +59,15 @@ extension UIView {
                 cornerRadii: CGSize(width: radius, height: radius))
             let mask = CAShapeLayer()
             mask.path = path.cgPath
+            // use UIRectCorner with UIBezierPath to clip view to be able to round corners
             self.layer.mask = mask
         }
     }
     
+    /**
+     This function is made to easily use UIRectCorner always to specify which corners are rounded in a view.
+     UIRectCorner is a clearer OptionSet to specify this. In addition, versions under ios 11 need this to round a view
+     */
     private func rectCornerToMaskedCorners(corners: UIRectCorner) -> CACornerMask {
         var maskedCorners: CACornerMask = []
         if corners.contains(.topLeft) {
