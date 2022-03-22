@@ -686,12 +686,9 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     
     func changeNavigationButtonVisibility(isVisible visible: Bool) {
         if (visible) {
-            // We only show the button if user is positioning
-            //            if(self.positioningButton.isSelected) {
-            self.navigationButton.isHidden = false
-            //            }
+            navigationButton.isHidden = false
         } else {
-            self.navigationButton.isHidden = true
+            navigationButton.isHidden = true
         }
     }
     

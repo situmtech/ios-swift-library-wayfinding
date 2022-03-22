@@ -51,23 +51,21 @@ extension UIView {
     func roundCorners(corners: UIRectCorner) {
         let radius: CGFloat = 5
         if #available(iOS 11.0, *) {
+            // In order to use the same interface we use UIRectCorner to define which corners are rounded, thus a private
+            // method rectCornerToMaskedCorners is used to convert between UIRectCorner <-> CACornerMask
             self.layer.maskedCorners = rectCornerToMaskedCorners(corners: corners)
             self.layer.cornerRadius = radius
         } else {
+            // Before iOS 11 maskedCorners do not exist so in order to round corners of an UIVIew (rectangle without
+            // rounded borders) we need to use UIBezierPath to clip
             let path = UIBezierPath(roundedRect: self.bounds,
                 byRoundingCorners: corners,
                 cornerRadii: CGSize(width: radius, height: radius))
             let mask = CAShapeLayer()
             mask.path = path.cgPath
-            // use UIRectCorner with UIBezierPath to clip view to be able to round corners
             self.layer.mask = mask
         }
     }
-    
-    /**
-     This function is made to easily use UIRectCorner always to specify which corners are rounded in a view.
-     UIRectCorner is a clearer OptionSet to specify this. In addition, versions under ios 11 need this to round a view
-     */
     private func rectCornerToMaskedCorners(corners: UIRectCorner) -> CACornerMask {
         var maskedCorners: CACornerMask = []
         if corners.contains(.topLeft) {
