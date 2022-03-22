@@ -123,6 +123,3 @@
 
 /* No comment provided by engineer. */
 "wayfindingError.unknown" = "Ha ocurrido un error inesperado";
-
-/* No comment provided by engineer. */
-"error.limit.floor" = "Punto inválido, todos los puntos deben estar dentro o cerca del edificio.";

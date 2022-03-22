@@ -1010,10 +1010,6 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
                 self.updateInfoBarLabels(mainLabel: mainLabel, secondaryLabel: self.buildingInfo?.building.name ?? DEFAULT_BUILDING_NAME)
                 self.changeNavigationButtonVisibility(isVisible: true)
                 self.lastSelectedMarker = self.lastCustomMarker
-            } else {
-                let message = NSLocalizedString("error.limit.floor", bundle: SitumMapsLibrary.bundle, comment: "")
-                self.view.hideAllToasts()
-                self.view.makeToast(message, duration: 3.0, position: .bottom)
             }
         }
     }
