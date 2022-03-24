@@ -19,6 +19,21 @@
 /* Generic ok action */
 "generic.ok" = "Ok";
 
+/* Less than x minutes */
+"navigation.lessThanMinutes" = "less than %d min";
+
+/* No comment provided by engineer. */
+"navigation.loadingRoute" = "Loading route...";
+
+/* No comment provided by engineer. */
+"navigation.nextInstruction" = "Then";
+
+/* Remaining time in hours */
+"navigation.remainingHours" = "%d h";
+
+/* Remaining time in minutes */
+"navigation.remainingMinutes" = "%d m";
+
 /* No comment provided by engineer. */
 "navigationError.noAvailableRoute" = "There is no route between the selected locations. Try to compute a different route or to switch accessibility mode";
 
@@ -84,9 +99,6 @@
 
 /* Alert title to show for a long press action */
 "positioning.longPressAction.alert.title" = "Long press actions";
-
-/* Show to the user distance to next point */
-"positioning.navigationProgress" = "%.1fm remaining";
 
 /* Used to show the user the number of beacons that library detects nearby */
 "positioning.numBeacons" = "%d beacons";

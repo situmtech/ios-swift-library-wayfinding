@@ -46,6 +46,46 @@ extension UIView {
         self.bottomAnchor.constraint(equalTo: superview.bottomAnchor, constant: 0).isActive = true
         self.leadingAnchor.constraint(equalTo: superview.leadingAnchor, constant: 0).isActive = true
         self.trailingAnchor.constraint(equalTo: superview.trailingAnchor, constant: 0).isActive = true
-        
+    }
+    
+    func roundCorners(corners: UIRectCorner) {
+        let radius: CGFloat = 5
+        if #available(iOS 11.0, *) {
+            // In order to use the same interface we use UIRectCorner to define which corners are rounded, thus a private
+            // method rectCornerToMaskedCorners is used to convert between UIRectCorner <-> CACornerMask
+            self.layer.maskedCorners = rectCornerToMaskedCorners(corners: corners)
+            self.layer.cornerRadius = radius
+        } else {
+            // Before iOS 11 maskedCorners do not exist so in order to round corners of an UIVIew (rectangle without
+            // rounded borders) we need to use UIBezierPath to clip
+            let path = UIBezierPath(roundedRect: self.bounds,
+                byRoundingCorners: corners,
+                cornerRadii: CGSize(width: radius, height: radius))
+            let mask = CAShapeLayer()
+            mask.path = path.cgPath
+            self.layer.mask = mask
+        }
+    }
+    private func rectCornerToMaskedCorners(corners: UIRectCorner) -> CACornerMask {
+        var maskedCorners: CACornerMask = []
+        if corners.contains(.topLeft) {
+            maskedCorners.insert(.layerMinXMinYCorner)
+        }
+        if corners.contains(.topRight) {
+            maskedCorners.insert(.layerMaxXMinYCorner)
+        }
+        if corners.contains(.bottomLeft) {
+            maskedCorners.insert(.layerMinXMaxYCorner)
+        }
+        if corners.contains(.bottomRight) {
+            maskedCorners.insert(.layerMaxXMaxYCorner)
+        }
+        return maskedCorners
+    }
+    
+    func shadow() {
+        self.layer.shadowOffset = .zero
+        self.layer.shadowRadius = 3
+        self.layer.shadowOpacity = 0.4
     }
 }
