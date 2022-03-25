@@ -33,7 +33,8 @@ Pod::Spec.new do |s|
   s.resource_bundles = {
     'SitumWayfinding' => [
         'SitumWayfinding/Localizations/**/*',
-	'SitumWayfinding/Classes/situm_google_maps_style.json'
+        'SitumWayfinding/Classes/situm_google_maps_style.json',
+        'SitumWayfinding/Assets/Images/**/*.xcassets',
     ]
   }
   s.dependency 'GoogleMaps', '~> 4.2.0'
