@@ -44,7 +44,8 @@ class InfoBarNavigationViewController: UIViewController {
     }
     
     func initializeProgress() {
-        timeRemainingLabel.text = "-"
+        timeRemainingLabel.text = NSLocalizedString("navigation.loadingRoute",
+            bundle: SitumMapsLibrary.bundle, comment: "")
         distanceRemainingLabel.text = "-"
         estimatedTimeLabel.text = "-"
     }

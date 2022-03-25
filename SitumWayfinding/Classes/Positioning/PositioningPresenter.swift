@@ -23,6 +23,7 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
     2. When in navigation -> SITNavigationProgress.closestLocationInRoute
     */
     var userLocation: SITLocation? = nil
+    var lastPositioningLocation: SITLocation? = nil
     var locationManagerUserLocation: SITLocation? = nil
     var lastCalibrationAlert: TimeInterval = 0.0
     var lastOOBAlert: TimeInterval = 0.0
@@ -349,12 +350,16 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
         }
         
         if isUserNavigating() {
+            // UI and self.userLocation are updated in SITNavigationManager callback with the user position adjusted
+            // to the route
             SITNavigationManager.shared().update(with: location)
-            //UI and self.userLocation are updated in SITNavigationManager callback with the user position adjusted to the route
+            // this positions will be used if some error in navigation occur and navigation manager do not return
+            // the user current position
+            lastPositioningLocation = location
+        } else {
+            userLocation = location
+            view?.updateUI(with: location)
         }
-    
-        userLocation = location
-        view?.updateUI(with: location)
         
         if(isSystemWaitingToStartRoute) {
             self.isSystemWaitingToStartRoute = false
@@ -449,12 +454,15 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
     func navigationManager(_ navigationManager: SITNavigationInterface, userOutsideRoute route: SITRoute) {
         Logger.logDebugMessage("user outside route detected: \(route.debugDescription)");
         
-        if isUserIndoor(){
+        if isUserIndoor() {
+            if let lastLocation = lastPositioningLocation {
+                view?.updateUI(with: lastLocation)
+            }
             let outsideRouteAlertTitle = NSLocalizedString("positioning.outsideRoute.alert.title",
                 bundle: SitumMapsLibrary.bundle,
                 comment: "Alert title to show user is outside of route")
             showAlertIfNeeded(type: .outsideRoute, title: outsideRouteAlertTitle, message: "")
-        }else{
+        } else {
             view?.stopNavigation(status: .error(NavigationError.outsideBuilding))
         }
     }
