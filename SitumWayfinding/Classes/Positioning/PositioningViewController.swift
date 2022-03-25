@@ -832,6 +832,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
             inFloor: orderedFloors(buildingInfo: buildingInfo)![self.selectedLevelIndex].identifier)
         self.presenter?.centerViewInUserLocation()
         self.indicationsViewController?.setDestination(destination: destinationString)
+        self.showNavigationUI()
     }
     
     @IBAction
@@ -908,7 +909,6 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     func updateProgress(progress: SITNavigationProgress) {
         self.containerInfoBarNavigation?.setProgress(progress: progress)
         self.indicationsViewController?.setInstructions(progress: progress, destination: destinationString)
-        self.showNavigationUI()
         
         // Update route based on this information
         for line in self.polyline {
@@ -1213,6 +1213,7 @@ extension PositioningViewController {
         self.infoBarNavigation.isHidden = false
         self.indicationsView.isHidden = false
         self.navbar.isHidden = true
+        containerInfoBarNavigation?.initializeProgress()
     }
 }
 

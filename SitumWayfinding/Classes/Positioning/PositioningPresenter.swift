@@ -351,10 +351,10 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
         if isUserNavigating() {
             SITNavigationManager.shared().update(with: location)
             //UI and self.userLocation are updated in SITNavigationManager callback with the user position adjusted to the route
-        } else {
-            userLocation = location
-            view?.updateUI(with: location)
         }
+    
+        userLocation = location
+        view?.updateUI(with: location)
         
         if(isSystemWaitingToStartRoute) {
             self.isSystemWaitingToStartRoute = false
@@ -428,7 +428,7 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
         }
     }
     
-    //MARK: NavigationDelegate methods
+    //MARK: SITNavigationDelegate methods
     
     func navigationManager(_ navigationManager: SITNavigationInterface, didFailWithError error: Error) {
         Logger.logErrorMessage("Navigation error: \(error)")
@@ -450,13 +450,10 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
         Logger.logDebugMessage("user outside route detected: \(route.debugDescription)");
         
         if isUserIndoor(){
-            let message = NSLocalizedString("positioning.outsideBuilding.alert.message",
-                bundle: SitumMapsLibrary.bundle,
-                comment: "Alert message to show user is outside of route")
             let outsideRouteAlertTitle = NSLocalizedString("positioning.outsideRoute.alert.title",
                 bundle: SitumMapsLibrary.bundle,
                 comment: "Alert title to show user is outside of route")
-            showAlertIfNeeded(type: .outsideRoute, title: outsideRouteAlertTitle, message: message)
+            showAlertIfNeeded(type: .outsideRoute, title: outsideRouteAlertTitle, message: "")
         }else{
             view?.stopNavigation(status: .error(NavigationError.outsideBuilding))
         }
