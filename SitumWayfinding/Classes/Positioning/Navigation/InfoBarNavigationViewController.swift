@@ -39,8 +39,16 @@ class InfoBarNavigationViewController: UIViewController {
             in: SitumMapsLibrary.bundle, compatibleWith: nil)
         self.estimatedTimeImage.image = UIImage(named: "situm_clock_time",
             in: SitumMapsLibrary.bundle, compatibleWith: nil)
+        
+        initializeProgress()
     }
     
+    func initializeProgress() {
+        timeRemainingLabel.text = NSLocalizedString("navigation.loadingRoute",
+            bundle: SitumMapsLibrary.bundle, comment: "")
+        distanceRemainingLabel.text = "-"
+        estimatedTimeLabel.text = "-"
+    }
     
     @IBAction func cancelButtonPressed(_ sender: Any) {
         if let parent = self.parent as? PositioningViewController {
