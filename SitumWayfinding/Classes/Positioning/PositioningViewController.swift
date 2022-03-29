@@ -1060,13 +1060,21 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     }
     
     func inside(coordinate: CLLocationCoordinate2D) -> Bool {
-        let bounds: SITBounds = self.buildingInfo!.building.bounds()
+        let converter: SITCoordinateConverter = SITCoordinateConverter(
+            dimensions: buildingInfo!.building.dimensions(),
+            center: buildingInfo!.building.center(),
+            rotation: buildingInfo!.building.rotation
+        )
         
-        let isOutsideLatitude: Bool = coordinate.latitude < bounds.southWest.latitude || coordinate.latitude > bounds.northEast.latitude
+        let cartesianCoordinate: SITCartesianCoordinate? = converter.toCartesianCoordinate(coordinate)
         
-        let isOutsideLongitude: Bool = coordinate.longitude < bounds.southWest.longitude || coordinate.longitude > bounds.northEast.longitude
-        
-        return (!isOutsideLatitude && !isOutsideLongitude)
+        if let x = cartesianCoordinate?.x, let y = cartesianCoordinate?.y {
+            let width: Double = (buildingInfo?.building.dimensions().width)!
+            let height: Double = (buildingInfo?.building.dimensions().height)!
+            return !(x > width || y > height || x < 0 || y < 0)
+        } else {
+            return false
+        }
     }
     
     func isUserNavigating() -> Bool {
