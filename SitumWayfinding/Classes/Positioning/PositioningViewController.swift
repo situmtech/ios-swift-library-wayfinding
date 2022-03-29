@@ -930,14 +930,16 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     
     func createAndShowCustomMarkerIfOutsideRoute(atCoordinate coordinate: CLLocationCoordinate2D, atFloor floorId: String) {
         if (!self.isUserNavigating()) {
-            self.removeLastCustomMarkerIfOutsideRoute()
-            self.lastCustomMarker = SitumMarker(from: self.createMarker(withCoordinate: coordinate, floorId: floorId))
-            let mainLabel = NSLocalizedString("positioning.customDestination",
-                bundle: SitumMapsLibrary.bundle,
-                comment: "Shown to user when select a destination (destination is any free point that user selects on the map)")
-            self.containerInfoBarMap?.setLabels(primary: mainLabel, secondary: self.buildingName)
-            self.changeNavigationButtonVisibility(isVisible: true)
-            self.lastSelectedMarker = self.lastCustomMarker
+            if inside(coordinate: coordinate) {
+                self.removeLastCustomMarkerIfOutsideRoute()
+                self.lastCustomMarker = SitumMarker(from: self.createMarker(withCoordinate: coordinate, floorId: floorId))
+                let mainLabel = NSLocalizedString("positioning.customDestination",
+                    bundle: SitumMapsLibrary.bundle,
+                    comment: "Shown to user when select a destination (destination is any free point that user selects on the map)")
+                self.containerInfoBarMap?.setLabels(primary: mainLabel, secondary: self.buildingName)
+                self.changeNavigationButtonVisibility(isVisible: true)
+                self.lastSelectedMarker = self.lastCustomMarker
+            }
         }
     }
     
@@ -982,6 +984,31 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         marker.map = self.mapView
         
         return marker
+    }
+    
+    func inside(coordinate: CLLocationCoordinate2D) -> Bool {
+        if let dimensions = buildingInfo?.building.dimensions(),
+            let center = buildingInfo?.building.center(),
+            let rotation = buildingInfo?.building.rotation {
+            
+            let converter = SITCoordinateConverter(
+                dimensions: dimensions,
+                center: center,
+                rotation: rotation
+            )
+            
+            let cartesianCoordinate = converter.toCartesianCoordinate(coordinate)
+            
+            return !(
+                cartesianCoordinate.x > dimensions.width ||
+                cartesianCoordinate.y > dimensions.height ||
+                cartesianCoordinate.x < 0 ||
+                cartesianCoordinate.y < 0
+            )
+            
+        } else {
+            return false
+        }
     }
     
     func isUserNavigating() -> Bool {
