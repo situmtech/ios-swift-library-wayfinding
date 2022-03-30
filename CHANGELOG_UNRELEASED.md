@@ -5,7 +5,7 @@
 * Changes in GoogleMaps styles to hide GoogleMaps POI names.
 * Changed the behaviour of the module when setShowTextPois is not set. Now the default value is false so only the POI icons whithout its name will appear on the map.
 * Updated situm sdk dependency to 2.52.1
-* The selection is limited to make the route to the floor of the building
+* Changed the behaviour of long presses over the map. Now a marker is shown only if the long press is performed inside the bounds of the building.
 
 ### Fixed:
 * Fixed a bug detected in naviagation mode when the user goes outside the route. In previous versions while the user 
