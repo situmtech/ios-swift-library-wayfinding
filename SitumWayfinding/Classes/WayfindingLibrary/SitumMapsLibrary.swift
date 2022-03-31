@@ -287,6 +287,17 @@ extension SitumMapsLibrary {
     internal func obtainGMSMapView()->GMSMapView?{
         let camera = GMSCameraPosition.camera(withLatitude: -33.86, longitude: 151.20, zoom: 6.0)
         let mapView = GMSMapView.map(withFrame: CGRect.zero, camera: camera)
+        
+        do {
+            if let styleURL = SitumMapsLibrary.bundle.url(forResource: "situm_google_maps_style", withExtension: "json") {
+                mapView.mapStyle = try GMSMapStyle(contentsOfFileURL: styleURL)
+            } else {
+                NSLog("Unable to find situm_google_maps_style.json")
+            }
+        } catch {
+            NSLog("One or more of the map styles failed to load. \(error)")
+        }
+        
         return mapView
     }
     

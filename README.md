@@ -9,6 +9,11 @@
 
 Situm Wayfinding Module written in Swift for iOS devices has been designed to create indoor location applications in the simplest way. It has been built in the top of the Situm SDK and allows users to position in a building, see its floors, see the building POIs (Point Of Interest), create routes to any point of the building, receive instructions to reach a place and more. If you are interested in building applications using the Situm SDK, please refer to [Situm iOS SDK Sample app](https://github.com/situmtech/situm-ios-swift-getting-started).
 
+## Submitting Contributions
+
+You will need to sign a Contributor License Agreement (CLA) before making a submission. 
+[Learn more here.](https://situm.com/contributions/)
+
 ## Disclaimer
 
 This code is in alpha release. Modifying SitumWayfinding code is not recommended at this stage. To work with SitumWayfinding use the offered public methods.
