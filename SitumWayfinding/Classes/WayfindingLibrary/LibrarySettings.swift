@@ -33,7 +33,7 @@ import GoogleMaps
     private (set) var useRemoteConfig: Bool = false
     
     /// Boolean that configure if the name of the POIs is shown above its icons when painting them on the map
-    private (set) var showPoiNames: Bool? = true
+    private (set) var showPoiNames: Bool? = false
     
     // private(set) var orgDetails: OrganizationTheme?
     private override init() {
