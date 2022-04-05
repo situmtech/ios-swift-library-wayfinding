@@ -1,2 +1,2 @@
 ### Changed:
-* Updated route parameters to adjust interior navigation.
+* Adjusted navigation parameters to improve navigatin experience
