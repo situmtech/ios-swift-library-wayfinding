@@ -16,7 +16,6 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
     var buildingInfo: SITBuildingInfo
     var interceptorsManager: InterceptorsManager
     
-    var useFakeLocations: Bool = false
     var isSystemWaitingToStartRoute: Bool = false
     /* User location would be:
     1. When not in navigation -> Location updated by SITLocationManager in delegate call
@@ -31,7 +30,7 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
     var point: SITPoint? = nil
     var directionsRequest: SITDirectionsRequest? = nil
     var route: SITRoute? = nil
-    var locationManager: SITLocationManager = SITLocationManager.sharedInstance()
+    var locationManager: WYFLocationManager = LocationManagerCreator.locationManager()
     
     var useRemoteConfig: Bool = false
 
@@ -47,17 +46,7 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
     }
     
     func initializeLocationManagers() {
-        #if DEBUG
-        self.useFakeLocations = UserDefaultsWrapper.getUseFakeLocations()
-        if (self.useFakeLocations) {
-//            self.locationManager = SITFakeLocationManager.sharedInstance()
-        } else {
-            self.locationManager = SITLocationManager.sharedInstance()
-        }
-        #else
-        self.locationManager = SITLocationManager.sharedInstance()
-        #endif
-        self.locationManager.delegate = self
+        locationManager.delegate = self
     }
     
     func requestLocationUpdates() {
@@ -79,14 +68,6 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
 
     func resetLastOutsideRouteAlert() {
         self.lastOutsideRouteAlert = 0.0
-    }
-    
-    public func shouldShowFakeLocSelector() -> Bool {
-        #if DEBUG
-        return self.useFakeLocations
-        #else
-        return false
-        #endif
     }
     
     func hasAlertPresentationDateExpired(type: AlertType) -> Bool {
@@ -154,62 +135,9 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
         self.updateLastAlertVisibleDate(type: alertType)
     }
     
-    public func fakeLocationPressed(coordinate: CLLocationCoordinate2D, floorId: String) {
-        if (!useFakeLocations) {
-            return
-        }
-        let building = buildingInfo.building
-        let converter: SITCoordinateConverter = SITCoordinateConverter(dimensions: building.dimensions(), center: building.center(), rotation: building.rotation)
-        
-        let cartesianCoordinate: SITCartesianCoordinate? = converter.toCartesianCoordinate(coordinate)
-        
-        point = SITPoint(coordinate: coordinate, buildingIdentifier: building.identifier, floorIdentifier: floorId, cartesianCoordinate: cartesianCoordinate!)
-        
-        view?.showFakeLocationsAlert()
-        
-        if let x = cartesianCoordinate?.x, let y = cartesianCoordinate?.y {
-            Logger.logInfoMessage("Fake location pressed at \(x), \(y)")
-        }
-    }
-    
-    public func fakeLocOptionSelected(atIndex index: Int) {
-        // Entering this if means we are creating a custom marker instead of a fake location
-        if(index == 5) {
-            if let point = self.point{
-                self.view?.createAndShowCustomMarkerIfOutsideRoute(atCoordinate: point.coordinate(), atFloor: point.floorIdentifier)
-            }
-        } else {
-            self.createFakeLocation(index: index)
-        }
-    }
-    
-    public func createFakeLocation(index: Int) {
-        if (!self.useFakeLocations) {
-            return
-        }
-        if let point = self.point {
-            let angle: SITAngle = {
-                switch(index) {
-                case 2:
-                    return AngleType.angleRight.toSITAngle()
-                case 3:
-                    return AngleType.anglePlain.toSITAngle()
-                case 4:
-                    return AngleType.angleConcave.toSITAngle()
-                default:
-                    return AngleType.angleZero.toSITAngle()
-                }
-            }()
-            
-            
-            
-            let building = buildingInfo.building
-            let converter = SITCoordinateConverter(dimensions: building.dimensions(), center: building.center(), rotation: building.rotation)
-            let location = SITLocation(timestamp: Date().timeIntervalSince1970, position: point, bearing: angle.degrees() + 90, cartesianBearing: (converter.toCartesianAngle(angle).radians()), quality: .sitHigh, accuracy: 5, provider: "Fake")
-            
-//            SITFakeLocationManager.sharedInstance().update(with: location)
-            
-        }
+    public func longTapPressed(coordinate: CLLocationCoordinate2D, floorId: String) {
+        locationManager.longPress(presenter: self, coordinate: coordinate, buildingInfo: buildingInfo,
+            floorId: floorId)
     }
     
     func centerViewInUserLocation() {
@@ -334,7 +262,7 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
         }
     }
     
-    //Mark LocationDelegate methods
+    // MARK: LocationDelegate methods SITLocationDelegate
     
     func locationManager(_ locationManager: SITLocationInterface, didUpdateRangedBeacons numberOfRangedBeacons: Int) {
         view?.showNumberOfBeaconsRanged(text: numberOfRangedBeacons)
@@ -413,10 +341,10 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
         Logger.logDebugMessage("Location manager updates state: \(stateName)")
     }
 
-    //MARK: DirectionsDelegate methods
+    // MARK: DirectionsDelegate methods
     
     func directionsManager(_ manager: SITDirectionsInterface, didFailProcessingRequest request: SITDirectionsRequest, withError error: Error?) {
-        Logger.logErrorMessage("directions request failed with error: \(error.debugDescription)");
+        Logger.logErrorMessage("Directions request failed with error: \(error.debugDescription)");
         self.view?.stopNavigation(status: .error(NavigationError.unableToComputeRoute))
     }
     
@@ -452,16 +380,17 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
     }
     
     func navigationManager(_ navigationManager: SITNavigationInterface, userOutsideRoute route: SITRoute) {
-        Logger.logDebugMessage("user outside route detected: \(route.debugDescription)");
+        Logger.logDebugMessage("User outside route detected: \(route.debugDescription)");
         
         if isUserIndoor() {
             if let lastLocation = lastPositioningLocation {
                 view?.updateUI(with: lastLocation)
             }
-            let outsideRouteAlertTitle = NSLocalizedString("positioning.outsideRoute.alert.title",
-                bundle: SitumMapsLibrary.bundle,
-                comment: "Alert title to show user is outside of route")
-            showAlertIfNeeded(type: .outsideRoute, title: outsideRouteAlertTitle, message: "")
+
+            SITNavigationManager.shared().removeUpdates()
+            userLocation = lastPositioningLocation
+            requestDirections(to: point)
+            
         } else {
             view?.stopNavigation(status: .error(NavigationError.outsideBuilding))
         }

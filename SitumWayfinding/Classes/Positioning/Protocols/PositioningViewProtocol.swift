@@ -21,7 +21,7 @@ protocol PositioningView {
     
     func showAlertMessage(title: String, message: String, alertType:AlertType)
     
-    func showFakeLocationsAlert()
+    func present(viewController: UIViewController)
     
     func showRoute(route: SITRoute)
     

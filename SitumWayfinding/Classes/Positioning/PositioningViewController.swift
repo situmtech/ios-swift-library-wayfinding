@@ -85,13 +85,6 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     let DEFAULT_SITUM_COLOR = "#283380"
     let DEFAULT_POI_NAME: String = "POI"
     let DEFAULT_BUILDING_NAME: String = "Current Building"
-    let fakeLocationsOptions = [
-        "0º",
-        "90º",
-        "180º",
-        "270º",
-        NSLocalizedString("positioning.createMarker", bundle: SitumMapsLibrary.bundle, comment: "")
-    ]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -732,36 +725,14 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     }
     
     func mapView(_ mapView: GMSMapView, didLongPressAt coordinate: CLLocationCoordinate2D) {
-        if (self.presenter?.shouldShowFakeLocSelector() ?? false) {
-            presenter?.fakeLocationPressed(coordinate: coordinate, floorId: orderedFloors(buildingInfo: buildingInfo)![selectedLevelIndex].identifier)
-        } else {
-            deselect(marker: lastSelectedMarker)
-            self.createAndShowCustomMarkerIfOutsideRoute(atCoordinate: coordinate, atFloor: orderedFloors(buildingInfo: buildingInfo)![selectedLevelIndex].identifier)
-        }
+        deselect(marker: lastSelectedMarker)
+        presenter?.longTapPressed(coordinate: coordinate,
+            floorId: orderedFloors(buildingInfo: buildingInfo)![selectedLevelIndex].identifier
+        )
     }
     
-    func showFakeLocationsAlert() {
-        let title = NSLocalizedString("positioning.longPressAction.alert.title",
-            bundle: SitumMapsLibrary.bundle,
-            comment: "Alert title to show for a long press action")
-        let message = NSLocalizedString("positioning.longPressAction.alert.message",
-            bundle: SitumMapsLibrary.bundle,
-            comment: "Alert message to show for a long press action")
-        let cancel = NSLocalizedString("generic.cancel",
-            bundle: SitumMapsLibrary.bundle,
-            comment: "Generic cancel action ")
-        
-        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: cancel, style: .default, handler: { _ in
-            self.presenter?.alertViewClosed(.otherAlert)
-        }))
-        for (buttonIndex, text) in fakeLocationsOptions.enumerated() {
-            alert.addAction(UIAlertAction(title: text, style: .default, handler: { _ in
-                self.presenter?.fakeLocOptionSelected(atIndex: buttonIndex)
-            }))
-        }
-        
-        self.present(alert, animated: true, completion: nil)
+    func present(viewController: UIViewController) {
+        present(viewController, animated: true, completion: nil)
     }
     
     func mapViewSnapshotReady(_ mapView: GMSMapView) {
@@ -899,10 +870,12 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     
     func showRoute(route: SITRoute) {
         self.changeNavigationButtonVisibility(isVisible: false)
-        let floorIdentifier: String = self.getFloorIdFromMarker(marker: self.destinationMarker!)
-        self.showPois(visible: false)
-        if floorIdentifier == orderedFloors(buildingInfo: buildingInfo)?[self.selectedLevelIndex].identifier {
-            self.destinationMarker?.setMapView(mapView: self.mapView)
+        if let destinationMarker = destinationMarker {
+            let floorIdentifier: String = self.getFloorIdFromMarker(marker: destinationMarker)
+            self.showPois(visible: false)
+            if floorIdentifier == orderedFloors(buildingInfo: buildingInfo)?[self.selectedLevelIndex].identifier {
+                self.destinationMarker?.setMapView(mapView: self.mapView)
+            }
         }
     }
     

@@ -39,8 +39,13 @@ class UserDefaultsWrapper {
         return UserDefaults.standard.bool(forKey: "single_building_mode")
     }
     
+    /** Return true if app should use fake locations, false if situm positioning is used */
     static func getUseFakeLocations() -> Bool {
         return UserDefaults.standard.bool(forKey: "fake_locations")
+    }
+    
+    static func setUseFakeLocations(useFakeLocation: Bool) {
+        UserDefaults.standard.set(useFakeLocation, forKey: "fake_locations")
     }
     
     static func getInterval() -> Int {

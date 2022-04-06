@@ -1,4 +1,8 @@
 
+### Added:
+* Add feature that allows WayFinding, if user goes outside route (but still in building), to recalculate the route from 
+the actual user location
+
 ### Changed:
 * Navigation UI has been redesigned with aesthetic improvements and better and more clear information about the route
 * Changes in GoogleMaps styles to adjust the colors and lightness of some cartographic elements.
@@ -7,5 +11,5 @@
 * Updated situm sdk dependency to 2.52.1
 
 ### Fixed:
-* Fixed a bug detected in naviagation mode when the user goes outside the route. In previous versions while the user 
+* Fixed a bug detected in navigation mode when the user goes outside the route. In previous versions while the user 
 was outside the route the user location was not updated.
