@@ -187,10 +187,6 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     func displayElementsNavBar() {
         navbar.topItem?.title = ""
         
-        if (!self.showSearchBar() && !self.showBackButton()) {
-            self.hiddenNavBar()
-        }
-        
         if (self.showSearchBar()) {
             initSearchController()
         }
@@ -258,11 +254,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         hideCenterButton()
         initializeLevelIndicator()
         initializeNavigationButton()
-        
-        if (self.showBackButton() || self.showSearchBar()) {
-            initializeInfoBar()
-        }
-        
+        initializeInfoBar()
         numberBeaconsRangedView.isHidden = true
     }
     
@@ -341,7 +333,14 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     }
     
     func initializeInfoBar() {
-        self.showPositioningUI()
+        if (self.showBackButton() || self.showSearchBar()) {
+            self.showPositioningUI()
+        }
+        
+        if (!self.showSearchBar() && !self.showBackButton()) {
+            self.hiddenNavBar()
+        }
+        
         self.containerInfoBarMap?.setLabels(primary: self.buildingName)
         if organizationTheme?.logo != nil {
             // Bring the image and save it on cache
