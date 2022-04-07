@@ -36,7 +36,7 @@ import GoogleMaps
     private (set) var showPoiNames: Bool? = false
     
     /// Boolean that hides the pois finder in the navbar
-    private (set) var showSearchBar: Bool? = false
+    private (set) var showSearchBar: Bool? = true
     
     /// Boolean that hides the back button in the navBar
     private (set) var showBackButton: Bool? = false
