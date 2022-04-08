@@ -110,6 +110,21 @@ fileprivate class FakeLocationManager: NSObject, WYFLocationManager {
                 self?.update(with: location)
             }))
         }
+        
+        alert.addAction(UIAlertAction(title: "Outside building", style: .default) { [weak self] _ in
+            let point = SITPoint(wihtCoordinate: coordinate)
+            let angle = SITAngle(degrees: 90)!
+            let location = SITLocation(
+                timestamp: Date().timeIntervalSince1970,
+                position: point,
+                bearing: angle.degrees() + 90,
+                cartesianBearing: (converter.toCartesianAngle(angle).radians()),
+                quality: .sitHigh,
+                accuracy: 5,
+                provider: "Fake"
+            )
+            self?.update(with: location)
+        })
     
         let markerTitle = NSLocalizedString("positioning.createMarker", bundle: SitumMapsLibrary.bundle, comment: "")
         alert.addAction(UIAlertAction(title: markerTitle, style: .default) { _ in
