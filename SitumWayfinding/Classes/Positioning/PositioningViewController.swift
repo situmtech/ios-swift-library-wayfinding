@@ -726,9 +726,15 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     
     func mapView(_ mapView: GMSMapView, didLongPressAt coordinate: CLLocationCoordinate2D) {
         deselect(marker: lastSelectedMarker)
-        presenter?.longTapPressed(coordinate: coordinate,
-            floorId: orderedFloors(buildingInfo: buildingInfo)![selectedLevelIndex].identifier
-        )
+        if let info = buildingInfo {
+            presenter?.longPress(
+                at: coordinate,
+                in: info,
+                floorId: orderedFloors(buildingInfo: info)![selectedLevelIndex].identifier
+            )
+        } else {
+            Logger.logErrorMessage("At this point buildinfInfo must be set")
+        }
     }
     
     func present(viewController: UIViewController) {

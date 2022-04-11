@@ -1,4 +1,4 @@
 
 ### Added:
-* Add feature that allows WayFinding, if user goes outside route (but still in building), to recalculate the route from 
-the actual user location
+* Now the route is recalculated when the user goes outside the route (but still in building). The new route is 
+recalculated from the actual user location
