@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 All non released changes should be in CHANGELOG_UNRELEASED.md file
 
 ---------
+## [0.4.0] - 2022-03-31
+
+### Changed:
+* Navigation UI has been redesigned with aesthetic improvements and better and more clear information about the route
+* Changes in GoogleMaps styles to adjust the colors and lightness of some cartographic elements.
+* Changes in GoogleMaps styles to hide GoogleMaps POI names.
+* Changed the behaviour of the module when setShowTextPois is not set. Now the default value is false so only the POI icons whithout its name will appear on the map.
+* Updated situm sdk dependency to 2.52.1
+* Changed the behaviour of long presses over the map. Now a marker is shown only if the long press is performed inside the bounds of the building.
+
+### Fixed:
+* Fixed a bug detected in naviagation mode when the user goes outside the route. In previous versions while the user 
+was outside the route the user location was not updated.
+
 ## [0.3.0] - 2022-03-14
 
 ### Added:
