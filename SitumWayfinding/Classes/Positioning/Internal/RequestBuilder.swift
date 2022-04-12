@@ -43,9 +43,9 @@ class RequestBuilder {
     
     class func buildNavigationRequest(route: SITRoute) -> SITNavigationRequest {
         let request: SITNavigationRequest = SITNavigationRequest(route: route)
-        request.indicationsInterval = 30
+        request.indicationsInterval = 30000
         request.roundIndicationsStep = 5
-        request.timeToFirstIndication = 5
+        request.timeToFirstIndication = 5000
         request.distanceToGoalThreshold = 5
         request.distanceToFloorChangeThreshold = 5
         request.distanceToChangeIndicationThreshold = 15
