@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 All non released changes should be in CHANGELOG_UNRELEASED.md file
 
 ---------
+## [0.5.0] - 2022-04-12
+
+### Changed:
+* Updated route parameters to adjust interior navigation.
+* Parameter to hide or show POI search engine
+* Parameter to hide or show back button
+
 ## [0.4.0] - 2022-03-31
 
 ### Changed:
