@@ -21,8 +21,6 @@ protocol PositioningView {
     
     func showAlertMessage(title: String, message: String, alertType:AlertType)
     
-    func present(viewController: UIViewController)
-    
     func showRoute(route: SITRoute)
     
     func updateProgress(progress: SITNavigationProgress)

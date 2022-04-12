@@ -46,8 +46,10 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
     }
     
     func initializeLocationManagers() {
-        // The default initialization is the simples case when we use SITLocationManager
-        // Here we use factory pattern to abstract the construction of location manager to create other managers
+        // In a normal use case, SITLocationManager will be the provider of user positions,
+        // however in WYF with debug purposes we allow the user to "fake" its location
+        // Here we use factory pattern to abstract the construction of this location provider. SITLocationManager
+        // or FakeLocationManager will be instantiated depending if the user want actual or fake positions
         #if DEBUG
         locationManager = LocationManagerFactory.createLocationManager()
         #endif
@@ -139,14 +141,6 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
 
     public func alertViewClosed(_ alertType:AlertType = .otherAlert) {
         self.updateLastAlertVisibleDate(type: alertType)
-    }
-    
-    func longPress(at coordinate: CLLocationCoordinate2D, in buildingInfo: SITBuildingInfo, floorId: String) {
-        if !LocationManagerFactory.isFake(object: locationManager) {
-            view?.createAndShowCustomMarkerIfOutsideRoute(atCoordinate: coordinate, atFloor: floorId)
-        } else {
-            presentUserWithFakeActions(coordinate: coordinate, floorId: floorId)
-        }
     }
     
     func centerViewInUserLocation() {
@@ -395,14 +389,16 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
             if let lastLocation = lastPositioningLocation {
                 view?.updateUI(with: lastLocation)
             }
-
-            SITNavigationManager.shared().removeUpdates()
-            userLocation = lastPositioningLocation
-            requestDirections(to: point)
-            
+            recalculateRoute()
         } else {
             view?.stopNavigation(status: .error(NavigationError.outsideBuilding))
         }
+    }
+    
+    private func recalculateRoute() {
+        SITNavigationManager.shared().removeUpdates()
+        userLocation = lastPositioningLocation
+        requestDirections(to: point)
     }
     
     func showAlertIfNeeded(type: AlertType, title: String, message: String){
@@ -420,87 +416,6 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
             }
         }
         return false
-    }
-    
-    // MARK: Fake location management
-    
-    private func presentUserWithFakeActions(coordinate: CLLocationCoordinate2D, floorId: String) {
-        let building = buildingInfo.building
-        let converter: SITCoordinateConverter = SITCoordinateConverter(
-            dimensions: building.dimensions(), center: building.center(), rotation: building.rotation)
-        let cartesianCoordinate: SITCartesianCoordinate? = converter.toCartesianCoordinate(coordinate)
-        let point = SITPoint(
-            coordinate: coordinate,
-            buildingIdentifier: building.identifier,
-            floorIdentifier: floorId,
-            cartesianCoordinate: cartesianCoordinate!
-        )
-        
-        let alert = createAlertForFakeActions()
-        
-        let fakeLocationsOptions: [AngleType] = [.angleZero, .angleRight, .anglePlain, .angleConcave]
-        for option in fakeLocationsOptions {
-            alert.addAction(UIAlertAction(title: "\(option.rawValue)º", style: .default, handler: { [weak self] _ in
-                let angle = option.toSITAngle()
-                let location = SITLocation(
-                    timestamp: Date().timeIntervalSince1970,
-                    position: point,
-                    bearing: angle.degrees() + 90,
-                    cartesianBearing: (converter.toCartesianAngle(angle).radians()),
-                    quality: .sitHigh,
-                    accuracy: 5,
-                    provider: "Fake"
-                )
-                self?.update(with: location)
-            }))
-        }
-        
-        alert.addAction(UIAlertAction(title: "Outside building", style: .default) { [weak self] _ in
-            let point = SITPoint(wihtCoordinate: coordinate)
-            let angle = SITAngle(degrees: 90)!
-            let location = SITLocation(
-                timestamp: Date().timeIntervalSince1970,
-                position: point,
-                bearing: angle.degrees() + 90,
-                cartesianBearing: (converter.toCartesianAngle(angle).radians()),
-                quality: .sitHigh,
-                accuracy: 5,
-                provider: "Fake"
-            )
-            self?.update(with: location)
-        })
-        
-        let markerTitle = NSLocalizedString("positioning.createMarker", bundle: SitumMapsLibrary.bundle, comment: "")
-        alert.addAction(UIAlertAction(title: markerTitle, style: .default) { [weak self] _ in
-            self?.view?.createAndShowCustomMarkerIfOutsideRoute(
-                atCoordinate: point.coordinate(), atFloor: point.floorIdentifier)
-        })
-        
-        view?.present(viewController: alert)
-        
-        if let x = cartesianCoordinate?.x, let y = cartesianCoordinate?.y {
-            Logger.logInfoMessage("Fake location pressed at \(x), \(y)")
-        }
-    }
-    
-    private func createAlertForFakeActions() -> UIAlertController {
-        let title = NSLocalizedString("positioning.longPressAction.alert.title",
-            bundle: SitumMapsLibrary.bundle,
-            comment: "Alert title to show for a long press action")
-        let message = NSLocalizedString("positioning.longPressAction.alert.message",
-            bundle: SitumMapsLibrary.bundle,
-            comment: "Alert message to show for a long press action")
-        let cancel = NSLocalizedString("generic.cancel",
-            bundle: SitumMapsLibrary.bundle,
-            comment: "Generic cancel action ")
-        
-        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: cancel, style: .default))
-        return alert
-    }
-    
-    private func update(with location: SITLocation) {
-        LocationManagerFactory.update(object: locationManager, with: location)
     }
 }
 

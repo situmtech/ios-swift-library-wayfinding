@@ -726,19 +726,45 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     
     func mapView(_ mapView: GMSMapView, didLongPressAt coordinate: CLLocationCoordinate2D) {
         deselect(marker: lastSelectedMarker)
-        if let info = buildingInfo {
-            presenter?.longPress(
-                at: coordinate,
-                in: info,
-                floorId: orderedFloors(buildingInfo: info)![selectedLevelIndex].identifier
-            )
+        guard let info = buildingInfo else {
+            Logger.logErrorMessage("At this moment buildingInfo must be set")
+            return
+        }
+        guard let manager = presenter?.locationManager else {
+            Logger.logErrorMessage("At this moment a manager should exist attached to the presenter instance")
+            return
+        }
+    
+        let floorId = orderedFloors(buildingInfo: info)![selectedLevelIndex].identifier
+        if !LocationManagerFactory.isFake(object: manager) {
+            longPressAction(coordinate: coordinate, floorId: floorId)
         } else {
-            Logger.logErrorMessage("At this point buildinfInfo must be set")
+            fakeLongPressAction(buildingInfo: info, locationManager: manager, coordinate: coordinate,
+                floorId: floorId)
         }
     }
     
-    func present(viewController: UIViewController) {
-        present(viewController, animated: true, completion: nil)
+    private func fakeLongPressAction(
+        buildingInfo: SITBuildingInfo,
+        locationManager: SITLocationInterface,
+        coordinate: CLLocationCoordinate2D,
+        floorId: String
+    ) {
+        let fakeUI = FakeLocationManagerUIBuilder(buildingInfo: buildingInfo, locationManager: locationManager)
+        let alert = fakeUI.createFakeActionsAlert(
+            coordinate: coordinate,
+            floorId: floorId,
+            defaultAction: { [weak self] point in
+                self?.longPressAction(coordinate: point.coordinate(), floorId: point.floorIdentifier)
+            })
+        present(alert, animated: true, completion: nil)
+    }
+    
+    private func longPressAction(coordinate: CLLocationCoordinate2D, floorId: String) {
+        createAndShowCustomMarkerIfOutsideRoute(
+            atCoordinate: coordinate,
+            atFloor: floorId
+        )
     }
     
     func mapViewSnapshotReady(_ mapView: GMSMapView) {

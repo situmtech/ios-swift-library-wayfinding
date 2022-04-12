@@ -41,7 +41,7 @@ class UserDefaultsWrapper {
     
     /** Return true if app should use fake locations, false if situm positioning is used */
     static func getUseFakeLocations() -> Bool {
-        return UserDefaults.standard.bool(forKey: "fake_locations")
+        return UserDefaults.standard.bool(forKey: "fake_locations") // false by default if value is absent
     }
     
     static func setUseFakeLocations(useFakeLocation: Bool) {
