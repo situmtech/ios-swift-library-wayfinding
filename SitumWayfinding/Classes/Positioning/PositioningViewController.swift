@@ -750,7 +750,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         coordinate: CLLocationCoordinate2D,
         floorId: String
     ) {
-        let fakeUI = FakeLocationManagerUIBuilder(buildingInfo: buildingInfo, locationManager: locationManager)
+        let fakeUI = FakeLocationUIBuilder(buildingInfo: buildingInfo, locationManager: locationManager)
         let alert = fakeUI.createFakeActionsAlert(
             coordinate: coordinate,
             floorId: floorId,

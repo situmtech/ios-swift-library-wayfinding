@@ -5,7 +5,7 @@
 import Foundation
 import SitumSDK
 
-class FakeLocationManagerUIBuilder {
+class FakeLocationUIBuilder {
     private var buildingInfo: SITBuildingInfo
     private var locationManager: SITLocationInterface
     
