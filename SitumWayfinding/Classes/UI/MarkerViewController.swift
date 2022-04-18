@@ -28,13 +28,24 @@ extension PositioningViewController {
         //TODO Extender para que sexa valido tamen para os custom markers
         if marker != lastSelectedMarker {
             deselect(marker: lastSelectedMarker)
+            
+            if let lastMarker = lastSelectedMarker {
+                loadIcon(selected: false, poi: lastMarker.poi!, map: false, marker: lastMarker.gmsMarker)
+            }
         }
+        
+        loadIcon(selected: true, poi: marker.poi!, map: false, marker: marker.gmsMarker)
+        
         CATransaction.begin()
         CATransaction.setValue(0.5, forKey: kCATransactionAnimationDuration)
         CATransaction.setCompletionBlock({
-            self.mapView.selectedMarker = marker.gmsMarker
+            // self.mapView.selectedMarker = marker.gmsMarker // tooltip sobre POI
             if marker.isPoiMarker() {
                 self.poiMarkerWasSelected(poiMarker: marker)
+                
+                
+               
+                
             }
             self.lastSelectedMarker = marker
             success()
@@ -188,21 +199,12 @@ extension PositioningViewController {
         }
     }
     
-    func createMarker(withPOI poi: SITPOI) -> GMSMarker? {
+    func createMarker(withPOI poi: SITPOI, selected: Bool = false) -> GMSMarker? {
         let coordinate = poi.position().coordinate()
         let poiMarker = GMSMarker(position: coordinate)
         poiMarker.title = poi.name
         poiMarker.userData = poi
-        iconsStore.obtainIconFor(category: poi.category) { item in
-            if let icon = item {
-                let color = UIColor(hex: "#5b5b5bff") ?? UIColor.gray
-                let title = poi.name.uppercased()
-                poiMarker.icon = self.showPoiNames() ?
-                icon.setTitle(title: title, size: 12.0, color: color, weight: .semibold) :
-                icon
-            }
-            poiMarker.map = self.mapView
-        }
+        loadIcon(selected: false, poi: poi, map: true, marker: poiMarker)
         return poiMarker
     }
     
@@ -225,5 +227,21 @@ extension PositioningViewController {
         }
         
         return false
+    }
+    
+    func loadIcon(selected: Bool, poi: SITPOI, map: Bool, marker: GMSMarker) {
+        iconsStore.obtainIconFor(category: poi.category) { items in
+            if let icon = selected ? items?[1] : items?[0] {
+                let color = UIColor(hex: "#5b5b5bff") ?? UIColor.gray
+                let title = poi.name.uppercased()
+                marker.icon = self.showPoiNames() ?
+                icon.setTitle(title: title, size: 12.0, color: color, weight: .semibold) :
+                icon
+            }
+            
+            if map {
+                marker.map = self.mapView
+            }
+        }
     }
 }
