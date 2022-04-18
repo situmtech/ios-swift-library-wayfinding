@@ -28,10 +28,6 @@ extension PositioningViewController {
         //TODO Extender para que sexa valido tamen para os custom markers
         if marker != lastSelectedMarker {
             deselect(marker: lastSelectedMarker)
-            
-            if let lastMarker = lastSelectedMarker {
-                loadIcon(selected: false, poi: lastMarker.poi!, map: false, marker: lastMarker.gmsMarker)
-            }
         }
         
         loadIcon(selected: true, poi: marker.poi!, map: false, marker: marker.gmsMarker)
@@ -42,10 +38,6 @@ extension PositioningViewController {
             // self.mapView.selectedMarker = marker.gmsMarker // tooltip sobre POI
             if marker.isPoiMarker() {
                 self.poiMarkerWasSelected(poiMarker: marker)
-                
-                
-               
-                
             }
             self.lastSelectedMarker = marker
             success()
@@ -62,6 +54,7 @@ extension PositioningViewController {
         self.lastSelectedMarker = nil
         if let umarker = marker, umarker.isPoiMarker() {
             poiMarkerWasDeselected(poiMarker: umarker)
+            loadIcon(selected: false, poi: umarker.poi!, map: false, marker: umarker.gmsMarker)
         }
     }
     
