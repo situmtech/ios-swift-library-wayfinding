@@ -1051,10 +1051,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         }
         return color
     }
-}
-
-
-extension PositioningViewController {
+    
     //MARK: POI Selection
     //Programatic POI selection, a POI can also be selected by the user tapping on it in the  phone screen
     func select(poi: SITPOI) throws {
@@ -1291,5 +1288,3 @@ extension PositioningViewController {
         }
     }
 }
-
-
