@@ -396,6 +396,7 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
     }
     
     private func recalculateRoute() {
+        view?.routeWillRecalculate()
         SITNavigationManager.shared().removeUpdates()
         userLocation = lastPositioningLocation
         requestDirections(to: point)

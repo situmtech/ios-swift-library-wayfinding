@@ -25,6 +25,8 @@ protocol PositioningView {
     
     func updateProgress(progress: SITNavigationProgress)
     
+    func routeWillRecalculate()
+    
     func stopNavigation(status: NavigationStatus)
     
     func reloadFloorPlansTableViewData()

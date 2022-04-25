@@ -81,6 +81,8 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     var searchResultViewConstraints: [NSLayoutConstraint]?
     // readiness of map
     private var mapReadinessChecker: SitumMapReadinessChecker!
+    // hold reference of fake ui builder to avoid premature release
+    private var fakeUI: FakeLocationUIBuilder?
     // Constants
     let DEFAULT_SITUM_COLOR = "#283380"
     let DEFAULT_POI_NAME: String = "POI"
@@ -750,8 +752,8 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         coordinate: CLLocationCoordinate2D,
         floorId: String
     ) {
-        let fakeUI = FakeLocationUIBuilder(buildingInfo: buildingInfo, locationManager: locationManager)
-        let alert = fakeUI.createFakeActionsAlert(
+        fakeUI = FakeLocationUIBuilder(buildingInfo: buildingInfo, locationManager: locationManager)
+        let alert = fakeUI!.createFakeActionsAlert(
             coordinate: coordinate,
             floorId: floorId,
             defaultAction: { [weak self] point in
@@ -951,6 +953,11 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     // MARK: SitumMapsLibrary methods
     func getGoogleMap() -> GMSMapView? {
         return self.mapView
+    }
+    
+    func routeWillRecalculate() {
+        containerInfoBarNavigation?.setLoadingState()
+        indicationsViewController?.setLoadingState()
     }
     
     //MARK: Helper methods
@@ -1245,7 +1252,7 @@ extension PositioningViewController {
         self.infoBarNavigation.isHidden = false
         self.indicationsView.isHidden = false
         self.navbar.isHidden = true
-        containerInfoBarNavigation?.initializeProgress()
+        containerInfoBarNavigation?.setLoadingState()
     }
 }
 

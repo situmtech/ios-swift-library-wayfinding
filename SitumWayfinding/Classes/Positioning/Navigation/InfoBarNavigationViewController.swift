@@ -40,10 +40,20 @@ class InfoBarNavigationViewController: UIViewController {
         self.estimatedTimeImage.image = UIImage(named: "situm_clock_time",
             in: SitumMapsLibrary.bundle, compatibleWith: nil)
         
-        initializeProgress()
+        setLoadingState()
     }
     
-    func initializeProgress() {
+    func setProgress(progress: SITNavigationProgress) {
+        if progress.currentIndication.action == .sitCalculating {
+            self.setLoadingState()
+        } else {
+            self.timeRemainingLabel.text = self.formatTime(time: progress.timeToGoal)
+            self.distanceRemainingLabel.text = self.formatDistance(distance: progress.timeToGoal)
+            self.estimatedTimeLabel.text = self.calculateEstimatedTime(timeToGoal: progress.timeToGoal)
+        }
+    }
+    
+    func setLoadingState() {
         timeRemainingLabel.text = NSLocalizedString("navigation.loadingRoute",
             bundle: SitumMapsLibrary.bundle, comment: "")
         distanceRemainingLabel.text = "-"
@@ -60,12 +70,6 @@ class InfoBarNavigationViewController: UIViewController {
     
     func setLogo(image: UIImage?) {
         logoImage.image = image
-    }
-    
-    func setProgress(progress: SITNavigationProgress) {
-        self.timeRemainingLabel.text = self.formatTime(time: progress.timeToGoal)
-        self.distanceRemainingLabel.text = self.formatDistance(distance: progress.timeToGoal)
-        self.estimatedTimeLabel.text = self.calculateEstimatedTime(timeToGoal: progress.timeToGoal)
     }
     
     private func formatTime(time: Float) -> String {
