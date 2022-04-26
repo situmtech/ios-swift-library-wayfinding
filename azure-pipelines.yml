@@ -24,7 +24,7 @@ resources:
     name: situm/sys-kubernetes-templates.git
 
 pool:
-  vmImage: 'macOS-10.15'
+  vmImage: 'macOS-11'
 
 steps:
 
