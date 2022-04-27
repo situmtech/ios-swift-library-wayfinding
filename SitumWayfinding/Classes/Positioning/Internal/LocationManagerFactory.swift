@@ -48,11 +48,12 @@ fileprivate class FakeLocationManager: NSObject, SITLocationInterface {
     
     private var location: SITLocation?
     private var timer: Timer?
+    private var innerState: SITLocationState = .started
     
     func update(with location: SITLocation) {
         self.location = location
         
-        if timer == nil {
+        if innerState == .started && timer == nil  {
             timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] timer in
                 if let instance = self, let location = instance.location {
                     instance.delegate?.locationManager(instance, didUpdate: location)
@@ -68,11 +69,7 @@ fileprivate class FakeLocationManager: NSObject, SITLocationInterface {
     func requestLocationUpdates(_ request: SITLocationRequest?) {}
     
     func state() -> SITLocationState {
-        if timer == nil {
-            return .stopped
-        } else {
-            return .started
-        }
+        return innerState
     }
     
     func updateLocationParameters(_ update: SITLocationParametersUpdate) {}
@@ -82,6 +79,7 @@ fileprivate class FakeLocationManager: NSObject, SITLocationInterface {
     }
     
     private func removeTimer() {
+        innerState = .stopped
         timer?.invalidate()
         timer = nil
     }
