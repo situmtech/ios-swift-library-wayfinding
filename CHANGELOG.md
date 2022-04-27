@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 All non released changes should be in CHANGELOG_UNRELEASED.md file
 
 ---------
+## [0.5.0] - 2022-04-12
+
+### Changed:
+* Adjusted navigation parameters to improve navigatin experience
+* Added method setShowSearchBar to LibrarySettings Builder. This method allows to hide or show the POI search bar
+* Added method setShowBackButton to LibrarySettings Builder. This method allows to hide or show the navigation back button
+
 ## [0.4.0] - 2022-03-31
 
 ### Changed:

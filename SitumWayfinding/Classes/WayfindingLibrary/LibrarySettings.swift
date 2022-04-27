@@ -35,6 +35,12 @@ import GoogleMaps
     /// Boolean that configure if the name of the POIs is shown above its icons when painting them on the map
     private (set) var showPoiNames: Bool? = false
     
+    /// Boolean that hides the pois finder in the navbar
+    private (set) var showSearchBar: Bool? = true
+    
+    /// Boolean that hides the back button in the navBar
+    private (set) var showBackButton: Bool? = false
+    
     // private(set) var orgDetails: OrganizationTheme?
     private override init() {
 
@@ -111,6 +117,20 @@ import GoogleMaps
             instance.showPoiNames = showPoiNames
             return self
         }
+        
+        /// Sets whether the POI finder is visible
+        @discardableResult
+        @objc public func setShowSearchBar(showSearchBar: Bool) -> Builder {
+            instance.showSearchBar = showSearchBar
+            return self
+        }
+        
+        /// Sets whether the back button is visible
+        @discardableResult
+        @objc public func setShowBackButton(showBackButton: Bool) -> Builder {
+            instance.showBackButton = showBackButton
+            return self
+        }
 
         /// Returns an instance of LibrarySettings
         @objc public func build() -> LibrarySettings {
@@ -151,6 +171,8 @@ import GoogleMaps
             }
 
             builderCopy.setShowPoiNames(showPoiNames: settings.showPoiNames ?? false)
+            
+            builderCopy.setShowSearchBar(showSearchBar: settings.showSearchBar ?? false)
 
             return builderCopy
         }

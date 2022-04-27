@@ -36,16 +36,20 @@ class RequestBuilder {
         let myLocation = SITLocation(timestamp: userLocation.timestamp, position: origin, bearing: userLocation.bearing.degrees(), cartesianBearing: userLocation.cartesianBearing.radians(), quality: userLocation.quality, accuracy: userLocation.accuracy, provider: userLocation.provider)        
         let request: SITDirectionsRequest = SITDirectionsRequest(location: myLocation, withDestination: destination)
         request.setAccessibility(UserDefaultsWrapper.getAccessibilityMode())
+        request.setMinimizeFloorChanges(true)
         
         return request        
     }
     
     class func buildNavigationRequest(route: SITRoute) -> SITNavigationRequest {
         let request: SITNavigationRequest = SITNavigationRequest(route: route)
+        request.indicationsInterval = 30000
+        request.roundIndicationsStep = 5
+        request.timeToFirstIndication = 5000
         request.distanceToGoalThreshold = 5
         request.distanceToFloorChangeThreshold = 5
-        request.distanceToChangeIndicationThreshold = 5
-        request.timeToIgnoreUnexpectedFloorChanges = 100000
+        request.distanceToChangeIndicationThreshold = 15
+        request.timeToIgnoreUnexpectedFloorChanges = 200000 // milisegundos
         return request
     }
 }
