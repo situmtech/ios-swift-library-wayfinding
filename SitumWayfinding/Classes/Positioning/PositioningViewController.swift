@@ -914,7 +914,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     }
     
     func updateProgress(progress: SITNavigationProgress) {
-        self.containerInfoBarNavigation?.setProgress(progress: progress)
+        self.containerInfoBarNavigation?.updateProgress(progress: progress)
         self.indicationsViewController?.setInstructions(progress: progress, destination: destinationString)
         
         // Update route based on this information
@@ -957,7 +957,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     
     func routeWillRecalculate() {
         containerInfoBarNavigation?.setLoadingState()
-        indicationsViewController?.setLoadingState()
+        indicationsViewController?.showNavigationLoading()
     }
     
     //MARK: Helper methods

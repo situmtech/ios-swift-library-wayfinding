@@ -43,7 +43,7 @@ class InfoBarNavigationViewController: UIViewController {
         setLoadingState()
     }
     
-    func setProgress(progress: SITNavigationProgress) {
+    func updateProgress(progress: SITNavigationProgress) {
         if progress.currentIndication.action == .sitCalculating {
             self.setLoadingState()
         } else {
