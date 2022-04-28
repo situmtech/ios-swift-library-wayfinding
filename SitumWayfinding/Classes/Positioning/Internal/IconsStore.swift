@@ -20,9 +20,13 @@ class IconsStore {
             completion(poiCategoryIcons[category.code]!)
         } else {
             DispatchQueue.main.async(execute: {
-                self.obtainIcon(category: category, selected: false) { iconUnselected in
-                    self.obtainIcon(category: category, selected: true) { iconSelected in
-                        completion([iconUnselected, iconSelected])
+                self.obtainIcon(category: category, selected: false) { itemUnselected in
+                    if let iconUnselected = itemUnselected {
+                        self.obtainIcon(category: category, selected: true) { itemSelected in
+                            if let iconSelected = itemSelected {
+                                completion([iconUnselected, iconSelected])
+                            }
+                        }
                     }
                 }
             })

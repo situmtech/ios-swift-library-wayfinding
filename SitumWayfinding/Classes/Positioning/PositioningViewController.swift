@@ -264,13 +264,13 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     
     func initializeIcons() {
         let bundle = Bundle(for: type(of: self))
-        var userLocIconName = getIconNameOrDefault(iconName: library?.settings?.userPositionIcon, defaultIconName: "swf_location")
-        var userLocArrowIconName = getIconNameOrDefault(iconName: library?.settings?.userPositionArrowIcon, defaultIconName: "swf_location_pointer")
+        let userLocIconName = getIconNameOrDefault(iconName: library?.settings?.userPositionIcon, defaultIconName: "swf_location")
+        let userLocArrowIconName = getIconNameOrDefault(iconName: library?.settings?.userPositionArrowIcon, defaultIconName: "swf_location_pointer")
 
-        if var locationPointer = UIImage(named: userLocArrowIconName, in: bundle, compatibleWith: nil),
+        if let locationPointer = UIImage(named: userLocArrowIconName, in: bundle, compatibleWith: nil),
            let locationOutdoorPointer = UIImage(named: "swf_location_outdoor_pointer", in: bundle, compatibleWith: nil),
-           var location = UIImage(named: userLocIconName, in: bundle, compatibleWith: nil),
-           var radius = UIImage(named: "swf_radius", in: bundle, compatibleWith: nil) {
+           let location = UIImage(named: userLocIconName, in: bundle, compatibleWith: nil),
+           let radius = UIImage(named: "swf_radius", in: bundle, compatibleWith: nil) {
 
             userMarkerIcons = [
                 "swf_location_pointer" : locationPointer,
@@ -1281,7 +1281,7 @@ extension PositioningViewController {
                 let color = UIColor(hex: "#5b5b5bff") ?? UIColor.gray
                 let title = poi.name.uppercased()
                 marker.icon = self.showPoiNames() ?
-                icon.setTitle(title: title, size: 12.0, color: color, weight: .semibold) :
+                icon.addTextToImage(title: title, size: 12.0, color: color, weight: .semibold) :
                 icon
             }
             

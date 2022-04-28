@@ -1,6 +1,44 @@
 import Foundation
 
 extension UIImage {
+    func addTextToImage(title: String, size: CGFloat, color: UIColor, weight: UIFont.Weight) -> UIImage? {
+        let textFont = UIFont.systemFont(ofSize: size, weight: weight)
+            let textFontAttributes: [NSAttributedString.Key : Any] = [
+                .font: textFont,
+                .foregroundColor: color,
+                .backgroundColor: UIColor.white
+            ]
+            
+       
+            
+            let textSize = title.size(withAttributes: [NSAttributedString.Key.font:textFont])
+        
+        let sizeImagenContext = CGSize(
+            width: textSize.width > self.size.width ? textSize.width : self.size.width,
+            height: self.size.height + 30
+        )
+        UIGraphicsBeginImageContextWithOptions(sizeImagenContext, false, UIScreen.main.scale)
+            
+            self.draw(in: CGRect(x: 0, y: 10, width: self.size.width, height: self.size.height))
+            
+            let drawingBounds = CGRect(x: 0, y: 0, width: self.size.width, height: self.size.height)
+                
+            
+            let textRect = CGRect(
+                x: drawingBounds.size.width/2 - textSize.width/2,
+                y: 0,
+                width: textSize.width,
+                height: textSize.height
+            )
+            
+            title.draw(in: textRect, withAttributes: textFontAttributes)
+                
+            let newImag = UIGraphicsGetImageFromCurrentImageContext()
+            UIGraphicsEndImageContext()
+                
+            return newImag
+        }
+    
     func setTitle(title: String, size: CGFloat, color: UIColor, weight: UIFont.Weight) -> UIImage {
         let subView = UIView()
         
