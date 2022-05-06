@@ -244,7 +244,30 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         
         let camera = GMSCameraPosition.camera(withLatitude: latitude, longitude: longitude, zoom: zoom)
         mapView.camera = camera
+        
+        // self.limitMapToThisBuilding()
     }
+    
+    func limitMapToThisBuilding() {
+        mapView.setMinZoom(11, maxZoom: 14)
+    }
+    
+    /*
+     @Override
+     public void limitMapToThisBuilding(@Nullable BuildingDisplay buildingDisplay) {
+       if (mMap == null) {
+         return;
+       }
+       mMap.resetMinMaxZoomPreference();
+       mMap.setLatLngBoundsForCameraTarget(null);
+       if (buildingDisplay != null) {
+         LatLngBounds latLngBounds = GoogleMapUtils.getBuildingBounds(buildingDisplay);
+         mMap.setLatLngBoundsForCameraTarget(latLngBounds);
+         float actualZoom = mMap.getCameraPosition().zoom;
+         mMap.setMinZoomPreference(actualZoom);
+       }
+     }
+     */
     
     func initializePositioningUIElements() {
         initializeNavigationBar()
@@ -264,13 +287,13 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     
     func initializeIcons() {
         let bundle = Bundle(for: type(of: self))
-        var userLocIconName = getIconNameOrDefault(iconName: library?.settings?.userPositionIcon, defaultIconName: "swf_location")
-        var userLocArrowIconName = getIconNameOrDefault(iconName: library?.settings?.userPositionArrowIcon, defaultIconName: "swf_location_pointer")
+        let userLocIconName = getIconNameOrDefault(iconName: library?.settings?.userPositionIcon, defaultIconName: "swf_location")
+        let userLocArrowIconName = getIconNameOrDefault(iconName: library?.settings?.userPositionArrowIcon, defaultIconName: "swf_location_pointer")
 
-        if var locationPointer = UIImage(named: userLocArrowIconName, in: bundle, compatibleWith: nil),
+        if let locationPointer = UIImage(named: userLocArrowIconName, in: bundle, compatibleWith: nil),
            let locationOutdoorPointer = UIImage(named: "swf_location_outdoor_pointer", in: bundle, compatibleWith: nil),
-           var location = UIImage(named: userLocIconName, in: bundle, compatibleWith: nil),
-           var radius = UIImage(named: "swf_radius", in: bundle, compatibleWith: nil) {
+           let location = UIImage(named: userLocIconName, in: bundle, compatibleWith: nil),
+           let radius = UIImage(named: "swf_radius", in: bundle, compatibleWith: nil) {
 
             userMarkerIcons = [
                 "swf_location_pointer" : locationPointer,
@@ -738,6 +761,13 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
             if let cameraInsideBounds = presenter?.modifyCameraToBeInsideBuildingBounds(camera: position) {
                 mapView.animate(to: cameraInsideBounds)
             }
+        }
+        
+        let bounds: SITBounds = buildingInfo!.building.bounds()
+        
+        if (position.target.latitude > bounds.northEast.latitude) {
+            let goBackCamera = GMSCameraPosition(latitude: bounds.northEast.latitude, longitude: bounds.northEast.longitude, zoom: position.zoom)
+            mapView.animate(to: goBackCamera)
         }
     }
     
