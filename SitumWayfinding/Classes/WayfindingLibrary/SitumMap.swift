@@ -107,4 +107,8 @@ public protocol SitumMap {
        - lng: longitude of the location
      */
     func navigateToLocation(floor: SITFloor, lat: Double, lng: Double)
+    
+    func enableOneBuildingMode(building: SITBuilding)
+    
+    func enableOneBuildingMode(buildingId: String)
 }

@@ -280,6 +280,18 @@ import GoogleMaps
         let location = CLLocationCoordinate2D(latitude: lat, longitude: lng)
         positioningController.startNavigation(to: location, in: floor)
     }
+    
+    public func enableOneBuildingMode(building: SITBuilding) {
+        guard let positioningController = toPresentViewController else { return }
+        positioningController.setEnableOneBuilding(enable: true)
+        positioningController.setMinMaxZoom(zoom: positioningController.mapView.camera.zoom)
+    }
+    
+    public func enableOneBuildingMode(buildingId: String) {
+        guard let positioningController = toPresentViewController else { return }
+        positioningController.setEnableOneBuilding(enable: true)
+        positioningController.setMinMaxZoom(zoom: positioningController.mapView.camera.zoom)
+    }
 }
 
 extension SitumMapsLibrary {

@@ -92,6 +92,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         "270º",
         NSLocalizedString("positioning.createMarker", bundle: SitumMapsLibrary.bundle, comment: "")
     ]
+    private var enableOneBuilding = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -244,30 +245,11 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         
         let camera = GMSCameraPosition.camera(withLatitude: latitude, longitude: longitude, zoom: zoom)
         mapView.camera = camera
-        
-        // self.limitMapToThisBuilding()
     }
     
     func limitMapToThisBuilding() {
         mapView.setMinZoom(11, maxZoom: 14)
     }
-    
-    /*
-     @Override
-     public void limitMapToThisBuilding(@Nullable BuildingDisplay buildingDisplay) {
-       if (mMap == null) {
-         return;
-       }
-       mMap.resetMinMaxZoomPreference();
-       mMap.setLatLngBoundsForCameraTarget(null);
-       if (buildingDisplay != null) {
-         LatLngBounds latLngBounds = GoogleMapUtils.getBuildingBounds(buildingDisplay);
-         mMap.setLatLngBoundsForCameraTarget(latLngBounds);
-         float actualZoom = mMap.getCameraPosition().zoom;
-         mMap.setMinZoomPreference(actualZoom);
-       }
-     }
-     */
     
     func initializePositioningUIElements() {
         initializeNavigationBar()
@@ -763,11 +745,26 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
             }
         }
         
-        let bounds: SITBounds = buildingInfo!.building.bounds()
-        
-        if (position.target.latitude > bounds.northEast.latitude) {
-            let goBackCamera = GMSCameraPosition(latitude: bounds.northEast.latitude, longitude: bounds.northEast.longitude, zoom: position.zoom)
-            mapView.animate(to: goBackCamera)
+        if enableOneBuilding {
+            let center = buildingInfo!.building.center()
+            
+            if (position.target.latitude > center.latitude || position.target.latitude < center.latitude) {
+                let goBackCamera = GMSCameraPosition(
+                    latitude: center.latitude,
+                    longitude: position.target.longitude,
+                    zoom: position.zoom
+                )
+                self.mapView.animate(to: goBackCamera)
+            }
+            
+            if (position.target.longitude > center.longitude || position.target.longitude < center.longitude) {
+                let goBackCamera = GMSCameraPosition(
+                    latitude: position.target.latitude,
+                    longitude: center.longitude,
+                    zoom: position.zoom
+                )
+                self.mapView.animate(to: goBackCamera)
+            }
         }
     }
     
@@ -1286,6 +1283,14 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
             }
         }
         return color
+    }
+    
+    func setEnableOneBuilding(enable: Bool) {
+        self.enableOneBuilding = enable
+    }
+    
+    func setMinMaxZoom(zoom: Float) {
+        self.mapView.setMinZoom(zoom, maxZoom: 20)
     }
 }
 
