@@ -46,6 +46,7 @@ class InfoBarNavigationViewController: UIViewController {
     func updateProgress(progress: SITNavigationProgress) {
         if progress.currentIndication.action == .sitCalculating {
             self.setLoadingState()
+            self.timeRemainingLabel.text = progress.currentIndication.humanReadableMessage()
         } else {
             self.timeRemainingLabel.text = self.formatTime(time: progress.timeToGoal)
             self.distanceRemainingLabel.text = self.formatDistance(distance: progress.timeToGoal)

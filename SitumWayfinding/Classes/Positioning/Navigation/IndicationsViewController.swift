@@ -62,6 +62,7 @@ class IndicationsViewController: UIViewController {
     func setInstructions(progress: SITNavigationProgress, destination: String) {
         if progress.currentIndication.action == .sitCalculating {
             self.showNavigationLoading()
+            self.indicationLabel.text = progress.currentIndication.humanReadableMessage()
         } else {
             self.hideLoading()
             self.setDestination(destination: destination)

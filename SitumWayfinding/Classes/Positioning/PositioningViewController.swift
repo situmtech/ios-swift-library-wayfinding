@@ -1288,6 +1288,7 @@ extension PositioningViewController {
         self.indicationsView.isHidden = false
         self.navbar.isHidden = true
         containerInfoBarNavigation?.setLoadingState()
+        indicationsViewController?.showNavigationLoading()
     }
     
     func hiddenNavBar() {
