@@ -281,16 +281,24 @@ import GoogleMaps
         positioningController.startNavigation(to: location, in: floor)
     }
     
+    /**
+     Limit the map to the given building bounds.
+     - parameters
+        - building: Building
+    */
     public func enableOneBuildingMode(building: SITBuilding) {
         guard let positioningController = toPresentViewController else { return }
-        positioningController.setEnableOneBuilding(enable: true)
-        positioningController.setMinMaxZoom(zoom: positioningController.mapView.camera.zoom)
+        positioningController.setLimitsBuilding(building: building)
     }
     
+    /**
+     Limit the map to the given building bounds.
+     - parameters
+        - building: Building identifier
+    */
     public func enableOneBuildingMode(buildingId: String) {
         guard let positioningController = toPresentViewController else { return }
-        positioningController.setEnableOneBuilding(enable: true)
-        positioningController.setMinMaxZoom(zoom: positioningController.mapView.camera.zoom)
+        positioningController.setLimitsBuilding(buildingId: buildingId)
     }
 }
 

@@ -92,7 +92,6 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         "270º",
         NSLocalizedString("positioning.createMarker", bundle: SitumMapsLibrary.bundle, comment: "")
     ]
-    private var enableOneBuilding = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -744,28 +743,6 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
                 mapView.animate(to: cameraInsideBounds)
             }
         }
-        
-        if enableOneBuilding {
-            let center = buildingInfo!.building.center()
-            
-            if (position.target.latitude > center.latitude || position.target.latitude < center.latitude) {
-                let goBackCamera = GMSCameraPosition(
-                    latitude: center.latitude,
-                    longitude: position.target.longitude,
-                    zoom: position.zoom
-                )
-                self.mapView.animate(to: goBackCamera)
-            }
-            
-            if (position.target.longitude > center.longitude || position.target.longitude < center.longitude) {
-                let goBackCamera = GMSCameraPosition(
-                    latitude: position.target.latitude,
-                    longitude: center.longitude,
-                    zoom: position.zoom
-                )
-                self.mapView.animate(to: goBackCamera)
-            }
-        }
     }
     
     func mapView(_ mapView: GMSMapView, didTap marker: GMSMarker) -> Bool {
@@ -1284,13 +1261,26 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         }
         return color
     }
-    
-    func setEnableOneBuilding(enable: Bool) {
-        self.enableOneBuilding = enable
+
+    func setLimitsBuilding(buildingId: String) {
+        self.setLimits(building: buildingInfo!.building)
     }
     
-    func setMinMaxZoom(zoom: Float) {
-        self.mapView.setMinZoom(zoom, maxZoom: 20)
+    func setLimitsBuilding(building: SITBuilding) {
+        self.setLimits(building: building)
+    }
+    
+    private func setLimits(building: SITBuilding) {
+        self.mapView.setMinZoom(self.mapView.camera.zoom, maxZoom: self.mapView.maxZoom)
+        let bounds: SITBounds = building.bounds()
+        let coordinateBounds = GMSCoordinateBounds(
+            coordinate: bounds.southWest,
+            coordinate: bounds.northEast
+        )
+        
+        let camera = self.mapView.camera(for: coordinateBounds, insets: UIEdgeInsets())!
+        self.mapView.camera = camera
+        self.mapView.cameraTargetBounds = coordinateBounds
     }
 }
 

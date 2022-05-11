@@ -108,7 +108,17 @@ public protocol SitumMap {
      */
     func navigateToLocation(floor: SITFloor, lat: Double, lng: Double)
     
+    /**
+     Limit the map to the given building bounds.
+     - parameters
+        - building: Building
+    */
     func enableOneBuildingMode(building: SITBuilding)
     
+    /**
+     Limit the map to the given building bounds.
+     - parameters
+        - building: Building identifier
+    */
     func enableOneBuildingMode(buildingId: String)
 }
