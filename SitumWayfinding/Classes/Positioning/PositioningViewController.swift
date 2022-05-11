@@ -1263,7 +1263,16 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     }
 
     func setLimitsBuilding(buildingId: String) {
-        self.setLimits(building: buildingInfo!.building)
+        SITCommunicationManager.shared().fetchBuildingInfo(self.buildingId, withOptions: nil, success: { (mapping: [AnyHashable : Any]?) in
+            if (mapping != nil) {
+                guard let buildingInfoFilter = mapping!["results"] as? SITBuildingInfo else {
+                    return
+                }
+                self.setLimits(building: buildingInfoFilter.building)
+            }
+        }, failure: { (error: Error?) in
+            Logger.logErrorMessage(error.debugDescription)
+        })
     }
     
     func setLimitsBuilding(building: SITBuilding) {
