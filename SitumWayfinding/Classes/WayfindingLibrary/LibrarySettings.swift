@@ -173,7 +173,6 @@ import GoogleMaps
             builderCopy.setShowPoiNames(showPoiNames: settings.showPoiNames ?? false)
             
             builderCopy.setShowSearchBar(showSearchBar: settings.showSearchBar ?? false)
-            builderCopy.setModeOneBuilding(modeOneBuilding: settings.modeOneBuilding ?? false)
 
             return builderCopy
         }

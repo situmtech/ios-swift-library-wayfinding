@@ -1287,8 +1287,6 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
             coordinate: bounds.northEast
         )
         
-        let camera = self.mapView.camera(for: coordinateBounds, insets: UIEdgeInsets())!
-        self.mapView.camera = camera
         self.mapView.cameraTargetBounds = coordinateBounds
     }
 }
