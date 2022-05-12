@@ -41,8 +41,6 @@ import GoogleMaps
     /// Boolean that hides the back button in the navBar
     private (set) var showBackButton: Bool? = false
     
-    private (set) var modeOneBuilding: Bool? = false
-    
     // private(set) var orgDetails: OrganizationTheme?
     private override init() {
 
@@ -134,12 +132,6 @@ import GoogleMaps
             return self
         }
         
-        @discardableResult
-        @objc public func setModeOneBuilding(modeOneBuilding: Bool) -> Builder {
-            instance.modeOneBuilding = modeOneBuilding
-            return self
-        }
-
         /// Returns an instance of LibrarySettings
         @objc public func build() -> LibrarySettings {
             return instance
