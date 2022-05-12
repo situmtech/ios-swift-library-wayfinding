@@ -39,8 +39,8 @@ extension SITPOI: SearcheableItem {
     //TODO migrate to await-async
     func obtainIconImage(iconsStore:IconsStore?, completion: @escaping(UIImage?) -> Void) {
         if let uIconsStore = iconsStore{
-            uIconsStore.obtainIconFor(category: self.category) { icon in
-                completion(icon)
+            uIconsStore.obtainIconFor(category: self.category) { icons in
+                completion(icons?[0])
             }
         } else{
             completion(nil)
