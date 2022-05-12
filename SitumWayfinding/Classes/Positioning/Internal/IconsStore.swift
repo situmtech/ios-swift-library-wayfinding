@@ -7,7 +7,6 @@
 
 import Foundation
 import SitumSDK
-import Combine
 
 
 class IconsStore {
