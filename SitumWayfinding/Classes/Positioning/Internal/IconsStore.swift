@@ -47,6 +47,7 @@ class IconsStore {
                     if let uIconData = iconData {
                         let iconImg = self.scaledImage(data: uIconData)
                         completion(iconImg)
+                        return
                     }
                     completion(nil)
                 })
