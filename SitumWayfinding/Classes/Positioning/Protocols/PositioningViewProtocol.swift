@@ -36,7 +36,4 @@ protocol PositioningView {
     func select(poi:SITPOI) throws
     
     func setCameraCentered()
-    
-    func createAndShowCustomMarkerIfOutsideRoute(atCoordinate coordinate: CLLocationCoordinate2D, atFloor floorId: String)
-    
 }

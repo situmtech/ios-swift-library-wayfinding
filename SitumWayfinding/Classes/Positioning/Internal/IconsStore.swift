@@ -44,11 +44,12 @@ class IconsStore {
                 completion(nil)
             } else {
                 DispatchQueue.main.async(execute: {
-                    if let uIconData = iconData {
-                        let iconImg = self.scaledImage(data: uIconData)
-                        completion(iconImg)
+                    guard let uIconData = iconData else {
+                        completion(nil)
+                        return
                     }
-                    completion(nil)
+                    let iconImg = self.scaledImage(data: uIconData)
+                    completion(iconImg)
                 })
             }
         })
