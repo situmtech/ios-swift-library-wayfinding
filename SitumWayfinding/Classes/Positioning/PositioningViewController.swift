@@ -365,7 +365,12 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     
     //MARK: Floorplans
     func displayMap(forLevel selectedLevelIndex: Int) {
+        guard let buildingInfo = buildingInfo else {
+            Logger.logDebugMessage("Building info not set in PositioningViewController")
+            return
+        }
         guard let floor = orderedFloors(buildingInfo: buildingInfo)?[selectedLevelIndex] else {
+            Logger.logDebugMessage("Floor not found on building: \(buildingInfo)")
             return
         }
         if floorplans[floor.identifier] != nil {
@@ -608,8 +613,15 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     }
     
     func mapView(_ mapView: GMSMapView, didLongPressAt coordinate: CLLocationCoordinate2D) {
-        guard let floor = orderedFloors(buildingInfo: buildingInfo)?[selectedLevelIndex] else { return }
-        
+        guard let buildingInfo = buildingInfo else {
+            Logger.logDebugMessage("Building info not set in PositioningViewController")
+            return
+        }
+        guard let floor = orderedFloors(buildingInfo: buildingInfo)?[selectedLevelIndex] else {
+            Logger.logDebugMessage("Floor not found on building: \(buildingInfo)")
+            return
+        }
+        deselect(marker: lastSelectedMarker)
         if (self.presenter?.shouldShowFakeLocSelector() ?? false) {
             presenter?.fakeLocationPressed(coordinate: coordinate, floorId: orderedFloors(buildingInfo: buildingInfo)![selectedLevelIndex].identifier)
         } else {
@@ -808,6 +820,14 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
                 containerInfoBarMap?.setLabels(primary: lastCustomMarker!.title, secondary: buildingName)
                 changeNavigationButtonVisibility(isVisible: true)
                 displayMarkers(forFloor: floor, isUserNavigating: false)
+            } else {
+                let title = NSLocalizedString("positioning.error.outsideBuilding.title",
+                    bundle: SitumMapsLibrary.bundle,
+                    comment: "Alert title error when the user try to set a custom location outside building")
+                let message = NSLocalizedString("positioning.error.outsideBuilding.message",
+                    bundle: SitumMapsLibrary.bundle,
+                    comment: "Alert title message when the user try to set a custom location outside building")
+                showAlertMessage(title: title, message: message, alertType: .otherAlert)
             }
         }
     }
@@ -1078,7 +1098,7 @@ extension PositioningViewController {
             deselect(marker: lastSelectedMarker)
         }
     
-        markerRenderer?.loadSelectedIcon(forMarker: marker)
+        markerRenderer?.selectMarker(marker)
         
         CATransaction.begin()
         CATransaction.setValue(0.5, forKey: kCATransactionAnimationDuration)
@@ -1103,7 +1123,7 @@ extension PositioningViewController {
             if marker.isPoiMarker {
                 poiMarkerWasDeselected(poiMarker: marker)
             }
-            markerRenderer?.loadUnselectedIcon(forMarker: marker)
+            markerRenderer?.deselectMarker(marker)
         }
     }
     
@@ -1144,7 +1164,7 @@ extension PositioningViewController {
         if !isUserNavigating {
             renderer.displayPOIMarkers(forFloor: floor)
             if let customMarker = lastCustomMarker {
-                renderer.displayCustomMarker(marker: customMarker, forFloor: floor)
+                renderer.displayLongPressMarker(customMarker, forFloor: floor)
             }
             
             // in the future selection should be encapsulated in some other class to abstract Google maps
@@ -1155,7 +1175,7 @@ extension PositioningViewController {
             }
         } else {
             if let marker = destinationMarker {
-               renderer.displayDestinationMarker(marker: marker, forFloor: floor)
+               renderer.displayOnlyDestinationMarker(marker, forFloor: floor)
             } else {
                 Logger.logDebugMessage("Destination will not be shown becuase there is no destinationMarker selected")
             }

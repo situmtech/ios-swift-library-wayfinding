@@ -22,87 +22,114 @@ class MarkerRenderer {
     }
     
     func displayPOIMarkers(forFloor floor: SITFloor) {
-        cleanMarkers()
+        removeMarkers()
         let poisInFloor = buildingInfo.indoorPois.filter { poi in poi.position().floorIdentifier == floor.identifier }
     
         for poi in poisInFloor {
             let marker = SitumMarker(poi)
             markers.append(marker)
-            loadUnselectedIcon(forMarker: marker)
-        }
-    }
-    
-    func displayCustomMarker(marker: SitumMarker, forFloor floor: SITFloor) {
-        if floor.identifier == marker.floorIdentifier {
-            markers.append(marker)
-            marker.setMapView(mapView: mapView)
-        }
-    }
-    
-    func displayDestinationMarker(marker: SitumMarker, forFloor floor: SITFloor) {
-        cleanMarkers()
-        if floor.identifier == marker.floorIdentifier {
-            markers.append(marker)
-            loadSelectedIcon(forMarker: marker)
-        }
-    }
-    
-    private func cleanMarkers() {
-        for marker in markers {
-            // disassociate markers from map (otherwise we lost reference and they get stuck in map forever)
-            marker.setMapView(mapView: nil)
-        }
-        markers.removeAll()
-    }
-    
-    func loadSelectedIcon(forMarker marker: SitumMarker) {
-        if marker.isPoiMarker {
-            loadIcon(forMarker: marker, selected: true)
-        }
-        if marker.isCustomMarker {
-            mapView.selectedMarker = marker.gmsMarker
-            if marker.gmsMarker.map == nil {
-                marker.setMapView(mapView: mapView)
+            loadIcon(forMarker: marker, selected: false) { [weak self] marker in
+                self?.insertMarkerInGoogleMaps(marker: marker)
             }
         }
     }
     
-    func loadUnselectedIcon(forMarker marker: SitumMarker) {
-        if marker.isPoiMarker {
-            loadIcon(forMarker: marker, selected: false)
+    func displayLongPressMarker(_ marker: SitumMarker, forFloor floor: SITFloor) {
+        if floor.identifier == marker.floorIdentifier {
+            markers.append(marker)
+            insertMarkerInGoogleMaps(marker: marker)
         }
-        // when unselected a custom marker we remove it
+    }
+    
+    func displayOnlyDestinationMarker(_ marker: SitumMarker, forFloor floor: SITFloor) {
+        removeMarkers()
+        if floor.identifier == marker.floorIdentifier {
+            markers.append(marker)
+            selectMarker(marker)
+        }
+    }
+    
+    private func removeMarkers() {
+        for marker in markers {
+            // disassociate markers from map (otherwise we lost reference and they get stuck in map forever)
+            removeMarkerFromGoogleMaps(marker: marker)
+        }
+        markers.removeAll()
+    }
+    
+    func selectMarker(_ marker: SitumMarker) {
+        if marker.isPoiMarker {
+            loadIcon(forMarker: marker, selected: true) { [weak self] marker in
+                self?.selectMarkerInGoogleMaps(marker: marker)
+            }
+        }
         if marker.isCustomMarker {
-            marker.setMapView(mapView: nil)
+            selectMarkerInGoogleMaps(marker: marker)
+        }
+    }
+    
+    func deselectMarker(_ marker: SitumMarker) {
+        if marker.isPoiMarker {
+            loadIcon(forMarker: marker, selected: false) { [weak self] marker in
+                self?.deselectMarkerFromGoogleMaps(marker: marker)
+            }
+        }
+        if marker.isCustomMarker {
+            removeMarkerFromGoogleMaps(marker: marker)
             markers = markers.filter { element in element != marker }
         }
+    }
+    
+    private func selectMarkerInGoogleMaps(marker: SitumMarker) {
+        insertMarkerInGoogleMaps(marker: marker)
+        mapView.selectedMarker = marker.gmsMarker
+    }
+    
+    private func insertMarkerInGoogleMaps(marker: SitumMarker) {
+        if marker.gmsMarker.map == nil {
+            marker.setMapView(mapView: mapView)
+        }
+    }
+    
+    private func removeMarkerFromGoogleMaps(marker: SitumMarker) {
+        if mapView.selectedMarker == marker.gmsMarker {
+            deselectMarkerFromGoogleMaps(marker: marker)
+        }
+        marker.setMapView(mapView: nil)
+    }
+    
+    private func deselectMarkerFromGoogleMaps(marker: SitumMarker) {
         mapView.selectedMarker = nil
     }
     
-    private func loadIcon(forMarker marker: SitumMarker, selected: Bool) {
+    /**
+     Load the poi icon from the server for given marker
+     - Parameters:
+       - marker: marker to get icon for
+       - selected: if the icon will be load with selected or deselected state
+       - iconLoaded: Return the marker with the icon loaded inside
+     */
+    private func loadIcon(forMarker marker: SitumMarker, selected: Bool, iconLoaded: ((SitumMarker) -> ())? = nil) {
         guard let poi = marker.poi else { return }
         // do not load images for markers that are not currently rendered (internal array)
         // also, ensure the marker is a reference to internal array of SitumMarker
         guard let marker = searchMarker(byPOI: poi) else { return }
         let showPoiNames = showPoiNames
         
-        iconsStore.obtainIconFor(category: poi.category) { [weak self] items in
-            if let icon = selected ? items?[1] : items?[0] {
-                let color = UIColor(hex: "#5b5b5bff") ?? UIColor.gray
-                let title = poi.name.uppercased()
-                if showPoiNames {
-                    marker.gmsMarker.icon = icon.setTitle(title: title, size: 12.0, color: color, weight: .semibold)
-                } else {
-                    marker.gmsMarker.icon = icon
-                }
+        iconsStore.obtainIconFor(category: poi.category) { items in
+            guard let icon = selected ? items?[1] : items?[0] else {
+                Logger.logDebugMessage("Icon from server could not be retrieved")
+                return
             }
-            
-            if marker.gmsMarker.map == nil {
-                marker.setMapView(mapView: self?.mapView)
+    
+            let color = UIColor(hex: "#5b5b5bff") ?? UIColor.gray
+            let title = poi.name.uppercased()
+            if showPoiNames {
+                marker.gmsMarker.icon = icon.setTitle(title: title, size: 12.0, color: color, weight: .semibold)
+            } else {
+                marker.gmsMarker.icon = icon
             }
-            if selected {
-                self?.mapView.selectedMarker = marker.gmsMarker
-            }
+            iconLoaded?(marker)
         }
     }
     

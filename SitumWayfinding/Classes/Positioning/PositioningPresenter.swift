@@ -176,7 +176,7 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
         // Entering this if means we are creating a custom marker instead of a fake location
         if(index == 5) {
             if let point = self.point {
-                // this will be solved when the branch about fake location is merged
+                // TODO this will be solved when the branch about fake location is merged
 //                self.view?.createAndShowCustomMarkerIfOutsideRoute(atCoordinate: point.coordinate(), forFloor: point)
             }
         } else {
