@@ -21,11 +21,11 @@ protocol PositioningView {
     
     func showAlertMessage(title: String, message: String, alertType:AlertType)
     
-    func showFakeLocationsAlert()
-    
     func showRoute(route: SITRoute)
     
     func updateProgress(progress: SITNavigationProgress)
+    
+    func routeWillRecalculate()
     
     func stopNavigation(status: NavigationStatus)
     
