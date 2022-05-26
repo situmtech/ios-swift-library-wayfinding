@@ -81,17 +81,12 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     var searchResultViewConstraints: [NSLayoutConstraint]?
     // readiness of map
     private var mapReadinessChecker: SitumMapReadinessChecker!
+    // hold reference of fake ui builder to avoid premature release
+    private var fakeUI: FakeLocationUIBuilder?
     // Constants
     let DEFAULT_SITUM_COLOR = "#283380"
     let DEFAULT_POI_NAME: String = "POI"
     let DEFAULT_BUILDING_NAME: String = "Current Building"
-    let fakeLocationsOptions = [
-        "0º",
-        "90º",
-        "180º",
-        "270º",
-        NSLocalizedString("positioning.createMarker", bundle: SitumMapsLibrary.bundle, comment: "")
-    ]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -621,36 +616,37 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
             Logger.logDebugMessage("Floor not found on building: \(buildingInfo)")
             return
         }
+        guard let manager = presenter?.locationManager else {
+            Logger.logErrorMessage("At this moment a manager should exist attached to the presenter instance")
+            return
+        }
+        
         deselect(marker: lastSelectedMarker)
-        if (self.presenter?.shouldShowFakeLocSelector() ?? false) {
-            presenter?.fakeLocationPressed(coordinate: coordinate, floorId: orderedFloors(buildingInfo: buildingInfo)![selectedLevelIndex].identifier)
+        if !LocationManagerFactory.isFake(object: manager) {
+            longPressAction(at: coordinate, forFloor: floor)
         } else {
-            createAndShowCustomMarkerIfOutsideRoute(atCoordinate: coordinate, forFloor: floor)
+            fakeLongPressAction(in: buildingInfo, with: manager, at: coordinate, forFloor: floor)
         }
     }
     
-    func showFakeLocationsAlert() {
-        let title = NSLocalizedString("positioning.longPressAction.alert.title",
-            bundle: SitumMapsLibrary.bundle,
-            comment: "Alert title to show for a long press action")
-        let message = NSLocalizedString("positioning.longPressAction.alert.message",
-            bundle: SitumMapsLibrary.bundle,
-            comment: "Alert message to show for a long press action")
-        let cancel = NSLocalizedString("generic.cancel",
-            bundle: SitumMapsLibrary.bundle,
-            comment: "Generic cancel action ")
-        
-        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: cancel, style: .default, handler: { _ in
-            self.presenter?.alertViewClosed(.otherAlert)
-        }))
-        for (buttonIndex, text) in fakeLocationsOptions.enumerated() {
-            alert.addAction(UIAlertAction(title: text, style: .default, handler: { _ in
-                self.presenter?.fakeLocOptionSelected(atIndex: buttonIndex)
-            }))
-        }
-        
-        self.present(alert, animated: true, completion: nil)
+    private func fakeLongPressAction(
+        in buildingInfo: SITBuildingInfo,
+        with locationManager: SITLocationInterface,
+        at coordinate: CLLocationCoordinate2D,
+        forFloor floor: SITFloor
+    ) {
+        fakeUI = FakeLocationUIBuilder(buildingInfo: buildingInfo, locationManager: locationManager)
+        let alert = fakeUI!.createFakeActionsAlert(
+            coordinate: coordinate,
+            floorId: floor.identifier,
+            defaultAction: { [weak self] point in
+                self?.longPressAction(at: coordinate, forFloor: floor)
+            })
+        present(alert, animated: true, completion: nil)
+    }
+    
+    private func longPressAction(at coordinate: CLLocationCoordinate2D, forFloor floor: SITFloor) {
+        createAndShowCustomMarkerIfOutsideRoute(atCoordinate: coordinate, forFloor: floor)
     }
     
     func mapViewSnapshotReady(_ mapView: GMSMapView) {
@@ -787,13 +783,14 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     
     func showRoute(route: SITRoute) {
         changeNavigationButtonVisibility(isVisible: false)
+       
         if let floor = orderedFloors(buildingInfo: buildingInfo)?[self.selectedLevelIndex] {
             displayMarkers(forFloor: floor, isUserNavigating: true)
         }
     }
     
     func updateProgress(progress: SITNavigationProgress) {
-        self.containerInfoBarNavigation?.setProgress(progress: progress)
+        self.containerInfoBarNavigation?.updateProgress(progress: progress)
         self.indicationsViewController?.setInstructions(progress: progress, destination: destinationString)
         
         // Update route based on this information
@@ -835,6 +832,11 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     // MARK: SitumMapsLibrary methods
     func getGoogleMap() -> GMSMapView? {
         return self.mapView
+    }
+    
+    func routeWillRecalculate() {
+        containerInfoBarNavigation?.setLoadingState()
+        indicationsViewController?.showNavigationLoading()
     }
     
     //MARK: Helper methods

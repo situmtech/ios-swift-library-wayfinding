@@ -25,6 +25,7 @@ class ViewController: UIViewController {
     private let cellId = "cell"
     
     @IBOutlet weak var remoteConfigSwitch: UISwitch!
+    @IBOutlet weak var fakeLocationSwitch: UISwitch!
     
 
     override func viewDidLoad() {
@@ -42,6 +43,7 @@ class ViewController: UIViewController {
         buildingId = "YOUR_BUILDING_ID"
         location = (lat: "YOUR_LATITUDE", lng: "YOUR_LONGITUDE")
 
+        fakeLocationSwitch.isOn = UserDefaults.standard.bool(forKey: "fake_locations")
         loadPois()
     }
     
@@ -90,7 +92,11 @@ class ViewController: UIViewController {
         action = .navigateToLocation(floor: floor, lat: lat, lng: lng)
         self.performSegue(withIdentifier: "loadWayfindingSegue", sender: self)
     }
-
+    
+    @IBAction func changeFakeLocation(_ sender: Any) {
+        UserDefaults.standard.set(fakeLocationSwitch.isOn, forKey: "fake_locations")
+    }
+    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "loadWayfindingSegue" {
             if let vc = segue.destination as? WayfindingController {
