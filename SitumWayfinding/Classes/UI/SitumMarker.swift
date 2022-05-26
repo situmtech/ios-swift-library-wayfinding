@@ -13,14 +13,7 @@ struct SitumMarker: Equatable {
     private(set) var gmsMarker: GMSMarker
     private(set) var poi: SITPOI?
     var title: String { return gmsMarker.title ?? "" }
-    var floorIdentifier: String {
-        if let poi = poi {
-            return poi.position().floorIdentifier
-        } else {
-            // marker was created from coordinate check init(coordinate:floor)
-            return gmsMarker.userData as! String
-        }
-    }
+    private(set) var floorIdentifier: String
     var isPoiMarker: Bool { return poi != nil }
     var isCustomMarker: Bool { return poi == nil }
     
@@ -28,9 +21,9 @@ struct SitumMarker: Equatable {
         let coordinate = poi.position().coordinate()
         let gmsMarker = GMSMarker(position: coordinate)
         gmsMarker.title = poi.name
-        gmsMarker.userData = poi
         self.poi = poi
         self.gmsMarker = gmsMarker
+        floorIdentifier = poi.position().floorIdentifier
     }
     
     init(coordinate: CLLocationCoordinate2D, floor: SITFloor) {
@@ -40,8 +33,8 @@ struct SitumMarker: Equatable {
             bundle: SitumMapsLibrary.bundle,
             comment: "Shown to user when select a destination (destination is any free point that user selects on the map)"
         )
-        marker.userData = floor.identifier
         gmsMarker = marker
+        floorIdentifier = floor.identifier
     }
     
     func setMapView(mapView: GMSMapView?) {
