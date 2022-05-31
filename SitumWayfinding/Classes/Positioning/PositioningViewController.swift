@@ -281,8 +281,9 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
             Logger.logDebugMessage("Marker renderer could not be created because mapView and building info are not set")
             return
         }
-        markerRenderer = MarkerRenderer(mapView: mapView, buildingInfo: info,
-            showPoiNames: showPoiNames(), iconsStore: iconsStore)
+        let isClusteringEnabled = library?.settings?.isClusteringEnabled ?? false
+        markerRenderer = MarkerRenderer(mapView: mapView, buildingInfo: info, iconsStore: iconsStore, showPoiNames:
+            showPoiNames(), isClusteringEnabled: isClusteringEnabled)
     }
 
     private func getIconNameOrDefault(iconName: String?, defaultIconName: String) -> String {
@@ -594,12 +595,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     }
     
     func mapView(_ mapView: GMSMapView, didTap marker: GMSMarker) -> Bool {
-        guard let renderer = markerRenderer else { return true }
-        guard  let marker = renderer.searchMarker(byGMSMarker: marker) else {
-            Logger.logDebugMessage("Marker should be in renderer, otherwise user selects a marker that the app is not handling correctly")
-            return true
-        }
-        select(marker: marker)
+        select(gmsMarker: marker)
         return true
     }
     
@@ -1086,6 +1082,19 @@ extension PositioningViewController {
             select(marker: markerPoi, success: success)
         } else {
             throw WayfindingError.invalidPOI
+        }
+    }
+    
+    func select(gmsMarker: GMSMarker) {
+        guard let renderer = markerRenderer else { return }
+        if renderer.isClusteringEnabled && renderer.isClusterGMSMarker(gmsMarker) {
+            renderer.selectGMSMarker(gmsMarker)
+        } else {
+            guard  let marker = renderer.searchMarker(byGMSMarker: gmsMarker) else {
+                Logger.logDebugMessage("Marker should be in renderer, otherwise user selects a marker that the app is not handling correctly")
+                return
+            }
+            select(marker: marker, success: {})
         }
     }
     

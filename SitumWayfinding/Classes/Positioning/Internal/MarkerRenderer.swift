@@ -5,31 +5,49 @@
 import Foundation
 import GoogleMaps
 import SitumSDK
+import GoogleMapsUtils
 
 class MarkerRenderer {
+    var isClusteringEnabled: Bool { return markerClustering != nil }
+    
     private(set) var markers: Array<SitumMarker> = []
     private var mapView: GMSMapView
     private var buildingInfo: SITBuildingInfo
     private var iconsStore: IconsStore
     private var showPoiNames: Bool
+    private var markerClustering: MarkerClustering? = nil
     private var currentFloor: SITFloor?
     
-    init(mapView: GMSMapView, buildingInfo: SITBuildingInfo, showPoiNames: Bool, iconsStore: IconsStore) {
+    init(
+        mapView: GMSMapView,
+        buildingInfo: SITBuildingInfo,
+        iconsStore: IconsStore,
+        showPoiNames: Bool,
+        isClusteringEnabled: Bool
+    ) {
         self.mapView = mapView
         self.buildingInfo = buildingInfo
         self.showPoiNames = showPoiNames
         self.iconsStore = iconsStore
+        if isClusteringEnabled {
+            markerClustering = MarkerClustering(mapView: mapView)
+        }
     }
     
     func displayPOIMarkers(forFloor floor: SITFloor) {
         removeMarkers()
         let poisInFloor = buildingInfo.indoorPois.filter { poi in poi.position().floorIdentifier == floor.identifier }
-    
+        
         for poi in poisInFloor {
             let marker = SitumMarker(poi)
             markers.append(marker)
             loadIcon(forMarker: marker, selected: false) { [weak self] marker in
-                self?.insertMarkerInGoogleMaps(marker: marker)
+                if let markerClustering = self?.markerClustering  {
+                    markerClustering.add(marker)
+                    markerClustering.display()
+                } else {
+                    self?.insertMarkerInGoogleMaps(marker: marker)
+                }
             }
         }
     }
@@ -37,15 +55,20 @@ class MarkerRenderer {
     func displayLongPressMarker(_ marker: SitumMarker, forFloor floor: SITFloor) {
         if floor.identifier == marker.floorIdentifier {
             markers.append(marker)
-            insertMarkerInGoogleMaps(marker: marker)
+            selectMarker(marker)
         }
     }
     
     func displayOnlyDestinationMarker(_ marker: SitumMarker, forFloor floor: SITFloor) {
         removeMarkers()
-        if floor.identifier == marker.floorIdentifier {
-            markers.append(marker)
-            selectMarker(marker)
+        if let markerCluster = markerClustering {
+            markerCluster.add(marker)
+            markerCluster.display()
+        } else {
+            if floor.identifier == marker.floorIdentifier {
+                markers.append(marker)
+                selectMarker(marker)
+            }
         }
     }
     
@@ -54,18 +77,32 @@ class MarkerRenderer {
             // disassociate markers from map (otherwise we lost reference and they get stuck in map forever)
             removeMarkerFromGoogleMaps(marker: marker)
         }
+        if isClusteringEnabled {
+            markerClustering?.removeMarkers()
+        }
         markers.removeAll()
     }
     
+    func selectGMSMarker(_ marker: GMSMarker) {
+        if isClusterGMSMarker(marker) {
+            mapView.animate(toZoom: mapView.camera.zoom + 1)
+        }
+    }
+    
     func selectMarker(_ marker: SitumMarker) {
-        if marker.isPoiMarker {
+        if isClusterGMSMarker(marker.gmsMarker) {
+            mapView.animate(toZoom: mapView.camera.zoom + 1)
+        } else if marker.isPoiMarker {
             loadIcon(forMarker: marker, selected: true) { [weak self] marker in
                 self?.selectMarkerInGoogleMaps(marker: marker)
             }
-        }
-        if marker.isCustomMarker {
+        } else if marker.isCustomMarker {
             selectMarkerInGoogleMaps(marker: marker)
         }
+    }
+    
+    func isClusterGMSMarker(_ marker: GMSMarker) -> Bool {
+        return isClusteringEnabled && marker.userData is GMUCluster
     }
     
     func deselectMarker(_ marker: SitumMarker) {

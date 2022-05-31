@@ -32,6 +32,7 @@ class WayfindingController: UIViewController {
                 .setCredentials(credentials: credentials)
                 .setBuildingId(buildingId: buildingId)
                 .setUseRemoteConfig(useRemoteConfig: useRemoteConfig)
+                .setClusteringMode(isClusteringEnabled: true)
                 .build()
         self.library = SitumMapsLibrary(containedBy: self.containerView, controlledBy: self, withSettings: settings)
 

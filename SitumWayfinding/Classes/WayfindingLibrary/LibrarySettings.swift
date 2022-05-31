@@ -41,6 +41,9 @@ import GoogleMaps
     /// Boolean that hides the back button in the navBar
     private (set) var showBackButton: Bool? = false
     
+    /// Boolean that controls if clustering of pois is enabled
+    private (set) var isClusteringEnabled: Bool = false
+    
     // private(set) var orgDetails: OrganizationTheme?
     private override init() {
 
@@ -131,6 +134,13 @@ import GoogleMaps
             instance.showBackButton = showBackButton
             return self
         }
+    
+        /// Set whether to use clustering or not
+        @discardableResult
+        @objc public func setClusteringMode(isClusteringEnabled: Bool) -> Builder {
+            instance.isClusteringEnabled = isClusteringEnabled
+            return self
+        }
 
         /// Returns an instance of LibrarySettings
         @objc public func build() -> LibrarySettings {
@@ -165,15 +175,17 @@ import GoogleMaps
             if settings.searchViewPlaceholder != nil {
                 builderCopy.setSearchViewPlaceholder(searchViewPlaceholder: settings.searchViewPlaceholder!)
             }
-            
-            if settings.useRemoteConfig != nil {
-                builderCopy.setUseRemoteConfig(useRemoteConfig: settings.useRemoteConfig)
-            }
+    
+            builderCopy.setUseRemoteConfig(useRemoteConfig: settings.useRemoteConfig)
 
             builderCopy.setShowPoiNames(showPoiNames: settings.showPoiNames ?? false)
             
             builderCopy.setShowSearchBar(showSearchBar: settings.showSearchBar ?? false)
+            
+            builderCopy.setShowBackButton(showBackButton: settings.showBackButton ?? false)
 
+            builderCopy.setClusteringMode(isClusteringEnabled: settings.isClusteringEnabled)
+            
             return builderCopy
         }
     }
