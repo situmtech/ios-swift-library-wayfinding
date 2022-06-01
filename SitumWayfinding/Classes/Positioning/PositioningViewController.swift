@@ -81,17 +81,12 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     var searchResultViewConstraints: [NSLayoutConstraint]?
     // readiness of map
     private var mapReadinessChecker: SitumMapReadinessChecker!
+    // hold reference of fake ui builder to avoid premature release
+    private var fakeUI: FakeLocationUIBuilder?
     // Constants
     let DEFAULT_SITUM_COLOR = "#283380"
     let DEFAULT_POI_NAME: String = "POI"
     let DEFAULT_BUILDING_NAME: String = "Current Building"
-    let fakeLocationsOptions = [
-        "0º",
-        "90º",
-        "180º",
-        "270º",
-        NSLocalizedString("positioning.createMarker", bundle: SitumMapsLibrary.bundle, comment: "")
-    ]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -601,36 +596,46 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     }
     
     func mapView(_ mapView: GMSMapView, didLongPressAt coordinate: CLLocationCoordinate2D) {
-        if (self.presenter?.shouldShowFakeLocSelector() ?? false) {
-            presenter?.fakeLocationPressed(coordinate: coordinate, floorId: orderedFloors(buildingInfo: buildingInfo)![selectedLevelIndex].identifier)
+        deselect(marker: lastSelectedMarker)
+        guard let info = buildingInfo else {
+            Logger.logErrorMessage("At this moment buildingInfo must be set")
+            return
+        }
+        guard let manager = presenter?.locationManager else {
+            Logger.logErrorMessage("At this moment a manager should exist attached to the presenter instance")
+            return
+        }
+    
+        let floorId = orderedFloors(buildingInfo: info)![selectedLevelIndex].identifier
+        if !LocationManagerFactory.isFake(object: manager) {
+            longPressAction(coordinate: coordinate, floorId: floorId)
         } else {
-            deselect(marker: lastSelectedMarker)
-            self.createAndShowCustomMarkerIfOutsideRoute(atCoordinate: coordinate, atFloor: orderedFloors(buildingInfo: buildingInfo)![selectedLevelIndex].identifier)
+            fakeLongPressAction(buildingInfo: info, locationManager: manager, coordinate: coordinate,
+                floorId: floorId)
         }
     }
     
-    func showFakeLocationsAlert() {
-        let title = NSLocalizedString("positioning.longPressAction.alert.title",
-            bundle: SitumMapsLibrary.bundle,
-            comment: "Alert title to show for a long press action")
-        let message = NSLocalizedString("positioning.longPressAction.alert.message",
-            bundle: SitumMapsLibrary.bundle,
-            comment: "Alert message to show for a long press action")
-        let cancel = NSLocalizedString("generic.cancel",
-            bundle: SitumMapsLibrary.bundle,
-            comment: "Generic cancel action ")
-        
-        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: cancel, style: .default, handler: { _ in
-            self.presenter?.alertViewClosed(.otherAlert)
-        }))
-        for (buttonIndex, text) in fakeLocationsOptions.enumerated() {
-            alert.addAction(UIAlertAction(title: text, style: .default, handler: { _ in
-                self.presenter?.fakeLocOptionSelected(atIndex: buttonIndex)
-            }))
-        }
-        
-        self.present(alert, animated: true, completion: nil)
+    private func fakeLongPressAction(
+        buildingInfo: SITBuildingInfo,
+        locationManager: SITLocationInterface,
+        coordinate: CLLocationCoordinate2D,
+        floorId: String
+    ) {
+        fakeUI = FakeLocationUIBuilder(buildingInfo: buildingInfo, locationManager: locationManager)
+        let alert = fakeUI!.createFakeActionsAlert(
+            coordinate: coordinate,
+            floorId: floorId,
+            defaultAction: { [weak self] point in
+                self?.longPressAction(coordinate: point.coordinate(), floorId: point.floorIdentifier)
+            })
+        present(alert, animated: true, completion: nil)
+    }
+    
+    private func longPressAction(coordinate: CLLocationCoordinate2D, floorId: String) {
+        createAndShowCustomMarkerIfOutsideRoute(
+            atCoordinate: coordinate,
+            atFloor: floorId
+        )
     }
     
     func mapViewSnapshotReady(_ mapView: GMSMapView) {
@@ -768,15 +773,17 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     
     func showRoute(route: SITRoute) {
         self.changeNavigationButtonVisibility(isVisible: false)
-        let floorIdentifier: String = self.getFloorIdFromMarker(marker: self.destinationMarker!)
-        self.showPois(visible: false)
-        if floorIdentifier == orderedFloors(buildingInfo: buildingInfo)?[self.selectedLevelIndex].identifier {
-            self.destinationMarker?.setMapView(mapView: self.mapView)
+        if let destinationMarker = destinationMarker {
+            let floorIdentifier: String = self.getFloorIdFromMarker(marker: destinationMarker)
+            self.showPois(visible: false)
+            if floorIdentifier == orderedFloors(buildingInfo: buildingInfo)?[self.selectedLevelIndex].identifier {
+                self.destinationMarker?.setMapView(mapView: self.mapView)
+            }
         }
     }
     
     func updateProgress(progress: SITNavigationProgress) {
-        self.containerInfoBarNavigation?.setProgress(progress: progress)
+        self.containerInfoBarNavigation?.updateProgress(progress: progress)
         self.indicationsViewController?.setInstructions(progress: progress, destination: destinationString)
         
         // Update route based on this information
@@ -815,6 +822,11 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     // MARK: SitumMapsLibrary methods
     func getGoogleMap() -> GMSMapView? {
         return self.mapView
+    }
+    
+    func routeWillRecalculate() {
+        containerInfoBarNavigation?.setLoadingState()
+        indicationsViewController?.showNavigationLoading()
     }
     
     //MARK: Helper methods

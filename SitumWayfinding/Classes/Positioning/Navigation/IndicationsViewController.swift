@@ -22,7 +22,7 @@ class IndicationsViewController: UIViewController {
         self.view.backgroundColor = .clear
         self.setupIndicationView()
         self.setupNextIndicationView()
-        self.showLoading()
+        self.showNavigationLoading()
     }
     
     private func setupIndicationView() {
@@ -61,7 +61,8 @@ class IndicationsViewController: UIViewController {
     
     func setInstructions(progress: SITNavigationProgress, destination: String) {
         if progress.currentIndication.action == .sitCalculating {
-            self.showLoading()
+            self.showNavigationLoading()
+            self.indicationLabel.text = progress.currentIndication.humanReadableMessage()
         } else {
             self.hideLoading()
             self.setDestination(destination: destination)
@@ -77,7 +78,7 @@ class IndicationsViewController: UIViewController {
         self.destinationLabel.text = destination
     }
     
-    private func showLoading() {
+    func showNavigationLoading() {
         self.indicationLoading.isHidden = false
         self.indicationImage.isHidden = true
         self.indicationView.roundCorners(corners: [.topLeft, .topRight, .bottomLeft, .bottomRight])
