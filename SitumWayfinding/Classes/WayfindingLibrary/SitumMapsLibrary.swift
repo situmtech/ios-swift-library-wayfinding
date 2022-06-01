@@ -286,7 +286,7 @@ import GoogleMaps
      - parameters
         - building: Building
     */
-    public func enableOneBuildingMode(building: SITBuilding) {
+    public func lockCameraToBuilding(building: SITBuilding) {
         guard let positioningController = toPresentViewController else { return }
         positioningController.setLimitsBuilding(building: building)
     }
