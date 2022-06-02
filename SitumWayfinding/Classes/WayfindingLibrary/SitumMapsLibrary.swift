@@ -282,23 +282,41 @@ import GoogleMaps
     }
     
     /**
-     Limit the map to the given building bounds.
+     This method centers the map on a given building and limits the map zoom and pan to that building bounds.
      - parameters
-        - building: Building
+        - building: The building on where the camera will be locked
     */
     public func lockCameraToBuilding(building: SITBuilding) {
         guard let positioningController = toPresentViewController else { return }
-        positioningController.setLimitsBuilding(building: building)
+        let cameraOption = positioningController.prepareCamera(building: building)
+        positioningController.moveCamera(cameraOptions: cameraOption)
     }
     
     /**
-     Limit the map to the given building bounds.
+     This method centers the map on a given building and limits the map zoom and pan to that building bounds.
      - parameters
-        - building: Building identifier
+        - buildingId: The id of building on where the camera will be locked
     */
-    public func enableOneBuildingMode(buildingId: String) {
+    public func lockCameraToBuilding(buildingId: String, completion: @escaping (Result<SITBuilding, WayfindingError>) -> Void) {
         guard let positioningController = toPresentViewController else { return }
-        positioningController.setLimitsBuilding(buildingId: buildingId)
+        positioningController.getBuilding(buildingId: buildingId) { result in
+            switch result {
+                case .success(let building):
+                    let cameraOption = positioningController.prepareCamera(building: building)
+                    positioningController.moveCamera(cameraOptions: cameraOption)
+                    completion(.success(building))
+                case .failure(let error):
+                    completion(.failure(error))
+            }
+        }
+    }
+    
+    /**
+     This method unlock the camera and allows the user to pan outside building bounds.
+    */
+    public func unlockCamera() {
+        guard let positioningController = toPresentViewController else { return }
+        positioningController.unlockCamera()
     }
 }
 

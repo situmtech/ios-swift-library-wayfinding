@@ -28,6 +28,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     @IBOutlet weak var levelsTableView: UITableView!
     @IBOutlet weak var levelsTableHeightConstaint: NSLayoutConstraint!
     @IBOutlet weak var centerButton: UIButton!
+    @IBOutlet weak var lockUnlock: UIButton!
     @IBOutlet weak var backButton: UIBarButtonItem!
     @IBOutlet weak var numberBeaconsRangedView: UIView!
     @IBOutlet weak var numberBeaconsRangedLabel: UILabel!
@@ -87,6 +88,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     let DEFAULT_SITUM_COLOR = "#283380"
     let DEFAULT_POI_NAME: String = "POI"
     let DEFAULT_BUILDING_NAME: String = "Current Building"
+    var lock = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -735,6 +737,18 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         presenter?.centerViewInUserLocation()
     }
     
+    @IBAction
+    func lockUnlockCamera(_ sender: UIButton) {
+        if self.lock {
+            self.unlockCamera()
+        } else {
+            if let building = buildingInfo?.building {
+                let cameraOption = self.prepareCamera(building: building)
+                self.moveCamera(cameraOptions: cameraOption)
+            }
+        }
+    }
+    
     //MARK: PositioningView protocol methods
     func showNumberOfBeaconsRanged(text: Int) {
         if (self.numberBeaconsRangedView.isHidden) {
@@ -1068,32 +1082,32 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         return color
     }
 
-    func setLimitsBuilding(buildingId: String) {
+    func getBuilding(buildingId: String, completion: @escaping (Result<SITBuilding, WayfindingError>) -> Void) {
         SITCommunicationManager.shared().fetchBuildingInfo(self.buildingId, withOptions: nil, success: { (mapping: [AnyHashable : Any]?) in
             if (mapping != nil) {
                 guard let buildingInfoFilter = mapping!["results"] as? SITBuildingInfo else {
+                    completion(.failure(.unknown))
                     return
                 }
-                self.setLimits(building: buildingInfoFilter.building)
+                completion(.success(buildingInfoFilter.building))
             }
-        }, failure: { (error: Error?) in
-            Logger.logErrorMessage(error.debugDescription)
+        }, failure: { _ in
+            completion(.failure(.unknown))
         })
     }
     
-    func setLimitsBuilding(building: SITBuilding) {
-        self.setLimits(building: building)
+    func prepareCamera(building: SITBuilding) -> SITCameraOption {
+        return SITCameraOption(minZoom: self.mapView.camera.zoom, maxZoom: self.mapView.maxZoom, bounds: building.bounds())
     }
     
-    private func setLimits(building: SITBuilding) {
-        self.mapView.setMinZoom(self.mapView.camera.zoom, maxZoom: self.mapView.maxZoom)
-        let bounds: SITBounds = building.bounds()
-        let coordinateBounds = GMSCoordinateBounds(
-            coordinate: bounds.southWest,
-            coordinate: bounds.northEast
-        )
-        
-        self.mapView.cameraTargetBounds = coordinateBounds
+    func moveCamera(cameraOptions: SITCameraOption) {
+        self.lock = true
+        cameraOptions.moveCamera(mapView: self.mapView)
+    }
+    
+    func unlockCamera() {
+        self.lock = false
+        self.mapView.cameraTargetBounds = nil
     }
 }
 
