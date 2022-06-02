@@ -18,12 +18,12 @@ public enum WayfindingError: LocalizedError {
      */
     case unknown
     
-    /*
+    /**
      Making a request for a building id might not return anything
      */
     case buildingNotExist
     
-    /*
+    /**
      When making a request it can return an error
      */
     case requestError
@@ -40,9 +40,9 @@ extension WayfindingError {
         case .unknown:
             return NSLocalizedString("wayfindingError.unknown", bundle: SitumMapsLibrary.bundle, comment: "")
         case .buildingNotExist:
-            return NSLocalizedString("", bundle: SitumMapsLibrary.bundle, comment: "")
+            return NSLocalizedString("wayfindingError.buildingNotExist", bundle: SitumMapsLibrary.bundle, comment: "")
         case .requestError:
-            return NSLocalizedString("", bundle: SitumMapsLibrary.bundle, comment: "")
+            return NSLocalizedString("wayfindingError.requestError", bundle: SitumMapsLibrary.bundle, comment: "")
         }
     }
     /**
