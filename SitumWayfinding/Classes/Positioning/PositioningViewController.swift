@@ -281,7 +281,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
             Logger.logDebugMessage("Marker renderer could not be created because mapView and building info are not set")
             return
         }
-        let isClusteringEnabled = library?.settings?.isClusteringEnabled ?? false
+        let isClusteringEnabled = library?.settings?.enablePoisClustering ?? false
         markerRenderer = MarkerRenderer(mapView: mapView, buildingInfo: info, iconsStore: iconsStore, showPoiNames:
             showPoiNames(), isClusteringEnabled: isClusteringEnabled)
     }

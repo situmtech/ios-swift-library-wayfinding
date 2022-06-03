@@ -15,7 +15,7 @@ class MarkerRenderer {
     private var buildingInfo: SITBuildingInfo
     private var iconsStore: IconsStore
     private var showPoiNames: Bool
-    private var markerClustering: MarkerClustering? = nil
+    private var markerClustering: GoogleMapsMarkerClustering? = nil
     private var currentFloor: SITFloor?
     
     init(
@@ -30,7 +30,7 @@ class MarkerRenderer {
         self.showPoiNames = showPoiNames
         self.iconsStore = iconsStore
         if isClusteringEnabled {
-            markerClustering = MarkerClustering(mapView: mapView)
+            markerClustering = GoogleMapsMarkerClustering(mapView: mapView)
         }
     }
     

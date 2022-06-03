@@ -42,7 +42,7 @@ import GoogleMaps
     private (set) var showBackButton: Bool? = false
     
     /// Boolean that controls if clustering of pois is enabled
-    private (set) var isClusteringEnabled: Bool = false
+    private (set) var enablePoisClustering: Bool = false
     
     // private(set) var orgDetails: OrganizationTheme?
     private override init() {
@@ -137,8 +137,8 @@ import GoogleMaps
     
         /// Set whether to use clustering or not
         @discardableResult
-        @objc public func setClusteringMode(isClusteringEnabled: Bool) -> Builder {
-            instance.isClusteringEnabled = isClusteringEnabled
+        @objc public func setEnablePoiClustering(enablePoisClustering: Bool) -> Builder {
+            instance.enablePoisClustering = enablePoisClustering
             return self
         }
 
@@ -184,7 +184,7 @@ import GoogleMaps
             
             builderCopy.setShowBackButton(showBackButton: settings.showBackButton ?? false)
 
-            builderCopy.setClusteringMode(isClusteringEnabled: settings.isClusteringEnabled)
+            builderCopy.setEnablePoiClustering(enablePoisClustering: settings.enablePoisClustering)
             
             return builderCopy
         }

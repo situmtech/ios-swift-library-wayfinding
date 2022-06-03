@@ -7,7 +7,7 @@ import SitumSDK
 import GoogleMapsUtils
 import GoogleMaps
 
-class MarkerClustering {
+class GoogleMapsMarkerClustering {
     private var mapView: GMSMapView
     private var clusterManager: GMUClusterManager
     
