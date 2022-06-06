@@ -744,7 +744,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         } else {
             if let building = buildingInfo?.building {
                 let cameraOption = self.prepareCamera(building: building)
-                self.moveCamera(cameraOptions: cameraOption)
+                self.moveCamera(options: cameraOption)
             }
         }
     }
@@ -1083,7 +1083,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     }
 
     func getBuilding(buildingId: String, completion: @escaping (Result<SITBuilding, WayfindingError>) -> Void) {
-        SITCommunicationManager.shared().fetchBuildingInfo(self.buildingId, withOptions: nil, success: { (mapping: [AnyHashable : Any]?) in
+        SITCommunicationManager.shared().fetchBuildingInfo(buildingId, withOptions: nil, success: { (mapping: [AnyHashable : Any]?) in
             if (mapping != nil) {
                 guard let buildingInfoFilter = mapping!["results"] as? SITBuildingInfo else {
                     completion(.failure(.unknown))
@@ -1096,13 +1096,13 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         })
     }
     
-    func prepareCamera(building: SITBuilding) -> SITCameraOption {
-        return SITCameraOption(minZoom: self.mapView.camera.zoom, maxZoom: self.mapView.maxZoom, bounds: building.bounds())
+    func prepareCamera(building: SITBuilding) -> SITCameraOptions {
+        return SITCameraOptions(minZoom: self.mapView.camera.zoom, maxZoom: self.mapView.maxZoom, southWestCoordinate: building.bounds().southWest, northEastCooordinate: building.bounds().northEast)
     }
     
-    func moveCamera(cameraOptions: SITCameraOption) {
+    func moveCamera(options: SITCameraOptions) {
         self.lock = true
-        cameraOptions.moveCamera(mapView: self.mapView)
+        self.mapView.cameraTargetBounds = GMSCoordinateBounds(coordinate: options.southWestCoordinate, coordinate: options.northEastCooordinate)
     }
     
     func unlockCamera() {
