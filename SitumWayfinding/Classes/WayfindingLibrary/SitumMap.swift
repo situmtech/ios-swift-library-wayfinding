@@ -107,4 +107,23 @@ public protocol SitumMap {
        - lng: longitude of the location
      */
     func navigateToLocation(floor: SITFloor, lat: Double, lng: Double)
+    
+    /**
+     This method centers the map on a given building and limits the map zoom and pan to that building bounds.
+     - parameters
+        - building: The building on where the camera will be locked
+    */
+    func lockCameraToBuilding(building: SITBuilding)
+    
+    /**
+     This method centers the map on a given building and limits the map zoom and pan to that building bounds.
+     - parameters
+        - building: The id of building on where the camera will be locked
+    */
+    func lockCameraToBuilding(buildingId: String, completion: @escaping (Result<SITBuilding, WayfindingError>) -> Void)
+    
+    /**
+     This method unlock the camera and allows the user to pan outside building bounds.
+    */
+    func unlockCamera()
 }

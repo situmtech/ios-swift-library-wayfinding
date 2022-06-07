@@ -280,6 +280,44 @@ import GoogleMaps
         let location = CLLocationCoordinate2D(latitude: lat, longitude: lng)
         positioningController.startNavigation(to: location, in: floor)
     }
+    
+    /**
+     This method centers the map on a given building and limits the map zoom and pan to that building bounds.
+     - parameters
+        - building: The building on where the camera will be locked
+    */
+    public func lockCameraToBuilding(building: SITBuilding) {
+        guard let positioningController = toPresentViewController else { return }
+        let cameraOption = positioningController.prepareCamera(building: building)
+        positioningController.moveCamera(options: cameraOption)
+    }
+    
+    /**
+     This method centers the map on a given building and limits the map zoom and pan to that building bounds.
+     - parameters
+        - buildingId: The id of building on where the camera will be locked
+    */
+    public func lockCameraToBuilding(buildingId: String, completion: @escaping (Result<SITBuilding, WayfindingError>) -> Void) {
+        guard let positioningController = toPresentViewController else { return }
+        positioningController.getBuilding(buildingId: buildingId) { result in
+            switch result {
+                case .success(let building):
+                    let cameraOption = positioningController.prepareCamera(building: building)
+                    positioningController.moveCamera(options: cameraOption)
+                    completion(.success(building))
+                case .failure(let error):
+                    completion(.failure(error))
+            }
+        }
+    }
+    
+    /**
+     This method unlock the camera and allows the user to pan outside building bounds.
+    */
+    public func unlockCamera() {
+        guard let positioningController = toPresentViewController else { return }
+        positioningController.unlockCamera()
+    }
 }
 
 extension SitumMapsLibrary {
