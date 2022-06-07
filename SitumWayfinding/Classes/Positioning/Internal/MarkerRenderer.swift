@@ -83,7 +83,7 @@ class MarkerRenderer {
         markers.removeAll()
     }
     
-    func selectGMSMarker(_ marker: GMSMarker) {
+    func selectGMSClusterMarker(_ marker: GMSMarker) {
         if isClusterGMSMarker(marker) {
             mapView.animate(toZoom: mapView.camera.zoom + 1)
         }

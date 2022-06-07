@@ -1088,7 +1088,7 @@ extension PositioningViewController {
     func select(gmsMarker: GMSMarker) {
         guard let renderer = markerRenderer else { return }
         if renderer.isClusteringEnabled && renderer.isClusterGMSMarker(gmsMarker) {
-            renderer.selectGMSMarker(gmsMarker)
+            renderer.selectGMSClusterMarker(gmsMarker)
         } else {
             guard  let marker = renderer.searchMarker(byGMSMarker: gmsMarker) else {
                 Logger.logDebugMessage("Marker should be in renderer, otherwise user selects a marker that the app is not handling correctly")
