@@ -62,8 +62,10 @@ class MarkerRenderer {
     func displayOnlyDestinationMarker(_ marker: SitumMarker, forFloor floor: SITFloor) {
         removeMarkers()
         if let markerCluster = markerClustering {
-            markerCluster.add(marker)
-            markerCluster.display()
+            if floor.identifier == marker.floorIdentifier {
+                markerCluster.add(marker)
+                markerCluster.display()
+            }
         } else {
             if floor.identifier == marker.floorIdentifier {
                 markers.append(marker)
