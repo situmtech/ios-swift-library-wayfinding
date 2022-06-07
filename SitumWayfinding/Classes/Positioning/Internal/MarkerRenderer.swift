@@ -108,7 +108,11 @@ class MarkerRenderer {
     func deselectMarker(_ marker: SitumMarker) {
         if marker.isPoiMarker {
             loadIcon(forMarker: marker, selected: false) { [weak self] marker in
-                self?.deselectMarkerFromGoogleMaps(marker: marker)
+                if let map = self?.mapView, marker.gmsMarker == map.selectedMarker {
+                    // deselect poi only if it's selected and it's this marker
+                    // google maps usually deselect a poi when user tap in other location
+                    self?.deselectMarkerFromGoogleMaps(marker: marker)
+                }
             }
         }
         if marker.isCustomMarker {
