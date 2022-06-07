@@ -28,6 +28,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     @IBOutlet weak var levelsTableView: UITableView!
     @IBOutlet weak var levelsTableHeightConstaint: NSLayoutConstraint!
     @IBOutlet weak var centerButton: UIButton!
+    @IBOutlet weak var lockUnlock: UIButton!
     @IBOutlet weak var backButton: UIBarButtonItem!
     @IBOutlet weak var numberBeaconsRangedView: UIView!
     @IBOutlet weak var numberBeaconsRangedLabel: UILabel!
@@ -87,6 +88,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     let DEFAULT_SITUM_COLOR = "#283380"
     let DEFAULT_POI_NAME: String = "POI"
     let DEFAULT_BUILDING_NAME: String = "Current Building"
+    var lock = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -241,6 +243,10 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         mapView.camera = camera
     }
     
+    func limitMapToThisBuilding() {
+        mapView.setMinZoom(11, maxZoom: 14)
+    }
+    
     func initializePositioningUIElements() {
         initializeNavigationBar()
         initializeIcons()
@@ -259,13 +265,13 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     
     func initializeIcons() {
         let bundle = Bundle(for: type(of: self))
-        var userLocIconName = getIconNameOrDefault(iconName: library?.settings?.userPositionIcon, defaultIconName: "swf_location")
-        var userLocArrowIconName = getIconNameOrDefault(iconName: library?.settings?.userPositionArrowIcon, defaultIconName: "swf_location_pointer")
+        let userLocIconName = getIconNameOrDefault(iconName: library?.settings?.userPositionIcon, defaultIconName: "swf_location")
+        let userLocArrowIconName = getIconNameOrDefault(iconName: library?.settings?.userPositionArrowIcon, defaultIconName: "swf_location_pointer")
 
-        if var locationPointer = UIImage(named: userLocArrowIconName, in: bundle, compatibleWith: nil),
+        if let locationPointer = UIImage(named: userLocArrowIconName, in: bundle, compatibleWith: nil),
            let locationOutdoorPointer = UIImage(named: "swf_location_outdoor_pointer", in: bundle, compatibleWith: nil),
-           var location = UIImage(named: userLocIconName, in: bundle, compatibleWith: nil),
-           var radius = UIImage(named: "swf_radius", in: bundle, compatibleWith: nil) {
+           let location = UIImage(named: userLocIconName, in: bundle, compatibleWith: nil),
+           let radius = UIImage(named: "swf_radius", in: bundle, compatibleWith: nil) {
 
             userMarkerIcons = [
                 "swf_location_pointer" : locationPointer,
@@ -731,6 +737,18 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         presenter?.centerViewInUserLocation()
     }
     
+    @IBAction
+    func lockUnlockCamera(_ sender: UIButton) {
+        if self.lock {
+            self.unlockCamera()
+        } else {
+            if let building = buildingInfo?.building {
+                let cameraOption = self.prepareCamera(building: building)
+                self.moveCamera(options: cameraOption)
+            }
+        }
+    }
+    
     //MARK: PositioningView protocol methods
     func showNumberOfBeaconsRanged(text: Int) {
         if (self.numberBeaconsRangedView.isHidden) {
@@ -1062,6 +1080,34 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
             }
         }
         return color
+    }
+
+    func getBuilding(buildingId: String, completion: @escaping (Result<SITBuilding, WayfindingError>) -> Void) {
+        SITCommunicationManager.shared().fetchBuildingInfo(buildingId, withOptions: nil, success: { (mapping: [AnyHashable : Any]?) in
+            if (mapping != nil) {
+                guard let buildingInfoFilter = mapping!["results"] as? SITBuildingInfo else {
+                    completion(.failure(.unknown))
+                    return
+                }
+                completion(.success(buildingInfoFilter.building))
+            }
+        }, failure: { _ in
+            completion(.failure(.unknown))
+        })
+    }
+    
+    func prepareCamera(building: SITBuilding) -> SITCameraOptions {
+        return SITCameraOptions(minZoom: self.mapView.camera.zoom, maxZoom: self.mapView.maxZoom, southWestCoordinate: building.bounds().southWest, northEastCooordinate: building.bounds().northEast)
+    }
+    
+    func moveCamera(options: SITCameraOptions) {
+        self.lock = true
+        self.mapView.cameraTargetBounds = GMSCoordinateBounds(coordinate: options.southWestCoordinate, coordinate: options.northEastCooordinate)
+    }
+    
+    func unlockCamera() {
+        self.lock = false
+        self.mapView.cameraTargetBounds = nil
     }
 }
 

@@ -131,7 +131,7 @@ import GoogleMaps
             instance.showBackButton = showBackButton
             return self
         }
-
+        
         /// Returns an instance of LibrarySettings
         @objc public func build() -> LibrarySettings {
             return instance
