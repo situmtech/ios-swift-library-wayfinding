@@ -606,6 +606,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     }
     
     func mapView(_ mapView: GMSMapView, didTapAt coordinate: CLLocationCoordinate2D) {
+        // at this point google maps selectedMarker should be nil (library is in charge of this right now)
         deselect(marker: lastSelectedMarker)
     }
     

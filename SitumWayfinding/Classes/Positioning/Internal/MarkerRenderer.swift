@@ -111,8 +111,8 @@ class MarkerRenderer {
         if marker.isPoiMarker {
             loadIcon(forMarker: marker, selected: false) { [weak self] marker in
                 if let map = self?.mapView, marker.gmsMarker == map.selectedMarker {
-                    // deselect poi only if it's selected and it's this marker
-                    // google maps usually deselect a poi when user tap in other location
+                    // deselect poi if it is the one selected, otherwise since loadIcon is async
+                    // we could be deselecting another poi that was selected during the load of the icon
                     self?.deselectMarkerFromGoogleMaps(marker: marker)
                 }
             }
