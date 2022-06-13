@@ -135,7 +135,7 @@ import GoogleMaps
             return self
         }
 
-        /// Set whether to use clustering or not
+        /// Sets whether to enable marker clustering of pois displayed or not
         @discardableResult
         @objc public func setEnablePoiClustering(enablePoisClustering: Bool) -> Builder {
             instance.enablePoisClustering = enablePoisClustering
