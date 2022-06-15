@@ -89,22 +89,22 @@ steps:
     publishLocation: 'pipeline'
   displayName: Archive build logs
 
-- script: |
-    if [ "$(branch)" == "master-release" ];then
-      branchNameIfPrivate=""
-      if [ "$(buildType)"  == "Release" ];then
-        reponame="libs-release-local"
-      else
-        reponame="libs-snapshot-local"
-      fi
-    else
-      branchNameIfPrivate="$(branch)"
-      if [ "$(buildType)"  == "Release" ];then
-        reponame="lib-release-local-private"
-      else
-        reponame="libs-snapshot-local-private"
-      fi
-    fi
-
-    ./jfrog rt upload $(zipName) $reponame/iOS/SitumWayfinding/$branchNameIfPrivate/$(version)/
-  displayName: Upload artifacts
+#- script: |
+#    if [ "$(branch)" == "master-release" ];then
+#      branchNameIfPrivate=""
+#      if [ "$(buildType)"  == "Release" ];then
+#        reponame="libs-release-local"
+#      else
+#        reponame="libs-snapshot-local"
+#      fi
+#    else
+#      branchNameIfPrivate="$(branch)"
+#      if [ "$(buildType)"  == "Release" ];then
+#        reponame="lib-release-local-private"
+#      else
+#        reponame="libs-snapshot-local-private"
+#      fi
+#    fi
+#
+#    ./jfrog rt upload $(zipName) $reponame/iOS/SitumWayfinding/$branchNameIfPrivate/$(version)/
+#  displayName: Upload artifacts
