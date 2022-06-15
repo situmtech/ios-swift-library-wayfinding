@@ -24,7 +24,7 @@ resources:
     name: situm/sys-kubernetes-templates.git
 
 pool:
-  vmImage: 'macOS-12'
+  vmImage: 'macOS-11'
 
 steps:
 
@@ -61,12 +61,12 @@ steps:
   displayName: Install dependencies
 
 - script: |
-    sudo xcode-select -switch /Applications/Xcode_13.4.1.app
+    sudo xcode-select -switch /Applications/Xcode_13.2.1.app
     ./scripts/compilation_wayfinding.sh $(buildType)
   displayName: Build example app
 - script: |
     sudo gem install jazzy
-    sudo xcode-select -switch /Applications/Xcode_13.4.1.app
+    sudo xcode-select -switch /Applications/Xcode_13.2.1.app
 
     if [ $(buildType) == 'Release' ] && [ $(branch) == 'master-release' ];then
       zipName="SitumWayfinding.appledoc.zip"
