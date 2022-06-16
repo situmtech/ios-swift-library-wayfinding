@@ -13,7 +13,7 @@ import os
 extension OSLog {
     private static let subsystem = Bundle.main.bundleIdentifier!
     /// default category
-    static let defaultCategory = OSLog(subsystem: subsystem, category: "SitumMappingTool")
+    static let defaultCategory = OSLog(subsystem: subsystem, category: "WayFinding")
 }
 
 class Logger {
