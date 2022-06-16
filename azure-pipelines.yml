@@ -65,6 +65,10 @@ steps:
     ./scripts/compilation_wayfinding.sh $(buildType)
   displayName: Build example app
 
+- script: |
+    pod spec lint --skip-import-validation --allow-warnings --verbose
+  displayName: Lint Cocoapods specification
+
 #- script: |
 #    sudo gem install jazzy
 #    sudo xcode-select -switch /Applications/Xcode_13.2.1.app
