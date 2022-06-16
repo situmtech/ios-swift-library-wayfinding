@@ -44,7 +44,7 @@ steps:
     properties_file: 'scripts/framework.properties'
     prepare_ndk: false
 
--script: |
+- script: |
     rm -rf "${HOME}/Library/Caches/CocoaPods"
     rm -rf "`pwd`/Pods/"
   displayName: Removing Coacoapods Caches
