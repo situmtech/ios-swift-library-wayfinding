@@ -85,6 +85,12 @@
 /* Alert title error when the user does not select a destination */
 "positioning.error.noDestinationSelected.alert.title" = "No destination selected";
 
+/* Alert title error when the user position is unknown */
+"positioning.error.outsideBuilding.message" = "Currently you can't create outdoor destinations.";
+
+/* Alert title error when the user position is unknown */
+"positioning.error.outsideBuilding.title" = "Outdoor destination";
+
 /* Alert title error when the user is outdoor */
 "positioning.error.positionOutdoor.alert.title" = "Outdoor position";
 

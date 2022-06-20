@@ -69,6 +69,17 @@ steps:
     sudo xcode-select -switch /Applications/Xcode_13.2.1.app
     ./scripts/compilation_wayfinding.sh $(buildType)
   displayName: Build example app
+- script: |
+    sudo gem install jazzy
+    sudo xcode-select -switch /Applications/Xcode_13.2.1.app
+
+    if [ $(buildType) == 'Release' ] && [ $(branch) == 'master-release' ];then
+      zipName="SitumWayfinding.appledoc.zip"
+    elif [ buildType == 'Release' ];then
+      zipName="SitumWayfinding.appledoc-$(version).zip"
+    else 
+      zipName="SitumWayfinding.appledoc-$(branch)-$(version)-DEV.zip"
+    fi
 
 - script: |
     pod spec lint --skip-import-validation --allow-warnings --verbose  

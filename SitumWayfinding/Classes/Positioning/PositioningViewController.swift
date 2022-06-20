@@ -50,8 +50,8 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     //Loading
     var loadingError: Bool = false
     //Positioning
+    var markerRenderer: MarkerRenderer?
     var mapOverlay: GMSGroundOverlay = GMSGroundOverlay()
-    var poiMarkers: Array<GMSMarker> = []
     var floorplans: Dictionary<String, UIImage> = [:]
     let iconsStore: IconsStore = IconsStore()
     var userMarkerIcons: Dictionary<String, UIImage> = [:]
@@ -211,6 +211,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     //MARK: Initializers
     func initializeUIElements() {
         initializeMapView()
+        initializeMarkerMapRenderer()
         initializePositioningUIElements()
         initializeIcons()
     }
@@ -220,7 +221,6 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     }
     
     func initializeMapView() {
-        poiMarkers = Array()
         floorplans = Dictionary()
         mapView.isIndoorEnabled = false
         mapView.delegate = self
@@ -280,6 +280,16 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
                 "swf_radius" : radius
             ]
         }
+    }
+    
+    func initializeMarkerMapRenderer() {
+        guard let mapView = mapView, let info = buildingInfo else {
+            Logger.logDebugMessage("Marker renderer could not be created because mapView and building info are not set")
+            return
+        }
+        let isClusteringEnabled = library?.settings?.enablePoisClustering ?? false
+        markerRenderer = MarkerRenderer(mapView: mapView, buildingInfo: info, iconsStore: iconsStore, showPoiNames:
+            showPoiNames(), isClusteringEnabled: isClusteringEnabled)
     }
 
     private func getIconNameOrDefault(iconName: String?, defaultIconName: String) -> String {
@@ -357,9 +367,16 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     
     //MARK: Floorplans
     func displayMap(forLevel selectedLevelIndex: Int) {
-        let levelIdentifier = orderedFloors(buildingInfo: buildingInfo)![selectedLevelIndex].identifier
-        if floorplans[levelIdentifier] != nil {
-            displayFloorplan(forLevel: levelIdentifier)
+        guard let buildingInfo = buildingInfo else {
+            Logger.logDebugMessage("Building info not set in PositioningViewController")
+            return
+        }
+        guard let floor = orderedFloors(buildingInfo: buildingInfo)?[selectedLevelIndex] else {
+            Logger.logDebugMessage("Floor not found on building: \(buildingInfo)")
+            return
+        }
+        if floorplans[floor.identifier] != nil {
+            displayFloorPlan(forFloor: floor)
             self.mapReadinessChecker.currentFloorMapLoaded()
         } else {
             let title = NSLocalizedString("positioning.error.emptyFloor.alert.title",
@@ -374,8 +391,8 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
                     if let imageData = imageData {
                         let image =  UIImage.init(data: imageData, scale: UIScreen.main.scale)
                         let scaledImage = ImageUtils.scaleImage(image: image!)
-                        self.floorplans[levelIdentifier] = scaledImage
-                        self.displayFloorplan(forLevel: levelIdentifier)
+                        self.floorplans[floor.identifier] = scaledImage
+                        self.displayFloorPlan(forFloor: floor)
                         self.mapReadinessChecker.currentFloorMapLoaded()
                     } else {
                         self.showAlertMessage(title: title, message: message, alertType: .otherAlert)
@@ -387,21 +404,16 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         }
     }
     
-    func displayFloorplan(forLevel levelIdentifier: String?) {
+    func displayFloorPlan(forFloor floor: SITFloor) {
         self.mapOverlay.map = nil
         let bounds: SITBounds = buildingInfo!.building.bounds()
         let coordinateBounds = GMSCoordinateBounds(coordinate: bounds.southWest, coordinate: bounds.northEast)
-        let mapOverlay = GMSGroundOverlay(bounds: coordinateBounds, icon: floorplans[levelIdentifier!])
+        let mapOverlay = GMSGroundOverlay(bounds: coordinateBounds, icon: floorplans[floor.identifier])
         
         self.mapOverlay = mapOverlay
         self.mapOverlay.bearing = CLLocationDirection(buildingInfo!.building.rotation.degrees())
         self.mapOverlay.map = mapView
-        if (!(SITNavigationManager.shared().isRunning())) {
-            displayPois(onFloor: levelIdentifier)
-        } else {
-            self.cleanPois()
-            displayDestinationMarker(floor: levelIdentifier)
-        }
+        displayMarkers(forFloor: floor, isUserNavigating: SITNavigationManager.shared().isRunning())
     }
     
     func orderedFloors(buildingInfo: SITBuildingInfo?) -> [SITFloor]? {
@@ -472,7 +484,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
             let shouldDisplayLevelName = !(level.name.isEmpty || (level.name == "<null>"))
             let textToDisplay: String = shouldDisplayLevelName ? level.name : String(level.floor)
             cell?.textLabel?.text = String(format: "%@", textToDisplay)
-            cell?.backgroundColor = self.getBackgroundColor(row: indexPath.row, floorIdentifier: level.identifier)
+            cell?.backgroundColor = getBackgroundColor(forFloor: level, atRow: indexPath.row)
         }
         return cell!
     }
@@ -589,55 +601,55 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     }
     
     func mapView(_ mapView: GMSMapView, didTap marker: GMSMarker) -> Bool {
-        select(marker: SitumMarker(from: marker))
+        select(gmsMarker: marker)
         return true
     }
     
     func mapView(_ mapView: GMSMapView, didTapAt coordinate: CLLocationCoordinate2D) {
+        // at this point google maps selectedMarker should be nil (library is in charge of this right now)
         deselect(marker: lastSelectedMarker)
     }
     
     func mapView(_ mapView: GMSMapView, didLongPressAt coordinate: CLLocationCoordinate2D) {
-        deselect(marker: lastSelectedMarker)
-        guard let info = buildingInfo else {
-            Logger.logErrorMessage("At this moment buildingInfo must be set")
+        guard let buildingInfo = buildingInfo else {
+            Logger.logDebugMessage("Building info not set in PositioningViewController")
+            return
+        }
+        guard let floor = orderedFloors(buildingInfo: buildingInfo)?[selectedLevelIndex] else {
+            Logger.logDebugMessage("Floor not found on building: \(buildingInfo)")
             return
         }
         guard let manager = presenter?.locationManager else {
             Logger.logErrorMessage("At this moment a manager should exist attached to the presenter instance")
             return
         }
-    
-        let floorId = orderedFloors(buildingInfo: info)![selectedLevelIndex].identifier
+        
+        deselect(marker: lastSelectedMarker)
         if !LocationManagerFactory.isFake(object: manager) {
-            longPressAction(coordinate: coordinate, floorId: floorId)
+            longPressAction(at: coordinate, forFloor: floor)
         } else {
-            fakeLongPressAction(buildingInfo: info, locationManager: manager, coordinate: coordinate,
-                floorId: floorId)
+            fakeLongPressAction(in: buildingInfo, with: manager, at: coordinate, forFloor: floor)
         }
     }
     
     private func fakeLongPressAction(
-        buildingInfo: SITBuildingInfo,
-        locationManager: SITLocationInterface,
-        coordinate: CLLocationCoordinate2D,
-        floorId: String
+        in buildingInfo: SITBuildingInfo,
+        with locationManager: SITLocationInterface,
+        at coordinate: CLLocationCoordinate2D,
+        forFloor floor: SITFloor
     ) {
         fakeUI = FakeLocationUIBuilder(buildingInfo: buildingInfo, locationManager: locationManager)
         let alert = fakeUI!.createFakeActionsAlert(
             coordinate: coordinate,
-            floorId: floorId,
+            floorId: floor.identifier,
             defaultAction: { [weak self] point in
-                self?.longPressAction(coordinate: point.coordinate(), floorId: point.floorIdentifier)
+                self?.longPressAction(at: coordinate, forFloor: floor)
             })
         present(alert, animated: true, completion: nil)
     }
     
-    private func longPressAction(coordinate: CLLocationCoordinate2D, floorId: String) {
-        createAndShowCustomMarkerIfOutsideRoute(
-            atCoordinate: coordinate,
-            atFloor: floorId
-        )
+    private func longPressAction(at coordinate: CLLocationCoordinate2D, forFloor floor: SITFloor) {
+        createAndShowCustomMarkerIfOutsideRoute(atCoordinate: coordinate, forFloor: floor)
     }
     
     func mapViewSnapshotReady(_ mapView: GMSMapView) {
@@ -682,9 +694,8 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
             return
         }
         select(floor: indexPath)
-        let gsmMarker = self.createMarker(withCoordinate: location, floorId: floor.identifier)
-        let marker = SitumMarker(from: gsmMarker)
-        select(marker: marker) { [weak self] in
+        createAndShowCustomMarkerIfOutsideRoute(atCoordinate: location, forFloor: floor)
+        select(marker: lastCustomMarker!) { [weak self] in
             guard let positioningVC = self else { return }
             self?.startNavigation()
             let point = SITPoint(building: positioningVC.buildingInfo!.building, floorIdentifier: floor.identifier,
@@ -786,13 +797,10 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     }
     
     func showRoute(route: SITRoute) {
-        self.changeNavigationButtonVisibility(isVisible: false)
-        if let destinationMarker = destinationMarker {
-            let floorIdentifier: String = self.getFloorIdFromMarker(marker: destinationMarker)
-            self.showPois(visible: false)
-            if floorIdentifier == orderedFloors(buildingInfo: buildingInfo)?[self.selectedLevelIndex].identifier {
-                self.destinationMarker?.setMapView(mapView: self.mapView)
-            }
+        changeNavigationButtonVisibility(isVisible: false)
+       
+        if let floor = orderedFloors(buildingInfo: buildingInfo)?[self.selectedLevelIndex] {
+            displayMarkers(forFloor: floor, isUserNavigating: true)
         }
     }
     
@@ -812,23 +820,26 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         self.updateUI(with: location)
     }
     
-    func showPois(visible: Bool) {
-        for marker in poiMarkers {
-            marker.map = visible ? self.mapView : nil;
-        }
-    }
-    
-    func createAndShowCustomMarkerIfOutsideRoute(atCoordinate coordinate: CLLocationCoordinate2D, atFloor floorId: String) {
-        if (!self.isUserNavigating()) {
+    func createAndShowCustomMarkerIfOutsideRoute(
+        atCoordinate coordinate: CLLocationCoordinate2D,
+        forFloor floor: SITFloor
+    ) {
+        if (!isUserNavigating()) {
             if inside(coordinate: coordinate) {
-                self.removeLastCustomMarkerIfOutsideRoute()
-                self.lastCustomMarker = SitumMarker(from: self.createMarker(withCoordinate: coordinate, floorId: floorId))
-                let mainLabel = NSLocalizedString("positioning.customDestination",
+                removeLastCustomMarkerIfOutsideRoute()
+                lastCustomMarker = SitumMarker(coordinate: coordinate, floor: floor)
+                lastSelectedMarker = lastCustomMarker
+                containerInfoBarMap?.setLabels(primary: lastCustomMarker!.title, secondary: buildingName)
+                changeNavigationButtonVisibility(isVisible: true)
+                displayMarkers(forFloor: floor, isUserNavigating: false)
+            } else {
+                let title = NSLocalizedString("positioning.error.outsideBuilding.title",
                     bundle: SitumMapsLibrary.bundle,
-                    comment: "Shown to user when select a destination (destination is any free point that user selects on the map)")
-                self.containerInfoBarMap?.setLabels(primary: mainLabel, secondary: self.buildingName)
-                self.changeNavigationButtonVisibility(isVisible: true)
-                self.lastSelectedMarker = self.lastCustomMarker
+                    comment: "Alert title error when the user try to set a custom location outside building")
+                let message = NSLocalizedString("positioning.error.outsideBuilding.message",
+                    bundle: SitumMapsLibrary.bundle,
+                    comment: "Alert title message when the user try to set a custom location outside building")
+                showAlertMessage(title: title, message: message, alertType: .otherAlert)
             }
         }
     }
@@ -891,17 +902,17 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         return self.destinationMarker != nil
     }
     
-    func getBackgroundColor(row: Int, floorIdentifier: String?) -> UIColor {
+    func getBackgroundColor(forFloor floor: SITFloor, atRow row: Int) -> UIColor {
         var color: UIColor
         
-        if row == self.selectedLevelIndex {
+        if row == selectedLevelIndex {
             color = UIColor.lightGray
         } else {
             color = UIColor.white
         }
         
         if let presenter = presenter {
-            if presenter.isSameFloor(floorIdentifier: floorIdentifier) {
+            if presenter.isSameFloor(floorIdentifier: floor.identifier) {
                 color = UIColor(red: 0x00 / 255.0, green: 0xa1 / 255.0, blue: 0xdf / 255.0, alpha: 1)
                 
                 // Only affected if customization is declared
@@ -921,16 +932,6 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
             }
         }
         return indexPath;
-    }
-    
-    func getFloorIdFromMarker(marker: SitumMarker?) -> String {
-        var floorIdentifier: String = ""
-        if let floorId = marker?.gmsMarker.userData as? String {
-            floorIdentifier = floorId
-        } else if let selectedPOI = marker?.poi {
-            floorIdentifier = selectedPOI.position().floorIdentifier
-        }
-        return floorIdentifier
     }
     
     func generateAndPrintRoutePathWithRouteSegments(segments: Array<SITRouteSegment>, selectedFloor: SITFloor) {
@@ -990,14 +991,14 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         for polyline in self.polyline {
             polyline.map = nil
         }
-        self.displayPois(onFloor: orderedFloors(buildingInfo: buildingInfo)?[self.selectedLevelIndex].identifier)
         self.removeLastCustomMarker()
         self.destinationMarker?.setMapView(mapView: nil)
         self.notifyEndOfNavigation(status: status, marker: self.destinationMarker)
         self.destinationMarker = nil
-        
-        // hide selected point
-        self.mapView.selectedMarker = nil
+        self.lastSelectedMarker = nil
+        if let floor = orderedFloors(buildingInfo: buildingInfo)?[self.selectedLevelIndex] {
+            displayMarkers(forFloor: floor, isUserNavigating: false)
+        }
     }
     
     private func notifyEndOfNavigation(status: NavigationStatus, marker: SitumMarker?) {
@@ -1120,13 +1121,27 @@ extension PositioningViewController {
     }
     
     func select(poi: SITPOI, success: @escaping () -> Void) throws {
-        if let indexpath = getIndexPath(floorId: poi.position().floorIdentifier) {
-            select(floor: indexpath)
-        }
-        if let markerPoi = poiMarkers.first(where: { ($0.userData as! SITPOI).id == poi.id }) {
-            select(marker: SitumMarker(from: markerPoi), success: success)
+        guard let indexPath = getIndexPath(floorId: poi.position().floorIdentifier),
+            let renderer = markerRenderer else { return }
+        
+        select(floor: indexPath)
+        if let markerPoi = renderer.searchMarker(byPOI: poi) {
+            select(marker: markerPoi, success: success)
         } else {
             throw WayfindingError.invalidPOI
+        }
+    }
+    
+    func select(gmsMarker: GMSMarker) {
+        guard let renderer = markerRenderer else { return }
+        if renderer.isClusteringEnabled && renderer.isClusterGMSMarker(gmsMarker) {
+            renderer.selectGMSClusterMarker(gmsMarker)
+        } else {
+            guard  let marker = renderer.searchMarker(byGMSMarker: gmsMarker) else {
+                Logger.logDebugMessage("Marker should be in renderer, otherwise user selects a marker that the app is not handling correctly")
+                return
+            }
+            select(marker: marker, success: {})
         }
     }
     
@@ -1140,14 +1155,14 @@ extension PositioningViewController {
         if marker != lastSelectedMarker {
             deselect(marker: lastSelectedMarker)
         }
-        
-        loadIcon(selected: true, poi: marker.poi!, map: false, marker: marker.gmsMarker)
+    
+        markerRenderer?.selectMarker(marker)
         
         CATransaction.begin()
         CATransaction.setValue(0.5, forKey: kCATransactionAnimationDuration)
         CATransaction.setCompletionBlock({
             // self.mapView.selectedMarker = marker.gmsMarker // tooltip sobre POI
-            if marker.isPoiMarker() {
+            if marker.isPoiMarker {
                 self.poiMarkerWasSelected(poiMarker: marker)
             }
             self.lastSelectedMarker = marker
@@ -1158,14 +1173,15 @@ extension PositioningViewController {
     }
     
     func deselect(marker: SitumMarker?) {
-        mapView.selectedMarker = nil
         self.removeLastCustomMarkerIfOutsideRoute()
         self.changeNavigationButtonVisibility(isVisible: false)
         self.updateInfoBarLabelsIfNotInsideRoute(mainLabel: self.buildingName)
         self.lastSelectedMarker = nil
-        if let umarker = marker, umarker.isPoiMarker() {
-            poiMarkerWasDeselected(poiMarker: umarker)
-            loadIcon(selected: false, poi: umarker.poi!, map: false, marker: umarker.gmsMarker)
+        if let marker = marker {
+            if marker.isPoiMarker {
+                poiMarkerWasDeselected(poiMarker: marker)
+            }
+            markerRenderer?.deselectMarker(marker)
         }
     }
     
@@ -1201,37 +1217,27 @@ extension PositioningViewController {
         delegateNotifier?.notifyOnPOIDeselected(poi: poi, buildingInfo: buildingInfo)
     }
     
-    func cleanPois() {
-        for poiMarker in poiMarkers {
-            poiMarker.map = nil
-        }
-        poiMarkers.removeAll()
-    }
-    
-    func displayDestinationMarker(floor: String?) {
-        let floorIdentifier: String = self.getFloorIdFromMarker(marker: self.destinationMarker!)
-        let mapView = (floor == floorIdentifier) ? self.mapView : nil
-        self.destinationMarker?.setMapView(mapView: mapView)
-    }
-    
-    func displayPois(onFloor floorIdentifier: String?) {
-        self.cleanPois()
-        var poisInSelectedFloor: Array<SITPOI> = Array()
-        for poi in buildingInfo!.indoorPois {
-            if poi.position().floorIdentifier == floorIdentifier {
-                poisInSelectedFloor.append(poi)
+    func displayMarkers(forFloor floor: SITFloor, isUserNavigating: Bool) {
+        guard let renderer = markerRenderer else { return }
+        if !isUserNavigating {
+            renderer.displayPOIMarkers(forFloor: floor)
+            if let customMarker = lastCustomMarker {
+                renderer.displayLongPressMarker(customMarker, forFloor: floor)
             }
-        }
-        
-        for poi in poisInSelectedFloor {
-            if let marker = self.createMarker(withPOI: poi) {
-                self.poiMarkers.append(marker)
-                if poi == lastSelectedMarker?.poi && self.mapView.selectedMarker == nil {
-                    self.mapView.selectedMarker = marker
+            
+            // in the future selection should be encapsulated in some other class to abstract Google maps
+            for marker in renderer.markers {
+                if marker == lastSelectedMarker {
+                    select(marker: marker)
                 }
             }
+        } else {
+            if let marker = destinationMarker {
+               renderer.displayOnlyDestinationMarker(marker, forFloor: floor)
+            } else {
+                Logger.logDebugMessage("Destination will not be shown becuase there is no destinationMarker selected")
+            }
         }
-        poisInSelectedFloor.removeAll()
     }
     
     func updateUserMarker(with location: SITLocation) {
@@ -1286,43 +1292,20 @@ extension PositioningViewController {
     func getCategoryFromMarker(marker: SitumMarker?) -> DestinationCategory? {
         guard let marker = marker else { return nil }
         
-        if marker.isPoiMarker() {
-            return .poi(marker.poi!)
+        if let poi = marker.poi {
+            return .poi(poi)
         } else {
             let coordinate = CLLocationCoordinate2D(
                 latitude: marker.gmsMarker.position.latitude,
                 longitude: marker.gmsMarker.position.longitude
             )
-            let floorId = getFloorIdFromMarker(marker: marker)
             let point = SITPoint(
                 building: buildingInfo!.building,
-                floorIdentifier: floorId,
+                floorIdentifier: marker.floorIdentifier,
                 coordinate: coordinate
             )
             return .location(point)
         }
-    }
-    
-    func createMarker(withPOI poi: SITPOI, selected: Bool = false) -> GMSMarker? {
-        let coordinate = poi.position().coordinate()
-        let poiMarker = GMSMarker(position: coordinate)
-        poiMarker.title = poi.name
-        poiMarker.userData = poi
-        loadIcon(selected: false, poi: poi, map: true, marker: poiMarker)
-        return poiMarker
-    }
-    
-    func createMarker(withCoordinate coordinate: CLLocationCoordinate2D, floorId floor: String) -> GMSMarker {
-        let marker: GMSMarker = GMSMarker(position: coordinate)
-        marker.title = NSLocalizedString(
-            "positioning.customDestination",
-            bundle: SitumMapsLibrary.bundle,
-            comment: "Shown to user when select a destination (destination is any free point that user selects on the map)"
-        )
-        marker.userData = floor
-        marker.map = self.mapView
-        
-        return marker
     }
     
     func showPoiNames() -> Bool {
@@ -1331,22 +1314,6 @@ extension PositioningViewController {
         }
         
         return false
-    }
-    
-    func loadIcon(selected: Bool, poi: SITPOI, map: Bool, marker: GMSMarker) {
-        iconsStore.obtainIconFor(category: poi.category) { items in
-            if let icon = selected ? items?[1] : items?[0] {
-                let color = UIColor(hex: "#5b5b5bff") ?? UIColor.gray
-                let title = poi.name.uppercased()
-                marker.icon = self.showPoiNames() ?
-                icon.setTitle(title: title, size: 12.0, color: color, weight: .semibold) :
-                icon
-            }
-            
-            if map {
-                marker.map = self.mapView
-            }
-        }
     }
 }
 
