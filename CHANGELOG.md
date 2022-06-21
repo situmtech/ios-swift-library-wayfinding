@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 All non released changes should be in CHANGELOG_UNRELEASED.md file
 
 ---------
+## [0.7.0] - 2022-06-16
+
+### Added:
+* Add new method setEnablePoiClustering(enablePoisClustering: Bool) in LibrarySettings to activate or deactivate marker clustering of pois displayed in the map
+
+
 ## [0.6.0] - 2022-06-16
 
 ### Added:
