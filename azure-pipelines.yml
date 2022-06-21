@@ -82,7 +82,10 @@ steps:
     fi
 
 - script: |
-    pod spec lint --skip-import-validation --allow-warnings --verbose  
+    # Can only be checked when the tag exists
+    if [ "$(branch)" == "master" ]
+      pod spec lint --skip-import-validation --allow-warnings --verbose  
+    fi
   displayName: Lint cocoapods spec
 
 - script: |
