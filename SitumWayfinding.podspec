@@ -12,6 +12,10 @@ Pod::Spec.new do |s|
   s.summary          = 'Indoor Location for iOS.'
   s.static_framework = true
 
+  # arm64 is exclude in Google-Maps-iOS-Utils
+  s.user_target_xcconfig = { 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'arm64' }
+  s.pod_target_xcconfig = { 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'arm64' }
+
   s.description      = <<-DESC
     With Situm IPS platform you can develop your wayfinding solution from zero, and with the module Situm WYF you can easily integrate guiding functionality in an existing APP to improve your visitors experience, whether in hospitals, malls, airports, corporate headquarters or convention centers.
                        DESC
