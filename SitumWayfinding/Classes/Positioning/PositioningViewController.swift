@@ -28,7 +28,6 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     @IBOutlet weak var levelsTableView: UITableView!
     @IBOutlet weak var levelsTableHeightConstaint: NSLayoutConstraint!
     @IBOutlet weak var centerButton: UIButton!
-    @IBOutlet weak var lockUnlock: UIButton!
     @IBOutlet weak var backButton: UIBarButtonItem!
     @IBOutlet weak var numberBeaconsRangedView: UIView!
     @IBOutlet weak var numberBeaconsRangedLabel: UILabel!
@@ -743,19 +742,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         //        self.changeNavigationButtonVisibility(isVisible: false)
         presenter?.centerViewInUserLocation()
     }
-    
-    @IBAction
-    func lockUnlockCamera(_ sender: UIButton) {
-        if self.lock {
-            self.unlockCamera()
-        } else {
-            if let building = buildingInfo?.building {
-                let cameraOption = self.prepareCamera(building: building)
-                self.moveCamera(options: cameraOption)
-            }
-        }
-    }
-    
+
     //MARK: PositioningView protocol methods
     func showNumberOfBeaconsRanged(text: Int) {
         if (self.numberBeaconsRangedView.isHidden) {
@@ -1099,7 +1086,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         return SITCameraOptions(minZoom: self.mapView.camera.zoom, maxZoom: self.mapView.maxZoom, southWestCoordinate: building.bounds().southWest, northEastCooordinate: building.bounds().northEast)
     }
     
-    func moveCamera(options: SITCameraOptions) {
+    func lockCamera(options: SITCameraOptions) {
         self.lock = true
         let bounds = GMSCoordinateBounds(coordinate: options.southWestCoordinate, coordinate: options.northEastCooordinate)
         self.mapView.cameraTargetBounds = bounds
