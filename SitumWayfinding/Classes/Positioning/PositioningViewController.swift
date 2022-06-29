@@ -243,10 +243,6 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         mapView.camera = camera
     }
     
-    func limitMapToThisBuilding() {
-        mapView.setMinZoom(11, maxZoom: 14)
-    }
-    
     func initializePositioningUIElements() {
         initializeNavigationBar()
         initializeIcons()
@@ -969,6 +965,8 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         }
     }
     
+    
+    
     //MARK: Stop methods
     func stopNavigationByUser() {
         stopNavigation(status: .canceled)
@@ -1103,7 +1101,11 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     
     func moveCamera(options: SITCameraOptions) {
         self.lock = true
-        self.mapView.cameraTargetBounds = GMSCoordinateBounds(coordinate: options.southWestCoordinate, coordinate: options.northEastCooordinate)
+        let bounds = GMSCoordinateBounds(coordinate: options.southWestCoordinate, coordinate: options.northEastCooordinate)
+        let update = GMSCameraUpdate.fit(bounds, withPadding: 0.0)
+        self.mapView.moveCamera(update)
+        self.mapView.cameraTargetBounds = bounds
+        self.actualZoom = self.mapView.maxZoom
     }
     
     func unlockCamera() {
