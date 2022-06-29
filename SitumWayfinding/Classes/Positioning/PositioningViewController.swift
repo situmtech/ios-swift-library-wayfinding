@@ -1102,10 +1102,10 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     func moveCamera(options: SITCameraOptions) {
         self.lock = true
         let bounds = GMSCoordinateBounds(coordinate: options.southWestCoordinate, coordinate: options.northEastCooordinate)
+        self.mapView.cameraTargetBounds = bounds
         let update = GMSCameraUpdate.fit(bounds, withPadding: 0.0)
         self.mapView.moveCamera(update)
-        self.mapView.cameraTargetBounds = bounds
-        self.actualZoom = self.mapView.maxZoom
+        self.mapView.setMinZoom(self.mapView.camera.zoom - 0.1, maxZoom: self.mapView.maxZoom)
     }
     
     func unlockCamera() {
