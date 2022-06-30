@@ -1,2 +1,2 @@
 ### Changed:
-* Adjust zoom in method enableOneBuildingMode(buildingId: String) and enableOneBuildingMode(building: SITBuilding) in SitumMapsLibrary. The zoom fits on the building and does not allow to move away from it
+* Corrected methods enableOneBuildingMode(buildingId: String) and enableOneBuildingMode(building: SITBuilding) in SitumMapsLibrary to limit the minimun zoom to fit on the building bounds
