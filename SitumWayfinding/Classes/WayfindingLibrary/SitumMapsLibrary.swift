@@ -289,7 +289,7 @@ import GoogleMaps
     public func lockCameraToBuilding(building: SITBuilding) {
         guard let positioningController = toPresentViewController else { return }
         let cameraOption = positioningController.prepareCamera(building: building)
-        positioningController.moveCamera(options: cameraOption)
+        positioningController.lockCamera(options: cameraOption)
     }
     
     /**
@@ -303,7 +303,7 @@ import GoogleMaps
             switch result {
                 case .success(let building):
                     let cameraOption = positioningController.prepareCamera(building: building)
-                    positioningController.moveCamera(options: cameraOption)
+                    positioningController.lockCamera(options: cameraOption)
                     completion(.success(building))
                 case .failure(let error):
                     completion(.failure(error))

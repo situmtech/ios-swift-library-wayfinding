@@ -28,7 +28,6 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     @IBOutlet weak var levelsTableView: UITableView!
     @IBOutlet weak var levelsTableHeightConstaint: NSLayoutConstraint!
     @IBOutlet weak var centerButton: UIButton!
-    @IBOutlet weak var lockUnlock: UIButton!
     @IBOutlet weak var backButton: UIBarButtonItem!
     @IBOutlet weak var numberBeaconsRangedView: UIView!
     @IBOutlet weak var numberBeaconsRangedLabel: UILabel!
@@ -241,10 +240,6 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         
         let camera = GMSCameraPosition.camera(withLatitude: latitude, longitude: longitude, zoom: zoom)
         mapView.camera = camera
-    }
-    
-    func limitMapToThisBuilding() {
-        mapView.setMinZoom(11, maxZoom: 14)
     }
     
     func initializePositioningUIElements() {
@@ -747,19 +742,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         //        self.changeNavigationButtonVisibility(isVisible: false)
         presenter?.centerViewInUserLocation()
     }
-    
-    @IBAction
-    func lockUnlockCamera(_ sender: UIButton) {
-        if self.lock {
-            self.unlockCamera()
-        } else {
-            if let building = buildingInfo?.building {
-                let cameraOption = self.prepareCamera(building: building)
-                self.moveCamera(options: cameraOption)
-            }
-        }
-    }
-    
+
     //MARK: PositioningView protocol methods
     func showNumberOfBeaconsRanged(text: Int) {
         if (self.numberBeaconsRangedView.isHidden) {
@@ -969,6 +952,8 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         }
     }
     
+    
+    
     //MARK: Stop methods
     func stopNavigationByUser() {
         stopNavigation(status: .canceled)
@@ -1101,9 +1086,13 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         return SITCameraOptions(minZoom: self.mapView.camera.zoom, maxZoom: self.mapView.maxZoom, southWestCoordinate: building.bounds().southWest, northEastCooordinate: building.bounds().northEast)
     }
     
-    func moveCamera(options: SITCameraOptions) {
+    func lockCamera(options: SITCameraOptions) {
         self.lock = true
-        self.mapView.cameraTargetBounds = GMSCoordinateBounds(coordinate: options.southWestCoordinate, coordinate: options.northEastCooordinate)
+        let bounds = GMSCoordinateBounds(coordinate: options.southWestCoordinate, coordinate: options.northEastCooordinate)
+        self.mapView.cameraTargetBounds = bounds
+        let update = GMSCameraUpdate.fit(bounds, withPadding: 0.0)
+        self.mapView.moveCamera(update)
+        self.mapView.setMinZoom(self.mapView.camera.zoom - 0.1, maxZoom: self.mapView.maxZoom)
     }
     
     func unlockCamera() {
