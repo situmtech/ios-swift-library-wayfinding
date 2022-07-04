@@ -9,7 +9,7 @@ All non released changes should be in CHANGELOG_UNRELEASED.md file
 ---------
 ## [0.8.0] - 2022-07-04
 ### Changed:
-* Corrected methods enableOneBuildingMode(buildingId: String) and enableOneBuildingMode(building: SITBuilding) in SitumMapsLibrary to limit the minimun zoom to fit on the building bounds
+* Corrected methods lockCameraToBuilding(buildingId: String) and lockCameraToBuilding(building: SITBuilding) in SitumMapsLibrary to limit the minimun zoom to fit on the building bounds
 
 ## [0.7.0] - 2022-06-20
 
