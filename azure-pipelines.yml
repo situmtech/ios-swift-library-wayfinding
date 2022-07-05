@@ -50,7 +50,7 @@ steps:
   displayName: Removing Coacoapods Caches
 
 - script: |
-    if [ "$(branch)" == "master-release" ] || [ "$(branch)" == "master" ] || [ $(echo $(branch) | grep -cE "^release-*") -eq 1 ];then
+    if [ "$(branch)" == "master-release" ] || [ "$(branch)" == "master" ] || [ $(echo $(branch) | grep -cE "^release/*") -eq 1 ];then
       buildType="Release"
     else
       buildType="Debug"
