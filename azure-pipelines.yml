@@ -50,12 +50,14 @@ steps:
   displayName: Removing Coacoapods Caches
 
 - script: |
-    if [ "$(branch)" == "master-release" ] || [ "$(branch)" == "master" ] || [ $(echo $(branch) | grep -cE "^release/*") -eq 1 ];then
+    if [ "$(branch)" == "master-release" ] || [ "$(branch)" == "master" ] || [ $(echo $(branch) | grep -cE "^release-*") -eq 1 ];then
       buildType="Release"
     else
       buildType="Debug"
     fi
-     echo "##vso[task.setvariable variable=buildType]$(echo $buildType)"
+    echo "\n[+] The buildType variable has $buildType value"
+    echo "##vso[task.setvariable variable=buildType]$(echo $buildType)"
+
   displayName: Set buildType
 
 - script: |
