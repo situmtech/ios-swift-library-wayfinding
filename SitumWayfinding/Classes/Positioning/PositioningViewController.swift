@@ -497,12 +497,13 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     //MARK: Markers
     
     func updateUserBearing(with location: SITLocation) {
+        positionDrawer?.updateUserBearing(with: location)
+        
         if isCameraCentered && PositioningUtils.hasBearingChangedEnoughToReloadUi(newBearing: location.bearing.degrees(), lastAnimatedBearing: lastAnimatedBearing) {
-            positionDrawer?.updateUserBearing(with: location)
             //Relocate camera
             mapView.animate(toBearing: CLLocationDirection(location.bearing.degrees()))
-            lastAnimatedBearing = location.bearing.degrees()
         }
+        lastAnimatedBearing = location.bearing.degrees()
     }
     
     //MARK: Handle camera
