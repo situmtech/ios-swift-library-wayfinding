@@ -313,6 +313,9 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         initializeLevelSelector()
         
         let indexPath = getDefaultFloorFirstLoad()
+        if buildingHasOnlyOneFloor() {
+            self.displayMap(forLevel: self.selectedLevelIndex)
+        }
         levelsTableView.selectRow(at: indexPath, animated: true, scrollPosition: .bottom)
         tableView(levelsTableView, didSelectRowAt: indexPath)
         levelsTableView.isHidden = false
@@ -326,6 +329,13 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         }
         
         return indexPath
+    }
+
+    private func buildingHasOnlyOneFloor() -> Bool {
+        if let buildingInfo = buildingInfo, buildingInfo.floors.count == 1 {
+            return true
+        }
+        return false
     }
     
     func initializeNavigationButton() {
