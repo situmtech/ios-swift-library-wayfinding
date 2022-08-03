@@ -137,7 +137,13 @@
 "situmMapsLibrary.error.invalidBuilding" = "The builidng ID is not correct. Please add a valid building ID in LibrarySettings";
 
 /* No comment provided by engineer. */
+"wayfindingError.buildingNotExist" = "Building does not exist";
+
+/* No comment provided by engineer. */
 "wayfindingError.invalidPoi" = "The poi selected is not valid in this building";
+
+/* No comment provided by engineer. */
+"wayfindingError.requestError" = "Error in response";
 
 /* No comment provided by engineer. */
 "wayfindingError.unknown" = "An unknown error happened";

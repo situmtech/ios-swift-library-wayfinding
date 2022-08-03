@@ -1,0 +1,149 @@
+/* Alert message after an error retrieving a building happens */
+"alert.error.building.message" = "";
+
+/* Alert title after an error retrieving a building happens */
+"alert.error.building.title" = "";
+
+/* Alert title for generic errors  */
+"alert.error.title" = "";
+
+/* Alert message when loading library */
+"alert.loading.message" = "";
+
+/* Alert title when loading library */
+"alert.loading.title" = "";
+
+/* Generic cancel action  */
+"generic.cancel" = "";
+
+/* Generic ok action */
+"generic.ok" = "";
+
+/* Less than x minutes */
+"navigation.lessThanMinutes" = "";
+
+/* No comment provided by engineer. */
+"navigation.loadingRoute" = "";
+
+/* No comment provided by engineer. */
+"navigation.nextInstruction" = "";
+
+/* Remaining time in hours */
+"navigation.remainingHours" = "";
+
+/* Remaining time in minutes */
+"navigation.remainingMinutes" = "";
+
+/* No comment provided by engineer. */
+"navigationError.noAvailableRoute" = "";
+
+/* No comment provided by engineer. */
+"navigationError.noDestinationSelected" = "";
+
+/* No comment provided by engineer. */
+"navigationError.outdoorOrigin" = "";
+
+/* No comment provided by engineer. */
+"navigationError.outsideBuilding" = "";
+
+/* No comment provided by engineer. */
+"navigationError.positionUnknown" = "";
+
+/* No comment provided by engineer. */
+"navigationError.unableToComputeRoute" = "";
+
+/* Button to go back when the user is in the positioning controller (where the map is shown) */
+"positioning.back" = "";
+
+/* No comment provided by engineer. */
+"positioning.calibrationNeeded.alert.message" = "";
+
+/* The user needs to calibrate the compass */
+"positioning.calibrationNeeded.alert.title" = "";
+
+/* Button to center map in current location of user */
+"positioning.center" = "";
+
+/* No comment provided by engineer. */
+"positioning.createMarker" = "";
+
+/* Shown to user when select a destination (destination is any free point that user selects on the map) */
+"positioning.customDestination" = "";
+
+/* Alert message to show to the user when destination was reached */
+"positioning.destinationReached.alert.message" = "";
+
+/* Alert title to show to the user when destination was reached */
+"positioning.destinationReached.alert.title" = "";
+
+/* Alert title error when download the floor plan fails */
+"positioning.error.emptyFloor.alert.message" = "";
+
+/* Alert title error when download the floor plan fails */
+"positioning.error.emptyFloor.alert.title" = "";
+
+/* Alert title error when the user does not select a destination */
+"positioning.error.noDestinationSelected.alert.title" = "";
+
+/* Alert title message when the user try to set a custom location outside building */
+"positioning.error.outsideBuilding.message" = "";
+
+/* Alert title error when the user try to set a custom location outside building */
+"positioning.error.outsideBuilding.title" = "";
+
+/* Alert title error when the user is outdoor */
+"positioning.error.positionOutdoor.alert.title" = "";
+
+/* Alert title error when the user position is unknown */
+"positioning.error.positionUnknown.alert.title" = "";
+
+/* Alert title error when WayFinding cannot compute route to destination */
+"positioning.error.unableToComputeRoute.alert.title" = "";
+
+/* Alert message to show for a long press action */
+"positioning.longPressAction.alert.message" = "";
+
+/* Alert title to show for a long press action */
+"positioning.longPressAction.alert.title" = "";
+
+/* Used to show the user the number of beacons that library detects nearby */
+"positioning.numBeacons" = "";
+
+/* No comment provided by engineer. */
+"positioning.outsideBuilding.alert.message" = "";
+
+/* Alert title to show user is outside of building */
+"positioning.outsideBuilding.alert.title" = "";
+
+/* Alert title to show user is outside of route */
+"positioning.outsideRoute.alert.title" = "";
+
+/* Placeholder for searching pois */
+"positioning.searchPois" = "";
+
+/* No comment provided by engineer. */
+"search.distance" = "";
+
+/* No comment provided by engineer. */
+"search.floor" = "";
+
+/* No comment provided by engineer. */
+"search.noResultFound" = "";
+
+/* Error when user does not set credentials */
+"situmMapsLibrary.error.credentials" = "";
+
+/* Error when user does not set correctly building id */
+"situmMapsLibrary.error.invalidBuilding" = "";
+
+/* No comment provided by engineer. */
+"wayfindingError.buildingNotExist" = "";
+
+/* No comment provided by engineer. */
+"wayfindingError.invalidPoi" = "";
+
+/* No comment provided by engineer. */
+"wayfindingError.requestError" = "";
+
+/* No comment provided by engineer. */
+"wayfindingError.unknown" = "";
