@@ -60,6 +60,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     let locManager: CLLocationManager = CLLocationManager()
     var buildingInfo: SITBuildingInfo? = nil
     var buildingName: String { return self.buildingInfo?.building.name ?? DEFAULT_BUILDING_NAME }
+    var isFirstLoadingOfFloors: Bool = true
     var actualZoom: Float = 0.0
     var selectedLevelIndex: Int = 0
     var presenter: PositioningPresenter? = nil
@@ -313,9 +314,6 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         initializeLevelSelector()
         
         let indexPath = getDefaultFloorFirstLoad()
-        if buildingHasOnlyOneFloor() {
-            self.displayMap(forLevel: self.selectedLevelIndex)
-        }
         levelsTableView.selectRow(at: indexPath, animated: true, scrollPosition: .bottom)
         tableView(levelsTableView, didSelectRowAt: indexPath)
         levelsTableView.isHidden = false
@@ -329,13 +327,6 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         }
         
         return indexPath
-    }
-
-    private func buildingHasOnlyOneFloor() -> Bool {
-        if let buildingInfo = buildingInfo, buildingInfo.floors.count == 1 {
-            return true
-        }
-        return false
     }
     
     func initializeNavigationButton() {
@@ -452,9 +443,13 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     
     func select(floor floorIndex: IndexPath) {
         let isSameLevel = floorIndex.row == self.selectedLevelIndex
-        if isSameLevel {
+        // When it is the first loading of floors, whe always load the floor. This is to avoid a bug when only one floor
+        // exists and floor is no loading because of previous condition. We should decouple tableview/load floors in the
+        // future to avoid using global flags in class
+        if isSameLevel && !isFirstLoadingOfFloors {
             return
         }
+        isFirstLoadingOfFloors = false
         if let uBuildingInfo = buildingInfo,
            let from = orderedFloors(buildingInfo: buildingInfo)?[selectedLevelIndex],
            let to = orderedFloors(buildingInfo: buildingInfo)?[floorIndex.row] {
