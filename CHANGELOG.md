@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 All non released changes should be in CHANGELOG_UNRELEASED.md file
 
 ---------
+## [0.8.1] - 2022-08-12
+### Changed
+-  Updated Situm SDK dependency to 2.52.4
+
+### Fixed
+- Fixed an error that caused release branches in pipelines to generate artifacts in debug mode
+- Fixed a bug that makes the user orientation not being updated when the screen is not centered in the user position.
+
 ## [0.8.0] - 2022-07-04
 ### Changed:
 * Corrected methods lockCameraToBuilding(buildingId: String) and lockCameraToBuilding(building: SITBuilding) in SitumMapsLibrary to limit the minimun zoom to fit on the building bounds
