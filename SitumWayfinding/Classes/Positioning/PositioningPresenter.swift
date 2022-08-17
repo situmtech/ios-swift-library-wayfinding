@@ -31,6 +31,7 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
     var directionsRequest: SITDirectionsRequest? = nil
     var route: SITRoute? = nil
     var locationManager: SITLocationInterface = SITLocationManager.sharedInstance()
+    var now = Date()
     
     var useRemoteConfig: Bool = false
 
@@ -386,16 +387,25 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
         Logger.logDebugMessage("User outside route detected: \(route.debugDescription)");
         
         if isUserIndoor() {
-            if let lastLocation = lastPositioningLocation {
-                view?.updateUI(with: lastLocation)
+            if checkRecalculate() {
+                if let lastLocation = lastPositioningLocation {
+                    view?.updateUI(with: lastLocation)
+                }
+                recalculateRoute()
             }
-            recalculateRoute()
         } else {
             view?.stopNavigation(status: .error(NavigationError.outsideBuilding))
         }
     }
     
+    private func checkRecalculate() -> Bool {
+        let endDate = Date()
+        let difference = Calendar.current.dateComponents([.second], from: self.now, to: endDate)
+        return difference.second! > 6
+    }
+    
     private func recalculateRoute() {
+        self.now = Date()
         view?.routeWillRecalculate()
         SITNavigationManager.shared().removeUpdates()
         userLocation = lastPositioningLocation
