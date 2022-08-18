@@ -32,6 +32,7 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
     var route: SITRoute? = nil
     var locationManager: SITLocationInterface = SITLocationManager.sharedInstance()
     var now = Date()
+    let timeRecalculate = 6
     
     var useRemoteConfig: Bool = false
 
@@ -400,8 +401,8 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
     
     private func checkRecalculate() -> Bool {
         let endDate = Date()
-        let difference = Calendar.current.dateComponents([.second], from: self.now, to: endDate)
-        return difference.second! > 6
+        let difference = Calendar.current.dateComponents([.second], from: now, to: endDate)
+        return difference.second! > timeRecalculate
     }
     
     private func recalculateRoute() {
