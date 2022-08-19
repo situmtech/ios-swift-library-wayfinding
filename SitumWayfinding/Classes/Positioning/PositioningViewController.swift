@@ -375,29 +375,35 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
             displayFloorPlan(forFloor: floor)
             self.mapReadinessChecker.currentFloorMapLoaded()
         } else {
-            let title = NSLocalizedString("positioning.error.emptyFloor.alert.title",
-                bundle: SitumMapsLibrary.bundle,
-                comment: "Alert title error when download the floor plan fails")
-            let message = NSLocalizedString("positioning.error.emptyFloor.alert.message",
-                bundle: SitumMapsLibrary.bundle,
-                comment: "Alert title error when download the floor plan fails")
-            let wasMapFetched = SITCommunicationManager.shared().fetchMap(
-                from: orderedFloors(buildingInfo: buildingInfo)![selectedLevelIndex],
-                withCompletion: { imageData in
-                    if let imageData = imageData {
-                        let image =  UIImage.init(data: imageData, scale: UIScreen.main.scale)
-                        let scaledImage = ImageUtils.scaleImage(image: image!)
-                        self.floorplans[floor.identifier] = scaledImage
-                        self.displayFloorPlan(forFloor: floor)
-                        self.mapReadinessChecker.currentFloorMapLoaded()
-                    } else {
-                        self.showAlertMessage(title: title, message: message, alertType: .otherAlert)
-                    }
-                })
+            let wasMapFetched = fetchMap(floor: floor)
             if !wasMapFetched {
-                self.showAlertMessage(title: title, message: message, alertType: .otherAlert)
+                usleep(500_000) // retry fetch if map could not be fetched after timeout
+                let _ = fetchMap(floor: floor)
             }
         }
+    }
+    
+    private func fetchMap(floor: SITFloor) -> Bool {
+        let title = NSLocalizedString("positioning.error.emptyFloor.alert.title",
+                bundle: SitumMapsLibrary.bundle,
+                comment: "Alert title error when download the floor plan fails")
+        let message = NSLocalizedString("positioning.error.emptyFloor.alert.message",
+                bundle: SitumMapsLibrary.bundle,
+                comment: "Alert title error when download the floor plan fails")
+
+        return SITCommunicationManager.shared().fetchMap(
+            from: orderedFloors(buildingInfo: buildingInfo)![selectedLevelIndex],
+            withCompletion: { imageData in
+                if let imageData = imageData {
+                    let image =  UIImage.init(data: imageData, scale: UIScreen.main.scale)
+                    let scaledImage = ImageUtils.scaleImage(image: image!)
+                    self.floorplans[floor.identifier] = scaledImage
+                    self.displayFloorPlan(forFloor: floor)
+                    self.mapReadinessChecker.currentFloorMapLoaded()
+                } else {
+                    self.showAlertMessage(title: title, message: message, alertType: .otherAlert)
+                }
+            })
     }
     
     func displayFloorPlan(forFloor floor: SITFloor) {
