@@ -137,7 +137,13 @@
 "situmMapsLibrary.error.invalidBuilding" = "組み込みIDが正しくありません。LibrarySettings で有効な建物IDを追加してください。";
 
 /* No comment provided by engineer. */
+"wayfindingError.buildingNotExist" = "ビルディングが存在しません";
+
+/* No comment provided by engineer. */
 "wayfindingError.invalidPoi" = "選択されたポイはこの建物では無効です";
+
+/* No comment provided by engineer. */
+"wayfindingError.requestError" = "応答エラー";
 
 /* No comment provided by engineer. */
 "wayfindingError.unknown" = "不明なエラーが発生しました";

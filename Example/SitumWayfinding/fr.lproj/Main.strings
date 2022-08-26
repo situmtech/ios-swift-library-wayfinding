@@ -1,0 +1,24 @@
+
+/* Class = "UILabel"; text = "Use remote configuratioon"; ObjectID = "8Dl-6u-dKQ"; */
+"8Dl-6u-dKQ.text" = "Use remote configuratioon";
+
+/* Class = "UILabel"; text = "Wayfinding Example"; ObjectID = "LYZ-5T-B5U"; */
+"LYZ-5T-B5U.text" = "Wayfinding Example";
+
+/* Class = "UILabel"; text = "List of available POIs"; ObjectID = "TUz-42-YwY"; */
+"TUz-42-YwY.text" = "List of available POIs";
+
+/* Class = "UILabel"; text = "Use fake locations"; ObjectID = "UuQ-hk-WAB"; Note = "#bc-ignore!"; */
+"UuQ-hk-WAB.text" = "Use fake locations";
+
+/* Class = "UIButton"; normalTitle = "Load Wayfinding and navigate to coordinate"; ObjectID = "Z1c-hI-Wjv"; */
+"Z1c-hI-Wjv.normalTitle" = "Load Wayfinding and navigate to coordinate";
+
+/* Class = "UIButton"; normalTitle = "Load Wayfinding and navigate to POI"; ObjectID = "ey9-zA-wx2"; */
+"ey9-zA-wx2.normalTitle" = "Load Wayfinding and navigate to POI";
+
+/* Class = "UIButton"; normalTitle = "Load Wayfinding"; ObjectID = "kYz-PR-o25"; */
+"kYz-PR-o25.normalTitle" = "Load Wayfinding";
+
+/* Class = "UIButton"; normalTitle = "Load Wayfinding and select POI"; ObjectID = "xXD-lc-Tl4"; */
+"xXD-lc-Tl4.normalTitle" = "Load Wayfinding and select POI";
