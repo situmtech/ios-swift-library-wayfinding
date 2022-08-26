@@ -41,7 +41,7 @@
 "navigationError.noDestinationSelected" = "There is no destination currently selected, the navigation cannot be started. Please select a POI (or longpress to create a custom one) and try again.";
 
 /* No comment provided by engineer. */
-"navigationError.outdoorOrigin" = "User actual location is outdoor, navegation is only avaialble indoor.";
+"navigationError.outdoorOrigin" = "User actual location is outdoor, navigation is only available indoor.";
 
 /* No comment provided by engineer. */
 "navigationError.outsideBuilding" = "The user is not currently detected on the route and is out of the building. Please go back to resume navigation.";
