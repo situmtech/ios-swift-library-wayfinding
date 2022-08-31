@@ -88,7 +88,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     let DEFAULT_POI_NAME: String = "POI"
     let DEFAULT_BUILDING_NAME: String = "Current Building"
     var lock = false
-    var stairs: GMSMarker?
+    var stairs = GMSMarker()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -107,6 +107,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
                 instance.delegateNotifier?.notifyOnMapReady(map: library)
             }
         }
+        self.prepareMarkerStairs()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -1314,30 +1315,35 @@ extension PositioningViewController {
 
 extension PositioningViewController {
     func clearStairs() {
-        if self.stairs != nil {
-            self.stairs!.map = nil
-        }
+        self.stairs.map = nil
+    }
+    
+    func prepareMarkerStairs() {
+        let icon = UIImage(named: "change_floor")
+        let markerView = UIImageView(image: icon)
+        self.stairs.title = "Cambio de planta"
+        self.stairs.iconView = markerView
+    }
+    
+    func showMarkerStairs(position: CLLocationCoordinate2D) {
+        self.stairs.position = position
+        self.stairs.map = self.mapView
     }
     
     func checkChangeFloor(segments: Array<SITRouteSegment>, selectedFloor: SITFloor) {
         self.clearStairs()
         
         for segment in segments {
-            
             if segment.floorIdentifier == selectedFloor.identifier {
                 if segments.count > 1 {
                     let last = segment.points.last
                     if let coordinates = last?.coordinate() {
-                        let position = CLLocationCoordinate2D(latitude: coordinates.latitude, longitude: coordinates.longitude)
-                        
-                        let icon = UIImage(named: "change_floor")
-                        let markerView = UIImageView(image: icon)
-                            
-                        
-                        self.stairs = GMSMarker(position: position)
-                        self.stairs!.title = "Cambio de planta"
-                        self.stairs!.iconView = markerView
-                        self.stairs!.map = self.mapView
+                        self.showMarkerStairs(
+                            position: CLLocationCoordinate2D(
+                                latitude: coordinates.latitude,
+                                longitude: coordinates.longitude
+                            )
+                        )
                     }
                 }
             }
