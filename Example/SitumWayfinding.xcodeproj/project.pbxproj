@@ -427,6 +427,7 @@
 				607FACDA1AFB9204008FA782 /* Base */,
 				D7EC26F127DA18A200ABD5A7 /* es */,
 				D70CE14C28B8A3F800BC9D07 /* ja */,
+				D7AE484F28B8CD1400A60FBB /* fr */,
 			);
 			name = Main.storyboard;
 			sourceTree = "<group>";
