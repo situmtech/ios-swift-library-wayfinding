@@ -443,6 +443,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     }
     
     func select(floor floorIndex: IndexPath) {
+        self.stairs.map = nil
         let isSameLevel = floorIndex.row == self.selectedLevelIndex
         if isSameLevel {
             return
@@ -962,7 +963,8 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     
     //MARK: Stop methods
     func stopNavigationByUser() {
-        self.clearStairs()
+        self.stairs.map = nil
+        self.stairs.position = CLLocationCoordinate2D(latitude: 0, longitude: 0)
         stopNavigation(status: .canceled)
     }
     
@@ -1314,15 +1316,14 @@ extension PositioningViewController {
 }
 
 extension PositioningViewController {
-    func clearStairs() {
-        self.stairs.map = nil
-    }
-    
     func prepareMarkerStairs() {
-        let icon = UIImage(named: "change_floor")
+        let icon = self.imageWithImage(
+            image: UIImage(named: "change_floor")!,
+            scaledToSize: CGSize(width: 40.0, height: 40.0)
+        )
         let markerView = UIImageView(image: icon)
-        self.stairs.title = "Cambio de planta"
         self.stairs.iconView = markerView
+        self.stairs.position = CLLocationCoordinate2D(latitude: 0, longitude: 0)
     }
     
     func showMarkerStairs(position: CLLocationCoordinate2D) {
@@ -1330,22 +1331,34 @@ extension PositioningViewController {
         self.stairs.map = self.mapView
     }
     
+    func imageWithImage(image:UIImage, scaledToSize newSize:CGSize) -> UIImage{
+        UIGraphicsBeginImageContextWithOptions(newSize, false, 0.0)
+        image.draw(in: CGRect(x: 0, y: 0, width: newSize.width, height: newSize.height))
+        let newImage:UIImage = UIGraphicsGetImageFromCurrentImageContext()!
+        UIGraphicsEndImageContext()
+        return newImage
+    }
+    
     func checkChangeFloor(segments: Array<SITRouteSegment>, selectedFloor: SITFloor) {
-        self.clearStairs()
-        
         for segment in segments {
-            if segment.floorIdentifier == selectedFloor.identifier {
+            if segment.floorIdentifier == selectedFloor.identifier &&
+                self.lastSelectedMarker?.floorIdentifier != selectedFloor.identifier {
                 if segments.count > 1 {
                     let last = segment.points.last
                     if let coordinates = last?.coordinate() {
-                        self.showMarkerStairs(
-                            position: CLLocationCoordinate2D(
-                                latitude: coordinates.latitude,
-                                longitude: coordinates.longitude
-                            )
+                        let position = CLLocationCoordinate2D(
+                            latitude: coordinates.latitude,
+                            longitude: coordinates.longitude
                         )
+                        self.showMarkerStairs(position: position)
                     }
+                } else {
+                    self.stairs.map = nil
                 }
+            }
+            
+            if self.lastSelectedMarker?.floorIdentifier == selectedFloor.identifier  {
+                self.stairs.map = nil
             }
         }
     }
