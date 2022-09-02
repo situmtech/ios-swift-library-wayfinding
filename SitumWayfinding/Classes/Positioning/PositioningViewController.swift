@@ -1324,6 +1324,8 @@ extension PositioningViewController {
         let markerView = UIImageView(image: icon)
         self.stairs.iconView = markerView
         self.stairs.position = CLLocationCoordinate2D(latitude: 0, longitude: 0)
+        self.stairs.map = nil
+
     }
     
     func showMarkerStairs(position: CLLocationCoordinate2D) {
@@ -1340,6 +1342,7 @@ extension PositioningViewController {
     }
     
     func checkChangeFloor(segments: Array<SITRouteSegment>, selectedFloor: SITFloor) {
+        self.stairs.map = nil
         for segment in segments {
             if segment.floorIdentifier == selectedFloor.identifier &&
                 self.lastSelectedMarker?.floorIdentifier != selectedFloor.identifier {
