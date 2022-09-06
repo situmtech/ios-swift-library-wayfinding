@@ -60,6 +60,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     let locManager: CLLocationManager = CLLocationManager()
     var buildingInfo: SITBuildingInfo? = nil
     var buildingName: String { return self.buildingInfo?.building.name ?? DEFAULT_BUILDING_NAME }
+    var isFirstLoadingOfFloors: Bool = true
     var actualZoom: Float = 0.0
     var selectedLevelIndex: Int = 0
     var presenter: PositioningPresenter? = nil
@@ -374,29 +375,35 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
             displayFloorPlan(forFloor: floor)
             self.mapReadinessChecker.currentFloorMapLoaded()
         } else {
-            let title = NSLocalizedString("positioning.error.emptyFloor.alert.title",
-                bundle: SitumMapsLibrary.bundle,
-                comment: "Alert title error when download the floor plan fails")
-            let message = NSLocalizedString("positioning.error.emptyFloor.alert.message",
-                bundle: SitumMapsLibrary.bundle,
-                comment: "Alert title error when download the floor plan fails")
-            let wasMapFetched = SITCommunicationManager.shared().fetchMap(
-                from: orderedFloors(buildingInfo: buildingInfo)![selectedLevelIndex],
-                withCompletion: { imageData in
-                    if let imageData = imageData {
-                        let image =  UIImage.init(data: imageData, scale: UIScreen.main.scale)
-                        let scaledImage = ImageUtils.scaleImage(image: image!)
-                        self.floorplans[floor.identifier] = scaledImage
-                        self.displayFloorPlan(forFloor: floor)
-                        self.mapReadinessChecker.currentFloorMapLoaded()
-                    } else {
-                        self.showAlertMessage(title: title, message: message, alertType: .otherAlert)
-                    }
-                })
+            let wasMapFetched = fetchMap(floor: floor)
             if !wasMapFetched {
-                self.showAlertMessage(title: title, message: message, alertType: .otherAlert)
+                usleep(500_000) // retry fetch if map could not be fetched after timeout
+                let _ = fetchMap(floor: floor)
             }
         }
+    }
+    
+    private func fetchMap(floor: SITFloor) -> Bool {
+        let title = NSLocalizedString("positioning.error.emptyFloor.alert.title",
+                bundle: SitumMapsLibrary.bundle,
+                comment: "Alert title error when download the floor plan fails")
+        let message = NSLocalizedString("positioning.error.emptyFloor.alert.message",
+                bundle: SitumMapsLibrary.bundle,
+                comment: "Alert title error when download the floor plan fails")
+
+        return SITCommunicationManager.shared().fetchMap(
+            from: orderedFloors(buildingInfo: buildingInfo)![selectedLevelIndex],
+            withCompletion: { imageData in
+                if let imageData = imageData {
+                    let image =  UIImage.init(data: imageData, scale: UIScreen.main.scale)
+                    let scaledImage = ImageUtils.scaleImage(image: image!)
+                    self.floorplans[floor.identifier] = scaledImage
+                    self.displayFloorPlan(forFloor: floor)
+                    self.mapReadinessChecker.currentFloorMapLoaded()
+                } else {
+                    self.showAlertMessage(title: title, message: message, alertType: .otherAlert)
+                }
+            })
     }
     
     func displayFloorPlan(forFloor floor: SITFloor) {
@@ -442,9 +449,13 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     
     func select(floor floorIndex: IndexPath) {
         let isSameLevel = floorIndex.row == self.selectedLevelIndex
-        if isSameLevel {
+        // When it is the first loading of floors, whe always load the floor. This is to avoid a bug when only one floor
+        // exists and floor is no loading because of previous condition. We should decouple tableview/load floors in the
+        // future to avoid using global flags in class
+        if isSameLevel && !isFirstLoadingOfFloors {
             return
         }
+        isFirstLoadingOfFloors = false
         if let uBuildingInfo = buildingInfo,
            let from = orderedFloors(buildingInfo: buildingInfo)?[selectedLevelIndex],
            let to = orderedFloors(buildingInfo: buildingInfo)?[floorIndex.row] {
