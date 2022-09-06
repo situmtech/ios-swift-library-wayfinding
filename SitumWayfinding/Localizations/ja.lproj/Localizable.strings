@@ -1,0 +1,149 @@
+/* Alert message after an error retrieving a building happens */
+"alert.error.building.message" = "ロビーの読み込み中にエラーが発生しました。もう一度お試しください。";
+
+/* Alert title after an error retrieving a building happens */
+"alert.error.building.title" = "ビル情報取得エラー";
+
+/* Alert title for generic errors  */
+"alert.error.title" = "エラー";
+
+/* Message of alert when loading library */
+"alert.loading.message" = "ちょっと待って";
+
+/* Title of alert when loading library */
+"alert.loading.title" = "読み込み中";
+
+/* Generic cancel action  */
+"generic.cancel" = "キャンセル";
+
+/* Generic ok action */
+"generic.ok" = "はい";
+
+/* Less than x minutes */
+"navigation.lessThanMinutes" = "%d 分未満";
+
+/* No comment provided by engineer. */
+"navigation.loadingRoute" = "ルート情報をロードしています。";
+
+/* No comment provided by engineer. */
+"navigation.nextInstruction" = "その後";
+
+/* Remaining time in hours */
+"navigation.remainingHours" = "%d 時間";
+
+/* Remaining time in minutes */
+"navigation.remainingMinutes" = "%d 分";
+
+/* No comment provided by engineer. */
+"navigationError.noAvailableRoute" = "選択した場所の間にルートがありません。別のルートを計算するか、アクセシビリティモードを切り替えてください。";
+
+/* No comment provided by engineer. */
+"navigationError.noDestinationSelected" = "現在選択されている目的地がないため、ナビゲーションを開始できません。POI（またはカスタムのものを作成するには長押し）を選択して再度お試し下さい。";
+
+/* No comment provided by engineer. */
+"navigationError.outdoorOrigin" = "ユーザー実際の場所は屋外、ナビゲーションのみ屋内利用可能です。";
+
+/* No comment provided by engineer. */
+"navigationError.outsideBuilding" = "ユーザーは現在ルート上で検出されておらず、建物の外にいます。ナビゲーションを再開するには戻ってください。";
+
+/* No comment provided by engineer. */
+"navigationError.positionUnknown" = "ユーザーの実際の位置情報が不明です。ルートを計算する前に位置情報を有効にして、もう一度お試しください。";
+
+/* No comment provided by engineer. */
+"navigationError.unableToComputeRoute" = "ロビーの読み込み中にエラーが発生しました。もう一度お試しください。";
+
+/* Button to go back when the user is in the positioning controller (where the map is shown) */
+"positioning.back" = "戻る";
+
+/* No comment provided by engineer. */
+"positioning.calibrationNeeded.alert.message" = "お使いのデバイスのコンパスは現在較正されていません。最適なナビゲーション体験を得るために再校正してください。";
+
+/* The user needs to calibrate the compass */
+"positioning.calibrationNeeded.alert.title" = "コンパスのキャリブレーションに失敗しました。";
+
+/* Button to center map in current location of user */
+"positioning.center" = "中央";
+
+/* No comment provided by engineer. */
+"positioning.createMarker" = "マーカーを作成";
+
+/* Shown to user when select a destination (destination is any free point that user selects on the map) */
+"positioning.customDestination" = "カスタムの保存先";
+
+/* Alert message to show to the user when destination was reached */
+"positioning.destinationReached.alert.message" = "目的地に到着しました";
+
+/* Alert title to show to the user when destination was reached */
+"positioning.destinationReached.alert.title" = "ゴールに到着";
+
+/* Alert title error when download the floor plan fails */
+"positioning.error.emptyFloor.alert.message" = "ロビーの読み込み中にエラーが発生しました。もう一度お試しください。";
+
+/* Alert title error when download the floor plan fails */
+"positioning.error.emptyFloor.alert.title" = "空のフロアプラン";
+
+/* Alert title error when the user does not select a destination */
+"positioning.error.noDestinationSelected.alert.title" = "キャリブレーションが選択されていません";
+
+/* Alert title error when the user position is unknown */
+"positioning.error.outsideBuilding.message" = "現在、屋外の目的地を作成することはできません。";
+
+/* Alert title error when the user position is unknown */
+"positioning.error.outsideBuilding.title" = "カスタムの保存先";
+
+/* Alert title error when the user is outdoor */
+"positioning.error.positionOutdoor.alert.title" = "屋外の位置";
+
+/* Alert title error when the user position is unknown */
+"positioning.error.positionUnknown.alert.title" = "不明な位置";
+
+/* Alert title error when WayFinding cannot compute route to destination */
+"positioning.error.unableToComputeRoute.alert.title" = "ルートを計算できません";
+
+/* Alert message to show for a long press action */
+"positioning.longPressAction.alert.message" = "アクションの選択";
+
+/* Alert title to show for a long press action */
+"positioning.longPressAction.alert.title" = "長押しアクション";
+
+/* Used to show the user the number of beacons that library detects nearby */
+"positioning.numBeacons" = "%d beacons";
+
+/* Alert message to show user is outside of route */
+"positioning.outsideBuilding.alert.message" = "ユーザーは現在建物の外にいます。ユーザーが戻ったときに位置を再開します。";
+
+/* Alert title to show user is outside of building */
+"positioning.outsideBuilding.alert.title" = "User not in building";
+
+/* Alert title to show user is outside of route */
+"positioning.outsideRoute.alert.title" = "ルート外のユーザー";
+
+/* Placeholder for searching pois */
+"positioning.searchPois" = "毒を検索";
+
+/* No comment provided by engineer. */
+"search.distance" = "距離";
+
+/* No comment provided by engineer. */
+"search.floor" = "フロア";
+
+/* No comment provided by engineer. */
+"search.noResultFound" = "検索結果が見つかりませんでした";
+
+/* Error when user does not set credentials */
+"situmMapsLibrary.error.credentials" = "load(buildingWithId:) を呼び出す前に、setCredentials() で認証情報を設定する必要があります。";
+
+/* Error when user does not set correctly building id */
+"situmMapsLibrary.error.invalidBuilding" = "組み込みIDが正しくありません。LibrarySettings で有効な建物IDを追加してください。";
+
+/* No comment provided by engineer. */
+"wayfindingError.buildingNotExist" = "ビルディングが存在しません";
+
+/* No comment provided by engineer. */
+"wayfindingError.invalidPoi" = "選択されたポイはこの建物では無効です";
+
+/* No comment provided by engineer. */
+"wayfindingError.requestError" = "応答エラー";
+
+/* No comment provided by engineer. */
+"wayfindingError.unknown" = "不明なエラーが発生しました";
