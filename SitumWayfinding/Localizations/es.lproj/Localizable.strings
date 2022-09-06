@@ -137,7 +137,13 @@
 "situmMapsLibrary.error.invalidBuilding" = "El identificador del edificio no es correcto. Por favor, introduce un identificador correcto en LibrarySettings";
 
 /* No comment provided by engineer. */
+"wayfindingError.buildingNotExist" = "El edificio no existe";
+
+/* No comment provided by engineer. */
 "wayfindingError.invalidPoi" = "El poi seleccionado no es válido en este edificio";
+
+/* No comment provided by engineer. */
+"wayfindingError.requestError" = "Error en la respuesta";
 
 /* No comment provided by engineer. */
 "wayfindingError.unknown" = "Ha ocurrido un error inesperado";
