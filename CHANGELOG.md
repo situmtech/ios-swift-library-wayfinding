@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 All non released changes should be in CHANGELOG_UNRELEASED.md file
 
 ---------
+## [0.9.0] - 2022-09-06
+### Added:
+- Added Japanese and French translations
+
+### Changed
+-  Updated Situm SDK dependency to 2.53.0
+
+### Fixed
+- Fixed a bug that caused the application to crash when exiting a route
+- Fixed a bug that causes buildings with only one floor not showing its floorplan on the map.
+- Fixed a error that caused release branches in pipelines to generate artifacts in debug mode
+
 ## [0.8.1] - 2022-08-12
 ### Changed
 -  Updated Situm SDK dependency to 2.52.4
