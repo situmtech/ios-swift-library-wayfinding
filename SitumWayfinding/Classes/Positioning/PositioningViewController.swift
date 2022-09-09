@@ -89,6 +89,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     let DEFAULT_POI_NAME: String = "POI"
     let DEFAULT_BUILDING_NAME: String = "Current Building"
     var lock = false
+    var tileProvider:TileProvider!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -218,6 +219,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     
     func addMap() {
         self.mapViewVC.view = mapView
+        tileProvider = TileProvider.init(mapView: mapView)
     }
     
     func initializeMapView() {
@@ -415,7 +417,9 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         self.mapOverlay = mapOverlay
         self.mapOverlay.bearing = CLLocationDirection(buildingInfo!.building.rotation.degrees())
         self.mapOverlay.map = mapView
+        self.mapOverlay.zIndex = zIndices.floorPlan
         displayMarkers(forFloor: floor, isUserNavigating: SITNavigationManager.shared().isRunning())
+        tileProvider.addTileFor(floorIdentifier: floor.identifier)
     }
     
     func orderedFloors(buildingInfo: SITBuildingInfo?) -> [SITFloor]? {
@@ -960,6 +964,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
                  */
                 polyline.spans = GMSStyleSpans(polyline.path!, styles, [solidLine, gap], GMSLengthKind.rhumb)
                 self.polyline.append(polyline)
+                polyline.zIndex = zIndices.route
                 polyline.map = self.mapView
             }
         }
