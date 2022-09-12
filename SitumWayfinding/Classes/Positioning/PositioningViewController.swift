@@ -416,8 +416,8 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         
         self.mapOverlay = mapOverlay
         self.mapOverlay.bearing = CLLocationDirection(buildingInfo!.building.rotation.degrees())
-        self.mapOverlay.map = mapView
         self.mapOverlay.zIndex = zIndices.floorPlan
+        self.mapOverlay.map = mapView
         displayMarkers(forFloor: floor, isUserNavigating: SITNavigationManager.shared().isRunning())
         tileProvider.addTileFor(floorIdentifier: floor.identifier)
     }
