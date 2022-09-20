@@ -231,12 +231,12 @@
 				TargetAttributes = {
 					607FACCF1AFB9204008FA782 = {
 						CreatedOnToolsVersion = 6.3.1;
-						DevelopmentTeam = QU82858HM4;
+						DevelopmentTeam = ACLL2M4T26;
 						LastSwiftMigration = 0900;
 					};
 					607FACE41AFB9204008FA782 = {
 						CreatedOnToolsVersion = 6.3.1;
-						DevelopmentTeam = QU82858HM4;
+						DevelopmentTeam = ACLL2M4T26;
 						LastSwiftMigration = 0900;
 						TestTargetID = 607FACCF1AFB9204008FA782;
 					};
@@ -556,7 +556,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CURRENT_PROJECT_VERSION = 3;
-				DEVELOPMENT_TEAM = QU82858HM4;
+				DEVELOPMENT_TEAM = ACLL2M4T26;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = SitumWayfinding/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
@@ -572,7 +572,7 @@
 		607FACF31AFB9204008FA782 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				DEVELOPMENT_TEAM = QU82858HM4;
+				DEVELOPMENT_TEAM = ACLL2M4T26;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(PLATFORM_DIR)/Developer/Library/Frameworks",
 					"$(inherited)",

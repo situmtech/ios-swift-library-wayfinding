@@ -36,11 +36,11 @@ class ViewController: UIViewController {
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: cellId)
 
         credentials = Credentials(
-            user: "bruno.gomez@dimensiona.com",
-            apiKey: "c7753d2beb3c57e88045f5cfe1153eb382e502daee1b6ad201be6779c3ea582d",
-            googleMapsApiKey: "AIzaSyC2xu4ZtyNTmR1BkK3ycgPOXMn4joi2FxA"
+            user: "YOUR_USER",
+            apiKey: "YOUR_SITUM_APIKEY",
+            googleMapsApiKey: "YOUR_GOOGLEMAPS_APIKEY"
         )
-        buildingId = "11619"
+        buildingId = "YOUR_BUILDING_ID"
         location = (lat: "YOUR_LATITUDE", lng: "YOUR_LONGITUDE")
 
         fakeLocationSwitch.isOn = UserDefaults.standard.bool(forKey: "fake_locations")
