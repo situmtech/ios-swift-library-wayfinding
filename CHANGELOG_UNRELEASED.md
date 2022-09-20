@@ -1,2 +1,2 @@
 ### Changed
--  Now an icon indicating stairs is shown when there is a change of floor
+-  Added floor change icons in the route path to indicate when a change of floor has to be made

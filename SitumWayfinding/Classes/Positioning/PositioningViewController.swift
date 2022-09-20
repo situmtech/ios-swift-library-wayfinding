@@ -88,7 +88,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     let DEFAULT_POI_NAME: String = "POI"
     let DEFAULT_BUILDING_NAME: String = "Current Building"
     var lock = false
-    var stairs = GMSMarker()
+    var changeOfFloorMarker = GMSMarker()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -107,7 +107,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
                 instance.delegateNotifier?.notifyOnMapReady(map: library)
             }
         }
-        self.prepareMarkerStairs()
+        self.initializeFloorChangerMarker()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -443,7 +443,8 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     }
     
     func select(floor floorIndex: IndexPath) {
-        self.stairs.map = nil
+        resetFloorMarker()
+        
         let isSameLevel = floorIndex.row == self.selectedLevelIndex
         if isSameLevel {
             return
@@ -930,7 +931,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         let solidLine = NSNumber(value: 5.0 * Float(scale))
         let gap = NSNumber(value: 5.0 * Float(scale))
         
-        self.checkChangeFloor(segments: segments, selectedFloor: selectedFloor)
+        self.changePositionFloorMarkerOrResetFloorMarker(segments: segments, selectedFloor: selectedFloor)
         
         for (index, segment) in segments.enumerated() {
             if segment.floorIdentifier == selectedFloor.identifier {
@@ -963,8 +964,8 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     
     //MARK: Stop methods
     func stopNavigationByUser() {
-        self.stairs.map = nil
-        self.stairs.position = CLLocationCoordinate2D(latitude: 0, longitude: 0)
+        resetFloorMarker()
+        self.changeOfFloorMarker.position = CLLocationCoordinate2D(latitude: 0, longitude: 0)
         stopNavigation(status: .canceled)
     }
     
@@ -1316,24 +1317,23 @@ extension PositioningViewController {
 }
 
 extension PositioningViewController {
-    func prepareMarkerStairs() {
-        let icon = self.imageWithImage(
+    func initializeFloorChangerMarker() {
+        let icon = self.scaledImage(
             image: UIImage(named: "change_floor")!,
             scaledToSize: CGSize(width: 40.0, height: 40.0)
         )
         let markerView = UIImageView(image: icon)
-        self.stairs.iconView = markerView
-        self.stairs.position = CLLocationCoordinate2D(latitude: 0, longitude: 0)
-        self.stairs.map = nil
-
+        self.changeOfFloorMarker.iconView = markerView
+        self.changeOfFloorMarker.position = CLLocationCoordinate2D(latitude: 0, longitude: 0)
+        resetFloorMarker()
     }
     
-    func showMarkerStairs(position: CLLocationCoordinate2D) {
-        self.stairs.position = position
-        self.stairs.map = self.mapView
+    func showFloorChangeMarker(position: CLLocationCoordinate2D) {
+        self.changeOfFloorMarker.position = position
+        self.changeOfFloorMarker.map = self.mapView
     }
     
-    func imageWithImage(image:UIImage, scaledToSize newSize:CGSize) -> UIImage{
+    func scaledImage(image:UIImage, scaledToSize newSize:CGSize) -> UIImage{
         UIGraphicsBeginImageContextWithOptions(newSize, false, 0.0)
         image.draw(in: CGRect(x: 0, y: 0, width: newSize.width, height: newSize.height))
         let newImage:UIImage = UIGraphicsGetImageFromCurrentImageContext()!
@@ -1341,28 +1341,38 @@ extension PositioningViewController {
         return newImage
     }
     
-    func checkChangeFloor(segments: Array<SITRouteSegment>, selectedFloor: SITFloor) {
-        self.stairs.map = nil
-        for segment in segments {
-            if segment.floorIdentifier == selectedFloor.identifier &&
-                self.lastSelectedMarker?.floorIdentifier != selectedFloor.identifier {
-                if segments.count > 1 {
+    func changePositionFloorMarkerOrResetFloorMarker(segments: Array<SITRouteSegment>, selectedFloor: SITFloor) {
+        resetFloorMarker()
+        
+        if segments.count > 1 {
+            for segment in segments {
+                if isNotLastSelectedFloorDestiny(segment: segment, selectedFloor: selectedFloor) {
+                 
                     let last = segment.points.last
                     if let coordinates = last?.coordinate() {
                         let position = CLLocationCoordinate2D(
                             latitude: coordinates.latitude,
                             longitude: coordinates.longitude
                         )
-                        self.showMarkerStairs(position: position)
+                        self.showFloorChangeMarker(position: position)
                     }
-                } else {
-                    self.stairs.map = nil
+                }
+                
+                if self.lastSelectedMarker?.floorIdentifier == selectedFloor.identifier  {
+                    resetFloorMarker()
                 }
             }
-            
-            if self.lastSelectedMarker?.floorIdentifier == selectedFloor.identifier  {
-                self.stairs.map = nil
-            }
+        } else {
+            resetFloorMarker()
         }
+    }
+    
+    func isNotLastSelectedFloorDestiny(segment: SITRouteSegment, selectedFloor: SITFloor) -> Bool {
+        return segment.floorIdentifier == selectedFloor.identifier &&
+            self.lastSelectedMarker?.floorIdentifier != selectedFloor.identifier
+    }
+    
+    func resetFloorMarker() {
+        self.changeOfFloorMarker.map = nil
     }
 }
