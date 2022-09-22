@@ -107,7 +107,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
                 instance.delegateNotifier?.notifyOnMapReady(map: library)
             }
         }
-        self.initializeFloorChangerMarker()
+        self.initializeChangeOfFloorMarker()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -443,7 +443,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     }
     
     func select(floor floorIndex: IndexPath) {
-        resetFloorMarker()
+        resetChangeOfFloorMarker()
         
         let isSameLevel = floorIndex.row == self.selectedLevelIndex
         if isSameLevel {
@@ -964,7 +964,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     
     //MARK: Stop methods
     func stopNavigationByUser() {
-        resetFloorMarker()
+        resetChangeOfFloorMarker()
         self.changeOfFloorMarker.position = CLLocationCoordinate2D(latitude: 0, longitude: 0)
         stopNavigation(status: .canceled)
     }
@@ -1317,7 +1317,7 @@ extension PositioningViewController {
 }
 
 extension PositioningViewController {
-    func initializeFloorChangerMarker() {
+    func initializeChangeOfFloorMarker() {
         let icon = self.scaledImage(
             image: UIImage(named: "change_floor")!,
             scaledToSize: CGSize(width: 40.0, height: 40.0)
@@ -1325,10 +1325,10 @@ extension PositioningViewController {
         let markerView = UIImageView(image: icon)
         self.changeOfFloorMarker.iconView = markerView
         self.changeOfFloorMarker.position = CLLocationCoordinate2D(latitude: 0, longitude: 0)
-        resetFloorMarker()
+        resetChangeOfFloorMarker()
     }
     
-    func showFloorChangeMarker(position: CLLocationCoordinate2D) {
+    func showChangeOfFloorMarker(position: CLLocationCoordinate2D) {
         self.changeOfFloorMarker.position = position
         self.changeOfFloorMarker.map = self.mapView
     }
@@ -1342,37 +1342,48 @@ extension PositioningViewController {
     }
     
     func changePositionFloorMarkerOrResetFloorMarker(segments: Array<SITRouteSegment>, selectedFloor: SITFloor) {
-        resetFloorMarker()
+        resetChangeOfFloorMarker()
         
         if segments.count > 1 {
             for segment in segments {
-                if isNotLastSelectedFloorDestiny(segment: segment, selectedFloor: selectedFloor) {
-                 
-                    let last = segment.points.last
-                    if let coordinates = last?.coordinate() {
-                        let position = CLLocationCoordinate2D(
-                            latitude: coordinates.latitude,
-                            longitude: coordinates.longitude
-                        )
-                        self.showFloorChangeMarker(position: position)
-                    }
+                if isDrawChangeOfFloorMarker(segment: segment, selectedFloor: selectedFloor) {
+                    self.drawChangeOfFloorMarker(segment: segment)
                 }
                 
                 if self.lastSelectedMarker?.floorIdentifier == selectedFloor.identifier  {
-                    resetFloorMarker()
+                    resetChangeOfFloorMarker()
                 }
             }
         } else {
-            resetFloorMarker()
+            resetChangeOfFloorMarker()
         }
     }
     
-    func isNotLastSelectedFloorDestiny(segment: SITRouteSegment, selectedFloor: SITFloor) -> Bool {
-        return segment.floorIdentifier == selectedFloor.identifier &&
-            self.lastSelectedMarker?.floorIdentifier != selectedFloor.identifier
+    func drawChangeOfFloorMarker(segment: SITRouteSegment) {
+        let last = segment.points.last
+        if let coordinates = last?.coordinate() {
+            let position = CLLocationCoordinate2D(
+                latitude: coordinates.latitude,
+                longitude: coordinates.longitude
+            )
+            self.showChangeOfFloorMarker(position: position)
+        }
     }
     
-    func resetFloorMarker() {
+    func isSelectedChangeofFloorMarker(segment: SITRouteSegment, selectedFloor: SITFloor) -> Bool {
+        return segment.floorIdentifier == selectedFloor.identifier
+    }
+    
+    func isDestinyFloor(selectedFloor: SITFloor) -> Bool {
+        return self.lastSelectedMarker?.floorIdentifier != selectedFloor.identifier
+    }
+    
+    func isDrawChangeOfFloorMarker(segment: SITRouteSegment, selectedFloor: SITFloor) -> Bool {
+        return isSelectedChangeofFloorMarker(segment: segment, selectedFloor: selectedFloor)
+            && isDestinyFloor(selectedFloor: selectedFloor)
+    }
+    
+    func resetChangeOfFloorMarker() {
         self.changeOfFloorMarker.map = nil
     }
 }
