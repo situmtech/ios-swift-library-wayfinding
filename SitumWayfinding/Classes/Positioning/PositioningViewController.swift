@@ -1364,12 +1364,12 @@ extension PositioningViewController {
         return segment.floorIdentifier == inFloor.identifier
     }
     
-    func isDestinyFloor(selectedFloor: SITFloor) -> Bool {
+    func isDestinationFloor(selectedFloor: SITFloor) -> Bool {
         return self.lastSelectedMarker?.floorIdentifier == selectedFloor.identifier
     }
     
     func shouldDrawChangeOfFloorMarker(segment: SITRouteSegment, selectedFloor: SITFloor) -> Bool {
-        return isSegment(segment, inFloor: selectedFloor) && !isDestinyFloor(selectedFloor: selectedFloor)
+        return isSegment(segment, inFloor: selectedFloor) && !isDestinationFloor(selectedFloor: selectedFloor)
     }
     
     func resetChangeOfFloorMarker() {
