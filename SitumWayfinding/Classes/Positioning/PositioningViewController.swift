@@ -764,7 +764,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         let format = NSLocalizedString("positioning.numBeacons",
             bundle: SitumMapsLibrary.bundle,
             comment: "Used to show the user the number of beacons that library detects nearby")
-        self.numberBeaconsRangedLabel.text = String(format: format, text)
+        self.numberBeaconsRangedLabel.text = String.localizedStringWithFormat(format, text)
     }
     
     func updateUI(with location: SITLocation) {
