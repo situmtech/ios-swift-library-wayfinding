@@ -935,7 +935,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
                 
         for (index, segment) in segments.enumerated() {
             if segment.floorIdentifier == selectedFloor.identifier {
-                self.changePositionFloorMarkerOrResetFloorMarker(segment: segment, selectedFloor: selectedFloor)
+                self.updateChangeOfFloorMarkerForSelectedFloor(segment: segment, selectedFloor: selectedFloor)
                 
                 let path: GMSMutablePath = GMSMutablePath()
                 for point in segment.points {
@@ -1343,7 +1343,7 @@ extension PositioningViewController {
         return newImage
     }
     
-    func changePositionFloorMarkerOrResetFloorMarker(segment: SITRouteSegment, selectedFloor: SITFloor) {
+    func updateChangeOfFloorMarkerForSelectedFloor(segment: SITRouteSegment, selectedFloor: SITFloor) {
         if isDrawChangeOfFloorMarker(segment: segment, selectedFloor: selectedFloor) {
             self.drawChangeOfFloorMarker(segment: segment)
         }
