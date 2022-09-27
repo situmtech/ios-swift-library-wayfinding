@@ -380,8 +380,10 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
     }
     
     func navigationManager(_ navigationManager: SITNavigationInterface, destinationReachedOn route: SITRoute) {
-        Logger.logDebugMessage("Destination reached")
-        self.view?.stopNavigation(status: .destinationReached)
+        if route.destination.floorIdentifier == self.userLocation?.position.floorIdentifier {
+            Logger.logDebugMessage("Destination reached")
+            self.view?.stopNavigation(status: .destinationReached)
+        }
     }
     
     func navigationManager(_ navigationManager: SITNavigationInterface, userOutsideRoute route: SITRoute) {
