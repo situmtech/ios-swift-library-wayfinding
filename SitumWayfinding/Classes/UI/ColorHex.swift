@@ -5,11 +5,28 @@ extension UIColor {
     static let primaryDiminished: UIColor = UIColor(hex: "#283380FF")!.withAlphaComponent(0.5)
     
     convenience init?(hex: String) {
+        if hex.count == 6{
+            self.init(sixDigitStringHex:hex)
+            return
+        }else if hex.count == 9{
+            self.init(nineDigitStringHex: hex)
+            return
+        }
+        return nil
+    }
+    
+    //111111 -> If they come from dashboard
+    private convenience init?(sixDigitStringHex:String){
+        self.init(nineDigitStringHex: "#"+sixDigitStringHex+"FF")
+    }
+    
+    //#111111FF -> If they come from code
+    private convenience init?(nineDigitStringHex:String) {
         let r, g, b, a: CGFloat
-
-        if hex.hasPrefix("#") {
-            let start = hex.index(hex.startIndex, offsetBy: 1)
-            let hexColor = String(hex[start...])
+        
+        if nineDigitStringHex.hasPrefix("#") {
+            let start = nineDigitStringHex.index(nineDigitStringHex.startIndex, offsetBy: 1)
+            let hexColor = String(nineDigitStringHex[start...])
 
             if hexColor.count == 8 {
                 let scanner = Scanner(string: hexColor)
@@ -26,7 +43,6 @@ extension UIColor {
                 }
             }
         }
-
         return nil
     }
 }
