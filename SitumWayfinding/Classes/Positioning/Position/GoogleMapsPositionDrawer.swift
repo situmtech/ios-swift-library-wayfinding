@@ -48,7 +48,7 @@ class GoogleMapsPositionDrawer:PositionDrawerProtocol {
             let marker: GMSMarker = GMSMarker.init()
             marker.groundAnchor = CGPoint(x: 0.5, y: 0.5)
             marker.isTappable = false;
-            marker.zIndex = 1;
+            marker.zIndex = zIndices.locationMarker;
             marker.isFlat = true;
             marker.position = location.position.coordinate()
             userLocationMarker = marker;
@@ -67,7 +67,7 @@ class GoogleMapsPositionDrawer:PositionDrawerProtocol {
             userLocationRadiusCircle?.strokeColor = color
             userLocationRadiusCircle?.fillColor = color
             userLocationRadiusCircle?.isTappable = false
-            userLocationRadiusCircle?.zIndex = 2
+            userLocationRadiusCircle?.zIndex = zIndices.locationRadiusCircle
         }
     }
    /**
