@@ -337,6 +337,9 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         navigationButton.layer.shadowRadius = 8.0
         navigationButton.layer.shadowOffset = CGSize(width: 7.0, height: 7.0)
         navigationButton.isHidden = true
+        let color = UIColor.primary
+        navigationButton.backgroundColor = primaryColor(defaultColor: color)
+        
     }
     
     func initializeInfoBar() {
@@ -558,7 +561,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
             loadingIndicator.startAnimating()
             positioningButton.isSelected = false
         case .started:
-            let color = UIColor(red: 0x00 / 255.0, green: 0x75 / 255.0, blue: 0xc9 / 255.0, alpha: 1)
+            let color = UIColor.primary
             positioningButton.backgroundColor = primaryColor(defaultColor: color)
             
             positioningButton.setImage(UIImage(named: "swf_ic_action_localize", in: bundle, compatibleWith: nil), for: .selected)
@@ -931,7 +934,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     }
     
     func generateAndPrintRoutePathWithRouteSegments(segments: Array<SITRouteSegment>, selectedFloor: SITFloor) {
-        let color = UIColor(red: 0x00 / 255.0, green: 0x75 / 255.0, blue: 0xc9 / 255.0, alpha: 1)
+        let color = UIColor.primary
         let styles: [GMSStrokeStyle] = [.solidColor(
             primaryColor(defaultColor: color)), .solidColor(.clear)]
         let scale = 1.0 / mapView.projection.points(forMeters: 1, at: mapView.camera.target)
@@ -1073,7 +1076,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         if let settings = library?.settings {
             if settings.useDashboardTheme == true {
                 if let organizationTheme = organizationTheme { // Check if string is a valid string
-                    let generalColor = UIColor(hex: organizationTheme.themeColors.primary) ?? UIColor.gray
+                    let generalColor = UIColor(hex:  organizationTheme.themeColors.primary ) ?? UIColor.gray
                     color = organizationTheme.themeColors.primary.isEmpty ? defaultColor : generalColor
                 }
             }
