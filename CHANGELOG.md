@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 All non released changes should be in CHANGELOG_UNRELEASED.md file
 
 ---------
+## [0.10.0] - 2022-09-29
+### Added:
+- Added support for using tiles in google maps
+
+### Fixed
+- Fixed a bug in setUseDashboardTheme from the LibrarySettings Builder. Now the dashboard theme works again.
+
 ## [0.9.0] - 2022-09-06
 ### Added:
 - Added Japanese and French translations
