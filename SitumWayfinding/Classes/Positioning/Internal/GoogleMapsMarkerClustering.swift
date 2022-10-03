@@ -15,7 +15,7 @@ class GoogleMapsMarkerClustering {
         self.mapView = mapView
         let iconGenerator = GMUDefaultClusterIconGenerator()
         let algorithm = GMUNonHierarchicalDistanceBasedAlgorithm()
-        let renderer = GMUDefaultClusterRenderer(mapView: mapView,  clusterIconGenerator: iconGenerator)
+        let renderer = WYFClusterRenderer(mapView: mapView,  clusterIconGenerator: iconGenerator)
         clusterManager = GMUClusterManager(map: mapView, algorithm: algorithm, renderer: renderer)
     }
     
@@ -33,5 +33,17 @@ class GoogleMapsMarkerClustering {
     
     func removeMarkers() {
         clusterManager.clearItems()
+    }
+}
+
+
+fileprivate class WYFClusterRenderer: GMUDefaultClusterRenderer {
+    private static let zoomLevelThreshold: Float = 19.5
+
+    override func shouldRender(as cluster: GMUCluster, atZoom zoom: Float) -> Bool {
+        if (zoom > WYFClusterRenderer.zoomLevelThreshold) {
+            return false
+        }
+        return super.shouldRender(as: cluster, atZoom: zoom)
     }
 }
