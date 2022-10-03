@@ -43,6 +43,9 @@ import GoogleMaps
     
     /// Boolean that controls if clustering of pois is enabled
     private (set) var enablePoisClustering: Bool = false
+    
+    /// Boolean to show or hide navigation indications
+    private (set) var showNavigationIndications: Bool = true
 
     // private(set) var orgDetails: OrganizationTheme?
     private override init() {
@@ -141,6 +144,13 @@ import GoogleMaps
             instance.enablePoisClustering = enablePoisClustering
             return self
         }
+        
+        /// Sets whether the navigation indications is visible
+        @discardableResult
+        @objc public func setShowNavigationIndications(showNavigationIndications: Bool) -> Builder {
+            instance.showNavigationIndications = showNavigationIndications
+            return self
+        }
 
         /// Returns an instance of LibrarySettings
         @objc public func build() -> LibrarySettings {
@@ -185,6 +195,8 @@ import GoogleMaps
             builderCopy.setShowBackButton(showBackButton: settings.showBackButton ?? false)
 
             builderCopy.setEnablePoiClustering(enablePoisClustering: settings.enablePoisClustering)
+            
+            builderCopy.setShowNavigationIndications(showNavigationIndications: settings.showNavigationIndications)
 
             return builderCopy
         }
