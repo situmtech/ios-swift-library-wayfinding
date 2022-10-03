@@ -131,7 +131,7 @@ class MarkerRenderer {
     private func insertMarkerInGoogleMaps(marker: SitumMarker) {
         if marker.gmsMarker.map == nil {
             marker.setMapView(mapView: mapView)
-            marker.gmsMarker.zIndex = zIndices.poiMarker
+            marker.gmsMarker.zIndex = ZIndices.poiMarker
         }
     }
     
