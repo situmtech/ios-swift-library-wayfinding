@@ -7,14 +7,15 @@ extension PositioningViewController {
         indicationsView.isHidden = true
         navbar.isHidden = false
     }
-    
-    
-    
+        
     func showNavigationUI() {
         mapContainerViewTopConstraint.constant = 0
         infoBarMap.isHidden = true
         infoBarNavigation.isHidden = false
-        indicationsView.isHidden = !(self.library?.getSettings()?.showNavigationIndications ?? true)
+        
+        var isHidden = !(self.library?.getSettings()?.showNavigationIndications ?? false)
+        indicationsView.isHidden = isHidden
+        
         navbar.isHidden = true
         containerInfoBarNavigation?.setLoadingState()
         indicationsViewController?.showNavigationLoading()

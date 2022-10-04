@@ -41,7 +41,7 @@ import GoogleMaps
     /// Boolean that hides the back button in the navBar
     private (set) var showBackButton: Bool? = false
     
-    /// Boolean that controls if clustering of pois is enabled
+    /// Boolean that controls if the navigation indications are shown or hidden
     private (set) var enablePoisClustering: Bool = false
     
     /// Boolean to show or hide navigation indications

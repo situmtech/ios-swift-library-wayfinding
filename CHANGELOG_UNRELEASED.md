@@ -1,2 +1,2 @@
 ### Added:
-* Add new method setShowNavigationIndications(showNavigationIndications: Bool) in SitumMapsLibrary to show navigation indications
+* Add new method setShowNavigationIndications(showNavigationIndications: Bool) in LibrarySettings to show navigation indications
