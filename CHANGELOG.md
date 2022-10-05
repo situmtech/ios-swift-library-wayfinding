@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 All non released changes should be in CHANGELOG_UNRELEASED.md file
 
 ---------
+## [0.11.0] - 2022-10-05
+### Added:
+- Add new method setShowNavigationIndications(showNavigationIndications: Bool) in LibrarySettings to show navigation indications
+- Added Arabic translations
+
 ## [0.10.0] - 2022-09-29
 ### Added:
 - Added support for using tiles in google maps
