@@ -40,6 +40,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		0A989168E3A0038D1A2D2843 /* Pods-SitumWayfinding_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SitumWayfinding_Example.debug.xcconfig"; path = "Target Support Files/Pods-SitumWayfinding_Example/Pods-SitumWayfinding_Example.debug.xcconfig"; sourceTree = "<group>"; };
 		161976EE3731C56AC34E540C /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		2312C537236ADC4D00DBAEBC /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		2312C539236ADD0300DBAEBC /* WayfindingController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WayfindingController.swift; sourceTree = "<group>"; };
@@ -55,7 +56,8 @@
 		607FACEA1AFB9204008FA782 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		607FACEB1AFB9204008FA782 /* Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests.swift; sourceTree = "<group>"; };
 		6EFFFBC1E758C8A0D60839F3 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
-		D6A228087E594C16AF9E5E53 /* Pods-SitumWayfinding_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SitumWayfinding_Example.debug.xcconfig"; path = "Target Support Files/Pods-SitumWayfinding_Example/Pods-SitumWayfinding_Example.debug.xcconfig"; sourceTree = "<group>"; };
+		D70CE14C28B8A3F800BC9D07 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Main.strings; sourceTree = "<group>"; };
+		D7AE484F28B8CD1400A60FBB /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Main.strings; sourceTree = "<group>"; };
 		D7EC26F127DA18A200ABD5A7 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Main.strings; sourceTree = "<group>"; };
 		DEA375CE0ED3393820EC8160 /* SitumWayfinding.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = SitumWayfinding.podspec; path = ../SitumWayfinding.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		F338DD8823439C0977F8C777 /* Pods-SitumWayfinding_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SitumWayfinding_Example.release.xcconfig"; path = "Target Support Files/Pods-SitumWayfinding_Example/Pods-SitumWayfinding_Example.release.xcconfig"; sourceTree = "<group>"; };
@@ -100,8 +102,8 @@
 		2520F8988BFFD05A4429D1DD /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				D6A228087E594C16AF9E5E53 /* Pods-SitumWayfinding_Example.debug.xcconfig */,
 				F338DD8823439C0977F8C777 /* Pods-SitumWayfinding_Example.release.xcconfig */,
+				0A989168E3A0038D1A2D2843 /* Pods-SitumWayfinding_Example.debug.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -244,13 +246,14 @@
 			};
 			buildConfigurationList = 607FACCB1AFB9204008FA782 /* Build configuration list for PBXProject "SitumWayfinding" */;
 			compatibilityVersion = "Xcode 3.2";
-			developmentRegion = English;
+			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
-				English,
 				en,
 				Base,
 				es,
+				ja,
+				fr,
 			);
 			mainGroup = 607FACC71AFB9204008FA782;
 			productRefGroup = 607FACD11AFB9204008FA782 /* Products */;
@@ -425,6 +428,8 @@
 			children = (
 				607FACDA1AFB9204008FA782 /* Base */,
 				D7EC26F127DA18A200ABD5A7 /* es */,
+				D70CE14C28B8A3F800BC9D07 /* ja */,
+				D7AE484F28B8CD1400A60FBB /* fr */,
 			);
 			name = Main.storyboard;
 			sourceTree = "<group>";
@@ -533,7 +538,7 @@
 		};
 		607FACF01AFB9204008FA782 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = D6A228087E594C16AF9E5E53 /* Pods-SitumWayfinding_Example.debug.xcconfig */;
+			baseConfigurationReference = 0A989168E3A0038D1A2D2843 /* Pods-SitumWayfinding_Example.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CURRENT_PROJECT_VERSION = 3;

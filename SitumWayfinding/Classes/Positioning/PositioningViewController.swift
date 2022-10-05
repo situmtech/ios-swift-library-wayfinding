@@ -60,6 +60,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     let locManager: CLLocationManager = CLLocationManager()
     var buildingInfo: SITBuildingInfo? = nil
     var buildingName: String { return self.buildingInfo?.building.name ?? DEFAULT_BUILDING_NAME }
+    var isFirstLoadingOfFloors: Bool = true
     var actualZoom: Float = 0.0
     var selectedLevelIndex: Int = 0
     var presenter: PositioningPresenter? = nil
@@ -89,6 +90,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     let DEFAULT_BUILDING_NAME: String = "Current Building"
     var lock = false
     var changeOfFloorMarker = GMSMarker()
+    var tileProvider:TileProvider!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -219,6 +221,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     
     func addMap() {
         self.mapViewVC.view = mapView
+        tileProvider = TileProvider.init(mapView: mapView)
     }
     
     func initializeMapView() {
@@ -338,6 +341,9 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         navigationButton.layer.shadowRadius = 8.0
         navigationButton.layer.shadowOffset = CGSize(width: 7.0, height: 7.0)
         navigationButton.isHidden = true
+        let color = UIColor.primary
+        navigationButton.backgroundColor = primaryColor(defaultColor: color)
+        
     }
     
     func initializeInfoBar() {
@@ -376,29 +382,35 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
             displayFloorPlan(forFloor: floor)
             self.mapReadinessChecker.currentFloorMapLoaded()
         } else {
-            let title = NSLocalizedString("positioning.error.emptyFloor.alert.title",
-                bundle: SitumMapsLibrary.bundle,
-                comment: "Alert title error when download the floor plan fails")
-            let message = NSLocalizedString("positioning.error.emptyFloor.alert.message",
-                bundle: SitumMapsLibrary.bundle,
-                comment: "Alert title error when download the floor plan fails")
-            let wasMapFetched = SITCommunicationManager.shared().fetchMap(
-                from: orderedFloors(buildingInfo: buildingInfo)![selectedLevelIndex],
-                withCompletion: { imageData in
-                    if let imageData = imageData {
-                        let image =  UIImage.init(data: imageData, scale: UIScreen.main.scale)
-                        let scaledImage = ImageUtils.scaleImage(image: image!)
-                        self.floorplans[floor.identifier] = scaledImage
-                        self.displayFloorPlan(forFloor: floor)
-                        self.mapReadinessChecker.currentFloorMapLoaded()
-                    } else {
-                        self.showAlertMessage(title: title, message: message, alertType: .otherAlert)
-                    }
-                })
+            let wasMapFetched = fetchMap(floor: floor)
             if !wasMapFetched {
-                self.showAlertMessage(title: title, message: message, alertType: .otherAlert)
+                usleep(500_000) // retry fetch if map could not be fetched after timeout
+                let _ = fetchMap(floor: floor)
             }
         }
+    }
+    
+    private func fetchMap(floor: SITFloor) -> Bool {
+        let title = NSLocalizedString("positioning.error.emptyFloor.alert.title",
+                bundle: SitumMapsLibrary.bundle,
+                comment: "Alert title error when download the floor plan fails")
+        let message = NSLocalizedString("positioning.error.emptyFloor.alert.message",
+                bundle: SitumMapsLibrary.bundle,
+                comment: "Alert title error when download the floor plan fails")
+
+        return SITCommunicationManager.shared().fetchMap(
+            from: orderedFloors(buildingInfo: buildingInfo)![selectedLevelIndex],
+            withCompletion: { imageData in
+                if let imageData = imageData {
+                    let image =  UIImage.init(data: imageData, scale: UIScreen.main.scale)
+                    let scaledImage = ImageUtils.scaleImage(image: image!)
+                    self.floorplans[floor.identifier] = scaledImage
+                    self.displayFloorPlan(forFloor: floor)
+                    self.mapReadinessChecker.currentFloorMapLoaded()
+                } else {
+                    self.showAlertMessage(title: title, message: message, alertType: .otherAlert)
+                }
+            })
     }
     
     func displayFloorPlan(forFloor floor: SITFloor) {
@@ -409,8 +421,10 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         
         self.mapOverlay = mapOverlay
         self.mapOverlay.bearing = CLLocationDirection(buildingInfo!.building.rotation.degrees())
+        self.mapOverlay.zIndex = zIndices.floorPlan
         self.mapOverlay.map = mapView
         displayMarkers(forFloor: floor, isUserNavigating: SITNavigationManager.shared().isRunning())
+        tileProvider.addTileFor(floorIdentifier: floor.identifier)
     }
     
     func orderedFloors(buildingInfo: SITBuildingInfo?) -> [SITFloor]? {
@@ -446,9 +460,13 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         resetChangeOfFloorMarker()
         
         let isSameLevel = floorIndex.row == self.selectedLevelIndex
-        if isSameLevel {
+        // When it is the first loading of floors, whe always load the floor. This is to avoid a bug when only one floor
+        // exists and floor is no loading because of previous condition. We should decouple tableview/load floors in the
+        // future to avoid using global flags in class
+        if isSameLevel && !isFirstLoadingOfFloors {
             return
         }
+        isFirstLoadingOfFloors = false
         if let uBuildingInfo = buildingInfo,
            let from = orderedFloors(buildingInfo: buildingInfo)?[selectedLevelIndex],
            let to = orderedFloors(buildingInfo: buildingInfo)?[floorIndex.row] {
@@ -551,7 +569,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
             loadingIndicator.startAnimating()
             positioningButton.isSelected = false
         case .started:
-            let color = UIColor(red: 0x00 / 255.0, green: 0x75 / 255.0, blue: 0xc9 / 255.0, alpha: 1)
+            let color = UIColor.primary
             positioningButton.backgroundColor = primaryColor(defaultColor: color)
             
             positioningButton.setImage(UIImage(named: "swf_ic_action_localize", in: bundle, compatibleWith: nil), for: .selected)
@@ -924,7 +942,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     }
     
     func generateAndPrintRoutePathWithRouteSegments(segments: Array<SITRouteSegment>, selectedFloor: SITFloor) {
-        let color = UIColor(red: 0x00 / 255.0, green: 0x75 / 255.0, blue: 0xc9 / 255.0, alpha: 1)
+        let color = UIColor.primary
         let styles: [GMSStrokeStyle] = [.solidColor(
             primaryColor(defaultColor: color)), .solidColor(.clear)]
         let scale = 1.0 / mapView.projection.points(forMeters: 1, at: mapView.camera.target)
@@ -957,6 +975,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
                  */
                 polyline.spans = GMSStyleSpans(polyline.path!, styles, [solidLine, gap], GMSLengthKind.rhumb)
                 self.polyline.append(polyline)
+                polyline.zIndex = zIndices.route
                 polyline.map = self.mapView
             }
         }
@@ -1072,7 +1091,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         if let settings = library?.settings {
             if settings.useDashboardTheme == true {
                 if let organizationTheme = organizationTheme { // Check if string is a valid string
-                    let generalColor = UIColor(hex: organizationTheme.themeColors.primary) ?? UIColor.gray
+                    let generalColor = UIColor(hex:  organizationTheme.themeColors.primary ) ?? UIColor.gray
                     color = organizationTheme.themeColors.primary.isEmpty ? defaultColor : generalColor
                 }
             }
