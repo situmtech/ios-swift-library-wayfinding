@@ -91,7 +91,13 @@ class IndicationsViewController: UIViewController {
     private func hideLoading() {
         self.indicationLoading.isHidden = true
         self.indicationImage.isHidden = false
-        self.indicationView.roundCorners(corners: [.topLeft, .topRight, .bottomRight])
+        var corners: UIRectCorner
+        if UIApplication.shared.userInterfaceLayoutDirection == .leftToRight {
+            corners = [.topLeft, .topRight, .bottomRight]
+        } else {
+            corners = [.topLeft, .topRight, .bottomLeft]
+        }
+        self.indicationView.roundCorners(corners: corners)
         
         self.nextIndicationView.isHidden = false
     }
