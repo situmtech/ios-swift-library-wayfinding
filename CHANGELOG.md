@@ -12,6 +12,9 @@ All non released changes should be in CHANGELOG_UNRELEASED.md file
 - Add new method setShowNavigationIndications(showNavigationIndications: Bool) in LibrarySettings to show navigation indications
 - Added Arabic translations
 
+### Changed:
+- Updated Situm SDK dependency to 2.53.0
+
 ## [0.10.0] - 2022-09-29
 ### Added:
 - Added support for using tiles in google maps
