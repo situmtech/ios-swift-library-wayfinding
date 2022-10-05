@@ -1,0 +1,3 @@
+### Added
+* Added Arabic translations
+

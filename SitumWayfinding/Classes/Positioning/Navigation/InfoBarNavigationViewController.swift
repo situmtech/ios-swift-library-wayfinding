@@ -78,20 +78,20 @@ class InfoBarNavigationViewController: UIViewController {
         if time.hours > 0 {
             let format = NSLocalizedString("navigation.remainingHours", bundle: SitumMapsLibrary.bundle,
                 comment: "Remaining time in hours")
-            return String(format: format, time.hours)
+            return String.localizedStringWithFormat(format, time.hours)
         } else if time.minutes > 0 {
             let format = NSLocalizedString("navigation.remainingMinutes", bundle: SitumMapsLibrary.bundle,
                 comment: "Remaining time in minutes")
-            return String(format: format, time.minutes)
+            return String.localizedStringWithFormat(format, time.minutes)
         } else {
             let format = NSLocalizedString("navigation.lessThanMinutes", bundle: SitumMapsLibrary.bundle,
                 comment: "Less than x minutes")
-            return String(format: format, 1)
+            return String.localizedStringWithFormat(format, 1)
         }
     }
     
     private func formatDistance(distance: Float) -> String {
-        return String(format: "%.1fm", distance)
+        return String.localizedStringWithFormat("%.1fm", distance)
     }
     
     private func secondsToHoursMinutesSeconds(_ seconds: Float) -> Time {
