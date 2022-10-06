@@ -93,6 +93,10 @@ class ViewController: UIViewController {
         self.performSegue(withIdentifier: "loadWayfindingSegue", sender: self)
     }
     
+    @IBAction func clearCacheTapped(_ sender: Any) {
+        SITCommunicationManager.shared().clearCache()
+    }
+    
     @IBAction func changeFakeLocation(_ sender: Any) {
         UserDefaults.standard.set(fakeLocationSwitch.isOn, forKey: "fake_locations")
     }
