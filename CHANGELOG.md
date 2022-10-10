@@ -7,13 +7,20 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 All non released changes should be in CHANGELOG_UNRELEASED.md file
 
 ---------
+## [0.11.1] - 2022-10-10
+### Fixed:
+- Fixed a bug that do not load floor plan image on first load
+
+### Changed:
+- Updated Situm SDK dependency to 2.54.1
+
 ## [0.11.0] - 2022-10-05
 ### Added:
 - Add new method setShowNavigationIndications(showNavigationIndications: Bool) in LibrarySettings to show navigation indications
 - Added Arabic translations
 
 ### Changed:
-- Updated Situm SDK dependency to 2.53.0
+- Updated Situm SDK dependency to 2.54.0
 
 ## [0.10.0] - 2022-09-29
 ### Added:
