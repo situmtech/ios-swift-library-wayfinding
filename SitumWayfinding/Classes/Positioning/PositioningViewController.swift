@@ -380,15 +380,11 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
             displayFloorPlan(forFloor: floor)
             self.mapReadinessChecker.currentFloorMapLoaded()
         } else {
-            let wasMapFetched = fetchMap(floor: floor)
-            if !wasMapFetched {
-                usleep(500_000) // retry fetch if map could not be fetched after timeout
-                let _ = fetchMap(floor: floor)
-            }
+            fetchMap(floor: floor)
         }
     }
     
-    private func fetchMap(floor: SITFloor) -> Bool {
+    private func fetchMap(floor: SITFloor) {
         let title = NSLocalizedString("positioning.error.emptyFloor.alert.title",
                 bundle: SitumMapsLibrary.bundle,
                 comment: "Alert title error when download the floor plan fails")
@@ -396,7 +392,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
                 bundle: SitumMapsLibrary.bundle,
                 comment: "Alert title error when download the floor plan fails")
 
-        return SITCommunicationManager.shared().fetchMap(
+        SITCommunicationManager.shared().fetchMap(
             from: orderedFloors(buildingInfo: buildingInfo)![selectedLevelIndex],
             withCompletion: { imageData in
                 if let imageData = imageData {
