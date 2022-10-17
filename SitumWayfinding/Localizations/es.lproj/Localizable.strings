@@ -136,6 +136,12 @@
 /* Error when user does not set credentials */
 "situmMapsLibrary.error.invalidBuilding" = "El identificador del edificio no es correcto. Por favor, introduce un identificador correcto en LibrarySettings";
 
+/* Error that appears when user does not provide location or bluetooth permissions*/
+"wayfinding.permissionsErrorDescription" = "Por favor active los permisos de localización y bluetooth en los ajustes para obtener posiciones";
+
+/* Error that appears when user does not provide location or bluetooth permissions*/
+"wayfinding.permissionsErrorTitle" = "Localización no disponible";
+
 /* No comment provided by engineer. */
 "wayfindingError.buildingNotExist" = "El edificio no existe";
 
@@ -143,13 +149,10 @@
 "wayfindingError.invalidPoi" = "El poi seleccionado no es válido en este edificio";
 
 /* No comment provided by engineer. */
+"wayfindingError.offlineTilesNotDownloaded" = "Los Tiles del edificio no se han podido descargar";
+
+/* No comment provided by engineer. */
 "wayfindingError.requestError" = "Error en la respuesta";
 
 /* No comment provided by engineer. */
 "wayfindingError.unknown" = "Ha ocurrido un error inesperado";
-
-/* Error that appears when user does not provide location or bluetooth permissions*/
-"wayfinding.permissionsErrorTitle" = "Localización no disponible";
-
-/* Error that appears when user does not provide location or bluetooth permissions*/
-"wayfinding.permissionsErrorDescription" = "Por favor active los permisos de localización y bluetooth en los ajustes para obtener posiciones";

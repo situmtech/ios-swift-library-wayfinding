@@ -136,6 +136,12 @@
 /* Error when user does not set correctly building id */
 "situmMapsLibrary.error.invalidBuilding" = "The builidng ID is not correct. Please add a valid building ID in LibrarySettings";
 
+/* Error that appears when user does not provide location or bluetooth permissions*/
+"wayfinding.permissionsErrorDescription" = "Please go to settings and enable location and bluetooth permissions to provide locations";
+
+/* Error that appears when user does not provide location or bluetooth permissions*/
+"wayfinding.permissionsErrorTitle" = "Unable to provide location";
+
 /* No comment provided by engineer. */
 "wayfindingError.buildingNotExist" = "Building does not exist";
 
@@ -143,15 +149,10 @@
 "wayfindingError.invalidPoi" = "The poi selected is not valid in this building";
 
 /* No comment provided by engineer. */
+"wayfindingError.offlineTilesNotDownloaded" = "Tiles of building could not be retrieved";
+
+/* No comment provided by engineer. */
 "wayfindingError.requestError" = "Error in response";
 
 /* No comment provided by engineer. */
 "wayfindingError.unknown" = "An unknown error happened";
-
-/* Error that appears when user does not provide location or bluetooth permissions*/
-"wayfinding.permissionsErrorTitle" = "Unable to provide location";
-
-/* Error that appears when user does not provide location or bluetooth permissions*/
-"wayfinding.permissionsErrorDescription" = "Please go to settings and enable location and bluetooth permissions to provide locations";
-
-

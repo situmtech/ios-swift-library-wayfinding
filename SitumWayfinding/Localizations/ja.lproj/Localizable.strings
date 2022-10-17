@@ -147,3 +147,12 @@
 
 /* No comment provided by engineer. */
 "wayfindingError.unknown" = "不明なエラーが発生しました";
+
+/* Please go to settings and enable location and bluetooth permissions to provide locations */
+"wayfinding.permissionsErrorDescription" = "";
+
+/* Unable to provide location */
+"wayfinding.permissionsErrorTitle" = "";
+
+/* No comment provided by engineer. */
+"wayfindingError.offlineTilesNotDownloaded" = "";

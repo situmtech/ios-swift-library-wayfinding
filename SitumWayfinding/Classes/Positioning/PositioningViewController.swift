@@ -173,19 +173,14 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
                             // Now we have the organization details and we can work with their values (if any)
                             self.organizationTheme = organizationDetails!
 
-                            SITCommunicationManager.shared().fetchTiles(forBuilding: self.buildingInfo!.building.identifier, success: { _ in
-                                self.situmLoadFinished(loadingAlert: loadingAlert)
-                                self.presenter = PositioningPresenter(view: self, buildingInfo: self.buildingInfo!, interceptorsManager: self.library?.interceptorsManager ?? InterceptorsManager())
-                                if let lib = self.library {
-                                    if let set = lib.settings {
-                                        self.presenter?.useRemoteConfig = set.useRemoteConfig
-                                    }
+                            self.situmLoadFinished(loadingAlert: loadingAlert)
+                            self.presenter = PositioningPresenter(view: self, buildingInfo: self.buildingInfo!, interceptorsManager: self.library?.interceptorsManager ?? InterceptorsManager())
+                            if let lib = self.library {
+                                if let set = lib.settings {
+                                    self.presenter?.useRemoteConfig = set.useRemoteConfig
                                 }
-                                self.initializeUIElements()
-                            }, failure: { error in
-                                self.loadingError = true
-                                self.situmLoadFinished(loadingAlert: loadingAlert)
-                            })
+                            }
+                            self.initializeUIElements()
                         }
                     }, failure: { (error: Error?) in
                         print("Failed retrieving details of org")
@@ -214,7 +209,20 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
             navbar.topItem?.leftBarButtonItem = nil
         }
     }
-    
+
+    func fetchTiles(completion: @escaping (Result<Void, WayfindingError>) -> Void) {
+        guard let buildingId = buildingInfo?.building.identifier else {
+            Logger.logErrorMessage("Could not download tiles because no building is loaded")
+            completion(.failure(.offlineTilesNotDownloaded))
+            return
+        }
+        SITCommunicationManager.shared().fetchTiles(forBuilding: buildingId, success: { _ in
+            completion(.success(Void()))
+        }, failure: { error in
+            completion(.failure(.offlineTilesNotDownloaded))
+        })
+    }
+
     func situmLoadFinished(loadingAlert: UIAlertController) {
         loadingAlert.dismiss(animated: true) {
             if (self.loadingError) {
