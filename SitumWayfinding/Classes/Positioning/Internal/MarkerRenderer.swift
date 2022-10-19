@@ -42,7 +42,8 @@ class MarkerRenderer {
         removeMarkers()
         var poisInFloor = buildingManager.filterPoisByCategories().filterByFloor(floor)
         if let poi = selectedPOI {
-            poisInFloor.append(poi)
+            let selectedPois = [poi].filterByFloor(floor)
+            poisInFloor.append(contentsOf: selectedPois)
         }
         
         for poi in poisInFloor {
