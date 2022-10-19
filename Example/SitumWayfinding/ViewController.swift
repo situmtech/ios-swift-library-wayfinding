@@ -173,5 +173,8 @@ extension ViewController: UITableViewDelegate {
 }
 
 enum WYFAction {
-    case selectPoi(SITPOI), navigateToPoi(SITPOI), navigateToLocation(floor: SITFloor, lat: Double, lng: Double)
+    case selectPoi(SITPOI)
+    case navigateToPoi(SITPOI)
+    case navigateToLocation(floor: SITFloor, lat: Double, lng: Double)
+    case filterCategories(categoryIds: [String])
 }

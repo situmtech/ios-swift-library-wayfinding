@@ -11,7 +11,7 @@ protocol SearcheableItem {
     var id: String { get }
     var name: String { get }
     //TODO make it more generic
-    func floor(activeBuildingInfo: SITBuildingInfo?) -> String
+    func floor(buildingManager: BuildingManager?) -> String
     func distance() -> String
     func obtainIconImage(iconsStore:IconsStore?, completion:@escaping(UIImage?) -> Void)
 }
@@ -22,8 +22,8 @@ extension SITPOI: SearcheableItem {
         return self.identifier
     }
 
-    func floor(activeBuildingInfo: SITBuildingInfo?) -> String {
-        guard let floor = activeBuildingInfo?.floors.first(where: { $0.identifier ==  self.position().floorIdentifier }) else {
+    func floor(buildingManager: BuildingManager?) -> String {
+        guard let floor = buildingManager?.floorForPoi(self) else {
             return ""
         }
         return "\(NSLocalizedString("search.floor", bundle: SitumMapsLibrary.bundle, comment: "")) \(floor.floor)"
@@ -51,9 +51,10 @@ extension SITPOI: SearcheableItem {
 class SearchResultsTableViewController: UITableViewController {
     var delegate:PositioningView?
     var searchController:UISearchController?
-    var activeBuildingInfo : SITBuildingInfo?
+    var buildingManager: BuildingManager?
     var filteredPois: [SearcheableItem] = []
     var iconsStore : IconsStore?
+    private var currentSearch: String = ""
     
     private var myTableView: UITableView!
 
@@ -84,7 +85,7 @@ class SearchResultsTableViewController: UITableViewController {
         let searchableItem = filteredPois[indexPath.row]
         cell.name = searchableItem.name
         cell.distance = searchableItem.distance()
-        cell.floor = searchableItem.floor(activeBuildingInfo: activeBuildingInfo)
+        cell.floor = searchableItem.floor(buildingManager: buildingManager)
         searchableItem.obtainIconImage(iconsStore: iconsStore) { image in
             cell.icon=image
         }
@@ -131,13 +132,10 @@ extension SearchResultsTableViewController: UISearchResultsUpdating {
     }
 
     private func filterContentForSearchText(_ searchText: String) {
-        let buildingPois = activeBuildingInfo?.indoorPois ?? []
-        let filteredPois = searchText.isEmpty ? buildingPois
-                : buildingPois.filter { (poi: SearcheableItem) -> Bool in
-            return poi.name.lowercased().contains(searchText.lowercased())
-        }
+        currentSearch = searchText
+        let pois = buildingManager?.filterPoisByCategories().filterByName(searchText) ?? []
         //TODO: cuando se calcule la distancia ordenar por ese valor
-        self.filteredPois = filteredPois.sorted(by: { $0.name.lowercased() < $1.name.lowercased() })
+        filteredPois = pois.sorted(by: { $0.name.lowercased() < $1.name.lowercased() })
         tableView.reloadData()
     }
 
@@ -147,5 +145,11 @@ extension SearchResultsTableViewController: UISearchResultsUpdating {
         NSLayoutConstraint.deactivate(constraints!)
         view.removeFromSuperview()
         removeFromParent()
+    }
+}
+
+extension SearchResultsTableViewController: BuildingManagerDelegate {
+    func categoriesWhereChanged() {
+        filterContentForSearchText(currentSearch)
     }
 }

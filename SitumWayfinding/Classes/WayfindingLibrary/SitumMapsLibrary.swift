@@ -239,6 +239,7 @@ import GoogleMaps
         * Start the positioning if needed
         * Calculate and draw the route from the current user location to the poi.
         * Provide the step-by-step instructions to reach the poi.
+     WARNING: this method only works during or after OnMapReadyListener.onMapReady callback is executed
      - parameters:
        - poi: navigation goes toward this SITPOI
      */
@@ -250,6 +251,7 @@ import GoogleMaps
     /**
      Select a given poi. This method will perform the proper actions over the User Interface to make that Poi the
      selected one
+     WARNING: this method only works during or after OnMapReadyListener.onMapReady callback is executed
      - parameters:
        - poi: the SITPOI you want to select
        - completion: callback called when operation complete either successfully or with an error
@@ -270,10 +272,12 @@ import GoogleMaps
         * Start the positioning if needed
         * Calculate and draw the route from the current user location to the location.
         * Provide the step-by-step instructions to reach the location.
+     WARNING: this method only works during or after OnMapReadyListener.onMapReady callback is executed
      - parameters:
        - floor: floor of the location
        - lat: latitude of the location
        - lng: longitude of the location
+
      */
     public func navigateToLocation(floor: SITFloor, lat: Double, lng: Double) {
         guard let positioningController = toPresentViewController else { return }
@@ -317,6 +321,33 @@ import GoogleMaps
     public func unlockCamera() {
         guard let positioningController = toPresentViewController else { return }
         positioningController.unlockCamera()
+    }
+
+    /**
+     This method filter all POIs displayed by given category Ids. If an empty array is supplied all POIs will be shown
+     WARNING: this method only works during or after OnMapReadyListener.onMapReady callback is executed
+     - parameters
+        - categoryIds: these are the ids of the categories to filter
+     */
+    public func filterPois(by categoryIds: [String]) {
+        guard toPresentViewController != nil  else { return }
+        let categories = categoryIds.map { categoryId in
+            // since this categories are only used for filtering we only care about identifier property
+            return SITPOICategory(identifier: categoryId, createdAt: Date(), updatedAt: Date(),
+                    customFields: Dictionary())
+        }
+        filterPois(by: categories)
+    }
+
+    /**
+     This method filter all POIs displayed by given categories. If an empty array is supplied all POIs will be shown
+     WARNING: this method only works during or after OnMapReadyListener.onMapReady callback is executed
+     - parameters
+        - categories: these are the categories to filter
+     */
+    public func filterPois(by categories: [SITPOICategory]) {
+        guard let positioningController = toPresentViewController else { return }
+        positioningController.filterPoisByCategories(categories)
     }
 }
 

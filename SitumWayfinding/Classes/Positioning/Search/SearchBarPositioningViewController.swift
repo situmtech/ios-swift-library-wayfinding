@@ -34,7 +34,10 @@ extension PositioningViewController: UISearchControllerDelegate, UISearchBarDele
     //MARK: UISearchControllerDelegate methods
     func presentSearchController(_ searchController: UISearchController) {
         // Inititialize searchResultsController variables
-        searchResultsController?.activeBuildingInfo = self.buildingInfo
+        searchResultsController?.buildingManager = buildingManager
+        if let manager = buildingManager, let searchResultsController = searchResultsController {
+            buildingManager?.addDelegate(searchResultsController)
+        }
         searchResultsController?.iconsStore = iconsStore
         searchResultsController?.delegate = self
         searchResultsController?.searchController = searchController

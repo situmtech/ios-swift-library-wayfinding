@@ -12,31 +12,38 @@ class MarkerRenderer {
     
     private(set) var markers: Array<SitumMarker> = []
     private var mapView: GMSMapView
-    private var buildingInfo: SITBuildingInfo
+    private var buildingManager: BuildingManager
     private var iconsStore: IconsStore
     private var showPoiNames: Bool
     private var markerClustering: GoogleMapsMarkerClustering? = nil
-    private var currentFloor: SITFloor?
+
+    private var currentFloor: SITFloor? = nil
+    private var selectedPOI: SITPOI? = nil
     
     init(
         mapView: GMSMapView,
-        buildingInfo: SITBuildingInfo,
+        buildingManager: BuildingManager,
         iconsStore: IconsStore,
         showPoiNames: Bool,
         isClusteringEnabled: Bool
     ) {
         self.mapView = mapView
-        self.buildingInfo = buildingInfo
+        self.buildingManager = buildingManager
         self.showPoiNames = showPoiNames
         self.iconsStore = iconsStore
         if isClusteringEnabled {
             markerClustering = GoogleMapsMarkerClustering(mapView: mapView)
         }
+        self.buildingManager.addDelegate(self)
     }
     
     func displayPOIMarkers(forFloor floor: SITFloor) {
+        currentFloor = floor
         removeMarkers()
-        let poisInFloor = buildingInfo.indoorPois.filter { poi in poi.position().floorIdentifier == floor.identifier }
+        var poisInFloor = buildingManager.filterPoisByCategories().filterByFloor(floor)
+        if let poi = selectedPOI {
+            poisInFloor.append(poi)
+        }
         
         for poi in poisInFloor {
             let marker = SitumMarker(poi)
@@ -48,6 +55,9 @@ class MarkerRenderer {
                 } else {
                     self?.insertMarkerInGoogleMaps(marker: marker)
                 }
+            }
+            if let selectedPoi = selectedPOI, selectedPoi.identifier == poi.identifier {
+                selectMarker(marker)
             }
         }
     }
@@ -98,6 +108,7 @@ class MarkerRenderer {
             loadIcon(forMarker: marker, selected: true) { [weak self] marker in
                 self?.selectMarkerInGoogleMaps(marker: marker)
             }
+            selectedPOI = marker.poi
         } else if marker.isCustomMarker {
             selectMarkerInGoogleMaps(marker: marker)
         }
@@ -121,6 +132,7 @@ class MarkerRenderer {
             removeMarkerFromGoogleMaps(marker: marker)
             markers = markers.filter { element in element != marker }
         }
+        selectedPOI = nil
     }
     
     private func selectMarkerInGoogleMaps(marker: SitumMarker) {
@@ -185,6 +197,14 @@ class MarkerRenderer {
         return markers.first { marker in
             guard let poi = marker.poi else { return false }
             return poi.id == searchedPoi.id
+        }
+    }
+}
+
+extension MarkerRenderer: BuildingManagerDelegate {
+    func categoriesWhereChanged() {
+        if let floor = currentFloor {
+            displayPOIMarkers(forFloor: floor)
         }
     }
 }
