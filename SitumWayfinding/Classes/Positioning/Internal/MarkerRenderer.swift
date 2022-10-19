@@ -167,9 +167,9 @@ class MarkerRenderer {
             }
     
             let color = UIColor(hex: "#5b5b5bff") ?? UIColor.gray
-            let title = poi.name.uppercased()
+            let title = poi.name
             if showPoiNames {
-                marker.gmsMarker.icon = icon.setTitle(title: title, size: 12.0, color: color, weight: .semibold)
+                marker.gmsMarker.icon = icon.setTitle(title: title, size: 22.0, color: color, weight: .bold)
             } else {
                 marker.gmsMarker.icon = icon
             }

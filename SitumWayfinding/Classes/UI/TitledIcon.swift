@@ -4,7 +4,9 @@ extension UIImage {
     func setTitle(title: String, size: CGFloat, color: UIColor, weight: UIFont.Weight) -> UIImage {
         let subView = UIView()
         
-        let font = UIFont.systemFont(ofSize: size, weight: weight)
+        guard let font = UIFont(name: "Roboto-Bold", size: 14) else {
+            fatalError("Failed to load the Robot font.")
+        }
         
         let titleLabel = self.getLabel(font: font, color: color, title: title)
         
@@ -21,37 +23,22 @@ extension UIImage {
     }
     
     private func getLabel(font: UIFont, color: UIColor, title: String) -> UILabel {
-        let sizeFrame = CGRect(x: 4.0, y: 4.0, width: 150.0, height: font.lineHeight)
-        let titleLabel : UILabel = UILabel(frame: sizeFrame)
-    
-        let textFontAttributes: [NSAttributedString.Key : Any]  = [
-            .font : font,
-            .foregroundColor: color,
-            .backgroundColor: UIColor.white
-        ]
-        
-        let mutableString = NSMutableAttributedString(string: title, attributes: textFontAttributes)
-        
-        titleLabel.lineBreakMode = .byWordWrapping
-        titleLabel.textAlignment = .center
-        titleLabel.attributedText = mutableString
-        titleLabel.numberOfLines = 0
-        titleLabel.sizeToFit()
-        titleLabel.backgroundColor = UIColor.clear
-        
-        let noLines = titleLabel.frame.size.height / font.lineHeight
-
-        if noLines > 2 {
-            titleLabel.numberOfLines = 2
-        }
-        
-        titleLabel.frame = CGRect(
+        let sizeFrame = CGRect(
             x: 4.0,
             y: 4.0,
-            width: titleLabel.frame.width,
-            height: (noLines > 2) ? 2 * font.lineHeight : 24.0
+            width: 120.0,
+            height: font.lineHeight + (CGFloat(title.count) / 2.0)
         )
-        
+   
+        let titleLabel = StrokeLabel(frame: sizeFrame)
+        titleLabel.lineBreakMode = .byWordWrapping
+        titleLabel.textAlignment = .center
+        titleLabel.customfont = font
+        titleLabel.textForegroundColor = color
+        titleLabel.strockedText = title
+        titleLabel.backgroundColor = UIColor.clear
+        titleLabel.numberOfLines = 10
+       
         return titleLabel
     }
     
