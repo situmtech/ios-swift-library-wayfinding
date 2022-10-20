@@ -129,18 +129,6 @@ class MarkerRenderer {
         return isClusteringEnabled && marker.userData is GMUCluster
     }
 
-    private func selectMarkerInGoogleMaps(marker: SitumMarker) {
-        insertMarkerInGoogleMaps(marker: marker)
-        mapView.selectedMarker = marker.gmsMarker
-    }
-
-    private func insertMarkerInGoogleMaps(marker: SitumMarker) {
-        if marker.gmsMarker.map == nil {
-            marker.setMapView(mapView: mapView)
-            marker.gmsMarker.zIndex = zIndices.poiMarker
-        }
-    }
-
     func deselectMarker(_ marker: SitumMarker) {
         if marker.isPoiMarker {
             loadIcon(forMarker: marker, selected: false) { [weak self] marker in
@@ -158,6 +146,19 @@ class MarkerRenderer {
         selectedPoi = nil
         removeMarkerIfPoiIsFiltered(marker)
     }
+    
+    private func selectMarkerInGoogleMaps(marker: SitumMarker) {
+        insertMarkerInGoogleMaps(marker: marker)
+        mapView.selectedMarker = marker.gmsMarker
+    }
+    
+    private func insertMarkerInGoogleMaps(marker: SitumMarker) {
+        if marker.gmsMarker.map == nil {
+            marker.setMapView(mapView: mapView)
+            marker.gmsMarker.zIndex = ZIndices.poiMarker
+        }
+    }
+    
 
     private func removeMarkerFromGoogleMaps(marker: SitumMarker) {
         if mapView.selectedMarker == marker.gmsMarker {

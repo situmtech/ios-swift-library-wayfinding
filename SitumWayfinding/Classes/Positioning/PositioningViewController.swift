@@ -430,7 +430,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         
         self.mapOverlay = mapOverlay
         self.mapOverlay.bearing = CLLocationDirection(buildingInfo!.building.rotation.degrees())
-        self.mapOverlay.zIndex = zIndices.floorPlan
+        self.mapOverlay.zIndex = ZIndices.floorPlan
         self.mapOverlay.map = mapView
         displayMarkers(forFloor: floor, isUserNavigating: SITNavigationManager.shared().isRunning())
         tileProvider.addTileFor(floorIdentifier: floor.identifier)
@@ -978,7 +978,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
                  */
                 polyline.spans = GMSStyleSpans(polyline.path!, styles, [solidLine, gap], GMSLengthKind.rhumb)
                 self.polyline.append(polyline)
-                polyline.zIndex = zIndices.route
+                polyline.zIndex = ZIndices.route
                 polyline.map = self.mapView
             }
         }
