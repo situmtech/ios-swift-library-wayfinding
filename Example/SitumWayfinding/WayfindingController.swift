@@ -91,7 +91,7 @@ extension WayfindingController: OnMapReadyListener {
                 library?.navigateToPoi(poi: poi)
             case .navigateToLocation(let floor, let lat, let lng):
                 library?.navigateToLocation(floor: floor, lat: lat, lng: lng)
-            case .filterCategories(categoryIds: let categoryIds):
+            case .filterPoiByCategories(categoryIds: let categoryIds):
                 library?.filterPois(by: categoryIds)
             }
         }

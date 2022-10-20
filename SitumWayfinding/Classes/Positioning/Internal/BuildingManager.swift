@@ -9,7 +9,7 @@ class BuildingManager {
     private(set) var buildingInfo: SITBuildingInfo
     private var pois: [SITPOI] = []
     private var categoriesToFilter: [SITPOICategory] = []
-    // we use a hash table because in this case we use weak objects to avoid retention cycles
+    // we use a hash table (which uses weak references) to avoid retention cycles
     private var delegates: NSHashTable<BuildingManagerDelegate> = NSHashTable.weakObjects()
 
     init?(buildingInfo: SITBuildingInfo) {
@@ -19,9 +19,9 @@ class BuildingManager {
     }
 
     //MARK: Handle categories
-    func setFilterCategories(_ categories: [SITPOICategory]) {
+    func setPoiFilters(by categories: [SITPOICategory]) {
         categoriesToFilter = categories
-        delegates.allObjects.forEach { delegate in delegate.categoriesWhereChanged() }
+        delegates.allObjects.forEach { delegate in delegate.poiFiltersByCategoriesWereUpdated() }
     }
 
     //MARK: Filtering pois
@@ -30,7 +30,7 @@ class BuildingManager {
      - Returns: filtered pois by categories set in building manager
      */
     func filterPoisByCategories() -> [SITPOI] {
-        return pois.filterByCategories(categoriesToFilter)
+        return pois.filter(by: categoriesToFilter)
     }
 
     //MARK: Handling observers
@@ -41,24 +41,22 @@ class BuildingManager {
     func removeDelegate(_ delegate: BuildingManagerDelegate) {
         delegates.remove(delegate)
     }
-
-    //MARK: Utils
-    func floorForPoi(_ poi: SITPOI) -> SITFloor? {
-        guard let floor = buildingInfo.floors.first(where: { $0.identifier ==  poi.position().floorIdentifier }) else {
-            return nil
-        }
-        return floor
-    }
 }
 
 
 @objc protocol BuildingManagerDelegate {
-    func categoriesWhereChanged()
+    func poiFiltersByCategoriesWereUpdated()
+}
+
+extension SITPOI {
+    func belongs(to floor: SITFloor) -> Bool {
+        return position().floorIdentifier == floor.identifier
+    }
 }
 
 extension Array where Element == SITPOI {
-    func filterByFloor(_ floor: SITFloor) -> [Element] {
-        return self.filter { poi in poi.position().floorIdentifier == floor.identifier }
+    func filter(by floor: SITFloor) -> [Element] {
+        return self.filter { poi in poi.belongs(to: floor) }
     }
 
     /**
@@ -66,7 +64,7 @@ extension Array where Element == SITPOI {
      - Parameter categories: categories to filter
      - Returns: filtered pois by categories. If categories is an empty array will return the array as is without filter
      */
-    func filterByCategories(_ categories: [SITPOICategory]) -> [Element] {
+    func filter(by categories: [SITPOICategory]) -> [Element] {
         if categories.count > 0 {
             let categoryIds = Set(categories.map { $0.identifier })
             return self.filter { categoryIds.contains($0.categoryIdentifier)}
@@ -80,7 +78,7 @@ extension Array where Element == SITPOI {
      - Parameter name: the name of the poi to search
      - Returns: pois filtered by name. If name is an empty string return the array as is without filtering
      */
-    func filterByName(_ name: String) -> [Element] {
+    func filter(by name: String) -> [Element] {
         if name.isEmpty {
             return self
         } else {

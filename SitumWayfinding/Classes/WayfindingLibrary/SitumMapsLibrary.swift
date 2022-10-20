@@ -324,7 +324,8 @@ import GoogleMaps
     }
 
     /**
-     This method filter all POIs displayed by given category Ids. If an empty array is supplied all POIs will be shown
+     This method filter POIs by given category Ids. This will hide the icon of every POI in the map that not
+     matches these category Ids. If an empty array is supplied all POIs will be shown.
      WARNING: this method only works during or after OnMapReadyListener.onMapReady callback is executed
      - parameters
         - categoryIds: these are the ids of the categories to filter
@@ -333,6 +334,7 @@ import GoogleMaps
         guard toPresentViewController != nil  else { return }
         let categories = categoryIds.map { categoryId in
             // since this categories are only used for filtering we only care about identifier property
+            // TODO make this properly could be a problem if inner object trust this is a correct object
             return SITPOICategory(identifier: categoryId, createdAt: Date(), updatedAt: Date(),
                     customFields: Dictionary())
         }
@@ -340,7 +342,8 @@ import GoogleMaps
     }
 
     /**
-     This method filter all POIs displayed by given categories. If an empty array is supplied all POIs will be shown
+     This method filter POIs by given categories. This will hide the icon of every POI in the map that not
+     matches these categories
      WARNING: this method only works during or after OnMapReadyListener.onMapReady callback is executed
      - parameters
         - categories: these are the categories to filter

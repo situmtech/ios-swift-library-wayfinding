@@ -127,7 +127,7 @@ class ViewController: UIViewController {
         SITServices.provideAPIKey(credentials.password, forEmail: credentials.user)
         SITCommunicationManager.shared().fetchBuildingInfo(buildingId, withOptions: nil, success: { [weak self] mapping in
             guard mapping != nil, let buildingInfo = mapping!["results"] as? SITBuildingInfo else {return}
-            self?.pois = buildingInfo.indoorPois
+            self?.pois = buildingInfo.indoorPois.sorted(by: { $0.name > $1.name })
             if buildingInfo.floors.count > 0 {
                 self?.currentFloor = buildingInfo.floors[0]
             }
@@ -176,5 +176,5 @@ enum WYFAction {
     case selectPoi(SITPOI)
     case navigateToPoi(SITPOI)
     case navigateToLocation(floor: SITFloor, lat: Double, lng: Double)
-    case filterCategories(categoryIds: [String])
+    case filterPoiByCategories(categoryIds: [String])
 }

@@ -410,7 +410,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     }
 
     func filterPoisByCategories(_ categories: [SITPOICategory]) {
-        buildingManager?.setFilterCategories(categories)
+        buildingManager?.setPoiFilters(by: categories)
     }
     
     func displayFloorPlan(forFloor floor: SITFloor) {
@@ -1137,7 +1137,7 @@ extension PositioningViewController {
             let renderer = markerRenderer else { return }
         
         select(floor: indexPath)
-        if let markerPoi = renderer.searchMarker(byPOI: poi) {
+        if let markerPoi = renderer.searchMarker(byPoi: poi) {
             select(marker: markerPoi, success: success)
         } else {
             throw WayfindingError.invalidPOI
@@ -1232,7 +1232,7 @@ extension PositioningViewController {
     func displayMarkers(forFloor floor: SITFloor, isUserNavigating: Bool) {
         guard let renderer = markerRenderer else { return }
         if !isUserNavigating {
-            renderer.displayPOIMarkers(forFloor: floor)
+            renderer.displayPoiMarkers(forFloor: floor)
             if let customMarker = lastCustomMarker {
                 renderer.displayLongPressMarker(customMarker, forFloor: floor)
             }
