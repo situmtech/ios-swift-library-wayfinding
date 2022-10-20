@@ -128,7 +128,19 @@ class MarkerRenderer {
     func isClusterGMSMarker(_ marker: GMSMarker) -> Bool {
         return isClusteringEnabled && marker.userData is GMUCluster
     }
-    
+
+    private func selectMarkerInGoogleMaps(marker: SitumMarker) {
+        insertMarkerInGoogleMaps(marker: marker)
+        mapView.selectedMarker = marker.gmsMarker
+    }
+
+    private func insertMarkerInGoogleMaps(marker: SitumMarker) {
+        if marker.gmsMarker.map == nil {
+            marker.setMapView(mapView: mapView)
+            marker.gmsMarker.zIndex = zIndices.poiMarker
+        }
+    }
+
     func deselectMarker(_ marker: SitumMarker) {
         if marker.isPoiMarker {
             loadIcon(forMarker: marker, selected: false) { [weak self] marker in
@@ -144,31 +156,27 @@ class MarkerRenderer {
             markers = markers.filter { element in element != marker }
         }
         selectedPoi = nil
+        removeMarkerIfPoiIsFiltered(marker)
     }
-    
-    private func selectMarkerInGoogleMaps(marker: SitumMarker) {
-        insertMarkerInGoogleMaps(marker: marker)
-        mapView.selectedMarker = marker.gmsMarker
-    }
-    
-    private func insertMarkerInGoogleMaps(marker: SitumMarker) {
-        if marker.gmsMarker.map == nil {
-            marker.setMapView(mapView: mapView)
-            marker.gmsMarker.zIndex = zIndices.poiMarker
-        }
-    }
-    
+
     private func removeMarkerFromGoogleMaps(marker: SitumMarker) {
         if mapView.selectedMarker == marker.gmsMarker {
             deselectMarkerFromGoogleMaps(marker: marker)
         }
         marker.setMapView(mapView: nil)
     }
-    
+
     private func deselectMarkerFromGoogleMaps(marker: SitumMarker) {
         mapView.selectedMarker = nil
     }
-    
+
+    private func removeMarkerIfPoiIsFiltered(_ marker: SitumMarker) {
+        guard let poi = marker.poi, let currentFloor = currentFloor else { return }
+        if !buildingManager.hasCategoryIdInFilters(poi.categoryIdentifier) {
+            displayPoiMarkers(forFloor: currentFloor)
+        }
+    }
+
     /**
      Load the poi icon from the server for given marker
      - Parameters:

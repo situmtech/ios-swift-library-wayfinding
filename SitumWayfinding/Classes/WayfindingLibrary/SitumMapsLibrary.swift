@@ -331,26 +331,8 @@ import GoogleMaps
         - categoryIds: these are the ids of the categories to filter
      */
     public func filterPois(by categoryIds: [String]) {
-        guard toPresentViewController != nil  else { return }
-        let categories = categoryIds.map { categoryId in
-            // since this categories are only used for filtering we only care about identifier property
-            // TODO make this properly could be a problem if inner object trust this is a correct object
-            return SITPOICategory(identifier: categoryId, createdAt: Date(), updatedAt: Date(),
-                    customFields: Dictionary())
-        }
-        filterPois(by: categories)
-    }
-
-    /**
-     This method filter POIs by given categories. This will hide the icon of every POI in the map that not
-     matches these categories
-     WARNING: this method only works during or after OnMapReadyListener.onMapReady callback is executed
-     - parameters
-        - categories: these are the categories to filter
-     */
-    public func filterPois(by categories: [SITPOICategory]) {
         guard let positioningController = toPresentViewController else { return }
-        positioningController.filterPoisByCategories(categories)
+        positioningController.filterPois(by: categoryIds)
     }
 }
 

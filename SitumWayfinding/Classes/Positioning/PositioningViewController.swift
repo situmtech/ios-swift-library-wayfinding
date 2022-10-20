@@ -409,8 +409,8 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
             })
     }
 
-    func filterPoisByCategories(_ categories: [SITPOICategory]) {
-        buildingManager?.setPoiFilters(by: categories)
+    func filterPois(by categoryIds: [String]) {
+        buildingManager?.setPoiFilters(by: categoryIds)
     }
     
     func displayFloorPlan(forFloor floor: SITFloor) {

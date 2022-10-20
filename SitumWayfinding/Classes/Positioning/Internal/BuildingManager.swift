@@ -8,7 +8,7 @@ import SitumSDK
 class BuildingManager {
     private(set) var buildingInfo: SITBuildingInfo
     private var pois: [SITPOI] = []
-    private var categoriesToFilter: [SITPOICategory] = []
+    private var categoryIdsToFilter: [String] = []
     // we use a hash table (which uses weak references) to avoid retention cycles
     private var delegates: NSHashTable<BuildingManagerDelegate> = NSHashTable.weakObjects()
 
@@ -19,8 +19,8 @@ class BuildingManager {
     }
 
     //MARK: Handle categories
-    func setPoiFilters(by categories: [SITPOICategory]) {
-        categoriesToFilter = categories
+    func setPoiFilters(by categoryIds: [String]) {
+        categoryIdsToFilter = categoryIds
         delegates.allObjects.forEach { delegate in delegate.poiFiltersByCategoriesWereUpdated() }
     }
 
@@ -30,7 +30,11 @@ class BuildingManager {
      - Returns: filtered pois by categories set in building manager
      */
     func filterPoisByCategories() -> [SITPOI] {
-        return pois.filter(by: categoriesToFilter)
+        return pois.filter(by: categoryIdsToFilter)
+    }
+
+    func hasCategoryIdInFilters(_ categoryId: String) -> Bool {
+        return categoryIdsToFilter.contains(categoryId)
     }
 
     //MARK: Handling observers
@@ -61,12 +65,11 @@ extension Array where Element == SITPOI {
 
     /**
      Filter by categories
-     - Parameter categories: categories to filter
+     - Parameter categoryIds: category Ids to filter
      - Returns: filtered pois by categories. If categories is an empty array will return the array as is without filter
      */
-    func filter(by categories: [SITPOICategory]) -> [Element] {
-        if categories.count > 0 {
-            let categoryIds = Set(categories.map { $0.identifier })
+    func filter(by categoryIds: [String]) -> [Element] {
+        if categoryIds.count > 0 {
             return self.filter { categoryIds.contains($0.categoryIdentifier)}
         } else {
             return self
