@@ -30,11 +30,23 @@ class BuildingManager {
      - Returns: filtered pois by categories set in building manager
      */
     func filterPoisByCategories() -> [SITPOI] {
-        return pois.filter(by: categoryIdsToFilter)
+        if hasCategoryFilters() {
+            return pois.filter(by: categoryIdsToFilter)
+        } else {
+            return pois
+        }
     }
 
     func hasCategoryIdInFilters(_ categoryId: String) -> Bool {
-        return categoryIdsToFilter.contains(categoryId)
+        if hasCategoryFilters() {
+            return categoryIdsToFilter.contains(categoryId)
+        } else {
+            return true // when we have no filters all categories are active
+        }
+    }
+
+    private func hasCategoryFilters() -> Bool {
+        return categoryIdsToFilter.count > 0
     }
 
     //MARK: Handling observers
