@@ -989,6 +989,9 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         SITNavigationManager.shared().removeUpdates()
         self.changeNavigationButtonVisibility(isVisible: false)
         self.showPositioningUI()
+        if (!self.showSearchBar() && !self.showBackButton()) {
+            self.hiddenNavBar()
+        }
         self.containerInfoBarMap?.setLabels(primary: self.buildingName)
         for polyline in self.polyline {
             polyline.map = nil
