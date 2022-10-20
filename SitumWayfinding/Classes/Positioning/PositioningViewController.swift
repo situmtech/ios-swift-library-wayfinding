@@ -50,6 +50,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     var loadingError: Bool = false
     //Positioning
     var markerRenderer: MarkerRenderer?
+    var buildingManager: BuildingManager?
     var mapOverlay: GMSGroundOverlay = GMSGroundOverlay()
     var floorplans: Dictionary<String, UIImage> = [:]
     let iconsStore: IconsStore = IconsStore()
@@ -90,6 +91,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     let DEFAULT_BUILDING_NAME: String = "Current Building"
     var lock = false
     var tileProvider:TileProvider!
+    var preserveStateInNewViewAppeareance = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -112,6 +114,28 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        if (!preserveStateInNewViewAppeareance || positionDrawer == nil){
+            self.initializeViewBeforeAppearing()
+        }
+    }
+    
+    override func viewDidLayoutSubviews() {
+        //In viewWillAppear layout hasnt finished yet
+        addMap()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        if CLLocationManager.locationServicesEnabled() {
+            let status: CLAuthorizationStatus = CLLocationManager.authorizationStatus()
+            if status == CLAuthorizationStatus.notDetermined {
+                self.locManager.requestAlwaysAuthorization()
+            }
+        }
+    }
+    
+    
+    func initializeViewBeforeAppearing(){
         positionDrawer = GoogleMapsPositionDrawer(mapView: mapView)
         let loading = NSLocalizedString("alert.loading.title",
             bundle: SitumMapsLibrary.bundle,
@@ -129,9 +153,10 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         SITCommunicationManager.shared().fetchBuildingInfo(self.buildingId, withOptions: nil, success: { (mapping: [AnyHashable : Any]?) in
             if (mapping != nil) {
                 self.buildingInfo = mapping!["results"] as? SITBuildingInfo
+                self.buildingManager = BuildingManager(buildingInfo: self.buildingInfo!)
                 self.mapReadinessChecker.buildingInfoLoaded()
-                if self.buildingInfo!.floors.count <= 0 {
-                    self.loadingError = true;
+                if self.buildingManager == nil {
+                    self.loadingError = true
                     self.situmLoadFinished(loadingAlert: loadingAlert)
                 } else {
                     SITCommunicationManager.shared().fetchOrganizationTheme(options: nil, success: { (mapping: [AnyHashable : Any]?) in
@@ -165,21 +190,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
             self.loadingError = true;
             self.situmLoadFinished(loadingAlert: loadingAlert)
         })
-    }
-    
-    override func viewDidLayoutSubviews() {
-        //In viewWillAppear layout hasnt finished yet
-        addMap()
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        if CLLocationManager.locationServicesEnabled() {
-            let status: CLAuthorizationStatus = CLLocationManager.authorizationStatus()
-            if status == CLAuthorizationStatus.notDetermined {
-                self.locManager.requestAlwaysAuthorization()
-            }
-        }
+        
     }
     
     func displayElementsNavBar() {
@@ -281,12 +292,12 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     }
     
     func initializeMarkerMapRenderer() {
-        guard let mapView = mapView, let info = buildingInfo else {
-            Logger.logDebugMessage("Marker renderer could not be created because mapView and building info are not set")
+        guard let mapView = mapView, let buildingManager = buildingManager else {
+            Logger.logDebugMessage("Marker renderer could not be created because mapView and building info is not set or is incorrect")
             return
         }
         let isClusteringEnabled = library?.settings?.enablePoisClustering ?? false
-        markerRenderer = MarkerRenderer(mapView: mapView, buildingInfo: info, iconsStore: iconsStore, showPoiNames:
+        markerRenderer = MarkerRenderer(mapView: mapView, buildingManager: buildingManager, iconsStore: iconsStore, showPoiNames:
             showPoiNames(), isClusteringEnabled: isClusteringEnabled)
     }
 
@@ -380,15 +391,11 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
             displayFloorPlan(forFloor: floor)
             self.mapReadinessChecker.currentFloorMapLoaded()
         } else {
-            let wasMapFetched = fetchMap(floor: floor)
-            if !wasMapFetched {
-                usleep(500_000) // retry fetch if map could not be fetched after timeout
-                let _ = fetchMap(floor: floor)
-            }
+            fetchMap(floor: floor)
         }
     }
     
-    private func fetchMap(floor: SITFloor) -> Bool {
+    private func fetchMap(floor: SITFloor) {
         let title = NSLocalizedString("positioning.error.emptyFloor.alert.title",
                 bundle: SitumMapsLibrary.bundle,
                 comment: "Alert title error when download the floor plan fails")
@@ -396,7 +403,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
                 bundle: SitumMapsLibrary.bundle,
                 comment: "Alert title error when download the floor plan fails")
 
-        return SITCommunicationManager.shared().fetchMap(
+        SITCommunicationManager.shared().fetchMap(
             from: orderedFloors(buildingInfo: buildingInfo)![selectedLevelIndex],
             withCompletion: { imageData in
                 if let imageData = imageData {
@@ -409,6 +416,10 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
                     self.showAlertMessage(title: title, message: message, alertType: .otherAlert)
                 }
             })
+    }
+
+    func filterPois(by categoryIds: [String]) {
+        buildingManager?.setPoiFilters(by: categoryIds)
     }
     
     func displayFloorPlan(forFloor floor: SITFloor) {
@@ -771,7 +782,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         let format = NSLocalizedString("positioning.numBeacons",
             bundle: SitumMapsLibrary.bundle,
             comment: "Used to show the user the number of beacons that library detects nearby")
-        self.numberBeaconsRangedLabel.text = String(format: format, text)
+        self.numberBeaconsRangedLabel.text = String.localizedStringWithFormat(format, text)
     }
     
     func updateUI(with location: SITLocation) {
@@ -1135,7 +1146,7 @@ extension PositioningViewController {
             let renderer = markerRenderer else { return }
         
         select(floor: indexPath)
-        if let markerPoi = renderer.searchMarker(byPOI: poi) {
+        if let markerPoi = renderer.searchMarker(byPoi: poi) {
             select(marker: markerPoi, success: success)
         } else {
             throw WayfindingError.invalidPOI
@@ -1230,7 +1241,7 @@ extension PositioningViewController {
     func displayMarkers(forFloor floor: SITFloor, isUserNavigating: Bool) {
         guard let renderer = markerRenderer else { return }
         if !isUserNavigating {
-            renderer.displayPOIMarkers(forFloor: floor)
+            renderer.displayPoiMarkers(forFloor: floor)
             if let customMarker = lastCustomMarker {
                 renderer.displayLongPressMarker(customMarker, forFloor: floor)
             }
