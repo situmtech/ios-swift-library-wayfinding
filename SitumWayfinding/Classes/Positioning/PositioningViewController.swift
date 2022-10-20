@@ -91,6 +91,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     let DEFAULT_BUILDING_NAME: String = "Current Building"
     var lock = false
     var tileProvider:TileProvider!
+    var preserveStateInNewViewAppeareance = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -113,6 +114,28 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        if (!preserveStateInNewViewAppeareance || positionDrawer == nil){
+            self.initializeViewBeforeAppearing()
+        }
+    }
+    
+    override func viewDidLayoutSubviews() {
+        //In viewWillAppear layout hasnt finished yet
+        addMap()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        if CLLocationManager.locationServicesEnabled() {
+            let status: CLAuthorizationStatus = CLLocationManager.authorizationStatus()
+            if status == CLAuthorizationStatus.notDetermined {
+                self.locManager.requestAlwaysAuthorization()
+            }
+        }
+    }
+    
+    
+    func initializeViewBeforeAppearing(){
         positionDrawer = GoogleMapsPositionDrawer(mapView: mapView)
         let loading = NSLocalizedString("alert.loading.title",
             bundle: SitumMapsLibrary.bundle,
@@ -167,21 +190,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
             self.loadingError = true;
             self.situmLoadFinished(loadingAlert: loadingAlert)
         })
-    }
-    
-    override func viewDidLayoutSubviews() {
-        //In viewWillAppear layout hasnt finished yet
-        addMap()
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        if CLLocationManager.locationServicesEnabled() {
-            let status: CLAuthorizationStatus = CLLocationManager.authorizationStatus()
-            if status == CLAuthorizationStatus.notDetermined {
-                self.locManager.requestAlwaysAuthorization()
-            }
-        }
+        
     }
     
     func displayElementsNavBar() {

@@ -76,6 +76,7 @@ import GoogleMaps
             let mapView = settings.googleMap != nil ? settings.googleMap : obtainGMSMapView()
             prepareForLoading(buildingWithId: settings.buildingId, withMap: mapView)
             SITServices.setUseRemoteConfig(settings.useRemoteConfig)
+            self.toPresentViewController?.preserveStateInNewViewAppeareance = false;
             UIUtils().present(the: self.toPresentViewController!, over: self.parentViewControler, in: self.containerView)
         } // NOTE: else unnecessary: validateSettings already checks settings not nil
     }
@@ -127,6 +128,19 @@ import GoogleMaps
         prepareForLoading(buildingWithId: buildingId, withMap: gMap)
         UIUtils().present(the: self.toPresentViewController!, over: self.parentViewControler, in: self.containerView)
     }
+    
+    /**
+     Changes the container view that currently contains the WYF UI and present it in this new view whitout the need to reset the module.
+     - parameter view new view that will contain the wayfinding UI
+     - parameter viewController: view controller associated with the containing view
+     */
+    @objc public func presentInNewView(_ view: UIView, controlledBy viewController: UIViewController){
+        self.parentViewControler = viewController
+        self.containerView = view
+        self.toPresentViewController?.preserveStateInNewViewAppeareance = true;
+        UIUtils().present(the: self.toPresentViewController!, over: self.parentViewControler, in: self.containerView)
+    }
+
     
     /**
        Stops Situm Navigation
