@@ -24,7 +24,7 @@ class StrokeLabel: UILabel {
             let strokeTextAttributes : [NSAttributedString.Key : Any] = [
                 NSAttributedString.Key.strokeColor : textStrokeColor,
                 NSAttributedString.Key.foregroundColor : textForegroundColor,
-                NSAttributedString.Key.strokeWidth : -4.0,
+                NSAttributedString.Key.strokeWidth : -5.0,
                 NSAttributedString.Key.font : customfont
             ] as [NSAttributedString.Key  : Any]
             
