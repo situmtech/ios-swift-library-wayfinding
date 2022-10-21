@@ -29,12 +29,12 @@ struct SitumMarker: Equatable {
         self.poi = poi
         self.gmsMarker = gmsMarker
 
-        self.gmsMarker.setMarkerData(SitumMarkerData(
+        self.gmsMarker.markerData = SitumMarkerData(
             floorIdentifier: floorIdentifier,
             isPoiMarker: isPoiMarker,
             isCustomMarker: isCustomMarker,
             isTopLevel: isTopLevel
-        ))
+        )
     }
     
     init(coordinate: CLLocationCoordinate2D, floor: SITFloor) {
