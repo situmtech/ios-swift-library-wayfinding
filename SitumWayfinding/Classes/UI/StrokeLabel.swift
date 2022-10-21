@@ -7,17 +7,12 @@
 //
 
 class StrokeLabel: UILabel {
-    var textStrokeColor: UIColor = UIColor.white {
-        willSet(newValue) { }
-    }
     
-    var textForegroundColor: UIColor = UIColor.gray {
-        willSet(newValue) { }
-    }
+    var textStrokeColor: UIColor = UIColor.white
     
-    var customfont: UIFont = UIFont.systemFont(ofSize: 22) {
-        willSet(newValue) { }
-    }
+    var textForegroundColor: UIColor = UIColor.gray
+    
+    var customfont: UIFont = UIFont.systemFont(ofSize: 22)
     
     var strockedText: String = "" {
         willSet(newValue) {
