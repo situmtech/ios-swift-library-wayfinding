@@ -10,7 +10,7 @@ import GoogleMapsUtils
 class MarkerRenderer {
     var isClusteringEnabled: Bool { return markerClustering != nil }
     
-    private(set) var markers: Array<SitumMarker> = []
+    private(set) var markers: [SitumMarker] = []
     private var mapView: GMSMapView
     private var buildingManager: BuildingManager
     private var iconsStore: IconsStore
@@ -42,7 +42,7 @@ class MarkerRenderer {
         removeMarkers()
         var poisInFloor = buildingManager.filterPoisByCategories().filter(by: floor)
         poisInFloor = preserveSelectedPoi(pois: poisInFloor, floor: floor)
-        
+
         for poi in poisInFloor {
             let marker = SitumMarker(poi)
             markers.append(marker)
