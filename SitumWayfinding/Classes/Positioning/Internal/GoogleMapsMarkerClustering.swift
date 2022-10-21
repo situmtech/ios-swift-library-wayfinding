@@ -38,7 +38,7 @@ fileprivate class SITNonHierarchicalDistanceBasedAlgorithm: GMUNonHierarchicalDi
     override func add(_ items: [GMUClusterItem]) {
         for item in items {
             let marker = item as! GMSMarker // GoogleMapsMarkerClustering set only gmsMarkers
-            if let markerData = marker.getMarkerData(),
+            if let markerData = marker.markerData,
                markerData.isTopLevel {
                 nonClusteredItems.append(marker)
             } else {

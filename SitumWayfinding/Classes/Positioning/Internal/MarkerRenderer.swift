@@ -61,7 +61,7 @@ class MarkerRenderer {
     private func preserveSelectedPoi(pois: [SITPOI], floor: SITFloor) -> [SITPOI] {
         guard let selectedPoi = selectedPoi else { return pois }
         var innerPois = pois
-        if selectedPoi.belongs(to: floor) {
+        if selectedPoi.belongs(to: floor) && !innerPois.contains(selectedPoi) {
             innerPois.append(selectedPoi)
         }
         return innerPois
@@ -158,7 +158,6 @@ class MarkerRenderer {
             marker.gmsMarker.zIndex = ZIndices.poiMarker
         }
     }
-    
 
     private func removeMarkerFromGoogleMaps(marker: SitumMarker) {
         if mapView.selectedMarker == marker.gmsMarker {

@@ -7,12 +7,9 @@ import GoogleMaps
 import SitumSDK
 
 extension GMSMarker {
-    func getMarkerData() -> SitumMarkerData? {
-        return userData as? SitumMarkerData
-    }
-
-    func setMarkerData(_ data: SitumMarkerData) {
-        userData = data
+    var markerData: SitumMarkerData? {
+        get { return userData as? SitumMarkerData }
+        set { userData = newValue }
     }
 }
 
