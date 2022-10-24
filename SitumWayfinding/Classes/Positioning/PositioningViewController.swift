@@ -50,6 +50,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     var loadingError: Bool = false
     //Positioning
     var markerRenderer: MarkerRenderer?
+    var buildingManager: BuildingManager?
     var mapOverlay: GMSGroundOverlay = GMSGroundOverlay()
     var floorplans: Dictionary<String, UIImage> = [:]
     let iconsStore: IconsStore = IconsStore()
@@ -90,6 +91,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     let DEFAULT_BUILDING_NAME: String = "Current Building"
     var lock = false
     var tileProvider:TileProvider!
+    var preserveStateInNewViewAppeareance = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -119,6 +121,28 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        if (!preserveStateInNewViewAppeareance || positionDrawer == nil){
+            self.initializeViewBeforeAppearing()
+        }
+    }
+    
+    override func viewDidLayoutSubviews() {
+        //In viewWillAppear layout hasnt finished yet
+        addMap()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        if CLLocationManager.locationServicesEnabled() {
+            let status: CLAuthorizationStatus = CLLocationManager.authorizationStatus()
+            if status == CLAuthorizationStatus.notDetermined {
+                self.locManager.requestAlwaysAuthorization()
+            }
+        }
+    }
+    
+    
+    func initializeViewBeforeAppearing(){
         positionDrawer = GoogleMapsPositionDrawer(mapView: mapView)
         let loading = NSLocalizedString("alert.loading.title",
             bundle: SitumMapsLibrary.bundle,
@@ -136,9 +160,10 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         SITCommunicationManager.shared().fetchBuildingInfo(self.buildingId, withOptions: nil, success: { (mapping: [AnyHashable : Any]?) in
             if (mapping != nil) {
                 self.buildingInfo = mapping!["results"] as? SITBuildingInfo
+                self.buildingManager = BuildingManager(buildingInfo: self.buildingInfo!)
                 self.mapReadinessChecker.buildingInfoLoaded()
-                if self.buildingInfo!.floors.count <= 0 {
-                    self.loadingError = true;
+                if self.buildingManager == nil {
+                    self.loadingError = true
                     self.situmLoadFinished(loadingAlert: loadingAlert)
                 } else {
                     SITCommunicationManager.shared().fetchOrganizationTheme(options: nil, success: { (mapping: [AnyHashable : Any]?) in
@@ -172,21 +197,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
             self.loadingError = true;
             self.situmLoadFinished(loadingAlert: loadingAlert)
         })
-    }
-    
-    override func viewDidLayoutSubviews() {
-        //In viewWillAppear layout hasnt finished yet
-        addMap()
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        if CLLocationManager.locationServicesEnabled() {
-            let status: CLAuthorizationStatus = CLLocationManager.authorizationStatus()
-            if status == CLAuthorizationStatus.notDetermined {
-                self.locManager.requestAlwaysAuthorization()
-            }
-        }
+        
     }
     
     func displayElementsNavBar() {
@@ -288,12 +299,12 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     }
     
     func initializeMarkerMapRenderer() {
-        guard let mapView = mapView, let info = buildingInfo else {
-            Logger.logDebugMessage("Marker renderer could not be created because mapView and building info are not set")
+        guard let mapView = mapView, let buildingManager = buildingManager else {
+            Logger.logDebugMessage("Marker renderer could not be created because mapView and building info is not set or is incorrect")
             return
         }
         let isClusteringEnabled = library?.settings?.enablePoisClustering ?? false
-        markerRenderer = MarkerRenderer(mapView: mapView, buildingInfo: info, iconsStore: iconsStore, showPoiNames:
+        markerRenderer = MarkerRenderer(mapView: mapView, buildingManager: buildingManager, iconsStore: iconsStore, showPoiNames:
             showPoiNames(), isClusteringEnabled: isClusteringEnabled)
     }
 
@@ -413,6 +424,10 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
                 }
             })
     }
+
+    func filterPois(by categoryIds: [String]) {
+        buildingManager?.setPoiFilters(by: categoryIds)
+    }
     
     func displayFloorPlan(forFloor floor: SITFloor) {
         self.mapOverlay.map = nil
@@ -422,7 +437,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         
         self.mapOverlay = mapOverlay
         self.mapOverlay.bearing = CLLocationDirection(buildingInfo!.building.rotation.degrees())
-        self.mapOverlay.zIndex = zIndices.floorPlan
+        self.mapOverlay.zIndex = ZIndices.floorPlan
         self.mapOverlay.map = mapView
         displayMarkers(forFloor: floor, isUserNavigating: SITNavigationManager.shared().isRunning())
         tileProvider.addTileFor(floorIdentifier: floor.identifier)
@@ -970,7 +985,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
                  */
                 polyline.spans = GMSStyleSpans(polyline.path!, styles, [solidLine, gap], GMSLengthKind.rhumb)
                 self.polyline.append(polyline)
-                polyline.zIndex = zIndices.route
+                polyline.zIndex = ZIndices.route
                 polyline.map = self.mapView
             }
         }
@@ -996,6 +1011,9 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         SITNavigationManager.shared().removeUpdates()
         self.changeNavigationButtonVisibility(isVisible: false)
         self.showPositioningUI()
+        if (!self.showSearchBar() && !self.showBackButton()) {
+            self.hiddenNavBar()
+        }
         self.containerInfoBarMap?.setLabels(primary: self.buildingName)
         for polyline in self.polyline {
             polyline.map = nil
@@ -1138,7 +1156,7 @@ extension PositioningViewController {
             let renderer = markerRenderer else { return }
         
         select(floor: indexPath)
-        if let markerPoi = renderer.searchMarker(byPOI: poi) {
+        if let markerPoi = renderer.searchMarker(byPoi: poi) {
             select(marker: markerPoi, success: success)
         } else {
             throw WayfindingError.invalidPOI
@@ -1233,7 +1251,7 @@ extension PositioningViewController {
     func displayMarkers(forFloor floor: SITFloor, isUserNavigating: Bool) {
         guard let renderer = markerRenderer else { return }
         if !isUserNavigating {
-            renderer.displayPOIMarkers(forFloor: floor)
+            renderer.displayPoiMarkers(forFloor: floor)
             if let customMarker = lastCustomMarker {
                 renderer.displayLongPressMarker(customMarker, forFloor: floor)
             }

@@ -29,7 +29,7 @@ class TileProvider{
         tileLayer?.tileSize = tileSize
 
         // Display on the map at a specific zIndex
-        tileLayer?.zIndex = zIndices.tile
+        tileLayer?.zIndex = ZIndices.tile
         tileLayer?.map = mapView
     }
     
