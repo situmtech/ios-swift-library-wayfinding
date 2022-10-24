@@ -110,6 +110,13 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
                 instance.delegateNotifier?.notifyOnMapReady(map: library)
             }
         }
+        
+        do {
+            let fonts = ["Roboto-Black", "Roboto-Bold", "Roboto-Medium", "Roboto-Regular"]
+            try FontLoader.registerFonts(fonts: fonts)
+        } catch {
+            print("Error: Can't load fonts")
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -1004,6 +1011,9 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         SITNavigationManager.shared().removeUpdates()
         self.changeNavigationButtonVisibility(isVisible: false)
         self.showPositioningUI()
+        if (!self.showSearchBar() && !self.showBackButton()) {
+            self.hiddenNavBar()
+        }
         self.containerInfoBarMap?.setLabels(primary: self.buildingName)
         for polyline in self.polyline {
             polyline.map = nil
