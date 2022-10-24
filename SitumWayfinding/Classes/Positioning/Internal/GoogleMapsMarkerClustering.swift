@@ -38,8 +38,7 @@ fileprivate class SITNonHierarchicalDistanceBasedAlgorithm: GMUNonHierarchicalDi
     override func add(_ items: [GMUClusterItem]) {
         for item in items {
             let marker = item as! GMSMarker // GoogleMapsMarkerClustering set only gmsMarkers
-            if let markerData = marker.markerData,
-               markerData.isTopLevel {
+            if let markerData = marker.markerData, markerData.isTopLevel {
                 nonClusteredItems.append(marker)
             } else {
                 return super.add([item])
@@ -60,6 +59,8 @@ fileprivate class SITNonHierarchicalDistanceBasedAlgorithm: GMUNonHierarchicalDi
 
     override func clusters(atZoom zoom: Float) -> [GMUCluster] {
         var clusters = super.clusters(atZoom: zoom)
+        // Add one cluster per item in nonClusteredItems. This allows to show the POI marker as is, because
+        // when a cluster only has one elements is shown as a normal marker instead of the clustering icon
         for nonClusteredItem in nonClusteredItems {
             let singleItemCluster = createClusterWithOneElement(nonClusteredItem)
             clusters.append(singleItemCluster)
