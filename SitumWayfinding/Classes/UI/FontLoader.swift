@@ -6,7 +6,7 @@
 //  Copyright © 2022 Situm Technologies. All rights reserved.
 //
 
-public class FontLoader {
+class FontLoader {
     private enum Error: Swift.Error {
         case error(String)
     }
