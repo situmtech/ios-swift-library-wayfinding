@@ -108,6 +108,13 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
                 instance.delegateNotifier?.notifyOnMapReady(map: library)
             }
         }
+        
+        do {
+            let fonts = ["Roboto-Black", "Roboto-Bold", "Roboto-Medium", "Roboto-Regular"]
+            try FontLoader.registerFonts(fonts: fonts)
+        } catch {
+            print("Error: Can't load fonts")
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
