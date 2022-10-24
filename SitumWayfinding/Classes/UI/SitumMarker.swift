@@ -25,7 +25,7 @@ struct SitumMarker: Equatable {
         let coordinate = poi.position().coordinate()
         floorIdentifier = poi.position().floorIdentifier
         let gmsMarker = GMSMarker(position: coordinate)
-        gmsMarker.title = poi.name
+        //gmsMarker.title = poi.name // Hide title when selecting poi
         self.poi = poi
         self.gmsMarker = gmsMarker
 
