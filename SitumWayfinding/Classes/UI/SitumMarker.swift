@@ -16,14 +16,25 @@ struct SitumMarker: Equatable {
     private(set) var floorIdentifier: String
     var isPoiMarker: Bool { return poi != nil }
     var isCustomMarker: Bool { return poi == nil }
+    var isTopLevel: Bool {
+        guard let poi = poi, let topLevelField = poi.customFields["top_level"] as? String else { return false }
+        return topLevelField.lowercased().trimmingCharacters(in: .whitespacesAndNewlines) == "true"
+    }
     
     init(_ poi: SITPOI) {
         let coordinate = poi.position().coordinate()
+        floorIdentifier = poi.position().floorIdentifier
         let gmsMarker = GMSMarker(position: coordinate)
         //gmsMarker.title = poi.name // Hide title when selecting poi
         self.poi = poi
         self.gmsMarker = gmsMarker
-        floorIdentifier = poi.position().floorIdentifier
+
+        self.gmsMarker.markerData = SitumMarkerData(
+            floorIdentifier: floorIdentifier,
+            isPoiMarker: isPoiMarker,
+            isCustomMarker: isCustomMarker,
+            isTopLevel: isTopLevel
+        )
     }
     
     init(coordinate: CLLocationCoordinate2D, floor: SITFloor) {
