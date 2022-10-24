@@ -193,15 +193,17 @@ class MarkerRenderer {
         let showPoiNames = showPoiNames
         
         iconsStore.obtainIconFor(category: poi.category) { items in
-            guard let icon = selected ? items?[1] : items?[0] else {
+            guard var icon = selected ? items?[1] : items?[0] else {
                 Logger.logDebugMessage("Icon from server could not be retrieved")
                 return
             }
+            
+            icon = ImageUtils.scaleImageToSize(image: icon, newSize: CGSize(width: 45, height: 45))
     
             let color = UIColor(hex: "#5b5b5bff") ?? UIColor.gray
-            let title = poi.name.uppercased()
+            let title = poi.name
             if showPoiNames {
-                marker.gmsMarker.icon = icon.setTitle(title: title, size: 12.0, color: color, weight: .semibold)
+                marker.gmsMarker.icon = icon.setTitle(title: title, size: 16.0, color: color, weight: .bold)
             } else {
                 marker.gmsMarker.icon = icon
             }
