@@ -4,9 +4,7 @@ extension UIImage {
     func setTitle(title: String, size: CGFloat, color: UIColor, weight: UIFont.Weight) -> UIImage {
         let subView = UIView()
         
-        guard let font = UIFont(name: "Roboto-Black", size: size) else {
-            fatalError("Failed to load the Robot font.")
-        }
+        let font = UIFont(name: "Roboto-Black", size: size) ?? UIFont.systemFont(ofSize: 22)
         
         let titleLabel = self.getLabel(font: font, color: color, title: title)
         
