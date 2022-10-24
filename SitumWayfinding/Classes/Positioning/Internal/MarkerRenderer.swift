@@ -10,7 +10,7 @@ import GoogleMapsUtils
 class MarkerRenderer {
     var isClusteringEnabled: Bool { return markerClustering != nil }
     
-    private(set) var markers: Array<SitumMarker> = []
+    private(set) var markers: [SitumMarker] = []
     private var mapView: GMSMapView
     private var buildingManager: BuildingManager
     private var iconsStore: IconsStore
@@ -42,7 +42,7 @@ class MarkerRenderer {
         removeMarkers()
         var poisInFloor = buildingManager.filterPoisByCategories().filter(by: floor)
         poisInFloor = preserveSelectedPoi(pois: poisInFloor, floor: floor)
-        
+
         for poi in poisInFloor {
             let marker = SitumMarker(poi)
             markers.append(marker)
@@ -61,7 +61,7 @@ class MarkerRenderer {
     private func preserveSelectedPoi(pois: [SITPOI], floor: SITFloor) -> [SITPOI] {
         guard let selectedPoi = selectedPoi else { return pois }
         var innerPois = pois
-        if selectedPoi.belongs(to: floor) {
+        if selectedPoi.belongs(to: floor) && !innerPois.contains(selectedPoi) {
             innerPois.append(selectedPoi)
         }
         return innerPois
@@ -158,7 +158,6 @@ class MarkerRenderer {
             marker.gmsMarker.zIndex = ZIndices.poiMarker
         }
     }
-    
 
     private func removeMarkerFromGoogleMaps(marker: SitumMarker) {
         if mapView.selectedMarker == marker.gmsMarker {
@@ -193,15 +192,17 @@ class MarkerRenderer {
         let showPoiNames = showPoiNames
         
         iconsStore.obtainIconFor(category: poi.category) { items in
-            guard let icon = selected ? items?[1] : items?[0] else {
+            guard var icon = selected ? items?[1] : items?[0] else {
                 Logger.logDebugMessage("Icon from server could not be retrieved")
                 return
             }
+            
+            icon = ImageUtils.scaleImageToSize(image: icon, newSize: CGSize(width: 45, height: 45))
     
             let color = UIColor(hex: "#5b5b5bff") ?? UIColor.gray
-            let title = poi.name.uppercased()
+            let title = poi.name
             if showPoiNames {
-                marker.gmsMarker.icon = icon.setTitle(title: title, size: 12.0, color: color, weight: .semibold)
+                marker.gmsMarker.icon = icon.setTitle(title: title, size: 16.0, color: color, weight: .bold)
             } else {
                 marker.gmsMarker.icon = icon
             }
