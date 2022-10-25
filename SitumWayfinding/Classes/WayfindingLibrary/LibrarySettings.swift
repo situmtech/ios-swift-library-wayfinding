@@ -50,7 +50,7 @@ import GoogleMaps
     /// Boolean to show or hide floors list
     private (set) var floorsListVisible: Bool = true
     
-    /// Boolean to show or hide positioning boton
+    /// Boolean to show or hide positioning button
     private (set) var positioningFabVisible: Bool = true
 
     // private(set) var orgDetails: OrganizationTheme?
@@ -165,7 +165,7 @@ import GoogleMaps
             return self
         }
         
-        /// Sets whether the positioning boton is visible
+        /// Sets whether the positioning button is visible
         @discardableResult
         @objc public func setPositioningFabVisible(positioningFabVisible: Bool) -> Builder {
             instance.positioningFabVisible = positioningFabVisible
