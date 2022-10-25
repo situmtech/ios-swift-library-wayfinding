@@ -1251,22 +1251,16 @@ extension PositioningViewController {
     func displayMarkers(forFloor floor: SITFloor, isUserNavigating: Bool) {
         guard let renderer = markerRenderer else { return }
         if !isUserNavigating {
-            renderer.displayPoiMarkers(forFloor: floor)
-            if let customMarker = lastCustomMarker {
-                renderer.displayLongPressMarker(customMarker, forFloor: floor)
-            }
+            renderer.displayMarkers(forFloor: floor, withCustomMarker: lastCustomMarker)
             
             // in the future selection should be encapsulated in some other class to abstract Google maps
-            for marker in renderer.markers {
-                if marker == lastSelectedMarker {
-                    select(marker: marker)
-                }
+            if let marker = renderer.markers.first(where: { $0 == lastSelectedMarker }) {
+                select(marker: marker)
             }
         } else {
-            if let marker = destinationMarker {
-               renderer.displayOnlyDestinationMarker(marker, forFloor: floor)
-            } else {
-                Logger.logDebugMessage("Destination will not be shown becuase there is no destinationMarker selected")
+            renderer.displayMarkersWhileNavigating(forFloor: floor, withDestination: destinationMarker)
+            if destinationMarker == nil {
+                Logger.logDebugMessage("Destination will not be shown because there is no destinationMarker selected")
             }
         }
     }

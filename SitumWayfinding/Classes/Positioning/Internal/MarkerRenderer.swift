@@ -9,7 +9,7 @@ import GoogleMapsUtils
 
 class MarkerRenderer {
     var isClusteringEnabled: Bool { return markerClustering != nil }
-    
+
     private(set) var markers: [SitumMarker] = []
     private var mapView: GMSMapView
     private var buildingManager: BuildingManager
@@ -19,7 +19,10 @@ class MarkerRenderer {
 
     private var currentFloor: SITFloor? = nil
     private var selectedPoi: SITPOI? = nil
-    
+    private var isUserNavigating: Bool = false
+    private var destinationOfNavigation: SitumMarker? = nil
+    private var userCustomMarker: SitumMarker? = nil
+
     init(
         mapView: GMSMapView,
         buildingManager: BuildingManager,
@@ -36,9 +39,32 @@ class MarkerRenderer {
         }
         self.buildingManager.addDelegate(self)
     }
-    
-    func displayPoiMarkers(forFloor floor: SITFloor) {
+
+    func displayMarkers(forFloor floor: SITFloor, withCustomMarker marker: SitumMarker?) {
         currentFloor = floor
+        userCustomMarker = marker
+        deactivateNavigation()
+        displayPoiMarkers(forFloor: floor)
+    }
+
+    func displayMarkersWhileNavigating(forFloor floor: SITFloor, withDestination destination: SitumMarker?) {
+        guard let destination = destination else { return }
+        currentFloor = floor
+        activateNavigation()
+        destinationOfNavigation = destination
+        displayOnlyDestinationMarker(destination, forFloor: floor)
+    }
+
+    private func deactivateNavigation() {
+        isUserNavigating = false
+        destinationOfNavigation = nil
+    }
+
+    private func activateNavigation() {
+        isUserNavigating = true
+    }
+
+    private func displayPoiMarkers(forFloor floor: SITFloor) {
         removeMarkers()
         var poisInFloor = buildingManager.filterPoisByCategories().filter(by: floor)
         poisInFloor = preserveSelectedPoi(pois: poisInFloor, floor: floor)
@@ -55,6 +81,10 @@ class MarkerRenderer {
                 }
             }
             selectMarkerIfIsSelectedPoi(marker: marker, poi: poi)
+        }
+
+        if let marker = userCustomMarker {
+            displayLongPressMarker(marker, forFloor: floor)
         }
     }
 
@@ -73,14 +103,14 @@ class MarkerRenderer {
         }
     }
     
-    func displayLongPressMarker(_ marker: SitumMarker, forFloor floor: SITFloor) {
+    private func displayLongPressMarker(_ marker: SitumMarker, forFloor floor: SITFloor) {
         if floor.identifier == marker.floorIdentifier {
             markers.append(marker)
             selectMarker(marker)
         }
     }
     
-    func displayOnlyDestinationMarker(_ marker: SitumMarker, forFloor floor: SITFloor) {
+    private func displayOnlyDestinationMarker(_ marker: SitumMarker, forFloor floor: SITFloor) {
         removeMarkers()
         if let markerCluster = markerClustering {
             if floor.identifier == marker.floorIdentifier {
@@ -189,7 +219,7 @@ class MarkerRenderer {
         // do not load images for markers that are not currently rendered (internal array)
         // also, ensure the marker is a reference to internal array of SitumMarker
         guard let marker = searchMarker(byPoi: poi) else { return }
-        let showPoiNames = showPoiNames
+        let localShowPoiNames = showPoiNames
         
         iconsStore.obtainIconFor(category: poi.category) { items in
             guard var icon = selected ? items?[1] : items?[0] else {
@@ -201,7 +231,7 @@ class MarkerRenderer {
     
             let color = UIColor(hex: "#5b5b5bff") ?? UIColor.gray
             let title = poi.name
-            if showPoiNames {
+            if localShowPoiNames {
                 marker.gmsMarker.icon = icon.setTitle(title: title, size: 16.0, color: color, weight: .bold)
             } else {
                 marker.gmsMarker.icon = icon
@@ -224,7 +254,10 @@ class MarkerRenderer {
 
 extension MarkerRenderer: BuildingManagerDelegate {
     func poiFiltersByCategoriesWereUpdated() {
-        if let floor = currentFloor {
+        guard let floor = currentFloor else { return }
+        if isUserNavigating {
+            displayMarkersWhileNavigating(forFloor: floor, withDestination: destinationOfNavigation)
+        } else {
             displayPoiMarkers(forFloor: floor)
         }
     }

@@ -15,7 +15,9 @@ All non released changes should be in CHANGELOG_UNRELEASED.md file
 - UI Improvements: Decrease the size of POI icons.
 - UI Improvements: Update size, font and stroke of POI labels. The new font used is Roboto
 ### Fixed:
-- Fixed a bug that shows an invisible nav bar if search bar is set to be hidden SITLibrarySettings and you stop positioning.
+- Fixed a bug that shows an invisible nav bar if search bar is set to be hidden SITLibrarySettings and you stop positioning
+- Fixed crash in POI selection when user filter POI categories or change floor
+- Fixed crash in POI selection that occurs sometimes when clustering is enabled
 
 ## [0.12.0] - 2022-10-20
 ### Added:
