@@ -319,7 +319,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         positioningButton.layer.shadowOpacity = 0.8
         positioningButton.layer.shadowRadius = 8.0
         positioningButton.layer.shadowOffset = CGSize(width: 7.0, height: 7.0)
-        positioningButton.isHidden = false
+        positioningButton.isHidden = !(self.library?.settings?.positioningFabVisible ?? true)
     }
     
     func initializeLoadingIndicator() {
@@ -336,7 +336,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         let indexPath = getDefaultFloorFirstLoad()
         levelsTableView.selectRow(at: indexPath, animated: true, scrollPosition: .bottom)
         tableView(levelsTableView, didSelectRowAt: indexPath)
-        levelsTableView.isHidden = false
+        levelsTableView.isHidden = !(self.library?.settings?.floorsListVisible ?? true)
     }
     
     private func getDefaultFloorFirstLoad() -> IndexPath {
@@ -552,7 +552,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     func hideCenterButton() {
         centerButton.isHidden = true
         if (!(SITNavigationManager.shared().isRunning())) {
-            positioningButton.isHidden = false
+            positioningButton.isHidden = !(self.library?.settings?.positioningFabVisible ?? true)
         }
     }
     
@@ -623,7 +623,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
             } else {
                 showCenterButton()
             }
-            levelsTableView.isHidden = false
+            levelsTableView.isHidden = !(self.library?.settings?.floorsListVisible ?? true)
         }
         
         if (presenter?.shouldCameraPositionBeDraggedInsideBuildingBounds(position: position.target) ?? false) {
