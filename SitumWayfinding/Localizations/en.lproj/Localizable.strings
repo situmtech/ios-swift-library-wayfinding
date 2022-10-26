@@ -32,7 +32,7 @@
 "navigation.remainingHours" = "%d h";
 
 /* Remaining time in minutes */
-"navigation.remainingMinutes" = "%d m";
+"navigation.remainingMinutes" = "%d min";
 
 /* No comment provided by engineer. */
 "navigationError.noAvailableRoute" = "There is no route between the selected locations. Try to compute a different route or to switch accessibility mode";
