@@ -110,7 +110,7 @@
 "positioning.numBeacons" = "%d beacons";
 
 /* Alert message to show user is outside of route */
-"positioning.outsideBuilding.alert.message" = "The user is currently outside of the building. Positioning will resume when the user returns.";
+"positioning.outsideBuilding.alert.message" = "There is no position available. Please, go to a calibrated area or an area with available GPS signal";
 
 /* Alert title to show user is outside of building */
 "positioning.outsideBuilding.alert.title" = "User outside building";
