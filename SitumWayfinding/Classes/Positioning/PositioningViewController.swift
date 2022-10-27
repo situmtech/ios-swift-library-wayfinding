@@ -99,9 +99,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         backButton.title = NSLocalizedString("positioning.back",
             bundle: SitumMapsLibrary.bundle,
             comment: "Button to go back when the user is in the positioning controller (where the map is shown)")
-        centerButton.setTitle(NSLocalizedString("positioning.center",
-            bundle: SitumMapsLibrary.bundle,
-            comment: "Button to center map in current location of user"), for: .normal)
+        self.prepareCenterButton()
         self.displayElementsNavBar()
         definesPresentationContext = true
         mapReadinessChecker = SitumMapReadinessChecker { [weak self] in
@@ -1348,4 +1346,39 @@ extension PositioningViewController {
     }
 }
 
-
+extension PositioningViewController {
+    func prepareCenterButton() {
+        let title = NSLocalizedString(
+            "positioning.center",
+            bundle: SitumMapsLibrary.bundle,
+            comment: "Button to center map in current location of user"
+        )
+        let font = UIFont(name: "Roboto-Black", size: 18) ?? UIFont.systemFont(ofSize: 18)
+        let color = UIColor(red: 0.16, green: 0.20, blue: 0.50, alpha: 1.00)
+        let textAttributes = [
+            NSAttributedString.Key.font: font,
+            NSAttributedString.Key.foregroundColor: color
+        ]
+        
+        let screenSize: CGRect = UIScreen.main.bounds
+        let textTitle = NSMutableAttributedString(
+            string: title.uppercased(),
+            attributes: textAttributes
+        )
+        
+        centerButton.frame = CGRect(
+            x: screenSize.width - 140,
+            y: screenSize.height - 220,
+            width: 130,
+            height: 60
+        )
+        centerButton.backgroundColor = UIColor.white
+        centerButton.layer.cornerRadius = 30
+        centerButton.layer.shadowColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.25).cgColor
+        centerButton.layer.shadowOffset = CGSize(width: 0.0, height: 2.0)
+        centerButton.layer.shadowOpacity = 1.0
+        centerButton.layer.shadowRadius = 0.0
+        centerButton.layer.masksToBounds = false
+        centerButton.setAttributedTitle(textTitle, for: .normal)
+    }
+}
