@@ -1346,7 +1346,6 @@ extension PositioningViewController {
     }
 }
 
-
 extension PositioningViewController {
     func prepareCenterButton() {
         let title = NSLocalizedString(
@@ -1362,6 +1361,10 @@ extension PositioningViewController {
         ]
         
         let screenSize: CGRect = UIScreen.main.bounds
+        let textTitle = NSMutableAttributedString(
+            string: title.uppercased(),
+            attributes: textAttributes
+        )
         
         centerButton.frame = CGRectMake(
             screenSize.width - 140,
@@ -1371,19 +1374,11 @@ extension PositioningViewController {
         )
         centerButton.backgroundColor = UIColor.white
         centerButton.layer.cornerRadius = 30
-        
         centerButton.layer.shadowColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.25).cgColor
         centerButton.layer.shadowOffset = CGSize(width: 0.0, height: 2.0)
         centerButton.layer.shadowOpacity = 1.0
         centerButton.layer.shadowRadius = 0.0
         centerButton.layer.masksToBounds = false
-        
-        
-        let textTitle = NSMutableAttributedString(
-            string: title.uppercased(),
-            attributes: textAttributes
-        )
-
         centerButton.setAttributedTitle(textTitle, for: .normal)
     }
 }
