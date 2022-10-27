@@ -32,7 +32,7 @@
 "navigation.remainingHours" = "%d h";
 
 /* Remaining time in minutes */
-"navigation.remainingMinutes" = "%d m";
+"navigation.remainingMinutes" = "%d min";
 
 /* No comment provided by engineer. */
 "navigationError.noAvailableRoute" = "Il n'y a pas d'itinéraire entre les emplacements sélectionnés. Essayez de calculer une route différente ou de changer de mode d'accessibilité";

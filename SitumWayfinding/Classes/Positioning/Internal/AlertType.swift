@@ -13,6 +13,7 @@ enum AlertType: Int {
     case outOfBuilding = 1
     case outsideRoute = 2
     case otherAlert = 3
+    case permissionsError = 4
     
     func value() -> Int{
         return self.rawValue

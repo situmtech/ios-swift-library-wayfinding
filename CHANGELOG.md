@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 All non released changes should be in CHANGELOG_UNRELEASED.md file
 
 ---------
+## [0.14.0] - 2022-10-27
+### Added:
+- Add new method setFloorsListVisible(floorsListVisible: Bool) in LibrarySettings to show or hide the floors list
+- Add new method setPositioningFabVisible(positioningFabVisible: Bool) in LibrarySettings to show or hide the positioning button
+### Changed:
+- UI Improvements: Change the size, rounding and font of the center button
+- UI Improvements: Increase size of cluster icons and make them look like android
+- UI Improvements: Improvemnts in user feedback. Now an alert is shown when the user tries to start positioning if they previously rejected one of the system permissions Wayfinding needs to provide locations.
+
+### Fixed:
+- improved some translations text
+
 ## [0.13.0] - 2022-10-24
 ### Added:
 - Added support for Top level POIs. These POIs will never be clustered, so they will be visible all the time no matter

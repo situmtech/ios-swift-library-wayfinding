@@ -99,9 +99,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         backButton.title = NSLocalizedString("positioning.back",
             bundle: SitumMapsLibrary.bundle,
             comment: "Button to go back when the user is in the positioning controller (where the map is shown)")
-        centerButton.setTitle(NSLocalizedString("positioning.center",
-            bundle: SitumMapsLibrary.bundle,
-            comment: "Button to center map in current location of user"), for: .normal)
+        self.prepareCenterButton()
         self.displayElementsNavBar()
         definesPresentationContext = true
         mapReadinessChecker = SitumMapReadinessChecker { [weak self] in
@@ -319,7 +317,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         positioningButton.layer.shadowOpacity = 0.8
         positioningButton.layer.shadowRadius = 8.0
         positioningButton.layer.shadowOffset = CGSize(width: 7.0, height: 7.0)
-        positioningButton.isHidden = false
+        positioningButton.isHidden = !(self.library?.settings?.positioningFabVisible ?? true)
     }
     
     func initializeLoadingIndicator() {
@@ -336,7 +334,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         let indexPath = getDefaultFloorFirstLoad()
         levelsTableView.selectRow(at: indexPath, animated: true, scrollPosition: .bottom)
         tableView(levelsTableView, didSelectRowAt: indexPath)
-        levelsTableView.isHidden = false
+        levelsTableView.isHidden = !(self.library?.settings?.floorsListVisible ?? true)
     }
     
     private func getDefaultFloorFirstLoad() -> IndexPath {
@@ -552,7 +550,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     func hideCenterButton() {
         centerButton.isHidden = true
         if (!(SITNavigationManager.shared().isRunning())) {
-            positioningButton.isHidden = false
+            positioningButton.isHidden = !(self.library?.settings?.positioningFabVisible ?? true)
         }
     }
     
@@ -623,7 +621,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
             } else {
                 showCenterButton()
             }
-            levelsTableView.isHidden = false
+            levelsTableView.isHidden = !(self.library?.settings?.floorsListVisible ?? true)
         }
         
         if (presenter?.shouldCameraPositionBeDraggedInsideBuildingBounds(position: position.target) ?? false) {
@@ -1348,4 +1346,32 @@ extension PositioningViewController {
     }
 }
 
-
+extension PositioningViewController {
+    func prepareCenterButton() {
+        let title = NSLocalizedString(
+            "positioning.center",
+            bundle: SitumMapsLibrary.bundle,
+            comment: "Button to center map in current location of user"
+        )
+        let font = UIFont(name: "Roboto-Black", size: 18) ?? UIFont.systemFont(ofSize: 18)
+        let color = UIColor(red: 0.16, green: 0.20, blue: 0.50, alpha: 1.00)
+        let textAttributes = [
+            NSAttributedString.Key.font: font,
+            NSAttributedString.Key.foregroundColor: color
+        ]
+        
+        let textTitle = NSMutableAttributedString(
+            string: title.uppercased(),
+            attributes: textAttributes
+        )
+        
+        centerButton.backgroundColor = UIColor.white
+        centerButton.layer.cornerRadius = 30
+        centerButton.layer.shadowColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.25).cgColor
+        centerButton.layer.shadowOffset = CGSize(width: 0.0, height: 2.0)
+        centerButton.layer.shadowOpacity = 1.0
+        centerButton.layer.shadowRadius = 0.0
+        centerButton.layer.masksToBounds = false
+        centerButton.setAttributedTitle(textTitle, for: .normal)
+    }
+}
