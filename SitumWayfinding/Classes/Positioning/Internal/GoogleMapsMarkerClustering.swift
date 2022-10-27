@@ -13,7 +13,7 @@ class GoogleMapsMarkerClustering {
     
     init(mapView: GMSMapView) {
         self.mapView = mapView
-        let iconGenerator = GMUDefaultClusterIconGenerator()
+        let iconGenerator = SITClusterIconGenerator()
         let algorithm = SITNonHierarchicalDistanceBasedAlgorithm()
         let renderer = WYFClusterRenderer(mapView: mapView,  clusterIconGenerator: iconGenerator)
         clusterManager = GMUClusterManager(map: mapView, algorithm: algorithm, renderer: renderer)
