@@ -1360,18 +1360,11 @@ extension PositioningViewController {
             NSAttributedString.Key.foregroundColor: color
         ]
         
-        let screenSize: CGRect = UIScreen.main.bounds
         let textTitle = NSMutableAttributedString(
             string: title.uppercased(),
             attributes: textAttributes
         )
         
-        centerButton.frame = CGRect(
-            x: screenSize.width - 140,
-            y: screenSize.height - 220,
-            width: 130,
-            height: 60
-        )
         centerButton.backgroundColor = UIColor.white
         centerButton.layer.cornerRadius = 30
         centerButton.layer.shadowColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.25).cgColor
