@@ -1366,11 +1366,11 @@ extension PositioningViewController {
             attributes: textAttributes
         )
         
-        centerButton.frame = CGRectMake(
-            screenSize.width - 140,
-            screenSize.height - 220,
-            130,
-            60
+        centerButton.frame = CGRect(
+            x: screenSize.width - 140,
+            y: screenSize.height - 220,
+            width: 130,
+            height: 60
         )
         centerButton.backgroundColor = UIColor.white
         centerButton.layer.cornerRadius = 30
