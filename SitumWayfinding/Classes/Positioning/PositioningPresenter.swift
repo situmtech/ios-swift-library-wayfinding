@@ -99,6 +99,8 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
                 return self.lastOutsideRouteAlert
             case .otherAlert:
                 return now
+            case .permissionsError:
+                return now
             }
         }()
         
@@ -301,10 +303,13 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
     }
     
     
-    func locationManager(_ locationManager: SITLocationInterface, didFailWithError error: Error?) {
+    func locationManager(_ locationManager: SITLocationInterface, didFailWithError error: NSError?) {
         Logger.logErrorMessage("Location error problem: \(error.debugDescription)")
         view?.cleanLocationUI()
         view?.stopNavigation(status: .error(NavigationError.locationError(error)))
+        
+        view?.showAlertMessage(title: "Unable to provide location", message: "Please go to settings and enable location and bluetooth permissions to provide locations", alertType: .permissionsError)
+        
     }
     
     func locationManager(_ locationManager: SITLocationInterface, didUpdate state: SITLocationState) {
