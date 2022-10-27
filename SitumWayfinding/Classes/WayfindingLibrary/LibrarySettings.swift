@@ -46,6 +46,12 @@ import GoogleMaps
     
     /// Boolean to show or hide navigation indications
     private (set) var showNavigationIndications: Bool = true
+    
+    /// Boolean to show or hide floors list
+    private (set) var floorsListVisible: Bool = true
+    
+    /// Boolean to show or hide positioning button
+    private (set) var positioningFabVisible: Bool = true
 
     // private(set) var orgDetails: OrganizationTheme?
     private override init() {
@@ -151,6 +157,20 @@ import GoogleMaps
             instance.showNavigationIndications = showNavigationIndications
             return self
         }
+        
+        /// Sets whether the floors list is visible
+        @discardableResult
+        @objc public func setFloorsListVisible(floorsListVisible: Bool) -> Builder {
+            instance.floorsListVisible = floorsListVisible
+            return self
+        }
+        
+        /// Sets whether the positioning button is visible
+        @discardableResult
+        @objc public func setPositioningFabVisible(positioningFabVisible: Bool) -> Builder {
+            instance.positioningFabVisible = positioningFabVisible
+            return self
+        }
 
         /// Returns an instance of LibrarySettings
         @objc public func build() -> LibrarySettings {
@@ -197,6 +217,10 @@ import GoogleMaps
             builderCopy.setEnablePoiClustering(enablePoisClustering: settings.enablePoisClustering)
             
             builderCopy.setShowNavigationIndications(showNavigationIndications: settings.showNavigationIndications)
+            
+            builderCopy.setFloorsListVisible(floorsListVisible: settings.floorsListVisible)
+            
+            builderCopy.setPositioningFabVisible(positioningFabVisible: settings.positioningFabVisible)
 
             return builderCopy
         }
