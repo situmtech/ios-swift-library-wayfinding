@@ -348,6 +348,14 @@ import GoogleMaps
         guard let positioningController = toPresentViewController else { return }
         positioningController.filterPois(by: categoryIds)
     }
+
+    /**
+     Start positioning of the user in the map in loaded building
+     */
+    public func startPositioning() {
+        guard let presenter = toPresentViewController?.presenter else { return }
+        presenter.startPositioning()
+    }
 }
 
 extension SitumMapsLibrary {
