@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 All non released changes should be in CHANGELOG_UNRELEASED.md file
 
 ---------
+## [0.15.0] - 2022-10-31
+### Added:
+- Add new method startPositioning to SitumMapsLibrary that allow to start positioning the user in the map
+### Changed
+-  Updated Situm SDK dependency to 2.54.2
+### Fixed
+- Fixed bug when poi names are shown and poi name is too long. Previously the name was cut
+
 ## [0.14.0] - 2022-10-27
 ### Added:
 - Add new method setFloorsListVisible(floorsListVisible: Bool) in LibrarySettings to show or hide the floors list
