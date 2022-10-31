@@ -25,7 +25,7 @@ extension UIImage {
             x: 4.0,
             y: 4.0,
             width: 120.0,
-            height: font.lineHeight + (CGFloat(title.count) / 2.0)
+            height: labelHeight(text: title, font: font, width: 120.0)
         )
    
         let titleLabel = StrokeLabel(frame: sizeFrame)
@@ -35,9 +35,25 @@ extension UIImage {
         titleLabel.textForegroundColor = color
         titleLabel.strockedText = title
         titleLabel.backgroundColor = UIColor.clear
-        titleLabel.numberOfLines = 10
+        titleLabel.numberOfLines = 0
        
         return titleLabel
+    }
+    
+    private func labelHeight(text:String, font:UIFont, width:CGFloat) -> CGFloat{
+        let sizeFrame = CGRect(
+            x: 0.0,
+            y: 0.0,
+            width: width,
+            height: CGFloat.greatestFiniteMagnitude
+        )
+        let label:UILabel = UILabel(frame: sizeFrame)
+        label.numberOfLines = 0
+        label.lineBreakMode = NSLineBreakMode.byWordWrapping
+        label.font = font
+        label.text = text
+        label.sizeToFit()
+        return label.frame.height
     }
     
     private func prepareIconPoi(subView: UIView) -> UIImage {
