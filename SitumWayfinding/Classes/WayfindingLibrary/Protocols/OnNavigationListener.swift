@@ -22,8 +22,7 @@ public protocol OnNavigationListener {
     
     
     /**
-     Called when the navigation started. Status of navigation object will be
-     started
+     Called when all the calculation to obtain the route are done and the navigation is started. Status of navigation object will be started
      - Parameter navigation: navigation object
      */
     func onNavigationStarted(navigation: Navigation)
