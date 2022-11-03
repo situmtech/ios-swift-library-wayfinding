@@ -19,6 +19,15 @@ public protocol OnNavigationListener {
      - Parameter navigation: navigation object
      */
     func onNavigationRequested(navigation: Navigation)
+    
+    
+    /**
+     Called when the navigation started. Status of navigation object will be
+     started
+     - Parameter navigation: navigation object
+     */
+    func onNavigationStarted(navigation: Navigation)
+    
     /**
      Called when navigation fails due an error. Status of navigation object will be error
      - Parameter navigation: navigation object
@@ -46,6 +55,12 @@ public protocol Navigation {
      Destination of the current navigation
      */
     var destination: Destination { get set }
+    
+    /**
+     The calculated route.
+     */
+    var route: SITRoute? { get set }
+    
 }
 
 /**
@@ -92,6 +107,10 @@ public enum NavigationStatus {
      Navigation was requested by user/developer
      */
     case requested
+    /**
+        Route was computed and navigation started
+     */
+    case started
     /**
      An error has occurred on the ongoing Navigation
      */
