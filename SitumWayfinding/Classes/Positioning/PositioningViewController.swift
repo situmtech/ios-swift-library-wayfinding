@@ -821,6 +821,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         if let floor = orderedFloors(buildingInfo: buildingInfo)?[self.selectedLevelIndex] {
             displayMarkers(forFloor: floor, isUserNavigating: true)
         }
+        notifyStartOfNavigation(marker: self.destinationMarker, route: route)
     }
     
     func updateProgress(progress: SITNavigationProgress) {
@@ -1026,10 +1027,13 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         }
     }
     
+    private func notifyStartOfNavigation(marker: SitumMarker?, route: SITRoute?) {
+        guard let navigation = buildNavigationObject(status: .started, marker: marker, route: route) else { return }
+        self.delegateNotifier?.navigationDelegate?.onNavigationStarted(navigation: navigation)
+    }
+    
     private func notifyEndOfNavigation(status: NavigationStatus, marker: SitumMarker?) {
-        guard let category = self.getCategoryFromMarker(marker: self.destinationMarker) else { return }
-        let navigation = WYFNavigation(status: status, destination: WYFDestination(category: category))
-        
+        guard let navigation = buildNavigationObject(status: status, marker: marker, route:nil) else { return }
         if case .error(let error) = status {
             self.delegateNotifier?.navigationDelegate?.onNavigationError(navigation: navigation, error: error)
             if let error = error as? NavigationError {
@@ -1074,6 +1078,12 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
             }
             self.delegateNotifier?.navigationDelegate?.onNavigationFinished(navigation: navigation)
         }
+    }
+    
+    private func buildNavigationObject(status: NavigationStatus, marker: SitumMarker?, route:SITRoute?) -> Navigation? {
+        guard let category = self.getCategoryFromMarker(marker: self.destinationMarker) else { return nil }
+        let navigation = WYFNavigation(status: status, destination: WYFDestination(category: category),route: route)
+        return navigation
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
