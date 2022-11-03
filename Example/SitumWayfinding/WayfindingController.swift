@@ -123,8 +123,13 @@ extension WayfindingController: OnMapReadyListener {
 }
 
 extension WayfindingController: OnNavigationListener {
+    
     func onNavigationRequested(navigation: Navigation) {
-        print("Navigation: starts with destination \(navigation.destination)")
+        print("Navigation: requested with destination \(navigation.destination)")
+    }
+
+    func onNavigationStarted(navigation: Navigation) {
+        print("Navigation: started with destination \(navigation.destination)")
     }
     
     func onNavigationError(navigation: Navigation, error: Error) {
