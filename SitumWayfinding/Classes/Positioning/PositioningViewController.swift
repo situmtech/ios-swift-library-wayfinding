@@ -1027,7 +1027,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         }
     }
     
-    private func notifyStartOfNavigation(marker: SitumMarker?, route:SITRoute?) {
+    private func notifyStartOfNavigation(marker: SitumMarker?, route: SITRoute?) {
         guard let navigation = buildNavigationObject(status: .started, marker: marker, route: route) else { return }
         self.delegateNotifier?.navigationDelegate?.onNavigationStarted(navigation: navigation)
     }
@@ -1080,7 +1080,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         }
     }
     
-    private func buildNavigationObject(status: NavigationStatus, marker: SitumMarker?, route:SITRoute?) ->Navigation?{
+    private func buildNavigationObject(status: NavigationStatus, marker: SitumMarker?, route:SITRoute?) -> Navigation? {
         guard let category = self.getCategoryFromMarker(marker: self.destinationMarker) else { return nil }
         let navigation = WYFNavigation(status: status, destination: WYFDestination(category: category),route: route)
         return navigation
