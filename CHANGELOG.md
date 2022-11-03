@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 All non released changes should be in CHANGELOG_UNRELEASED.md file
 
 ---------
+## [0.16.0] - 2022-11-03
+### Added:
+- Added onNavigationStarted method to OnNavigationListener to notify when all route calculation are finished and the navigation starts.
+
 ## [0.15.0] - 2022-10-31
 ### Added:
 - Add new method startPositioning to SitumMapsLibrary that allow to start positioning the user in the map
