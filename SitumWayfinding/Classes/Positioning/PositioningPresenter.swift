@@ -305,19 +305,28 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
     
     func locationManager(_ locationManager: SITLocationInterface, didFailWithError error: Error?) {
         Logger.logErrorMessage("Location error problem: \(error.debugDescription)")
-        view?.cleanLocationUI()
-        view?.stopNavigation(status: .error(NavigationError.locationError(error)))
         
-        // TODO: Update SDK Error visibility to access
         switch error {
         case .some(let error as NSError) where error.code == 7 || error.code == 8:
             
             view?.showAlertMessage(title: NSLocalizedString("wayfinding.permissionsErrorTitle", bundle: SitumMapsLibrary.bundle, comment: "Unable to provide location"), message: NSLocalizedString("wayfinding.permissionsErrorDescription", bundle: SitumMapsLibrary.bundle, comment: "Please go to settings and enable location and bluetooth permissions to provide locations") , alertType: .permissionsError)
             
+        case .some(let error as NSError) where error.code == 6: // Bluetooth turned off
+            // Positioning keeps working in case of useGps
+            if error.userInfo["kindof"] as! String == "warning" {
+                return
+            }
+            // If critical then stop reporting location
         default:
             print("detected error: \(error)")
             
         }
+        
+        view?.cleanLocationUI()
+        view?.stopNavigation(status: .error(NavigationError.locationError(error)))
+        
+        // TODO: Update SDK Error visibility to access
+        
     }
     
     func locationManager(_ locationManager: SITLocationInterface, didUpdate state: SITLocationState) {

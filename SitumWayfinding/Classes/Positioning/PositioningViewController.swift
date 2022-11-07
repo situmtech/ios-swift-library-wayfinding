@@ -768,6 +768,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
                 self.dismiss(animated: true)
             }
         }
+        
     }
     
     @IBAction
