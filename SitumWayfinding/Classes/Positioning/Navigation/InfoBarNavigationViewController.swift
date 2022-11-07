@@ -48,9 +48,9 @@ class InfoBarNavigationViewController: UIViewController {
             self.setLoadingState()
             self.timeRemainingLabel.text = progress.currentIndication.humanReadableMessage()
         } else {
-            self.timeRemainingLabel.text = self.formatTime(time: progress.timeToGoal)
-            self.distanceRemainingLabel.text = self.formatDistance(distance: progress.timeToGoal)
-            self.estimatedTimeLabel.text = self.calculateEstimatedTime(timeToGoal: progress.timeToGoal)
+            self.timeRemainingLabel.text = self.formatTime(time: progress.improvedTimeToGoal)
+            self.distanceRemainingLabel.text = self.formatDistance(distance: progress.distanceToGoal)
+            self.estimatedTimeLabel.text = self.calculateEstimatedTime(timeToGoal: progress.improvedTimeToGoal)
         }
     }
     
@@ -110,5 +110,14 @@ class InfoBarNavigationViewController: UIViewController {
         let formatter = DateFormatter()
         formatter.dateFormat = "HH:mm"
         return formatter.string(from: goalTime)
+    }
+}
+
+//TODO: This has to be deleted when this change is added to the sdk
+extension SITNavigationProgress {
+    var improvedTimeToGoal: Float {
+        get {
+            return timeToGoal/1.4
+        }
     }
 }
