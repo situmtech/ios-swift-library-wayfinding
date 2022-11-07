@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 All non released changes should be in CHANGELOG_UNRELEASED.md file
 
 ---------
+## [0.16.1] - 2022-11-07
+### Changed:
+- Improvements in the calculation of time to goal and arrival expected time whe the user request a route to a point.
+
 ## [0.16.0] - 2022-11-03
 ### Added:
 - Added onNavigationStarted method to OnNavigationListener to notify when all route calculation are finished and the navigation starts.
