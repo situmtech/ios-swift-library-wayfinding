@@ -129,7 +129,7 @@ extension WayfindingController: OnNavigationListener {
     }
 
     func onNavigationStarted(navigation: Navigation) {
-        print("Navigation: started with destination \(navigation.destination)")
+        print("Navigation: started with destination \(navigation.destination) and time to destination \(String(describing: navigation.route?.timeToGoal()))")
     }
     
     func onNavigationError(navigation: Navigation, error: Error) {
