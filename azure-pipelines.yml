@@ -30,12 +30,12 @@ steps:
 
 - task: InstallAppleCertificate@2
   inputs:
-    certSecureFile: fer_certificado.p12
+    certSecureFile: Certificados.p12
 
 - task: InstallAppleProvisioningProfile@1
   inputs:
     provisioningProfileLocation: 'secureFiles'
-    provProfileSecureFile: d5c0025d-487a-4d5c-b88a-52833a176ee9.mobileprovision
+    provProfileSecureFile: 0c24b33e-c5fe-414d-b5a2-10c5bca3a9b4.mobileprovision
     removeProfile: true
     
 - template: azure-templates/upload-sharepoint.yml@sys_kubernetes_templates
