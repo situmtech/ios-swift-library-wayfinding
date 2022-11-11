@@ -169,7 +169,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
                         if mapping != nil {
                             let organizationDetails = mapping!["results"] as? SITOrganizationTheme
                             print("Organization Details: \(organizationDetails)")
-                            
+                            self.mapReadinessChecker.setOrganizationLoaded()
                             // Now we have the organization details and we can work with their values (if any)
                             self.organizationTheme = organizationDetails!
                             

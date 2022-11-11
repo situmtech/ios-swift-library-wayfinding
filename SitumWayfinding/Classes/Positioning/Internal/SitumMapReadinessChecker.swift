@@ -10,6 +10,7 @@ import Foundation
 class SitumMapReadinessChecker {
     private var isBuildingInfoLoaded = false
     private var isCurrentFloorMapLoaded = false
+    private var isOrganizationLoaded = false
     private var isMapReady = false
     // only notify the first time after maps is ready
     private var delegateWasNotify = false
@@ -33,9 +34,14 @@ class SitumMapReadinessChecker {
         isCurrentFloorMapLoaded = true
         checkIsMapIsLoadedAndReady()
     }
+    
+    func setOrganizationLoaded() {
+        isOrganizationLoaded = true
+        checkIsMapIsLoadedAndReady()
+    }
 
     func checkIsMapIsLoadedAndReady() {
-        if (isBuildingInfoLoaded && isCurrentFloorMapLoaded && isMapReady && !delegateWasNotify) {
+        if (isBuildingInfoLoaded && isCurrentFloorMapLoaded && isMapReady && isOrganizationLoaded && !delegateWasNotify) {
             mapDidLoadHandler?()
             delegateWasNotify = true
         }
