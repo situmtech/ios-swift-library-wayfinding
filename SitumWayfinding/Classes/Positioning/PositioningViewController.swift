@@ -248,7 +248,11 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     
     func addMap() {
         self.mapViewVC.view = mapView
-        tileProvider = TileProvider.init(mapView: mapView)
+        tileProvider = TileProvider(
+            mapView: mapView,
+            useCustomTiles: library?.settings?.useCustomTiles,
+            isDebugging:  library?.settings?.enableDebugCachedCustomTiles
+        )
     }
     
     func initializeMapView() {
