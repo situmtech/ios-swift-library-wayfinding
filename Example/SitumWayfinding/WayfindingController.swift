@@ -88,15 +88,17 @@ extension WayfindingController: OnMapReadyListener {
             case .selectPoi(let poi):
                 selectPoi(poi: poi)
             case .navigateToPoi(let poi):
-                self.library?.navigateToPoi(poi: poi)
+                library?.navigateToPoi(poi: poi)
             case .navigateToLocation(let floor, let lat, let lng):
-                self.library?.navigateToLocation(floor: floor, lat: lat, lng: lng)
+                library?.navigateToLocation(floor: floor, lat: lat, lng: lng)
+            case .filterPoiByCategories(categoryIds: let categoryIds):
+                library?.filterPois(by: categoryIds)
             }
         }
     }
 
     private func selectPoi(poi: SITPOI) {
-        self.library?.selectPoi(poi: poi) { [weak self] result in
+        library?.selectPoi(poi: poi) { [weak self] result in
             switch result {
             case .success:
                 print("POI: selection succeeded")
@@ -121,8 +123,13 @@ extension WayfindingController: OnMapReadyListener {
 }
 
 extension WayfindingController: OnNavigationListener {
+    
     func onNavigationRequested(navigation: Navigation) {
-        print("Navigation: starts with destination \(navigation.destination)")
+        print("Navigation: requested with destination \(navigation.destination)")
+    }
+
+    func onNavigationStarted(navigation: Navigation) {
+        print("Navigation: started with destination \(navigation.destination) and time to destination \(String(describing: navigation.route?.timeToGoal()))")
     }
     
     func onNavigationError(navigation: Navigation, error: Error) {

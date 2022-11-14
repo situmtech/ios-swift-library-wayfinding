@@ -8,7 +8,7 @@
 import Foundation
 
 // Google Map zIndices
-enum zIndices{
+enum ZIndices {
     static let floorPlan = Int32(1)
     static let tile = Int32(2)
     static let locationRadiusCircle = Int32(20)

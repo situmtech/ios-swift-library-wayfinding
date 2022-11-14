@@ -57,6 +57,7 @@
 		607FACEB1AFB9204008FA782 /* Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests.swift; sourceTree = "<group>"; };
 		6EFFFBC1E758C8A0D60839F3 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
 		D70CE14C28B8A3F800BC9D07 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Main.strings; sourceTree = "<group>"; };
+		D71BA3D528C5F81E0061F28F /* ar */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ar; path = ar.lproj/Main.strings; sourceTree = "<group>"; };
 		D7AE484F28B8CD1400A60FBB /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Main.strings; sourceTree = "<group>"; };
 		D7EC26F127DA18A200ABD5A7 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Main.strings; sourceTree = "<group>"; };
 		DEA375CE0ED3393820EC8160 /* SitumWayfinding.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = SitumWayfinding.podspec; path = ../SitumWayfinding.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
@@ -254,6 +255,7 @@
 				es,
 				ja,
 				fr,
+				ar,
 			);
 			mainGroup = 607FACC71AFB9204008FA782;
 			productRefGroup = 607FACD11AFB9204008FA782 /* Products */;
@@ -358,6 +360,10 @@
 				"${PODS_ROOT}/../../SitumWayfinding/Assets/Images/Media.xcassets/navigation/change_floor.imageset/change_floor.png",
 				"${PODS_ROOT}/../../SitumWayfinding/Assets/Images/Media.xcassets/navigation/directions/situm_direction_empty.imageset/situm_direction_empty.png",
 				"${PODS_ROOT}/../../SitumWayfinding/Assets/Images/radius/swf_radius.png",
+				"${PODS_ROOT}/../../SitumWayfinding/Assets/Fonts/Roboto/Roboto-Black.ttf",
+				"${PODS_ROOT}/../../SitumWayfinding/Assets/Fonts/Roboto/Roboto-Bold.ttf",
+				"${PODS_ROOT}/../../SitumWayfinding/Assets/Fonts/Roboto/Roboto-Medium.ttf",
+				"${PODS_ROOT}/../../SitumWayfinding/Assets/Fonts/Roboto/Roboto-Regular.ttf",
 				"${PODS_CONFIGURATION_BUILD_DIR}/SitumWayfinding/SitumWayfinding.bundle",
 			);
 			name = "[CP] Copy Pods Resources";
@@ -384,6 +390,10 @@
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/swf_logo@3x.png",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/situm_direction_empty.png",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/swf_radius.png",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Roboto-Black.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Roboto-Bold.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Roboto-Medium.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Roboto-Regular.ttf",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/SitumWayfinding.bundle",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -430,6 +440,7 @@
 				D7EC26F127DA18A200ABD5A7 /* es */,
 				D70CE14C28B8A3F800BC9D07 /* ja */,
 				D7AE484F28B8CD1400A60FBB /* fr */,
+				D71BA3D528C5F81E0061F28F /* ar */,
 			);
 			name = Main.storyboard;
 			sourceTree = "<group>";

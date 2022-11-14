@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'SitumWayfinding'
-  s.version          = '0.10.0'
+  s.version          = '0.16.1'
   s.summary          = 'Indoor Location for iOS.'
   s.static_framework = true
 
@@ -33,16 +33,19 @@ Pod::Spec.new do |s|
   s.resources = [
     'SitumWayfinding/Assets/*.storyboard',
     'SitumWayfinding/Assets/Images/**/*.png',
+    'SitumWayfinding/Assets/Fonts/**/*.ttf',
   ]
   s.resource_bundles = {
     'SitumWayfinding' => [
         'SitumWayfinding/Localizations/**/*',
         'SitumWayfinding/Classes/situm_google_maps_style.json',
         'SitumWayfinding/Assets/Images/**/*.xcassets',
+        'SitumWayfinding/Assets/Fonts/**/*.ttf',
     ]
   }
+  
   s.dependency 'GoogleMaps', '~> 4.2.0'
-  s.dependency 'SitumSDK', '~> 2.53.0'
+  s.dependency 'SitumSDK', '~> 2.54.2'
   s.dependency 'Google-Maps-iOS-Utils', '~> 4.1.0'
 
 end

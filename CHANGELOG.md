@@ -7,6 +7,68 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 All non released changes should be in CHANGELOG_UNRELEASED.md file
 
 ---------
+## [0.16.1] - 2022-11-07
+### Changed:
+- Improvements in the calculation of time to goal and arrival expected time whe the user request a route to a point.
+
+## [0.16.0] - 2022-11-03
+### Added:
+- Added onNavigationStarted method to OnNavigationListener to notify when all route calculation are finished and the navigation starts.
+
+## [0.15.0] - 2022-10-31
+### Added:
+- Add new method startPositioning to SitumMapsLibrary that allow to start positioning the user in the map
+### Changed
+-  Updated Situm SDK dependency to 2.54.2
+### Fixed
+- Fixed bug when poi names are shown and poi name is too long. Previously the name was cut
+
+## [0.14.0] - 2022-10-27
+### Added:
+- Add new method setFloorsListVisible(floorsListVisible: Bool) in LibrarySettings to show or hide the floors list
+- Add new method setPositioningFabVisible(positioningFabVisible: Bool) in LibrarySettings to show or hide the positioning button
+### Changed:
+- UI Improvements: Change the size, rounding and font of the center button
+- UI Improvements: Increase size of cluster icons and make them look like android
+- UI Improvements: Improvemnts in user feedback. Now an alert is shown when the user tries to start positioning if they previously rejected one of the system permissions Wayfinding needs to provide locations.
+
+### Fixed:
+- improved some translations text
+
+## [0.13.0] - 2022-10-24
+### Added:
+- Added support for Top level POIs. These POIs will never be clustered, so they will be visible all the time no matter
+  the level of zoom. To set top level pois create for that POI a custom field in dashboard with a property "top_level" and value "true"
+### Changed
+- UI Improvements: Decrease the size of POI icons.
+- UI Improvements: Update size, font and stroke of POI labels. The new font used is Roboto
+### Fixed:
+- Fixed a bug that shows an invisible nav bar if search bar is set to be hidden SITLibrarySettings and you stop positioning.
+
+## [0.12.0] - 2022-10-20
+### Added:
+- Added new method presentInNewView(_ view: UIView, controlledBy viewController: UIViewController) in SitumMapsLibrary that allow to present the WYF module in a different container view without the need of reset WYF module.
+- Add new method filterPois(by categoryIds: [String]) to filter POIs by given category Ids. This will hide the icon of 
+  every POI in the map that not matches these categories
+
+### Changed
+- Break clusters of POIs when zoom is very close to building
+
+## [0.11.1] - 2022-10-10
+### Fixed:
+- Fixed a bug that do not load floor plan image on first load
+
+### Changed:
+- Updated Situm SDK dependency to 2.54.1
+
+## [0.11.0] - 2022-10-05
+### Added:
+- Add new method setShowNavigationIndications(showNavigationIndications: Bool) in LibrarySettings to show navigation indications
+- Added Arabic translations
+
+### Changed:
+- Updated Situm SDK dependency to 2.54.0
+
 ## [0.10.0] - 2022-09-29
 ### Added:
 - Added support for using tiles in google maps

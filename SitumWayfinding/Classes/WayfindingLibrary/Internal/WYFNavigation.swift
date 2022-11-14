@@ -10,6 +10,7 @@ import Foundation
 internal struct WYFNavigation: Navigation {
     var status: NavigationStatus
     var destination: Destination
+    var route: SITRoute?
 }
 
 internal struct WYFDestination: Destination {

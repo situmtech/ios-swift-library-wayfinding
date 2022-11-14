@@ -76,6 +76,7 @@ import GoogleMaps
             let mapView = settings.googleMap != nil ? settings.googleMap : obtainGMSMapView()
             prepareForLoading(buildingWithId: settings.buildingId, withMap: mapView)
             SITServices.setUseRemoteConfig(settings.useRemoteConfig)
+            self.toPresentViewController?.preserveStateInNewViewAppeareance = false;
             UIUtils().present(the: self.toPresentViewController!, over: self.parentViewControler, in: self.containerView)
         } // NOTE: else unnecessary: validateSettings already checks settings not nil
     }
@@ -127,6 +128,19 @@ import GoogleMaps
         prepareForLoading(buildingWithId: buildingId, withMap: gMap)
         UIUtils().present(the: self.toPresentViewController!, over: self.parentViewControler, in: self.containerView)
     }
+    
+    /**
+     Changes the container view that currently contains the WYF UI and present it in this new view whitout the need to reset the module.
+     - parameter view new view that will contain the wayfinding UI
+     - parameter viewController: view controller associated with the containing view
+     */
+    @objc public func presentInNewView(_ view: UIView, controlledBy viewController: UIViewController){
+        self.parentViewControler = viewController
+        self.containerView = view
+        self.toPresentViewController?.preserveStateInNewViewAppeareance = true;
+        UIUtils().present(the: self.toPresentViewController!, over: self.parentViewControler, in: self.containerView)
+    }
+
     
     /**
        Stops Situm Navigation
@@ -239,6 +253,7 @@ import GoogleMaps
         * Start the positioning if needed
         * Calculate and draw the route from the current user location to the poi.
         * Provide the step-by-step instructions to reach the poi.
+     WARNING: this method only works during or after OnMapReadyListener.onMapReady callback is executed
      - parameters:
        - poi: navigation goes toward this SITPOI
      */
@@ -250,6 +265,7 @@ import GoogleMaps
     /**
      Select a given poi. This method will perform the proper actions over the User Interface to make that Poi the
      selected one
+     WARNING: this method only works during or after OnMapReadyListener.onMapReady callback is executed
      - parameters:
        - poi: the SITPOI you want to select
        - completion: callback called when operation complete either successfully or with an error
@@ -270,10 +286,12 @@ import GoogleMaps
         * Start the positioning if needed
         * Calculate and draw the route from the current user location to the location.
         * Provide the step-by-step instructions to reach the location.
+     WARNING: this method only works during or after OnMapReadyListener.onMapReady callback is executed
      - parameters:
        - floor: floor of the location
        - lat: latitude of the location
        - lng: longitude of the location
+
      */
     public func navigateToLocation(floor: SITFloor, lat: Double, lng: Double) {
         guard let positioningController = toPresentViewController else { return }
@@ -317,6 +335,26 @@ import GoogleMaps
     public func unlockCamera() {
         guard let positioningController = toPresentViewController else { return }
         positioningController.unlockCamera()
+    }
+
+    /**
+     This method filter POIs by given category Ids. This will hide the icon of every POI in the map that not
+     matches these category Ids. If an empty array is supplied all POIs will be shown.
+     WARNING: this method only works during or after OnMapReadyListener.onMapReady callback is executed
+     - parameters
+        - categoryIds: these are the ids of the categories to filter
+     */
+    public func filterPois(by categoryIds: [String]) {
+        guard let positioningController = toPresentViewController else { return }
+        positioningController.filterPois(by: categoryIds)
+    }
+
+    /**
+     Start positioning of the user in the map in loaded building
+     */
+    public func startPositioning() {
+        guard let presenter = toPresentViewController?.presenter else { return }
+        presenter.startPositioning()
     }
 }
 
