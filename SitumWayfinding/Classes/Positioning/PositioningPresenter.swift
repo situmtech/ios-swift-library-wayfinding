@@ -31,8 +31,10 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
     var directionsRequest: SITDirectionsRequest? = nil
     var route: SITRoute? = nil
     var locationManager: SITLocationInterface = SITLocationManager.sharedInstance()
-    var now = Date()
+    var nowRecalculateRoute = Date()
+    var nowUpdateLocation = Date()
     let timeRecalculate = 6
+    let timeUpdateUI = 1
     
     var useRemoteConfig: Bool = false
 
@@ -284,16 +286,19 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
             view?.change(.started, centerCamera: true)
         }
         
-        if isUserNavigating() {
-            // UI and self.userLocation are updated in SITNavigationManager callback with the user position adjusted
-            // to the route
-            SITNavigationManager.shared().update(with: location)
-            // this positions will be used if some error in navigation occur and navigation manager do not return
-            // the user current position
-            lastPositioningLocation = location
-        } else {
-            userLocation = location
-            view?.updateUI(with: location)
+        if checkRecalculate(time: self.timeUpdateUI, now: self.nowUpdateLocation) {
+            self.nowUpdateLocation = Date()
+            if isUserNavigating() {
+                // UI and self.userLocation are updated in SITNavigationManager callback with the user position adjusted
+                // to the route
+                SITNavigationManager.shared().update(with: location)
+                // this positions will be used if some error in navigation occur and navigation manager do not return
+                // the user current position
+                lastPositioningLocation = location
+            } else {
+                userLocation = location
+                view?.updateUI(with: location)
+            }
         }
         
         if(isSystemWaitingToStartRoute) {
@@ -401,7 +406,7 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
         Logger.logDebugMessage("User outside route detected: \(route.debugDescription)");
         
         if isUserIndoor() {
-            if checkRecalculate() {
+            if checkRecalculate(time: self.timeRecalculate, now: self.nowRecalculateRoute) {
                 if let lastLocation = lastPositioningLocation {
                     view?.updateUI(with: lastLocation)
                 }
@@ -412,14 +417,14 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
         }
     }
     
-    private func checkRecalculate() -> Bool {
+    private func checkRecalculate(time: Int, now: Date) -> Bool {
         let endDate = Date()
         let difference = Calendar.current.dateComponents([.second], from: now, to: endDate)
-        return difference.second! > timeRecalculate
+        return difference.second! > time
     }
     
     private func recalculateRoute() {
-        self.now = Date()
+        self.nowRecalculateRoute = Date()
         view?.routeWillRecalculate()
         SITNavigationManager.shared().removeUpdates()
         userLocation = lastPositioningLocation
