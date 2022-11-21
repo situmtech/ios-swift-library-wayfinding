@@ -53,12 +53,6 @@ import GoogleMaps
     /// Boolean to show or hide positioning button
     private (set) var positioningFabVisible: Bool = true
 
-    /// Boolean to use SITUM custom tiles (true) or google (false)
-    private (set) var useCustomTiles: Bool = false
-
-    /// Boolean to mark local tiles got from cache (files) in map or should be as is
-    private (set) var enableDebugCachedCustomTiles: Bool = false
-
     // private(set) var orgDetails: OrganizationTheme?
     private override init() {
 
@@ -178,21 +172,6 @@ import GoogleMaps
             return self
         }
 
-        // Sets whether to use custom tiles (true) or google (false)
-        @discardableResult
-        @objc public func setUseCustomTiles(useCustomTiles: Bool) -> Builder {
-            instance.useCustomTiles = useCustomTiles
-            return self
-        }
-
-        /// Boolean to mark local tiles got from cache (files) in map or should be as is
-        @discardableResult
-        @objc public func setEnableDebugCachedCustomTiles(enableDebugCachedCustomTiles: Bool) -> Builder {
-            instance.enableDebugCachedCustomTiles = enableDebugCachedCustomTiles
-            return self
-        }
-
-
         /// Returns an instance of LibrarySettings
         @objc public func build() -> LibrarySettings {
             return instance
@@ -242,10 +221,6 @@ import GoogleMaps
             builderCopy.setFloorsListVisible(floorsListVisible: settings.floorsListVisible)
             
             builderCopy.setPositioningFabVisible(positioningFabVisible: settings.positioningFabVisible)
-
-            builderCopy.setUseCustomTiles(useCustomTiles: settings.useCustomTiles)
-
-            builderCopy.setEnableDebugCachedCustomTiles(enableDebugCachedCustomTiles: settings.enableDebugCachedCustomTiles)
 
             return builderCopy
         }

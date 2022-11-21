@@ -356,23 +356,6 @@ import GoogleMaps
         guard let presenter = toPresentViewController?.presenter else { return }
         presenter.startPositioning()
     }
-
-    /**
-     Download the building tiles. Not all the buildings have tiles available to be downloaded.
-     If the tiles are available, a zip file is downloaded and unzipped in the user Library path for application
-     - Parameter completion:
-     */
-    public func fetchTilesOffline(completion: @escaping (Result<Void, WayfindingError>) -> Void) {
-        guard let positioningController = toPresentViewController else { return }
-        positioningController.fetchTiles(completion: completion)
-    }
-
-    /**
-     Invalidate all downloaded tiles to use in offline and delete from user Library path
-     */
-    public func clearTiles() {
-        SITCommunicationManager.shared().clearTiles()
-    }
 }
 
 extension SitumMapsLibrary {

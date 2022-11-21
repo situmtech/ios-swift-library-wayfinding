@@ -153,6 +153,3 @@
 
 /* No comment provided by engineer. */
 "wayfindingError.unknown" = "حدث خطأ غير معروف";
-
-/* No comment provided by engineer. */
-"wayfindingError.offlineTilesNotDownloaded" = "";

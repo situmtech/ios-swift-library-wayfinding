@@ -147,12 +147,3 @@
 
 /* No comment provided by engineer. */
 "wayfindingError.unknown" = "Une erreur inconnue est survenue";
-
-/* Please go to settings and enable location and bluetooth permissions to provide locations */
-"wayfinding.permissionsErrorDescription" = "";
-
-/* Unable to provide location */
-"wayfinding.permissionsErrorTitle" = "";
-
-/* No comment provided by engineer. */
-"wayfindingError.offlineTilesNotDownloaded" = "";
