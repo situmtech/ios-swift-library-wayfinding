@@ -213,19 +213,6 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         }
     }
 
-    func fetchTiles(completion: @escaping (Result<Void, WayfindingError>) -> Void) {
-        guard let buildingId = buildingInfo?.building.identifier else {
-            Logger.logErrorMessage("Could not download tiles because no building is loaded")
-            completion(.failure(.offlineTilesNotDownloaded))
-            return
-        }
-        SITCommunicationManager.shared().fetchTiles(forBuilding: buildingId, success: { _ in
-            completion(.success(Void()))
-        }, failure: { error in
-            completion(.failure(.offlineTilesNotDownloaded))
-        })
-    }
-
     func situmLoadFinished(loadingAlert: UIAlertController) {
         loadingAlert.dismiss(animated: true) {
             if (self.loadingError) {

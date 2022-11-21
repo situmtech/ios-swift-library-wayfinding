@@ -27,12 +27,6 @@ public enum WayfindingError: LocalizedError {
      When making a request it can return an error
      */
     case requestError
-
-    /**
-     Error that represents a failure when user request to download tiles offline for building loaded with library
-     but they could not be retrieved
-     */
-    case offlineTilesNotDownloaded
 }
 
 extension WayfindingError {
@@ -49,8 +43,6 @@ extension WayfindingError {
             return NSLocalizedString("wayfindingError.buildingNotExist", bundle: SitumMapsLibrary.bundle, comment: "")
         case .requestError:
             return NSLocalizedString("wayfindingError.requestError", bundle: SitumMapsLibrary.bundle, comment: "")
-        case .offlineTilesNotDownloaded:
-            return NSLocalizedString("wayfindingError.offlineTilesNotDownloaded", bundle: SitumMapsLibrary.bundle, comment: "")
         }
     }
     /**
@@ -66,8 +58,6 @@ extension WayfindingError {
             return 10_003
         case .requestError:
             return 10_004
-        case .offlineTilesNotDownloaded:
-            return 10_005
         }
     }
 }

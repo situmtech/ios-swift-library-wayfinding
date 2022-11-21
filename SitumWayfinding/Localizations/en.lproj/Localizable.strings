@@ -149,9 +149,6 @@
 "wayfindingError.invalidPoi" = "The poi selected is not valid in this building";
 
 /* No comment provided by engineer. */
-"wayfindingError.offlineTilesNotDownloaded" = "Tiles of building could not be retrieved";
-
-/* No comment provided by engineer. */
 "wayfindingError.requestError" = "Error in response";
 
 /* No comment provided by engineer. */
