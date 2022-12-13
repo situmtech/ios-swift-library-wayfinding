@@ -20,6 +20,7 @@ class WayfindingController: UIViewController {
     var credentials: Credentials!
     var buildingId: String!
     var useRemoteConfig: Bool = false
+    var useDashboardTheme: Bool = false
 
     var library: SitumMapsLibrary?
 
@@ -33,6 +34,7 @@ class WayfindingController: UIViewController {
                 .setBuildingId(buildingId: buildingId)
                 .setUseRemoteConfig(useRemoteConfig: useRemoteConfig)
                 .setEnablePoiClustering(enablePoisClustering: true)
+                .setUseDashboardTheme(useDashboardTheme: useDashboardTheme)
                 .build()
         self.library = SitumMapsLibrary(containedBy: self.containerView, controlledBy: self, withSettings: settings)
 

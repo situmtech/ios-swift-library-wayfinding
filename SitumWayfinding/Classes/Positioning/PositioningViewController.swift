@@ -261,6 +261,8 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         }
         
         let camera = GMSCameraPosition.camera(withLatitude: latitude, longitude: longitude, zoom: zoom)
+        // Check if values are correct (!= -1). Otherwise it could break the app.
+        mapView.setMinZoom(Float(self.library!.settings!.minZoom), maxZoom: Float(self.library!.settings!.getMaxZoom()))
         mapView.camera = camera
     }
     
@@ -375,6 +377,10 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         self.containerInfoBarMap?.setLabels(primary: self.buildingName)
         if organizationTheme?.logo != nil {
             // Bring the image and save it on cache
+            if (library?.settings?.useDashboardTheme == false) {
+                return
+            }
+            
             let logoUrl = "https://dashboard.situm.es" + organizationTheme!.logo.direction
             let data = NSData(contentsOf: URL(string: logoUrl)!) as Data?
             if let data = data {
@@ -1144,7 +1150,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     }
     
     func prepareCamera(building: SITBuilding) -> SITCameraOptions {
-        return SITCameraOptions(minZoom: self.mapView.camera.zoom, maxZoom: self.mapView.maxZoom, southWestCoordinate: building.bounds().southWest, northEastCooordinate: building.bounds().northEast)
+        return SITCameraOptions(minZoom: Float(self.library!.settings!.minZoom), maxZoom: Float(self.library!.settings!.maxZoom), southWestCoordinate: building.bounds().southWest, northEastCooordinate: building.bounds().northEast)
     }
     
     func lockCamera(options: SITCameraOptions) {
@@ -1153,7 +1159,26 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         self.mapView.cameraTargetBounds = bounds
         let update = GMSCameraUpdate.fit(bounds, withPadding: 0.0)
         self.mapView.moveCamera(update)
-        self.mapView.setMinZoom(self.mapView.camera.zoom - 0.1, maxZoom: self.mapView.maxZoom)
+
+        // Determine if values are outside min/max range. Cap zooms to min/max values
+        var lockedMinZoom = self.mapView.camera.zoom - 0.1
+        var lockedMaxZoom = self.mapView.maxZoom
+        guard let minZoom = library?.settings?.minZoom,
+              let maxZoom = library?.settings?.maxZoom
+        else {
+            self.mapView.setMinZoom(lockedMinZoom, maxZoom: lockedMaxZoom)
+            return
+        }
+        
+        if (minZoom > -1 && lockedMinZoom < Float(minZoom)) {
+            lockedMinZoom = Float(minZoom)
+        }
+        
+        if (maxZoom > -1 && lockedMaxZoom > Float(maxZoom)) {
+            lockedMaxZoom = Float(maxZoom)
+        }
+
+        self.mapView.setMinZoom(lockedMinZoom, maxZoom: lockedMaxZoom)
     }
     
     func unlockCamera() {
