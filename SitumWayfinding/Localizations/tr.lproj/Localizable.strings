@@ -1,0 +1,155 @@
+/* Alert message after an error retrieving a building happens */
+"alert.error.building.message" = "حدث خطأ غير متوقع أثناء تحميل معلومات المبنى. الرجاء المحاولة مرة أخرى.";
+
+/* Alert title after an error retrieving a building happens */
+"alert.error.building.title" = "خطأ في الحصول على معلومات البناء";
+
+/* Alert title for generic errors  */
+"alert.error.title" = "خطأ";
+
+/* Message of alert when loading library */
+"alert.loading.message" = "انتظر لحضة";
+
+/* Title of alert when loading library */
+"alert.loading.title" = "جار التحميل";
+
+/* Generic cancel action  */
+"generic.cancel" = "إلغاء";
+
+/* Generic ok action */
+"generic.ok" = "موافق";
+
+/* Less than x minutes */
+"navigation.lessThanMinutes" = "أقل من %d دقيقة";
+
+/* No comment provided by engineer. */
+"navigation.loadingRoute" = "جارٍ تحميل المسار...";
+
+/* No comment provided by engineer. */
+"navigation.nextInstruction" = "ثم";
+
+/* Remaining time in hours */
+"navigation.remainingHours" = "%d ساعة";
+
+/* Remaining time in minutes */
+"navigation.remainingMinutes" = "%d د";
+
+/* No comment provided by engineer. */
+"navigationError.noAvailableRoute" = "لا يوجد مسار بين المواقع المحددة. حاول حساب مسار مختلف أو تبديل وضع الوصول";
+
+/* No comment provided by engineer. */
+"navigationError.noDestinationSelected" = "لا توجد وجهة محددة حاليًا، لا يمكن بدء التنقل. الرجاء تحديد POI (أو اضغط لفترة طويلة لإنشاء واحد مخصص) وحاول مرة أخرى.";
+
+/* No comment provided by engineer. */
+"navigationError.outdoorOrigin" = "الموقع الفعلي للمستخدم هو خارج، والملاحة متاحة فقط في الداخل.";
+
+/* No comment provided by engineer. */
+"navigationError.outsideBuilding" = "المستخدم غير مكتشف حاليا على الطريق وهو خارج المبنى. الرجاء العودة لاستئناف التصفح.";
+
+/* No comment provided by engineer. */
+"navigationError.positionUnknown" = "الموقع الفعلي للمستخدم غير معروف، يرجى تنشيط الموقع قبل حساب المسار وحاول مرة أخرى.";
+
+/* No comment provided by engineer. */
+"navigationError.unableToComputeRoute" = "تم العثور على خطأ غير متوقع أثناء حساب الطريق. الرجاء المحاولة مرة أخرى.";
+
+/* Button to go back when the user is in the positioning controller (where the map is shown) */
+"positioning.back" = "عودة";
+
+/* No comment provided by engineer. */
+"positioning.calibrationNeeded.alert.message" = "لم يتم معايرة بوصلة جهازك الآن. يرجى إعادة المعايرة للحصول على أفضل تجربة تصفح.";
+
+/* The user needs to calibrate the compass */
+"positioning.calibrationNeeded.alert.title" = "فشلت معايرة البوصلة";
+
+/* Button to center map in current location of user */
+"positioning.center" = "الوسط";
+
+/* No comment provided by engineer. */
+"positioning.createMarker" = "إنشاء علامة";
+
+/* Shown to user when select a destination (destination is any free point that user selects on the map) */
+"positioning.customDestination" = "الوجهة المخصصة";
+
+/* Alert message to show to the user when destination was reached */
+"positioning.destinationReached.alert.message" = "لقد وصلت إلى وجهتك";
+
+/* Alert title to show to the user when destination was reached */
+"positioning.destinationReached.alert.title" = "مصدر الوجهة";
+
+/* Alert title error when download the floor plan fails */
+"positioning.error.emptyFloor.alert.message" = "حدث خطأ غير متوقع أثناء تحميل معلومات المبنى. الرجاء المحاولة مرة أخرى.";
+
+/* Alert title error when download the floor plan fails */
+"positioning.error.emptyFloor.alert.title" = "أرضية فارغة";
+
+/* Alert title error when the user does not select a destination */
+"positioning.error.noDestinationSelected.alert.title" = "لم يتم تحديد وجهة";
+
+/* Alert title error when the user position is unknown */
+"positioning.error.outsideBuilding.message" = "حاليا لا يمكنك إنشاء وجهات خارجية.";
+
+/* Alert title error when the user position is unknown */
+"positioning.error.outsideBuilding.title" = "الوجهة المخصصة";
+
+/* Alert title error when the user is outdoor */
+"positioning.error.positionOutdoor.alert.title" = "مكان داخلي";
+
+/* Alert title error when the user position is unknown */
+"positioning.error.positionUnknown.alert.title" = "موقع غير معروف";
+
+/* Alert title error when WayFinding cannot compute route to destination */
+"positioning.error.unableToComputeRoute.alert.title" = "غير قادر على حساب المسار";
+
+/* Alert message to show for a long press action */
+"positioning.longPressAction.alert.message" = "اختر إجراء:";
+
+/* Alert title to show for a long press action */
+"positioning.longPressAction.alert.title" = "اجراء الضغط الطويل";
+
+/* Used to show the user the number of beacons that library detects nearby */
+"positioning.numBeacons" = "%d أجهزة إرشاد";
+
+/* Alert message to show user is outside of route */
+"positioning.outsideBuilding.alert.message" = "المستخدم حاليا خارج المبنى. سيتم استئناف تحديد الموقع عند عودة المستخدم.";
+
+/* Alert title to show user is outside of building */
+"positioning.outsideBuilding.alert.title" = "مستخدم خارج المبنى";
+
+/* Alert title to show user is outside of route */
+"positioning.outsideRoute.alert.title" = "المسار الخارجي للمستخدم";
+
+/* Placeholder for searching pois */
+"positioning.searchPois" = "نقاط البحث";
+
+/* No comment provided by engineer. */
+"search.distance" = "مسافة";
+
+/* No comment provided by engineer. */
+"search.floor" = "Floor";
+
+/* No comment provided by engineer. */
+"search.noResultFound" = "لَا تُوجَدُ نَتَائِج";
+
+/* Error when user does not set credentials */
+"situmMapsLibrary.error.credentials" = "يجب عليك تعيين معلومات المصادقة الخاصة بك مع setCredentials() قبل الاتصال بالتحميل (buildingWithId:)";
+
+/* Error when user does not set correctly building id */
+"situmMapsLibrary.error.invalidBuilding" = "معرف البناء غير صحيح. الرجاء إضافة معرف بناء صالح في إعدادات المكتبة";
+
+/* No comment provided by engineer. */
+"wayfindingError.buildingNotExist" = "البناء غير موجود";
+
+/* No comment provided by engineer. */
+"wayfindingError.invalidPoi" = "الشعر المحدد غير صالح في هذا المبنى";
+
+/* No comment provided by engineer. */
+"wayfindingError.requestError" = "رد الخطأ";
+
+/* No comment provided by engineer. */
+"wayfindingError.unknown" = "حدث خطأ غير معروف";
+
+/* Error that appears when user does not provide location or bluetooth permissions*/
+"wayfinding.permissionsErrorTitle" = "تعذر توفير الموقع";
+
+/* Error that appears when user does not provide location or bluetooth permissions*/
+"wayfinding.permissionsErrorDescription" = "يرجى الانتقال إلى الإعدادات وتمكين أذونات الموقع والبلوتوث لتوفير المواقع";
