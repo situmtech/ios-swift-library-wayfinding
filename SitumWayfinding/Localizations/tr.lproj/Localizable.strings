@@ -1,149 +1,155 @@
 /* Alert message after an error retrieving a building happens */
-"alert.error.building.message" = "pepito";
+"alert.error.building.message" = "Bina bilgileri indirilirken beklenmeyen bir hata oluştu. Lütfen tekrar deneyin.";
 
 /* Alert title after an error retrieving a building happens */
-"alert.error.building.title" = "pepito";
+"alert.error.building.title" = "Bina bilgileri alınırken hata oluştu";
 
 /* Alert title for generic errors  */
-"alert.error.title" = "pepito";
+"alert.error.title" = "Hata";
 
 /* Message of alert when loading library */
-"alert.loading.message" = "pepito";
+"alert.loading.message" = "bir an için bekle";
 
 /* Title of alert when loading library */
-"alert.loading.title" = "pepito";
+"alert.loading.title" = "Yükleniyor";
 
 /* Generic cancel action  */
-"generic.cancel" = "pepito";
+"generic.cancel" = "İptal";
 
 /* Generic ok action */
-"generic.ok" = "pepito";
+"generic.ok" = "Tamam";
 
 /* Less than x minutes */
-"navigation.lessThanMinutes" = "pepito";
+"navigation.lessThanMinutes" = "%d dakikadan az";
 
 /* No comment provided by engineer. */
-"navigation.loadingRoute" = "pepito";
+"navigation.loadingRoute" = "Rota yükleniyor...";
 
 /* No comment provided by engineer. */
-"navigation.nextInstruction" = "pepito";
+"navigation.nextInstruction" = "O zamanlar";
 
 /* Remaining time in hours */
-"navigation.remainingHours" = "%d pepito";
+"navigation.remainingHours" = "%d saat";
 
 /* Remaining time in minutes */
-"navigation.remainingMinutes" = "%d pepito";
+"navigation.remainingMinutes" = "%d dakika";
 
 /* No comment provided by engineer. */
-"navigationError.noAvailableRoute" = "pepito";
+"navigationError.noAvailableRoute" = "Seçilen konumlar arasında rota yok. Farklı bir rota hesaplamayı veya erişilebilirlik modunu değiştirmeyi deneyin";
 
 /* No comment provided by engineer. */
-"navigationError.noDestinationSelected" = "pepito";
+"navigationError.noDestinationSelected" = "Şu anda seçili bir hedef yok, navigasyon başlatılamıyor. Lütfen bir İÇN seçin (veya özel bir tane oluşturmak için uzun basın) ve tekrar deneyin.";
 
 /* No comment provided by engineer. */
-"navigationError.outdoorOrigin" = "pepito";
+"navigationError.outdoorOrigin" = "Kullanıcının gerçek konumu dış mekandadır, navigasyon yalnızca iç mekanda kullanılabilir.";
 
 /* No comment provided by engineer. */
-"navigationError.outsideBuilding" = "pepito";
+"navigationError.outsideBuilding" = "Kullanıcı şu anda rotada algılanmadı ve binanın dışında. Navigasyona devam etmek için lütfen geri dönün.";
 
 /* No comment provided by engineer. */
-"navigationError.positionUnknown" = "pepito";
+"navigationError.positionUnknown" = "Kullanıcının gerçek konumu bilinmiyor, lütfen bir rota hesaplamadan önce konumlandırmayı etkinleştirin ve tekrar deneyin.";
 
 /* No comment provided by engineer. */
-"navigationError.unableToComputeRoute" = "pepito";
+"navigationError.unableToComputeRoute" = "Rota hesaplanırken beklenmeyen bir hata bulundu. Lütfen tekrar deneyin.";
 
 /* Button to go back when the user is in the positioning controller (where the map is shown) */
-"positioning.back" = "pepito";
+"positioning.back" = "Geri";
 
 /* No comment provided by engineer. */
-"positioning.calibrationNeeded.alert.message" = "pepito";
+"positioning.calibrationNeeded.alert.message" = "Cihazınızın pusulası şu anda kalibre edilmedi. En iyi navigasyon deneyimini elde etmek için lütfen yeniden kalibre edin.";
 
 /* The user needs to calibrate the compass */
-"positioning.calibrationNeeded.alert.title" = "pepito";
+"positioning.calibrationNeeded.alert.title" = "Pusula kalibrasyonu gerekli";
 
 /* Button to center map in current location of user */
-"positioning.center" = "pepito";
+"positioning.center" = "merkez";
 
 /* No comment provided by engineer. */
-"positioning.createMarker" = "pepito";
+"positioning.createMarker" = "İşaret oluştur";
 
 /* Shown to user when select a destination (destination is any free point that user selects on the map) */
-"positioning.customDestination" = "pepito";
+"positioning.customDestination" = "Özel hedef";
 
 /* Alert message to show to the user when destination was reached */
-"positioning.destinationReached.alert.message" = "pepito";
+"positioning.destinationReached.alert.message" = "Hedefinize ulaştınız";
 
 /* Alert title to show to the user when destination was reached */
-"positioning.destinationReached.alert.title" = "pepito";
+"positioning.destinationReached.alert.title" = "Hedefe Ulaşıldı";
 
 /* Alert title error when download the floor plan fails */
-"positioning.error.emptyFloor.alert.message" = "pepito";
+"positioning.error.emptyFloor.alert.message" = "Yer planı indirilirken beklenmeyen bir hata oluştu. Lütfen tekrar deneyin.";
 
 /* Alert title error when download the floor plan fails */
-"positioning.error.emptyFloor.alert.title" = "pepito";
+"positioning.error.emptyFloor.alert.title" = "boş kat planı";
 
 /* Alert title error when the user does not select a destination */
-"positioning.error.noDestinationSelected.alert.title" = "pepito";
+"positioning.error.noDestinationSelected.alert.title" = "Hedef seçilmedi";
 
 /* Alert title error when the user position is unknown */
-"positioning.error.outsideBuilding.message" = "pepito";
+"positioning.error.outsideBuilding.message" = "Şu anda dış mekan hedefleri oluşturamazsınız.";
 
 /* Alert title error when the user position is unknown */
-"positioning.error.outsideBuilding.title" = "pepito";
+"positioning.error.outsideBuilding.title" = "Açık hava destinasyonu";
 
 /* Alert title error when the user is outdoor */
-"positioning.error.positionOutdoor.alert.title" = "pepito";
+"positioning.error.positionOutdoor.alert.title" = "Açık pozisyon";
 
 /* Alert title error when the user position is unknown */
-"positioning.error.positionUnknown.alert.title" = "pepito";
+"positioning.error.positionUnknown.alert.title" = "bilinmeyen konum";
 
 /* Alert title error when WayFinding cannot compute route to destination */
-"positioning.error.unableToComputeRoute.alert.title" = "pepito";
+"positioning.error.unableToComputeRoute.alert.title" = "Rota hesaplanamıyor";
 
 /* Alert message to show for a long press action */
-"positioning.longPressAction.alert.message" = "pepito";
+"positioning.longPressAction.alert.message" = "Bir eylem seçin:";
 
 /* Alert title to show for a long press action */
-"positioning.longPressAction.alert.title" = "pepito";
+"positioning.longPressAction.alert.title" = "Uzun basın eylemleri";
 
 /* Used to show the user the number of beacons that library detects nearby */
-"positioning.numBeacons" = "pepito";
+"positioning.numBeacons" = "%d işaret";
 
 /* Alert message to show user is outside of route */
-"positioning.outsideBuilding.alert.message" = "pepito";
+"positioning.outsideBuilding.alert.message" = "Kullanılabilir pozisyon yok. Lütfen kalibre edilmiş bir alana veya GPS sinyalinin mevcut olduğu bir alana gidin";
 
 /* Alert title to show user is outside of building */
-"positioning.outsideBuilding.alert.title" = "pepito";
+"positioning.outsideBuilding.alert.title" = "Bina dışında kullanıcı";
 
 /* Alert title to show user is outside of route */
-"positioning.outsideRoute.alert.title" = "pepito";
+"positioning.outsideRoute.alert.title" = "Kullanıcı rota dışında";
 
 /* Placeholder for searching pois */
-"positioning.searchPois" = "pepito";
+"positioning.searchPois" = "Konum Ara";
 
 /* No comment provided by engineer. */
-"search.distance" = "pepito";
+"search.distance" = "Mesafe";
 
 /* No comment provided by engineer. */
-"search.floor" = "pepito";
+"search.floor" = "Zemin";
 
 /* No comment provided by engineer. */
-"search.noResultFound" = "pepito";
+"search.noResultFound" = "hiçbir sonuç bulunamadı";
 
 /* Error when user does not set credentials */
-"situmMapsLibrary.error.credentials" = "pepito";
+"situmMapsLibrary.error.credentials" = "load(buildingWithId:) öğesini çağırmadan önce kimlik doğrulama bilgilerinizi setCredentials() ile ayarlamanız gerekir.";
 
 /* Error when user does not set correctly building id */
-"situmMapsLibrary.error.invalidBuilding" = "pepito";
+"situmMapsLibrary.error.invalidBuilding" = "Bina kimliği doğru değil. Lütfen LibrarySettings'te geçerli bir bina kimliği ekleyin";
+
+/* Error that appears when user does not provide location or bluetooth permissions*/
+"wayfinding.permissionsErrorDescription" = "Konum sağlamak için lütfen ayarlara gidin ve konum ve bluetooth izinlerini etkinleştirin";
+
+/* Error that appears when user does not provide location or bluetooth permissions*/
+"wayfinding.permissionsErrorTitle" = "Konum sağlanamıyor";
 
 /* No comment provided by engineer. */
-"wayfindingError.buildingNotExist" = "pepito";
+"wayfindingError.buildingNotExist" = "Bina mevcut değil";
 
 /* No comment provided by engineer. */
-"wayfindingError.invalidPoi" = "pepito";
+"wayfindingError.invalidPoi" = "Seçilen ilgi noktası bu binada geçerli değil";
 
 /* No comment provided by engineer. */
-"wayfindingError.requestError" = "pepito";
+"wayfindingError.requestError" = "yanıtta hata";
 
 /* No comment provided by engineer. */
-"wayfindingError.unknown" = "pepito";
+"wayfindingError.unknown" = "Bilinmeyen bir hata oluştu";
