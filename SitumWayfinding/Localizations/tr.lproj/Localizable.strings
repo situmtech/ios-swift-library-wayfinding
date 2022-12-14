@@ -1,155 +1,149 @@
 /* Alert message after an error retrieving a building happens */
-"alert.error.building.message" = "حدث خطأ غير متوقع أثناء تحميل معلومات المبنى. الرجاء المحاولة مرة أخرى.";
+"alert.error.building.message" = "pepito";
 
 /* Alert title after an error retrieving a building happens */
-"alert.error.building.title" = "خطأ في الحصول على معلومات البناء";
+"alert.error.building.title" = "pepito";
 
 /* Alert title for generic errors  */
-"alert.error.title" = "خطأ";
+"alert.error.title" = "pepito";
 
 /* Message of alert when loading library */
-"alert.loading.message" = "انتظر لحضة";
+"alert.loading.message" = "pepito";
 
 /* Title of alert when loading library */
-"alert.loading.title" = "جار التحميل";
+"alert.loading.title" = "pepito";
 
 /* Generic cancel action  */
-"generic.cancel" = "إلغاء";
+"generic.cancel" = "pepito";
 
 /* Generic ok action */
-"generic.ok" = "موافق";
+"generic.ok" = "pepito";
 
 /* Less than x minutes */
-"navigation.lessThanMinutes" = "أقل من %d دقيقة";
+"navigation.lessThanMinutes" = "pepito";
 
 /* No comment provided by engineer. */
-"navigation.loadingRoute" = "جارٍ تحميل المسار...";
+"navigation.loadingRoute" = "pepito";
 
 /* No comment provided by engineer. */
-"navigation.nextInstruction" = "ثم";
+"navigation.nextInstruction" = "pepito";
 
 /* Remaining time in hours */
-"navigation.remainingHours" = "%d ساعة";
+"navigation.remainingHours" = "%d pepito";
 
 /* Remaining time in minutes */
-"navigation.remainingMinutes" = "%d د";
+"navigation.remainingMinutes" = "%d pepito";
 
 /* No comment provided by engineer. */
-"navigationError.noAvailableRoute" = "لا يوجد مسار بين المواقع المحددة. حاول حساب مسار مختلف أو تبديل وضع الوصول";
+"navigationError.noAvailableRoute" = "pepito";
 
 /* No comment provided by engineer. */
-"navigationError.noDestinationSelected" = "لا توجد وجهة محددة حاليًا، لا يمكن بدء التنقل. الرجاء تحديد POI (أو اضغط لفترة طويلة لإنشاء واحد مخصص) وحاول مرة أخرى.";
+"navigationError.noDestinationSelected" = "pepito";
 
 /* No comment provided by engineer. */
-"navigationError.outdoorOrigin" = "الموقع الفعلي للمستخدم هو خارج، والملاحة متاحة فقط في الداخل.";
+"navigationError.outdoorOrigin" = "pepito";
 
 /* No comment provided by engineer. */
-"navigationError.outsideBuilding" = "المستخدم غير مكتشف حاليا على الطريق وهو خارج المبنى. الرجاء العودة لاستئناف التصفح.";
+"navigationError.outsideBuilding" = "pepito";
 
 /* No comment provided by engineer. */
-"navigationError.positionUnknown" = "الموقع الفعلي للمستخدم غير معروف، يرجى تنشيط الموقع قبل حساب المسار وحاول مرة أخرى.";
+"navigationError.positionUnknown" = "pepito";
 
 /* No comment provided by engineer. */
-"navigationError.unableToComputeRoute" = "تم العثور على خطأ غير متوقع أثناء حساب الطريق. الرجاء المحاولة مرة أخرى.";
+"navigationError.unableToComputeRoute" = "pepito";
 
 /* Button to go back when the user is in the positioning controller (where the map is shown) */
-"positioning.back" = "عودة";
+"positioning.back" = "pepito";
 
 /* No comment provided by engineer. */
-"positioning.calibrationNeeded.alert.message" = "لم يتم معايرة بوصلة جهازك الآن. يرجى إعادة المعايرة للحصول على أفضل تجربة تصفح.";
+"positioning.calibrationNeeded.alert.message" = "pepito";
 
 /* The user needs to calibrate the compass */
-"positioning.calibrationNeeded.alert.title" = "فشلت معايرة البوصلة";
+"positioning.calibrationNeeded.alert.title" = "pepito";
 
 /* Button to center map in current location of user */
-"positioning.center" = "الوسط";
+"positioning.center" = "pepito";
 
 /* No comment provided by engineer. */
-"positioning.createMarker" = "إنشاء علامة";
+"positioning.createMarker" = "pepito";
 
 /* Shown to user when select a destination (destination is any free point that user selects on the map) */
-"positioning.customDestination" = "الوجهة المخصصة";
+"positioning.customDestination" = "pepito";
 
 /* Alert message to show to the user when destination was reached */
-"positioning.destinationReached.alert.message" = "لقد وصلت إلى وجهتك";
+"positioning.destinationReached.alert.message" = "pepito";
 
 /* Alert title to show to the user when destination was reached */
-"positioning.destinationReached.alert.title" = "مصدر الوجهة";
+"positioning.destinationReached.alert.title" = "pepito";
 
 /* Alert title error when download the floor plan fails */
-"positioning.error.emptyFloor.alert.message" = "حدث خطأ غير متوقع أثناء تحميل معلومات المبنى. الرجاء المحاولة مرة أخرى.";
+"positioning.error.emptyFloor.alert.message" = "pepito";
 
 /* Alert title error when download the floor plan fails */
-"positioning.error.emptyFloor.alert.title" = "أرضية فارغة";
+"positioning.error.emptyFloor.alert.title" = "pepito";
 
 /* Alert title error when the user does not select a destination */
-"positioning.error.noDestinationSelected.alert.title" = "لم يتم تحديد وجهة";
+"positioning.error.noDestinationSelected.alert.title" = "pepito";
 
 /* Alert title error when the user position is unknown */
-"positioning.error.outsideBuilding.message" = "حاليا لا يمكنك إنشاء وجهات خارجية.";
+"positioning.error.outsideBuilding.message" = "pepito";
 
 /* Alert title error when the user position is unknown */
-"positioning.error.outsideBuilding.title" = "الوجهة المخصصة";
+"positioning.error.outsideBuilding.title" = "pepito";
 
 /* Alert title error when the user is outdoor */
-"positioning.error.positionOutdoor.alert.title" = "مكان داخلي";
+"positioning.error.positionOutdoor.alert.title" = "pepito";
 
 /* Alert title error when the user position is unknown */
-"positioning.error.positionUnknown.alert.title" = "موقع غير معروف";
+"positioning.error.positionUnknown.alert.title" = "pepito";
 
 /* Alert title error when WayFinding cannot compute route to destination */
-"positioning.error.unableToComputeRoute.alert.title" = "غير قادر على حساب المسار";
+"positioning.error.unableToComputeRoute.alert.title" = "pepito";
 
 /* Alert message to show for a long press action */
-"positioning.longPressAction.alert.message" = "اختر إجراء:";
+"positioning.longPressAction.alert.message" = "pepito";
 
 /* Alert title to show for a long press action */
-"positioning.longPressAction.alert.title" = "اجراء الضغط الطويل";
+"positioning.longPressAction.alert.title" = "pepito";
 
 /* Used to show the user the number of beacons that library detects nearby */
-"positioning.numBeacons" = "%d أجهزة إرشاد";
+"positioning.numBeacons" = "pepito";
 
 /* Alert message to show user is outside of route */
-"positioning.outsideBuilding.alert.message" = "المستخدم حاليا خارج المبنى. سيتم استئناف تحديد الموقع عند عودة المستخدم.";
+"positioning.outsideBuilding.alert.message" = "pepito";
 
 /* Alert title to show user is outside of building */
-"positioning.outsideBuilding.alert.title" = "مستخدم خارج المبنى";
+"positioning.outsideBuilding.alert.title" = "pepito";
 
 /* Alert title to show user is outside of route */
-"positioning.outsideRoute.alert.title" = "المسار الخارجي للمستخدم";
+"positioning.outsideRoute.alert.title" = "pepito";
 
 /* Placeholder for searching pois */
-"positioning.searchPois" = "نقاط البحث";
+"positioning.searchPois" = "pepito";
 
 /* No comment provided by engineer. */
-"search.distance" = "مسافة";
+"search.distance" = "pepito";
 
 /* No comment provided by engineer. */
-"search.floor" = "Floor";
+"search.floor" = "pepito";
 
 /* No comment provided by engineer. */
-"search.noResultFound" = "لَا تُوجَدُ نَتَائِج";
+"search.noResultFound" = "pepito";
 
 /* Error when user does not set credentials */
-"situmMapsLibrary.error.credentials" = "يجب عليك تعيين معلومات المصادقة الخاصة بك مع setCredentials() قبل الاتصال بالتحميل (buildingWithId:)";
+"situmMapsLibrary.error.credentials" = "pepito";
 
 /* Error when user does not set correctly building id */
-"situmMapsLibrary.error.invalidBuilding" = "معرف البناء غير صحيح. الرجاء إضافة معرف بناء صالح في إعدادات المكتبة";
+"situmMapsLibrary.error.invalidBuilding" = "pepito";
 
 /* No comment provided by engineer. */
-"wayfindingError.buildingNotExist" = "البناء غير موجود";
+"wayfindingError.buildingNotExist" = "pepito";
 
 /* No comment provided by engineer. */
-"wayfindingError.invalidPoi" = "الشعر المحدد غير صالح في هذا المبنى";
+"wayfindingError.invalidPoi" = "pepito";
 
 /* No comment provided by engineer. */
-"wayfindingError.requestError" = "رد الخطأ";
+"wayfindingError.requestError" = "pepito";
 
 /* No comment provided by engineer. */
-"wayfindingError.unknown" = "حدث خطأ غير معروف";
-
-/* Error that appears when user does not provide location or bluetooth permissions*/
-"wayfinding.permissionsErrorTitle" = "تعذر توفير الموقع";
-
-/* Error that appears when user does not provide location or bluetooth permissions*/
-"wayfinding.permissionsErrorDescription" = "يرجى الانتقال إلى الإعدادات وتمكين أذونات الموقع والبلوتوث لتوفير المواقع";
+"wayfindingError.unknown" = "pepito";
