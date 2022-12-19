@@ -854,7 +854,8 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
                 removeLastCustomMarkerIfOutsideRoute()
                 lastCustomMarker = SitumMarker(coordinate: coordinate, floor: floor)
                 lastSelectedMarker = lastCustomMarker
-                containerInfoBarMap?.setLabels(primary: lastCustomMarker!.title, secondary: buildingName)
+                containerInfoBarMap?.setLabels(primary: lastCustomMarker!.title,
+                    secondary: buildingInfo?.buildingFloorDescription(floor) ?? "")
                 changeNavigationButtonVisibility(isVisible: true)
                 displayMarkers(forFloor: floor, isUserNavigating: false)
             } else {
@@ -1239,9 +1240,17 @@ extension PositioningViewController {
         if (!self.isUserNavigating()) {
             self.changeNavigationButtonVisibility(isVisible: true)
         }
+        var secondaryLabel = ""
+        if let buildingInfo = buildingInfo, let poi = poiMarker.poi {
+            if let floor = poi.floor(activeBuildingInfo: buildingInfo) {
+                secondaryLabel = buildingInfo.buildingFloorDescription(floor)
+            } else {
+                secondaryLabel = self.buildingName
+            }
+        }
         self.updateInfoBarLabelsIfNotInsideRoute(
             mainLabel: poiMarker.poi?.name ?? DEFAULT_POI_NAME,
-            secondaryLabel: self.buildingName
+            secondaryLabel: secondaryLabel
         )
         if (self.positioningButton.isSelected) {
             showCenterButton()

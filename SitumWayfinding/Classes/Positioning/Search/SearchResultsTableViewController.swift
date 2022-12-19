@@ -11,7 +11,7 @@ protocol SearcheableItem {
     var id: String { get }
     var name: String { get }
     //TODO make it more generic
-    func floor(activeBuildingInfo: SITBuildingInfo?) -> String
+    func floorDescription(activeBuildingInfo: SITBuildingInfo?) -> String
     func distance() -> String
     func obtainIconImage(iconsStore:IconsStore?, completion:@escaping(UIImage?) -> Void)
 }
@@ -22,17 +22,17 @@ extension SITPOI: SearcheableItem {
         return self.identifier
     }
 
-    func floor(activeBuildingInfo: SITBuildingInfo?) -> String {
-        guard let floor = activeBuildingInfo?.floors.first(where: { $0.identifier ==  self.position().floorIdentifier }) else {
+    func floorDescription(activeBuildingInfo: SITBuildingInfo?) -> String {
+        guard let floor = floor(activeBuildingInfo: activeBuildingInfo) else {
             return ""
         }
-        if floor.name != "" {
-            return "\(NSLocalizedString("search.floor", bundle: SitumMapsLibrary.bundle, comment: "")) \(floor.name)"
-        } else {
-            return "\(NSLocalizedString("search.floor", bundle: SitumMapsLibrary.bundle, comment: "")) \(floor.floor)"
-        }
+        return floor.description
     }
-    
+
+    func floor(activeBuildingInfo: SITBuildingInfo?) -> SITFloor? {
+        return activeBuildingInfo?.floors.first(where: { $0.identifier ==  self.position().floorIdentifier })
+    }
+
     func distance() -> String {
         // TODO en proxima tarea se debe calcular este valor
         // localized string to use in the future for distance
@@ -88,7 +88,7 @@ class SearchResultsTableViewController: UITableViewController {
         let searchableItem = filteredPois[indexPath.row]
         cell.name = searchableItem.name
         cell.distance = searchableItem.distance()
-        cell.floor = searchableItem.floor(activeBuildingInfo: activeBuildingInfo)
+        cell.floor = searchableItem.floorDescription(activeBuildingInfo: activeBuildingInfo)
         searchableItem.obtainIconImage(iconsStore: iconsStore) { image in
             cell.icon=image
         }
