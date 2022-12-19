@@ -26,7 +26,11 @@ extension SITPOI: SearcheableItem {
         guard let floor = activeBuildingInfo?.floors.first(where: { $0.identifier ==  self.position().floorIdentifier }) else {
             return ""
         }
-        return "\(NSLocalizedString("search.floor", bundle: SitumMapsLibrary.bundle, comment: "")) \(floor.floor)"
+        if floor.name != "" {
+            return "\(NSLocalizedString("search.floor", bundle: SitumMapsLibrary.bundle, comment: "")) \(floor.name)"
+        } else {
+            return "\(NSLocalizedString("search.floor", bundle: SitumMapsLibrary.bundle, comment: "")) \(floor.floor)"
+        }
     }
     
     func distance() -> String {
