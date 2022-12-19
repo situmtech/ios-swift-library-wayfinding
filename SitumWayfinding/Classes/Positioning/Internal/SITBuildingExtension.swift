@@ -5,7 +5,6 @@
 import Foundation
 import SitumSDK
 
-
 extension SITBuildingInfo {
     func buildingFloorDescription(_ floor: SITFloor) -> String {
         return "\(building.name) / \(floor.description)"
