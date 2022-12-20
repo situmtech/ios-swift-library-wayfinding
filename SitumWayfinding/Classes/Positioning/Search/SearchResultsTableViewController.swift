@@ -11,7 +11,7 @@ protocol SearcheableItem {
     var id: String { get }
     var name: String { get }
     //TODO make it more generic
-    func floorDescription(activeBuildingInfo: SITBuildingInfo?) -> String
+    func floorUILabel(activeBuildingInfo: SITBuildingInfo?) -> String
     func distance() -> String
     func obtainIconImage(iconsStore:IconsStore?, completion:@escaping(UIImage?) -> Void)
 }
@@ -22,15 +22,12 @@ extension SITPOI: SearcheableItem {
         return self.identifier
     }
 
-    func floorDescription(activeBuildingInfo: SITBuildingInfo?) -> String {
-        guard let floor = floor(activeBuildingInfo: activeBuildingInfo) else {
+    func floorUILabel(activeBuildingInfo: SITBuildingInfo?) -> String {
+        guard let buildingInfo = activeBuildingInfo,
+              let floor = buildingInfo.floorWith(floorIdentifier: position().floorIdentifier) else {
             return ""
         }
-        return floor.description
-    }
-
-    func floor(activeBuildingInfo: SITBuildingInfo?) -> SITFloor? {
-        return activeBuildingInfo?.floors.first(where: { $0.identifier ==  self.position().floorIdentifier })
+        return floor.floorUILabel
     }
 
     func distance() -> String {
@@ -88,7 +85,7 @@ class SearchResultsTableViewController: UITableViewController {
         let searchableItem = filteredPois[indexPath.row]
         cell.name = searchableItem.name
         cell.distance = searchableItem.distance()
-        cell.floor = searchableItem.floorDescription(activeBuildingInfo: activeBuildingInfo)
+        cell.floor = searchableItem.floorUILabel(activeBuildingInfo: activeBuildingInfo)
         searchableItem.obtainIconImage(iconsStore: iconsStore) { image in
             cell.icon=image
         }

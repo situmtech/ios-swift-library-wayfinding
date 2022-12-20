@@ -6,7 +6,11 @@ import Foundation
 import SitumSDK
 
 extension SITBuildingInfo {
-    func buildingFloorDescription(_ floor: SITFloor) -> String {
-        return "\(building.name) / \(floor.description)"
+    func buildingFloorUILabel(_ floor: SITFloor) -> String {
+        return "\(building.name) / \(floor.floorUILabel)"
+    }
+
+    func floorWith(floorIdentifier: String) -> SITFloor? {
+        return floors.first(where: { $0.identifier == floorIdentifier })
     }
 }

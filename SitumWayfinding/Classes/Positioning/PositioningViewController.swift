@@ -854,8 +854,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
                 removeLastCustomMarkerIfOutsideRoute()
                 lastCustomMarker = SitumMarker(coordinate: coordinate, floor: floor)
                 lastSelectedMarker = lastCustomMarker
-                containerInfoBarMap?.setLabels(primary: lastCustomMarker!.title,
-                    secondary: buildingInfo?.buildingFloorDescription(floor) ?? "")
+                containerInfoBarMap?.setLabels(primary: lastCustomMarker!.title, secondary: floorUILabel(with: lastCustomMarker!))
                 changeNavigationButtonVisibility(isVisible: true)
                 displayMarkers(forFloor: floor, isUserNavigating: false)
             } else {
@@ -1237,28 +1236,28 @@ extension PositioningViewController {
     }
     
     func poiMarkerWasSelected(poiMarker: SitumMarker) {
-        if (!self.isUserNavigating()) {
-            self.changeNavigationButtonVisibility(isVisible: true)
+        if (!isUserNavigating()) {
+            changeNavigationButtonVisibility(isVisible: true)
         }
-        var secondaryLabel = ""
-        if let buildingInfo = buildingInfo, let poi = poiMarker.poi {
-            if let floor = poi.floor(activeBuildingInfo: buildingInfo) {
-                secondaryLabel = buildingInfo.buildingFloorDescription(floor)
-            } else {
-                secondaryLabel = self.buildingName
-            }
-        }
-        self.updateInfoBarLabelsIfNotInsideRoute(
-            mainLabel: poiMarker.poi?.name ?? DEFAULT_POI_NAME,
-            secondaryLabel: secondaryLabel
-        )
-        if (self.positioningButton.isSelected) {
+        updateInfoBarLabelsIfNotInsideRoute(mainLabel: poiMarker.poi?.name ?? DEFAULT_POI_NAME,
+            secondaryLabel: floorUILabel(with: poiMarker))
+        if (positioningButton.isSelected) {
             showCenterButton()
         }
         isCameraCentered = false
         //Call only if this marker wasnt already the selected one
         if poiMarker != lastSelectedMarker, let uPoi = poiMarker.poi, let uBuildingInfo = buildingInfo {
             poiWasSelected(poi: uPoi, buildingInfo: uBuildingInfo)
+        }
+    }
+
+    private func floorUILabel(with marker: SitumMarker) -> String {
+        guard let buildingInfo = buildingInfo else { return " "}
+
+        if let floor = buildingInfo.floorWith(floorIdentifier: marker.floorIdentifier) {
+            return buildingInfo.buildingFloorUILabel(floor)
+        } else {
+            return buildingName
         }
     }
     

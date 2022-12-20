@@ -20,7 +20,7 @@ class WayfindingDelegatesNotifier{
     func notifyOnPOISelected(poi:SITPOI, buildingInfo:SITBuildingInfo){
         // Find the floor
         var poiFloor = SITFloor()
-        if let foundFloor = buildingInfo.floors.first(where: {$0.identifier == poi.position().floorIdentifier}) {
+        if let foundFloor = buildingInfo.floorWith(floorIdentifier: poi.position().floorIdentifier) {
             poiFloor = foundFloor
         } else {
             poiFloor.identifier = poi.position().floorIdentifier
