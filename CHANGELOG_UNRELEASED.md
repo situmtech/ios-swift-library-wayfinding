@@ -1,0 +1,3 @@
+### Changed
+- Added Turkish translations
+
