@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 All non released changes should be in CHANGELOG_UNRELEASED.md file
 
 ---------
+## [0.17.0] - 2022-12-21
+### Added:
+- Added floor change icons in the route path to indicate when a change of floor has to be made
+- Added support to show tiles downloaded offline. To manage these tiles you should check the documentation on SitumSDK
+- Updated Situm SDK dependency to 2.55.0
+
 ## [0.16.1] - 2022-11-07
 ### Changed:
 - Improvements in the calculation of time to goal and arrival expected time whe the user request a route to a point.
