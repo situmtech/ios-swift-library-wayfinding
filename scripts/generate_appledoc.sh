@@ -20,6 +20,7 @@ fi
 # Xeramos a documentacion no directorio {project_dir}/build/Documentation
 count=`jazzy --podspec SitumWayfinding.podspec | grep -i 100% | wc -l`
 if [ $count -lt 1 ]; then
+    cat docs/undocumented.json # mostramos nos logs que partes non están documentadas
     echo "Documentation error. Either a public interface has not been documented, or a private interface has not been excluded"
     exit 1
 fi
