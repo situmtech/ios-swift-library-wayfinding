@@ -91,9 +91,9 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     let DEFAULT_BUILDING_NAME: String = "Current Building"
     var lock = false
     var changeOfFloorMarker = GMSMarker()
-    var tileProvider:TileProvider!
+    var tileProvider: TileProvider!
     var preserveStateInNewViewAppeareance = false
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         mapContainerViewTopConstraint.constant = 44
@@ -111,7 +111,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         }
 
         self.initializeChangeOfFloorMarker()
-        
+
         do {
             let fonts = ["Roboto-Black", "Roboto-Bold", "Roboto-Medium", "Roboto-Regular"]
             try FontLoader.registerFonts(fonts: fonts)
@@ -126,12 +126,12 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
             self.initializeViewBeforeAppearing()
         }
     }
-    
+
     override func viewDidLayoutSubviews() {
         //In viewWillAppear layout hasnt finished yet
         addMap()
     }
-    
+
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         if CLLocationManager.locationServicesEnabled() {
@@ -141,8 +141,8 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
             }
         }
     }
-    
-    
+
+
     func initializeViewBeforeAppearing(){
         positionDrawer = GoogleMapsPositionDrawer(mapView: mapView)
         let loading = NSLocalizedString("alert.loading.title",
@@ -175,7 +175,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
                             
                             // Now we have the organization details and we can work with their values (if any)
                             self.organizationTheme = organizationDetails!
-                            
+
                             self.situmLoadFinished(loadingAlert: loadingAlert)
                             self.presenter = PositioningPresenter(view: self, buildingInfo: self.buildingInfo!, interceptorsManager: self.library?.interceptorsManager ?? InterceptorsManager())
                             if let lib = self.library {
@@ -198,7 +198,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
             self.loadingError = true;
             self.situmLoadFinished(loadingAlert: loadingAlert)
         })
-        
+
     }
     
     func displayElementsNavBar() {
@@ -212,7 +212,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
             navbar.topItem?.leftBarButtonItem = nil
         }
     }
-    
+
     func situmLoadFinished(loadingAlert: UIAlertController) {
         loadingAlert.dismiss(animated: true) {
             if (self.loadingError) {
@@ -238,7 +238,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     
     func addMap() {
         self.mapViewVC.view = mapView
-        tileProvider = TileProvider.init(mapView: mapView)
+        tileProvider = TileProvider(mapView: mapView)
     }
     
     func initializeMapView() {
@@ -429,7 +429,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     func filterPois(by categoryIds: [String]) {
         buildingManager?.setPoiFilters(by: categoryIds)
     }
-    
+
     func displayFloorPlan(forFloor floor: SITFloor) {
         self.mapOverlay.map = nil
         let bounds: SITBounds = buildingInfo!.building.bounds()
@@ -441,7 +441,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         self.mapOverlay.zIndex = ZIndices.floorPlan
         self.mapOverlay.map = mapView
         displayMarkers(forFloor: floor, isUserNavigating: SITNavigationManager.shared().isRunning())
-        tileProvider.addTileFor(floorIdentifier: floor.identifier)
+        tileProvider.addTileFor(floor: floor)
     }
     
     func orderedFloors(buildingInfo: SITBuildingInfo?) -> [SITFloor]? {
@@ -475,7 +475,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     
     func select(floor floorIndex: IndexPath) {
         resetChangeOfFloorMarker()
-        
+
         let isSameLevel = floorIndex.row == self.selectedLevelIndex
         // When it is the first loading of floors, whe always load the floor. This is to avoid a bug when only one floor
         // exists and floor is no loading because of previous condition. We should decouple tableview/load floors in the
@@ -968,11 +968,11 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         let gap = NSNumber(value: 5.0 * Float(scale))
         
         resetChangeOfFloorMarker()
-                
+
         for (index, segment) in segments.enumerated() {
             if segment.floorIdentifier == selectedFloor.identifier {
                 self.updateChangeOfFloorMarker(forSelectedFloor: selectedFloor, withFloorSegment: segment)
-                
+
                 let path: GMSMutablePath = GMSMutablePath()
                 for point in segment.points {
                     path.add(point.coordinate())
@@ -1042,7 +1042,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         guard let navigation = buildNavigationObject(status: .started, marker: marker, route: route) else { return }
         self.delegateNotifier?.navigationDelegate?.onNavigationStarted(navigation: navigation)
     }
-    
+
     private func notifyEndOfNavigation(status: NavigationStatus, marker: SitumMarker?) {
         guard let navigation = buildNavigationObject(status: status, marker: marker, route:nil) else { return }
         if case .error(let error) = status {
@@ -1096,7 +1096,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         let navigation = WYFNavigation(status: status, destination: WYFDestination(category: category),route: route)
         return navigation
     }
-    
+
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let identifier = segue.identifier {
             if identifier == "mapContainerSegueID" {
@@ -1386,12 +1386,12 @@ extension PositioningViewController {
         self.changeOfFloorMarker.position = CLLocationCoordinate2D(latitude: 0, longitude: 0)
         resetChangeOfFloorMarker()
     }
-    
+
     func showChangeOfFloorMarker(position: CLLocationCoordinate2D) {
         self.changeOfFloorMarker.position = position
         self.changeOfFloorMarker.map = self.mapView
     }
-    
+
     func scaledImage(image:UIImage, scaledToSize newSize:CGSize) -> UIImage{
         UIGraphicsBeginImageContextWithOptions(newSize, false, 0.0)
         image.draw(in: CGRect(x: 0, y: 0, width: newSize.width, height: newSize.height))
@@ -1399,13 +1399,13 @@ extension PositioningViewController {
         UIGraphicsEndImageContext()
         return newImage
     }
-    
+
     func updateChangeOfFloorMarker(forSelectedFloor: SITFloor, withFloorSegment: SITRouteSegment) {
         if shouldDrawChangeOfFloorMarker(segment: withFloorSegment, selectedFloor: forSelectedFloor) {
             self.drawChangeOfFloorMarker(segment: withFloorSegment)
         }
     }
-    
+
     func drawChangeOfFloorMarker(segment: SITRouteSegment) {
         let last = segment.points.last
         if let coordinates = last?.coordinate() {
@@ -1416,19 +1416,19 @@ extension PositioningViewController {
             self.showChangeOfFloorMarker(position: position)
         }
     }
-    
+
     func isSegment(_ segment: SITRouteSegment, inFloor: SITFloor) -> Bool {
         return segment.floorIdentifier == inFloor.identifier
     }
-    
+
     func isDestinationFloor(selectedFloor: SITFloor) -> Bool {
         return self.destinationMarker?.floorIdentifier == selectedFloor.identifier
     }
-    
+
     func shouldDrawChangeOfFloorMarker(segment: SITRouteSegment, selectedFloor: SITFloor) -> Bool {
         return isSegment(segment, inFloor: selectedFloor) && !isDestinationFloor(selectedFloor: selectedFloor)
     }
-    
+
     func resetChangeOfFloorMarker() {
         self.changeOfFloorMarker.map = nil
     }
@@ -1445,7 +1445,7 @@ extension PositioningViewController {
             NSAttributedString.Key.font: font,
             NSAttributedString.Key.foregroundColor: color
         ]
-        
+
         let textTitle = NSMutableAttributedString(
             string: title.uppercased(),
             attributes: textAttributes
