@@ -7,38 +7,38 @@
 
 import Foundation
 
-class SearchTableViewCell : UITableViewCell {
+class SearchTableViewCell: UITableViewCell {
     @IBOutlet weak var iconImageView: UIImageView!
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var floorLabel: UILabel!
     @IBOutlet weak var distanceLabel: UILabel!
-    
+
     var name: String {
-            get {
-                return nameLabel.text ?? ""
-            }
-            set {
-                nameLabel.text = newValue
-            }
+        get {
+            return nameLabel.text ?? ""
         }
+        set {
+            nameLabel.text = newValue
+        }
+    }
     var floor: String {
-            get {
-                return floorLabel.text ?? ""
-            }
-            set {
-                floorLabel.text = newValue
-            }
+        get {
+            return floorLabel.text ?? ""
         }
-    
+        set {
+            floorLabel.text = newValue
+        }
+    }
+
     var distance: String {
-            get {
-                return distanceLabel.text ?? ""
-            }
-            set {
-                distanceLabel.text = newValue
-            }
+        get {
+            return distanceLabel.text ?? ""
         }
-    var icon:UIImage?{
+        set {
+            distanceLabel.text = newValue
+        }
+    }
+    var icon: UIImage? {
         get {
             return iconImageView.image
         }
