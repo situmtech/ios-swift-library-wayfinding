@@ -105,7 +105,7 @@ extension InfoBarNavigationViewController {
     func prepareElements() {
         if #available(iOS 13.0, *) {
             if traitCollection.userInterfaceStyle == .light {
-                self.prepareLightOrDarkMode(tintColor: UIColor.white, colorText: UIColor.primary)
+                self.prepareLightOrDarkMode(tintColor: UIColor.black, colorText: UIColor.black)
             } else {
                 self.prepareLightOrDarkMode(tintColor: UIColor.white, colorText: UIColor.white)
             }
