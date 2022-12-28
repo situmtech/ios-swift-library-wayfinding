@@ -23,6 +23,9 @@ class InfoBarMapViewController: UIViewController {
         
         mainLabel.translatesAutoresizingMaskIntoConstraints = false
         topSeparator.backgroundColor = .primaryDiminished
+        
+        let bundle = Bundle(for: type(of: self))
+        prepareElements()
     }
     
     func setLogo(image: UIImage?) {
@@ -51,4 +54,31 @@ class InfoBarMapViewController: UIViewController {
         }
     }
     
+}
+
+extension InfoBarMapViewController {
+    func prepareElements() {
+        if #available(iOS 13.0, *) {
+            if traitCollection.userInterfaceStyle == .dark {
+                self.prepareLightOrDarkMode(tintColor: .white)
+            } else {
+                self.prepareLightOrDarkMode(tintColor: .black)
+            }
+        } else {
+            imageView.image = UIImage(
+                named: "swf_info",
+                in: SitumMapsLibrary.bundle,
+                compatibleWith: nil
+            )
+        }
+    }
+    
+    @available(iOS 13.0, *)
+    func prepareLightOrDarkMode(tintColor: UIColor) {
+        imageView.image = UIImage(systemName: "info.circle")?.withTintColor(tintColor, renderingMode: .alwaysOriginal)
+    }
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        prepareElements()
+    }
 }

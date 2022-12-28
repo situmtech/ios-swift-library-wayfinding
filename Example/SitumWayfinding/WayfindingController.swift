@@ -25,6 +25,7 @@ class WayfindingController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.setModeUserInterface()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -48,12 +49,7 @@ class WayfindingController: UIViewController {
         self.library?.setOnMapReadyListener(listener: self)
         self.library?.setOnNavigationListener(listener: self)
 
-        do {
-            try self.library!.load()
-        } catch {
-            print("An error has ocurred. Your SitumView could not be loaded.")
-        }
-
+        loadMap()
         super.viewWillAppear(animated)
     }
 
@@ -142,3 +138,34 @@ extension WayfindingController: OnNavigationListener {
 }
 
 
+extension WayfindingController {
+    func setModeUserInterface() {
+        if #available(iOS 13.0, *) {
+            self.view.backgroundColor = traitCollection.userInterfaceStyle == .light ?  .white : .black
+        } else {
+            self.view.backgroundColor = .white
+        }
+    }
+    
+    func loadMap() {
+        do {
+            
+            var mode = "light"
+            
+            if #available(iOS 12.0, *) {
+                if traitCollection.userInterfaceStyle == .dark {
+                    mode = "dark"
+                }
+            }
+            
+            try self.library!.load(mode: mode)
+        } catch {
+            print("An error has ocurred. Your SitumView could not be loaded.")
+        }
+    }
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        setModeUserInterface()
+        loadMap()
+    }
+}

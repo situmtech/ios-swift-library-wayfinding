@@ -26,7 +26,6 @@ class IndicationsViewController: UIViewController {
     }
     
     private func setupIndicationView() {
-        self.indicationView.backgroundColor = .white
         self.indicationView.layer.borderWidth = 2
         self.indicationView.layer.borderColor = UIColor.primaryDiminished.cgColor
         self.indicationView.roundCorners(corners: [.topLeft, .topRight, .bottomLeft, .bottomRight])
@@ -38,12 +37,15 @@ class IndicationsViewController: UIViewController {
         self.indicationLabel.textColor = .primary
         self.indicationLabel.numberOfLines = 0
         
-        self.indicationImage.tintColor = .primary
-        
-        self.indicationLoading.tintColor = .primary
+        self.prepareLightOrDarkMode(backgroundColor: .white, tintColor: .primary, colorText: .black)
+    
         if #available(iOS 13.0, *) {
             self.indicationLoading.style = .large
+            if traitCollection.userInterfaceStyle == .dark {
+                self.prepareLightOrDarkMode(backgroundColor: .black, tintColor: .black, colorText: .white)
+            }
         }
+        
         self.indicationLoading.startAnimating()
     }
     
@@ -136,5 +138,19 @@ class IndicationsViewController: UIViewController {
         @unknown default:
             return UIImage(named: "situm_direction_empty", in: SitumMapsLibrary.bundle, compatibleWith: nil)
         }
+    }
+}
+
+extension IndicationsViewController {
+    func prepareLightOrDarkMode(backgroundColor: UIColor, tintColor: UIColor, colorText: UIColor) {
+        self.indicationView.backgroundColor = backgroundColor
+        self.indicationImage.tintColor = tintColor
+        self.indicationLoading.tintColor = tintColor
+        self.indicationLabel.textColor = colorText
+        self.destinationLabel.textColor = colorText
+    }
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        setupIndicationView()
     }
 }

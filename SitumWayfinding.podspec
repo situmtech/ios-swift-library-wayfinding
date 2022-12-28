@@ -39,6 +39,7 @@ Pod::Spec.new do |s|
     'SitumWayfinding' => [
         'SitumWayfinding/Localizations/**/*',
         'SitumWayfinding/Classes/situm_google_maps_style.json',
+        'SitumWayfinding/Classes/situm_google_maps_style_dark.json',
         'SitumWayfinding/Assets/Images/**/*.xcassets',
         'SitumWayfinding/Assets/Fonts/**/*.ttf',
     ]

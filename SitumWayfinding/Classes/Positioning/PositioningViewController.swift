@@ -321,11 +321,50 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         positioningButton.layer.shadowRadius = 8.0
         positioningButton.layer.shadowOffset = CGSize(width: 7.0, height: 7.0)
         positioningButton.isHidden = !(self.library?.settings?.positioningFabVisible ?? true)
+        
+        let bundle = Bundle(for: type(of: self))
+        
+        if #available(iOS 13.0, *) {
+            if traitCollection.userInterfaceStyle == .dark {
+                positioningButton.backgroundColor = .black
+                positioningButton.tintColor = .white
+                
+                let image = UIImage(systemName: "scope")?.withTintColor(UIColor.white)
+                positioningButton.setImage(image, for: .normal)
+                
+            } else {
+                positioningButton.backgroundColor = UIColor(
+                    red: 0xff / 255.0, green: 0xff / 255.0, blue: 0xff / 255.0, alpha: 1
+                )
+                positioningButton.tintColor = .black
+                let image = UIImage(systemName: "scope")?.withTintColor(UIColor.black)
+                positioningButton.setImage(image, for: .normal)
+                
+            }
+        } else {
+            positioningButton.backgroundColor = UIColor(red: 0xff / 255.0, green: 0xff / 255.0, blue: 0xff / 255.0, alpha: 1)
+            positioningButton.tintColor = .black
+            positioningButton.setImage(
+                UIImage(
+                    named: "swf_ic_action_no_positioning",
+                    in: bundle,
+                    compatibleWith: nil
+                ),
+                for: .normal
+            )
+        }
     }
     
     func initializeLoadingIndicator() {
         loadingIndicator.isHidden = true
         loadingIndicator.hidesWhenStopped = true
+        loadingIndicator.color = .black
+        
+        if #available(iOS 13.0, *) {
+            if traitCollection.userInterfaceStyle == .dark {
+                loadingIndicator.color = .white
+            }
+        }
     }
     
     func initializeLevelIndicator() {
@@ -574,10 +613,35 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     
     func changePositioningButton(toState state: SITLocationState) {
         let bundle = Bundle(for: type(of: self))
+        
         switch state {
         case .stopped:
-            positioningButton.backgroundColor = UIColor(red: 0xff / 255.0, green: 0xff / 255.0, blue: 0xff / 255.0, alpha: 1)
-            positioningButton.setImage(UIImage(named: "swf_ic_action_no_positioning", in: bundle, compatibleWith: nil), for: .normal)
+            if #available(iOS 13.0, *) {
+                if traitCollection.userInterfaceStyle == .dark {
+                    positioningButton.backgroundColor = .black
+                    let image = UIImage(systemName: "scope")?.withTintColor(UIColor.white)
+                    positioningButton.setImage(image, for: .normal)
+                } else {
+                    positioningButton.backgroundColor = UIColor(
+                        red: 0xff / 255.0, green: 0xff / 255.0, blue: 0xff / 255.0, alpha: 1
+                    )
+                    let image = UIImage(systemName: "scope")?.withTintColor(UIColor.black)
+                    positioningButton.setImage(image, for: .normal)
+                }
+            } else {
+                positioningButton.backgroundColor = UIColor(
+                    red: 0xff / 255.0, green: 0xff / 255.0, blue: 0xff / 255.0, alpha: 1
+                )
+                positioningButton.setImage(
+                    UIImage(
+                        named: "swf_ic_action_no_positioning",
+                        in: bundle,
+                        compatibleWith: nil
+                    ),
+                    for: .normal
+                )
+            }
+            
             loadingIndicator.stopAnimating()
             positioningButton.isSelected = false
         case .calculating:
@@ -588,6 +652,12 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         case .started:
             let color = UIColor.primary
             positioningButton.backgroundColor = primaryColor(defaultColor: color)
+            
+            if #available(iOS 13.0, *) {
+                if traitCollection.userInterfaceStyle == .dark {
+                    positioningButton.backgroundColor = .black
+                }
+            }
             
             positioningButton.setImage(UIImage(named: "swf_ic_action_localize", in: bundle, compatibleWith: nil), for: .selected)
             loadingIndicator.stopAnimating()
@@ -934,6 +1004,9 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
             color = UIColor.lightGray
         } else {
             color = UIColor.white
+            if #available(iOS 13.0, *) {
+                color = traitCollection.userInterfaceStyle == .light ?  .white : .black
+            }
         }
         
         if let presenter = presenter {
@@ -1432,7 +1505,16 @@ extension PositioningViewController {
             comment: "Button to center map in current location of user"
         )
         let font = UIFont(name: "Roboto-Black", size: 18) ?? UIFont.systemFont(ofSize: 18)
-        let color = UIColor(red: 0.16, green: 0.20, blue: 0.50, alpha: 1.00)
+        var color = UIColor(red: 0.16, green: 0.20, blue: 0.50, alpha: 1.00)
+        centerButton.backgroundColor = UIColor.white
+        
+        if #available(iOS 13.0, *) {
+            if traitCollection.userInterfaceStyle == .dark {
+                color = .white
+                centerButton.backgroundColor = .black
+            }
+        }
+        
         let textAttributes = [
             NSAttributedString.Key.font: font,
             NSAttributedString.Key.foregroundColor: color
@@ -1443,7 +1525,6 @@ extension PositioningViewController {
             attributes: textAttributes
         )
         
-        centerButton.backgroundColor = UIColor.white
         centerButton.layer.cornerRadius = 30
         centerButton.layer.shadowColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.25).cgColor
         centerButton.layer.shadowOffset = CGSize(width: 0.0, height: 2.0)
@@ -1451,5 +1532,15 @@ extension PositioningViewController {
         centerButton.layer.shadowRadius = 0.0
         centerButton.layer.masksToBounds = false
         centerButton.setAttributedTitle(textTitle, for: .normal)
+    }
+}
+
+
+extension PositioningViewController {
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        levelsTableView.reloadData()
+        prepareCenterButton()
+        initializePositioningButton()
+        initializeLoadingIndicator()
     }
 }

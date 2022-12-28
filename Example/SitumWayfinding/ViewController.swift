@@ -30,6 +30,7 @@ class ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        setModeUserInterface()
 
         tableView.dataSource = self
         tableView.delegate = self
@@ -177,4 +178,19 @@ enum WYFAction {
     case navigateToPoi(SITPOI)
     case navigateToLocation(floor: SITFloor, lat: Double, lng: Double)
     case filterPoiByCategories(categoryIds: [String])
+}
+
+
+extension ViewController {
+    func setModeUserInterface() {
+        if #available(iOS 13.0, *) {
+            self.view.backgroundColor = traitCollection.userInterfaceStyle == .light ?  .white : .black
+        } else {
+            self.view.backgroundColor = .white
+        }
+    }
+        
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        setModeUserInterface()
+    }
 }
