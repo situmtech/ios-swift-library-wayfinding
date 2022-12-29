@@ -30,18 +30,17 @@ class ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        setModeUserInterface()
 
         tableView.dataSource = self
         tableView.delegate = self
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: cellId)
 
         credentials = Credentials(
-            user: "YOUR_USER",
-            apiKey: "YOUR_SITUM_APIKEY",
-            googleMapsApiKey: "YOUR_GOOGLEMAPS_APIKEY"
+            user: "bruno.gomez@dimensiona.com",
+            apiKey: "c7753d2beb3c57e88045f5cfe1153eb382e502daee1b6ad201be6779c3ea582d",
+            googleMapsApiKey: "AIzaSyC2xu4ZtyNTmR1BkK3ycgPOXMn4joi2FxA"
         )
-        buildingId = "YOUR_BUILDING_ID"
+        buildingId = "11394"
         location = (lat: "YOUR_LATITUDE", lng: "YOUR_LONGITUDE")
 
         fakeLocationSwitch.isOn = UserDefaults.standard.bool(forKey: "fake_locations")
@@ -173,24 +172,10 @@ extension ViewController: UITableViewDelegate {
     }
 }
 
+
 enum WYFAction {
     case selectPoi(SITPOI)
     case navigateToPoi(SITPOI)
     case navigateToLocation(floor: SITFloor, lat: Double, lng: Double)
     case filterPoiByCategories(categoryIds: [String])
-}
-
-
-extension ViewController {
-    func setModeUserInterface() {
-        if #available(iOS 13.0, *) {
-            self.view.backgroundColor = traitCollection.userInterfaceStyle == .light ?  .white : .black
-        } else {
-            self.view.backgroundColor = .white
-        }
-    }
-        
-    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-        setModeUserInterface()
-    }
 }

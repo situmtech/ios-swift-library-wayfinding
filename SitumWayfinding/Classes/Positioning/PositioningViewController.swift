@@ -321,38 +321,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         positioningButton.layer.shadowRadius = 8.0
         positioningButton.layer.shadowOffset = CGSize(width: 7.0, height: 7.0)
         positioningButton.isHidden = !(self.library?.settings?.positioningFabVisible ?? true)
-        
-        let bundle = Bundle(for: type(of: self))
-        
-        if #available(iOS 13.0, *) {
-            if traitCollection.userInterfaceStyle == .dark {
-                positioningButton.backgroundColor = .black
-                positioningButton.tintColor = .white
-                
-                let image = UIImage(systemName: "scope")?.withTintColor(UIColor.white)
-                positioningButton.setImage(image, for: .normal)
-                
-            } else {
-                positioningButton.backgroundColor = UIColor(
-                    red: 0xff / 255.0, green: 0xff / 255.0, blue: 0xff / 255.0, alpha: 1
-                )
-                positioningButton.tintColor = .black
-                let image = UIImage(systemName: "scope")?.withTintColor(UIColor.black)
-                positioningButton.setImage(image, for: .normal)
-                
-            }
-        } else {
-            positioningButton.backgroundColor = UIColor(red: 0xff / 255.0, green: 0xff / 255.0, blue: 0xff / 255.0, alpha: 1)
-            positioningButton.tintColor = .black
-            positioningButton.setImage(
-                UIImage(
-                    named: "swf_ic_action_no_positioning",
-                    in: bundle,
-                    compatibleWith: nil
-                ),
-                for: .normal
-            )
-        }
+        self.prepareLightOrDarkMode()
     }
     
     func initializeLoadingIndicator() {
@@ -616,32 +585,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         
         switch state {
         case .stopped:
-            if #available(iOS 13.0, *) {
-                if traitCollection.userInterfaceStyle == .dark {
-                    positioningButton.backgroundColor = .black
-                    let image = UIImage(systemName: "scope")?.withTintColor(UIColor.white)
-                    positioningButton.setImage(image, for: .normal)
-                } else {
-                    positioningButton.backgroundColor = UIColor(
-                        red: 0xff / 255.0, green: 0xff / 255.0, blue: 0xff / 255.0, alpha: 1
-                    )
-                    let image = UIImage(systemName: "scope")?.withTintColor(UIColor.black)
-                    positioningButton.setImage(image, for: .normal)
-                }
-            } else {
-                positioningButton.backgroundColor = UIColor(
-                    red: 0xff / 255.0, green: 0xff / 255.0, blue: 0xff / 255.0, alpha: 1
-                )
-                positioningButton.setImage(
-                    UIImage(
-                        named: "swf_ic_action_no_positioning",
-                        in: bundle,
-                        compatibleWith: nil
-                    ),
-                    for: .normal
-                )
-            }
-            
+            prepareLightOrDarkMode()
             loadingIndicator.stopAnimating()
             positioningButton.isSelected = false
         case .calculating:
@@ -1537,6 +1481,38 @@ extension PositioningViewController {
 
 
 extension PositioningViewController {
+    func prepareLightOrDarkMode() {
+        if #available(iOS 13.0, *) {
+            if traitCollection.userInterfaceStyle == .dark {
+                positioningButton.backgroundColor = .black
+                positioningButton.tintColor = .white
+                
+                let image = UIImage(systemName: "scope")?.withTintColor(UIColor.white)
+                positioningButton.setImage(image, for: .normal)
+                
+            } else {
+                positioningButton.backgroundColor = UIColor(
+                    red: 0xff / 255.0, green: 0xff / 255.0, blue: 0xff / 255.0, alpha: 1
+                )
+                positioningButton.tintColor = .black
+                let image = UIImage(systemName: "scope")?.withTintColor(UIColor.black)
+                positioningButton.setImage(image, for: .normal)
+                
+            }
+        } else {
+            positioningButton.backgroundColor = UIColor(red: 0xff / 255.0, green: 0xff / 255.0, blue: 0xff / 255.0, alpha: 1)
+            positioningButton.tintColor = .black
+            positioningButton.setImage(
+                UIImage(
+                    named: "swf_ic_action_no_positioning",
+                    in: Bundle(for: type(of: self)),
+                    compatibleWith: nil
+                ),
+                for: .normal
+            )
+        }
+    }
+    
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         levelsTableView.reloadData()
         prepareCenterButton()

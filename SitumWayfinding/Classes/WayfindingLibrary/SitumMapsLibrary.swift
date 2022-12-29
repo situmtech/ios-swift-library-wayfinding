@@ -68,12 +68,12 @@ import GoogleMaps
     }
     
     /// try to load the module. This method can throw an exception if needed parameters are not set. See init method to know how to properly configure an instance.
-    @objc public func load(mode: String?) throws {
+    @objc public func load() throws {
         // Validate credentials, buildingId and so on..
         
         try validateSettings()
         if let settings = getSettings() {
-            let mapView = settings.googleMap != nil ? settings.googleMap : obtainGMSMapView(mode: mode)
+            let mapView = settings.googleMap != nil ? settings.googleMap : obtainGMSMapView()
             prepareForLoading(buildingWithId: settings.buildingId, withMap: mapView)
             SITServices.setUseRemoteConfig(settings.useRemoteConfig)
             self.toPresentViewController?.preserveStateInNewViewAppeareance = false;
@@ -101,7 +101,7 @@ import GoogleMaps
      - parameter buildingId: Id of the building to be load
      */
     @available(*, deprecated, message: "Use load instead")
-    @objc public func load(buildingWithId buildingId: String?, mode: String?) throws {
+    @objc public func load(buildingWithId buildingId: String?) throws {
         // Previous implementation
         // Validate before using buildingId?
         try validateActiveBuilding(buildingId)
@@ -111,7 +111,7 @@ import GoogleMaps
             settingsBuilder.setBuildingId(buildingId: buildingId)
             settings = settingsBuilder.build()
             
-            try load(mode: mode)
+            try load()
         }
     }
     
@@ -360,15 +360,17 @@ import GoogleMaps
 
 extension SitumMapsLibrary {
     
-    internal func obtainGMSMapView(mode: String?)->GMSMapView?{
+    internal func obtainGMSMapView()->GMSMapView?{
         let camera = GMSCameraPosition.camera(withLatitude: -33.86, longitude: 151.20, zoom: 6.0)
         let mapView = GMSMapView.map(withFrame: CGRect.zero, camera: camera)
         
         do {
             var styleMap = "situm_google_maps_style"
             
-            if let modeSelect = mode {
-                styleMap = modeSelect == "light" ? styleMap : "\(styleMap)_dark"
+            if #available(iOS 13.0, *) {
+                if mapView.traitCollection.userInterfaceStyle == .dark {
+                    styleMap = "\(styleMap)_dark"
+                }
             }
             
             if let styleURL = SitumMapsLibrary.bundle.url(forResource: styleMap, withExtension: "json") {
@@ -383,8 +385,8 @@ extension SitumMapsLibrary {
         return mapView
     }
     
-    internal func loadFromView(buildingWithId buildingId: String?, mode: String) throws {
-        let mapView = obtainGMSMapView(mode: mode)
+    internal func loadFromView(buildingWithId buildingId: String?) throws {
+        let mapView = obtainGMSMapView()
         try prepareForLoading(buildingWithId: buildingId, withMap: mapView)
         UIUtils().presentFromView(the: self.toPresentViewController!, in: self.containerView)
     }

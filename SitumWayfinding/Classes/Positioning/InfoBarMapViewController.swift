@@ -24,7 +24,6 @@ class InfoBarMapViewController: UIViewController {
         mainLabel.translatesAutoresizingMaskIntoConstraints = false
         topSeparator.backgroundColor = .primaryDiminished
         
-        let bundle = Bundle(for: type(of: self))
         prepareElements()
     }
     
@@ -59,11 +58,7 @@ class InfoBarMapViewController: UIViewController {
 extension InfoBarMapViewController {
     func prepareElements() {
         if #available(iOS 13.0, *) {
-            if traitCollection.userInterfaceStyle == .dark {
-                self.prepareLightOrDarkMode(tintColor: .white)
-            } else {
-                self.prepareLightOrDarkMode(tintColor: .black)
-            }
+            self.prepareLightOrDarkMode(tintColor: traitCollection.userInterfaceStyle == .dark ? .white : .black)
         } else {
             imageView.image = UIImage(
                 named: "swf_info",

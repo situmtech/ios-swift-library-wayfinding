@@ -39,6 +39,6 @@ public class SitumView: UIView {
             }
         }
         
-        try library.loadFromView(buildingWithId: buildingId, mode: mode)
+        try library.loadFromView(buildingWithId: buildingId)
     }
 }
