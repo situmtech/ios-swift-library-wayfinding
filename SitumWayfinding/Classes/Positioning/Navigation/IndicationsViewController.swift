@@ -37,14 +37,12 @@ class IndicationsViewController: UIViewController {
         self.indicationLabel.textColor = .primary
         self.indicationLabel.numberOfLines = 0
         
-        self.prepareLightOrDarkMode(backgroundColor: .white, tintColor: .primary, colorText: .black)
-    
-        if #available(iOS 13.0, *) {
-            self.indicationLoading.style = .large
-            if traitCollection.userInterfaceStyle == .dark {
-                self.prepareLightOrDarkMode(backgroundColor: .black, tintColor: .black, colorText: .white)
-            }
-        }
+        let colors = self.userInterfaceStyle()
+        self.indicationView.backgroundColor = colors["backgroundColor"]
+        self.indicationImage.tintColor = colors["tintColor"]
+        self.indicationLoading.tintColor = colors["tintColor"]
+        self.indicationLabel.textColor = colors["colorText"]
+        self.destinationLabel.textColor = colors["colorText"]
         
         self.indicationLoading.startAnimating()
     }
@@ -142,14 +140,6 @@ class IndicationsViewController: UIViewController {
 }
 
 extension IndicationsViewController {
-    func prepareLightOrDarkMode(backgroundColor: UIColor, tintColor: UIColor, colorText: UIColor) {
-        self.indicationView.backgroundColor = backgroundColor
-        self.indicationImage.tintColor = tintColor
-        self.indicationLoading.tintColor = tintColor
-        self.indicationLabel.textColor = colorText
-        self.destinationLabel.textColor = colorText
-    }
-    
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         setupIndicationView()
     }

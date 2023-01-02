@@ -103,62 +103,25 @@ extension SITNavigationProgress {
 
 extension InfoBarNavigationViewController {
     func prepareElements() {
-        if #available(iOS 13.0, *) {
-            if traitCollection.userInterfaceStyle == .light {
-                self.prepareLightOrDarkMode(tintColor: UIColor.black, colorText: UIColor.black)
-            } else {
-                self.prepareLightOrDarkMode(tintColor: UIColor.white, colorText: UIColor.white)
-            }
-        } else {
-            let cancelImage = UIImage(
-                named: "situm_navigation_cancel",
-                in: SitumMapsLibrary.bundle, compatibleWith: nil
-            )
-            
-            self.distanceRemainingImage.image = UIImage(
-                named: "situm_walk",
-                in: SitumMapsLibrary.bundle,
-                compatibleWith: nil
-            )
-            self.estimatedTimeImage.image = UIImage(
-                named: "situm_clock_time",
-                in: SitumMapsLibrary.bundle,
-                compatibleWith: nil
-            )
-            
-            self.cancelButton.setImage(cancelImage, for: .normal)
-            self.cancelButton.tintColor = .primary
-            self.timeRemainingLabel.textColor = .primary
-            self.distanceRemainingLabel.textColor = .primary
-            self.estimatedTimeLabel.textColor = .primary
-            self.separatorLabel.textColor = .primary
-        }
+        let colors = self.userInterfaceStyle()
+        
+        self.distanceRemainingImage.image = self.modeIcon(nameImage: "situm_walk")
+        self.estimatedTimeImage.image = self.modeIcon(nameImage: "situm_clock_time")
+        
+        self.distanceRemainingImage.tintColor = colors["tintColor"]
+        self.estimatedTimeImage.tintColor = colors["tintColor"]
+        self.cancelButton.tintColor = colors["tintColor"]
+        self.timeRemainingLabel.textColor = colors["colorText"]
+        self.distanceRemainingLabel.textColor = colors["colorText"]
+        self.estimatedTimeLabel.textColor = colors["colorText"]
+        self.separatorLabel.textColor = colors["colorText"]
+        self.cancelButton.setImage(self.modeIcon(nameImage: "situm_navigation_cancel"), for: .normal)
         
         self.timeRemainingLabel.font = .normalBold
         self.distanceRemainingLabel.font = .small
         self.estimatedTimeLabel.font = .small
         self.separatorLabel.font = .normal
         self.topSeparator.backgroundColor = .primaryDiminished
-        
-        
-    }
-    
-    @available(iOS 13.0, *)
-    func prepareLightOrDarkMode(tintColor: UIColor, colorText: UIColor) {
-        let largeConfig = UIImage.SymbolConfiguration(pointSize: 140, weight: .thin, scale: .large)
-        let cancelImage = UIImage(systemName: "multiply.circle", withConfiguration: largeConfig)
-        self.distanceRemainingImage.image = UIImage(systemName: "figure.walk")
-        self.estimatedTimeImage.image = UIImage(systemName: "clock")
-        
-        cancelImage?.withTintColor(tintColor)
-        self.distanceRemainingImage.tintColor = tintColor
-        self.estimatedTimeImage.tintColor = tintColor
-        self.cancelButton.tintColor = tintColor
-        self.timeRemainingLabel.textColor = colorText
-        self.distanceRemainingLabel.textColor = colorText
-        self.estimatedTimeLabel.textColor = colorText
-        self.separatorLabel.textColor = colorText
-        self.cancelButton.setImage(cancelImage, for: .normal)
     }
     
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {

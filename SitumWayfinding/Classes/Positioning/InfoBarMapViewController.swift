@@ -57,20 +57,7 @@ class InfoBarMapViewController: UIViewController {
 
 extension InfoBarMapViewController {
     func prepareElements() {
-        if #available(iOS 13.0, *) {
-            self.prepareLightOrDarkMode(tintColor: traitCollection.userInterfaceStyle == .dark ? .white : .black)
-        } else {
-            imageView.image = UIImage(
-                named: "swf_info",
-                in: SitumMapsLibrary.bundle,
-                compatibleWith: nil
-            )
-        }
-    }
-    
-    @available(iOS 13.0, *)
-    func prepareLightOrDarkMode(tintColor: UIColor) {
-        imageView.image = UIImage(systemName: "info.circle")?.withTintColor(tintColor, renderingMode: .alwaysOriginal)
+        imageView.image = self.modeIcon(nameImage: "swf_info")
     }
     
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {

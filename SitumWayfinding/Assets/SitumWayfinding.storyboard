@@ -131,7 +131,7 @@
                                 </connections>
                             </button>
                             <navigationBar contentMode="scaleToFill" translucent="NO" translatesAutoresizingMaskIntoConstraints="NO" id="v9V-A6-0lh">
-                                <rect key="frame" x="0.0" y="48" width="414" height="44"/>
+                                <rect key="frame" x="0.0" y="44" width="414" height="44"/>
                                 <items>
                                     <navigationItem title="Title" id="tSR-VH-hRD">
                                         <barButtonItem key="leftBarButtonItem" title="Back" id="ysb-eJ-ja8">
