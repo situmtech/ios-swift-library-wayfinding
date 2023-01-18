@@ -127,6 +127,11 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         }
     }
 
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        removeLocationListener()
+    }
+
     override func viewDidLayoutSubviews() {
         //In viewWillAppear layout hasnt finished yet
         addMap()
@@ -141,7 +146,6 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
             }
         }
     }
-
 
     func initializeViewBeforeAppearing(){
         positionDrawer = GoogleMapsPositionDrawer(mapView: mapView)
@@ -183,6 +187,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
                                     self.presenter?.useRemoteConfig = set.useRemoteConfig
                                 }
                             }
+                            self.addLocationListener()
                             self.initializeUIElements()
                         }
                     }, failure: { (error: Error?) in
@@ -229,6 +234,19 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     }
     
     //MARK: Initializers
+    func addLocationListener() {
+        if let presenter = presenter {
+            presenter.addLocationListener()
+            changePositioningButton(toState: presenter.locationManager.state())
+        }
+    }
+
+    func removeLocationListener() {
+        if let presenter = presenter {
+            presenter.removeLocationListener()
+        }
+    }
+
     func initializeUIElements() {
         initializeMapView()
         initializeMarkerMapRenderer()
@@ -760,7 +778,6 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     
     @IBAction
     func goBackButtonPressed(_ sender: Any) {
-        self.presenter?.stopPositioning()
         self.presenter?.view = nil
         if let callback: (Any) -> Void = self.library?.onBackPressedCallback {
             callback(sender)

@@ -43,11 +43,10 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
     }
     
     func startPositioning() {
-        initializeLocationManagers()
         requestLocationUpdates()
     }
     
-    func initializeLocationManagers() {
+    func addLocationListener() {
         // In a normal use case, SITLocationManager will be the provider of user positions,
         // however in WYF with debug purposes we allow the user to "fake" its location
         // Here we use factory pattern to abstract the construction of this location provider. SITLocationManager
@@ -56,7 +55,11 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
         locationManager = LocationManagerFactory.createLocationManager()
         #endif
         
-        LocationManagerFactory.setDelegate(object: locationManager, delegate: self)
+        LocationManagerFactory.addDelegate(object: locationManager, delegate: self)
+    }
+
+    func removeLocationListener() {
+        LocationManagerFactory.removeDelegate(object: locationManager, delegate: self)
     }
     
     func requestLocationUpdates() {
