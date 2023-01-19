@@ -13,10 +13,14 @@ import SitumSDK
 
 let SecondsBetweenAlerts = 30.0
 
-class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableViewDataSource, UITableViewDelegate, PositioningView, PositioningController {
+class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITableViewDataSource, UITableViewDelegate, PositioningView, PositioningController {
     //MARK PositioningController protocol variables
     var buildingId: String = ""
-    var library: SitumMapsLibrary?
+    var library: SitumMapsLibrary?{
+        willSet(newLibrary) {
+            UIColorsTheme.useDashboardTheme = newLibrary?.settings?.useDashboardTheme ?? false
+        }
+    }
     var delegateNotifier: WayfindingDelegatesNotifier? {
         return library?.delegatesNotifier
     }
@@ -64,6 +68,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     var isFirstLoadingOfFloors: Bool = true
     var actualZoom: Float = 0.0
     var selectedLevelIndex: Int = 0
+    let floorSelectorCornerRadius = 10.0
     var presenter: PositioningPresenter? = nil
     var positionDrawer: PositionDrawerProtocol? = nil
     //Navigation
@@ -74,8 +79,6 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     var polyline: Array<GMSPolyline> = []
     var routePath: Array<GMSMutablePath> = []
     var loadFinished: Bool = false
-    // Customization
-    var organizationTheme: SITOrganizationTheme?
     //Search
     @IBOutlet weak var searchBar: UISearchBar!
     var searchResultsController: SearchResultsTableViewController?
@@ -94,13 +97,13 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     var tileProvider: TileProvider!
     var preserveStateInNewViewAppeareance = false
 
+
     override func viewDidLoad() {
         super.viewDidLoad()
         mapContainerViewTopConstraint.constant = 44
         backButton.title = NSLocalizedString("positioning.back",
             bundle: SitumMapsLibrary.bundle,
             comment: "Button to go back when the user is in the positioning controller (where the map is shown)")
-        self.prepareCenterButton()
         self.displayElementsNavBar()
         definesPresentationContext = true
         mapReadinessChecker = SitumMapReadinessChecker { [weak self] in
@@ -174,7 +177,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
                             print("Organization Details: \(organizationDetails)")
                             
                             // Now we have the organization details and we can work with their values (if any)
-                            self.organizationTheme = organizationDetails!
+                            UIColorsTheme.organizationTheme = organizationDetails!
 
                             self.situmLoadFinished(loadingAlert: loadingAlert)
                             self.presenter = PositioningPresenter(view: self, buildingInfo: self.buildingInfo!, interceptorsManager: self.library?.interceptorsManager ?? InterceptorsManager())
@@ -273,6 +276,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         initializeLevelIndicator()
         initializeNavigationButton()
         initializeInfoBar()
+        prepareCenterButton()
         numberBeaconsRangedView.isHidden = true
     }
     
@@ -316,32 +320,51 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     func initializePositioningButton() {
         positioningButton.layer.cornerRadius = 0.5 * positioningButton.bounds.size.width
         positioningButton.layer.masksToBounds = false
-        positioningButton.layer.shadowColor = UIColor.darkGray.cgColor
-        positioningButton.layer.shadowOpacity = 0.8
-        positioningButton.layer.shadowRadius = 8.0
-        positioningButton.layer.shadowOffset = CGSize(width: 7.0, height: 7.0)
         positioningButton.isHidden = !(self.library?.settings?.positioningFabVisible ?? true)
-        self.prepareLightOrDarkMode()
+        updatePositioningButtonImage(name: "swf_ic_action_no_positioning",state:.normal)
+        customizePositioningButtonColor()
     }
+    
+    
+    func updatePositioningButtonImage(name: String?, state:UIControl.State){
+        let positioningButtonColors = colorsForPositioningButton()
+        positioningButton.configure(imageName: name, buttonColors: positioningButtonColors, for: state)
+    }
+
+    func customizePositioningButtonColor() {
+        let positioningButtonColors = colorsForPositioningButton()
+        positioningButton.adjustColors(positioningButtonColors)
+        positioningButton.setSitumShadow(enabled: uiColorsTheme.isButtonShadowEnabled)
+    }
+    
+    func colorsForPositioningButton() -> ButtonsColors{
+        var buttonsColors: ButtonsColors
+        if positioningButton.isSelected{
+            buttonsColors = ButtonsColors(iconTintColor: uiColorsTheme.backgroundedButtonsIconstTintColor, backgroundColor: uiColorsTheme.primaryColor)
+        }else{
+            buttonsColors = ButtonsColors(iconTintColor: uiColorsTheme.iconsTintColor, backgroundColor: uiColorsTheme.backgroundColor)
+        }
+        return buttonsColors
+    }
+    
     
     func initializeLoadingIndicator() {
         loadingIndicator.isHidden = true
         loadingIndicator.hidesWhenStopped = true
-        loadingIndicator.color = .black
-        
-        if #available(iOS 13.0, *) {
-            if traitCollection.userInterfaceStyle == .dark {
-                loadingIndicator.color = .white
-            }
-        }
+        customizeLoadingIndicatorColor()
+    }
+    
+    func customizeLoadingIndicatorColor(){
+        loadingIndicator.color = uiColorsTheme.iconsTintColor
     }
     
     func initializeLevelIndicator() {
         selectedLevelIndex = 0
         levelsTableView.dataSource = self
         levelsTableView.delegate = self
-        initializeLevelSelector()
+        levelsTableView.roundCorners(corners: [.topLeft, .topRight, .bottomLeft, .bottomRight], radius: floorSelectorCornerRadius)
         
+        initializeLevelSelector()
         let indexPath = getDefaultFloorFirstLoad()
         levelsTableView.selectRow(at: indexPath, animated: true, scrollPosition: .bottom)
         tableView(levelsTableView, didSelectRowAt: indexPath)
@@ -361,14 +384,15 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     func initializeNavigationButton() {
         navigationButton.layer.cornerRadius = 0.5 * navigationButton.bounds.size.width
         navigationButton.layer.masksToBounds = false
-        navigationButton.layer.shadowColor = UIColor.darkGray.cgColor
-        navigationButton.layer.shadowOpacity = 0.8
-        navigationButton.layer.shadowRadius = 8.0
-        navigationButton.layer.shadowOffset = CGSize(width: 7.0, height: 7.0)
+        navigationButton.setIcon(imageName: "situm_navigate_action", for: .normal)
+        configureNavigationButtonColor()
         navigationButton.isHidden = true
-        let color = UIColor.primary
-        navigationButton.backgroundColor = primaryColor(defaultColor: color)
-        
+    }
+    
+    func configureNavigationButtonColor(){
+        navigationButton.setSitumShadow(enabled: uiColorsTheme.isButtonShadowEnabled)
+        let buttonColors =  ButtonsColors(iconTintColor: uiColorsTheme.backgroundedButtonsIconstTintColor, backgroundColor: uiColorsTheme.primaryColor)
+        navigationButton.adjustColors(buttonColors)
     }
     
     func initializeInfoBar() {
@@ -381,9 +405,9 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         }
         
         self.containerInfoBarMap?.setLabels(primary: self.buildingName)
-        if organizationTheme?.logo != nil {
+        if UIColorsTheme.organizationTheme?.logo != nil {
             // Bring the image and save it on cache
-            let logoUrl = "https://dashboard.situm.es" + organizationTheme!.logo.direction
+            let logoUrl = "https://dashboard.situm.es" + UIColorsTheme.organizationTheme!.logo.direction
             let data = NSData(contentsOf: URL(string: logoUrl)!) as Data?
             if let data = data {
                 let image = UIImage.init(data: data)
@@ -520,13 +544,16 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell: UITableViewCell? = tableView.dequeueReusableCell(withIdentifier: "LevelCellIdentifier")
+        cell?.roundCorners(corners: [.topLeft, .topRight, .bottomLeft, .bottomRight], radius: floorSelectorCornerRadius)
         
         if let level: SITFloor = orderedFloors(buildingInfo: buildingInfo)?[indexPath.row] {
             // [06/08/19] This check is here because older buildings without the name field give unexpected nulls casted to string
             let shouldDisplayLevelName = !(level.name.isEmpty || (level.name == "<null>"))
             let textToDisplay: String = shouldDisplayLevelName ? level.name : String(level.floor)
             cell?.textLabel?.text = String(format: "%@", textToDisplay)
-            cell?.backgroundColor = getBackgroundColor(forFloor: level, atRow: indexPath.row)
+            let cellCollors  = getCellColors(forFloor: level, atRow: indexPath.row)
+            cell?.textLabel?.textColor = cellCollors.textColor
+            cell?.backgroundColor = cellCollors.backgroundColor
         }
         return cell!
     }
@@ -585,27 +612,18 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         
         switch state {
         case .stopped:
-            prepareLightOrDarkMode()
-            loadingIndicator.stopAnimating()
             positioningButton.isSelected = false
+            updatePositioningButtonImage(name: "swf_ic_action_no_positioning", state: .normal)
+            loadingIndicator.stopAnimating()
         case .calculating:
-            positioningButton.setImage(nil, for: .normal)
+            positioningButton.isSelected = false
+            updatePositioningButtonImage(name: nil, state: .normal)
             loadingIndicator.isHidden = false
             loadingIndicator.startAnimating()
-            positioningButton.isSelected = false
         case .started:
-            let color = UIColor.primary
-            positioningButton.backgroundColor = primaryColor(defaultColor: color)
-            
-            if #available(iOS 13.0, *) {
-                if traitCollection.userInterfaceStyle == .dark {
-                    positioningButton.backgroundColor = .black
-                }
-            }
-            
-            positioningButton.setImage(UIImage(named: "swf_ic_action_localize", in: bundle, compatibleWith: nil), for: .selected)
-            loadingIndicator.stopAnimating()
             positioningButton.isSelected = true
+            updatePositioningButtonImage(name: "swf_ic_action_localize", state: .selected)
+            loadingIndicator.stopAnimating()
         default:
             // Button shouldn't react to outOfBuilding, compassNeedsCalibration and other states
             break
@@ -941,28 +959,22 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         return self.destinationMarker != nil
     }
     
-    func getBackgroundColor(forFloor floor: SITFloor, atRow row: Int) -> UIColor {
-        var color: UIColor
+    func getCellColors(forFloor floor: SITFloor, atRow row: Int) -> ButtonsColors {
+        var cellCollors: ButtonsColors
         
         if row == selectedLevelIndex {
-            color = UIColor.lightGray
+            cellCollors = ButtonsColors(iconTintColor: uiColorsTheme.textColor, backgroundColor: UIColor.lightGray)
         } else {
-            color = UIColor.white
-            if #available(iOS 13.0, *) {
-                color = traitCollection.userInterfaceStyle == .light ?  .white : .black
-            }
+            cellCollors = ButtonsColors(iconTintColor: uiColorsTheme.textColor, backgroundColor: uiColorsTheme.backgroundColor)
         }
         
         if let presenter = presenter {
             if presenter.isSameFloor(floorIdentifier: floor.identifier) {
-                color = UIColor(red: 0x00 / 255.0, green: 0xa1 / 255.0, blue: 0xdf / 255.0, alpha: 1)
-                
-                // Only affected if customization is declared
-                color = primaryColor(defaultColor: color)
+                cellCollors = ButtonsColors(iconTintColor: uiColorsTheme.backgroundedButtonsIconstTintColor, backgroundColor: uiColorsTheme.primaryColor)
             }
         }
         
-        return color
+        return cellCollors
     }
     
     func getIndexPath(floorId: String) -> IndexPath? {
@@ -977,9 +989,8 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     }
     
     func generateAndPrintRoutePathWithRouteSegments(segments: Array<SITRouteSegment>, selectedFloor: SITFloor) {
-        let color = UIColor.primary
         let styles: [GMSStrokeStyle] = [.solidColor(
-            primaryColor(defaultColor: color)), .solidColor(.clear)]
+            uiColorsTheme.primaryColor), .solidColor(.clear)]
         let scale = 1.0 / mapView.projection.points(forMeters: 1, at: mapView.camera.target)
         let solidLine = NSNumber(value: 5.0 * Float(scale))
         let gap = NSNumber(value: 5.0 * Float(scale))
@@ -1131,21 +1142,6 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         }
     }
     
-    func primaryColor(defaultColor: UIColor) -> UIColor {
-        var color = defaultColor
-        
-        // Override color based on customization
-        if let settings = library?.settings {
-            if settings.useDashboardTheme == true {
-                if let organizationTheme = organizationTheme { // Check if string is a valid string
-                    let generalColor = UIColor(hex:  organizationTheme.themeColors.primary ) ?? UIColor.gray
-                    color = organizationTheme.themeColors.primary.isEmpty ? defaultColor : generalColor
-                }
-            }
-        }
-        return color
-    }
-
     func getBuilding(buildingId: String, completion: @escaping (Result<SITBuilding, WayfindingError>) -> Void) {
         SITCommunicationManager.shared().fetchBuildingInfo(buildingId, withOptions: nil, success: { (mapping: [AnyHashable : Any]?) in
             if (mapping != nil) {
@@ -1312,16 +1308,10 @@ extension PositioningViewController {
         if isCameraCentered || location.position.isOutdoor() || selectedLevel?.identifier == location.position
             .floorIdentifier {
             let userMarkerImage = getMarkerImage(for: location)
-            let color = UIColor(
-                red: 0x00 / 255.0,
-                green: 0x75 / 255.0,
-                blue: 0xc9 / 255.0,
-                alpha: 1
-            )
             positionDrawer?.updateUserLocation(
                 with: location,
                 with: userMarkerImage,
-                with: primaryColor(defaultColor: color).withAlphaComponent(0.4)
+                with: uiColorsTheme.primaryColorDimished
             )
             self.makeUserMarkerVisible(visible: true)
         } else {
@@ -1443,25 +1433,26 @@ extension PositioningViewController {
     }
 
     func prepareCenterButton() {
+        centerButton.layer.cornerRadius = 30
+        centerButton.layer.masksToBounds = false
+        customizeCenterButtonColorAndText()
+    }
+    
+    func customizeCenterButtonColorAndText(){
+        centerButton.backgroundColor = uiColorsTheme.primaryColor
+        centerButton.setSitumShadow(enabled: uiColorsTheme.isButtonShadowEnabled)
+        let textColor = uiColorsTheme.backgroundedButtonsIconstTintColor
+        
         let title = NSLocalizedString(
             "positioning.center",
             bundle: SitumMapsLibrary.bundle,
             comment: "Button to center map in current location of user"
         )
         let font = UIFont(name: "Roboto-Black", size: 18) ?? UIFont.systemFont(ofSize: 18)
-        var color = UIColor(red: 0.16, green: 0.20, blue: 0.50, alpha: 1.00)
-        centerButton.backgroundColor = UIColor.white
-        
-        if #available(iOS 13.0, *) {
-            if traitCollection.userInterfaceStyle == .dark {
-                color = .white
-                centerButton.backgroundColor = .black
-            }
-        }
         
         let textAttributes = [
             NSAttributedString.Key.font: font,
-            NSAttributedString.Key.foregroundColor: color
+            NSAttributedString.Key.foregroundColor: textColor
         ]
 
         let textTitle = NSMutableAttributedString(
@@ -1469,54 +1460,20 @@ extension PositioningViewController {
             attributes: textAttributes
         )
         
-        centerButton.layer.cornerRadius = 30
-        centerButton.layer.shadowColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.25).cgColor
-        centerButton.layer.shadowOffset = CGSize(width: 0.0, height: 2.0)
-        centerButton.layer.shadowOpacity = 1.0
-        centerButton.layer.shadowRadius = 0.0
-        centerButton.layer.masksToBounds = false
         centerButton.setAttributedTitle(textTitle, for: .normal)
+        
     }
+    
 }
 
 
 extension PositioningViewController {
-    func prepareLightOrDarkMode() {
-        if #available(iOS 13.0, *) {
-            if traitCollection.userInterfaceStyle == .dark {
-                positioningButton.backgroundColor = .black
-                positioningButton.tintColor = .white
-                
-                let image = UIImage(systemName: "scope")?.withTintColor(UIColor.white)
-                positioningButton.setImage(image, for: .normal)
-                
-            } else {
-                positioningButton.backgroundColor = UIColor(
-                    red: 0xff / 255.0, green: 0xff / 255.0, blue: 0xff / 255.0, alpha: 1
-                )
-                positioningButton.tintColor = .black
-                let image = UIImage(systemName: "scope")?.withTintColor(UIColor.black)
-                positioningButton.setImage(image, for: .normal)
-                
-            }
-        } else {
-            positioningButton.backgroundColor = UIColor(red: 0xff / 255.0, green: 0xff / 255.0, blue: 0xff / 255.0, alpha: 1)
-            positioningButton.tintColor = .black
-            positioningButton.setImage(
-                UIImage(
-                    named: "swf_ic_action_no_positioning",
-                    in: Bundle(for: type(of: self)),
-                    compatibleWith: nil
-                ),
-                for: .normal
-            )
-        }
-    }
-    
-    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+    override func reloadScreenColors(){
+        mapView.applySitumSytle()
         levelsTableView.reloadData()
-        prepareCenterButton()
-        initializePositioningButton()
-        initializeLoadingIndicator()
+        customizeCenterButtonColorAndText()
+        customizePositioningButtonColor()
+        customizeLoadingIndicatorColor()
+        configureNavigationButtonColor()
     }
 }

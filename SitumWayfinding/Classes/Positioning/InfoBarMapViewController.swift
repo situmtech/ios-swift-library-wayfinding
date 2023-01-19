@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-class InfoBarMapViewController: UIViewController {
+class InfoBarMapViewController: SitumViewController {
     
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var mainLabel: UILabel!
@@ -20,11 +20,8 @@ class InfoBarMapViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         mainLabel.translatesAutoresizingMaskIntoConstraints = false
-        topSeparator.backgroundColor = .primaryDiminished
-        
-        prepareElements()
+        customizeUIImages()
     }
     
     func setLogo(image: UIImage?) {
@@ -56,11 +53,18 @@ class InfoBarMapViewController: UIViewController {
 }
 
 extension InfoBarMapViewController {
-    func prepareElements() {
-        imageView.image = self.modeIcon(nameImage: "swf_info")
+    func isBeingPresented(){
+        customizeUIImages()
     }
     
-    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-        prepareElements()
+    func customizeUIImages() {
+        topSeparator.backgroundColor = uiColorsTheme.primaryColorDimished
+        imageView.setSitumImage(name: "swf_info", tintColor: uiColorsTheme.iconsTintColor)
+        mainLabel.textColor = uiColorsTheme.textColor
+        secondaryLabel.textColor =  uiColorsTheme.textColor
+    }
+    
+    override func reloadScreenColors(){
+        customizeUIImages()
     }
 }

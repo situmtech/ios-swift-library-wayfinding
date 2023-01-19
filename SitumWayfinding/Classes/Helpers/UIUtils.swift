@@ -48,19 +48,18 @@ extension UIView {
         self.trailingAnchor.constraint(equalTo: superview.trailingAnchor, constant: 0).isActive = true
     }
     
-    func roundCorners(corners: UIRectCorner) {
-        let radius: CGFloat = 5
+    func roundCorners(corners: UIRectCorner, radius:Double) {
         if #available(iOS 11.0, *) {
             // In order to use the same interface we use UIRectCorner to define which corners are rounded, thus a private
             // method rectCornerToMaskedCorners is used to convert between UIRectCorner <-> CACornerMask
             self.layer.maskedCorners = rectCornerToMaskedCorners(corners: corners)
-            self.layer.cornerRadius = radius
+            self.layer.cornerRadius = CGFloat(radius)
         } else {
             // Before iOS 11 maskedCorners do not exist so in order to round corners of an UIVIew (rectangle without
             // rounded borders) we need to use UIBezierPath to clip
             let path = UIBezierPath(roundedRect: self.bounds,
                 byRoundingCorners: corners,
-                cornerRadii: CGSize(width: radius, height: radius))
+                cornerRadii: CGSize(width: CGFloat(radius), height: CGFloat(radius)))
             let mask = CAShapeLayer()
             mask.path = path.cgPath
             self.layer.mask = mask

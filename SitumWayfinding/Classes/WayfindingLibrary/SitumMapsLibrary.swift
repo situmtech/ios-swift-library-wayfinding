@@ -363,25 +363,7 @@ extension SitumMapsLibrary {
     internal func obtainGMSMapView()->GMSMapView?{
         let camera = GMSCameraPosition.camera(withLatitude: -33.86, longitude: 151.20, zoom: 6.0)
         let mapView = GMSMapView.map(withFrame: CGRect.zero, camera: camera)
-        
-        do {
-            var styleMap = "situm_google_maps_style"
-            
-            if #available(iOS 13.0, *) {
-                if mapView.traitCollection.userInterfaceStyle == .dark {
-                    styleMap = "\(styleMap)_dark"
-                }
-            }
-            
-            if let styleURL = SitumMapsLibrary.bundle.url(forResource: styleMap, withExtension: "json") {
-                mapView.mapStyle = try GMSMapStyle(contentsOfFileURL: styleURL)
-            } else {
-                NSLog("Unable to find \(styleMap).json")
-            }
-        } catch {
-            NSLog("One or more of the map styles failed to load. \(error)")
-        }
-        
+        mapView.applySitumSytle()
         return mapView
     }
     
