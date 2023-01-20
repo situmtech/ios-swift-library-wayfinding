@@ -31,7 +31,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     @IBOutlet weak var backButton: UIBarButtonItem!
     @IBOutlet weak var numberBeaconsRangedView: UIView!
     @IBOutlet weak var numberBeaconsRangedLabel: UILabel!
-    @IBOutlet weak var loadingIndicator: UIActivityIndicatorView!
+    @IBOutlet weak var positioningButtonLoadingIndicator: UIActivityIndicatorView!
     //Navigation
     @IBOutlet weak var indicationsView: UIView!
     weak var indicationsViewController: IndicationsViewController?
@@ -237,7 +237,6 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     func addLocationListener() {
         if let presenter = presenter {
             presenter.addLocationListener()
-            changePositioningButton(toState: presenter.locationManager.state())
         }
     }
 
@@ -283,19 +282,12 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     }
     
     func initializePositioningUIElements() {
-        initializeNavigationBar()
-        initializeIcons()
         initializePositioningButton()
-        initializeLoadingIndicator()
         hideCenterButton()
         initializeLevelIndicator()
         initializeNavigationButton()
         initializeInfoBar()
         numberBeaconsRangedView.isHidden = true
-    }
-    
-    func initializeNavigationBar() {
-        //navbar.topItem?.title = buildingInfo!.building.name
     }
     
     func initializeIcons() {
@@ -339,11 +331,23 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         positioningButton.layer.shadowRadius = 8.0
         positioningButton.layer.shadowOffset = CGSize(width: 7.0, height: 7.0)
         positioningButton.isHidden = !(self.library?.settings?.positioningFabVisible ?? true)
+
+        positioningButtonLoadingIndicator.hidesWhenStopped = true
+        if let presenter = presenter {
+            initializePositioningButtonWithLocationState(presenter.locationManager.state())
+        } else {
+            initializePositioningButtonWithLocationState(.stopped)
+        }
     }
-    
-    func initializeLoadingIndicator() {
-        loadingIndicator.isHidden = true
-        loadingIndicator.hidesWhenStopped = true
+
+    private func initializePositioningButtonWithLocationState(_ currentState: SITLocationState) {
+        // if current state is started we do not know location yet so we set the calculating state
+        // When the first location arrives in delegate interface will be updated accordingly
+        if currentState == SITLocationState.started {
+            changeLocationState(.calculating, centerCamera: true)
+        } else {
+            changeLocationState(currentState, centerCamera: true)
+        }
     }
     
     func initializeLevelIndicator() {
@@ -378,7 +382,6 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         navigationButton.isHidden = true
         let color = UIColor.primary
         navigationButton.backgroundColor = primaryColor(defaultColor: color)
-        
     }
     
     func initializeInfoBar() {
@@ -585,30 +588,30 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         }
     }
     
-    func change(_ state: SITLocationState, centerCamera: Bool) {
+    func changeLocationState(_ state: SITLocationState, centerCamera: Bool) {
         changePositioningButton(toState: state)
         isCameraCentered = centerCamera
     }
     
-    func changePositioningButton(toState state: SITLocationState) {
+    private func changePositioningButton(toState state: SITLocationState) {
         let bundle = Bundle(for: type(of: self))
         switch state {
         case .stopped:
             positioningButton.backgroundColor = UIColor(red: 0xff / 255.0, green: 0xff / 255.0, blue: 0xff / 255.0, alpha: 1)
             positioningButton.setImage(UIImage(named: "swf_ic_action_no_positioning", in: bundle, compatibleWith: nil), for: .normal)
-            loadingIndicator.stopAnimating()
+            positioningButtonLoadingIndicator.stopAnimating()
             positioningButton.isSelected = false
         case .calculating:
             positioningButton.setImage(nil, for: .normal)
-            loadingIndicator.isHidden = false
-            loadingIndicator.startAnimating()
+            positioningButtonLoadingIndicator.isHidden = false
+            positioningButtonLoadingIndicator.startAnimating()
             positioningButton.isSelected = false
         case .started:
             let color = UIColor.primary
             positioningButton.backgroundColor = primaryColor(defaultColor: color)
             
             positioningButton.setImage(UIImage(named: "swf_ic_action_localize", in: bundle, compatibleWith: nil), for: .selected)
-            loadingIndicator.stopAnimating()
+            positioningButtonLoadingIndicator.stopAnimating()
             positioningButton.isSelected = true
         default:
             // Button shouldn't react to outOfBuilding, compassNeedsCalibration and other states
@@ -1030,7 +1033,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         self.numberBeaconsRangedView.isHidden = true
         self.reloadFloorPlansTableViewData()
         self.hideCenterButton()
-        self.change(.stopped, centerCamera: false)
+        self.changeLocationState(.stopped, centerCamera: false)
     }
     
     func stopNavigation(status: NavigationStatus) {

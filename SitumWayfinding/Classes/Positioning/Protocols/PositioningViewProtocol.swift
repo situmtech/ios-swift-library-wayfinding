@@ -11,7 +11,7 @@ import SitumSDK
 
 protocol PositioningView {
     
-    func change(_ state: SITLocationState, centerCamera: Bool)
+    func changeLocationState(_ state: SITLocationState, centerCamera: Bool)
     
     func cleanLocationUI()
     

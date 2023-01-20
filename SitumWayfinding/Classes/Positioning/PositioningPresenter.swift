@@ -66,7 +66,7 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
         var request: SITLocationRequest = RequestBuilder.buildLocationRequest(buildingId: buildingInfo.building.identifier)
         request = self.interceptorsManager.onLocationRequest(request)
         self.locationManager.requestLocationUpdates(SITServices.isUsingRemoteConfig() && useRemoteConfig ? nil: request)
-        view?.change(.calculating, centerCamera: true)
+        view?.changeLocationState(.calculating, centerCamera: true)
     }
     
     func stopPositioning() {
@@ -284,7 +284,7 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
         locationManagerUserLocation = location
 
         if (userLocation == nil) {
-            view?.change(.started, centerCamera: true)
+            view?.changeLocationState(.started, centerCamera: true)
         }
         
         if isUserNavigating() {
