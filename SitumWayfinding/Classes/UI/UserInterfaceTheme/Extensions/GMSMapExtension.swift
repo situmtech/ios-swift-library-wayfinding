@@ -9,7 +9,7 @@ import Foundation
 import GoogleMaps
 
 extension GMSMapView{
-    func applySitumSytle(){
+    func applySitumSytle() {
         do {
             var styleMap = "situm_google_maps_style"
             

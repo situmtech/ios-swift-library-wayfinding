@@ -16,7 +16,7 @@ let SecondsBetweenAlerts = 30.0
 class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITableViewDataSource, UITableViewDelegate, PositioningView, PositioningController {
     //MARK PositioningController protocol variables
     var buildingId: String = ""
-    var library: SitumMapsLibrary?{
+    var library: SitumMapsLibrary? {
         willSet(newLibrary) {
             UIColorsTheme.useDashboardTheme = newLibrary?.settings?.useDashboardTheme ?? false
         }
@@ -68,7 +68,7 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
     var isFirstLoadingOfFloors: Bool = true
     var actualZoom: Float = 0.0
     var selectedLevelIndex: Int = 0
-    let floorSelectorCornerRadius = 10.0
+    let floorSelectorCornerRadius = RoundCornerRadius.big
     var presenter: PositioningPresenter? = nil
     var positionDrawer: PositionDrawerProtocol? = nil
     //Navigation
@@ -334,15 +334,15 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
     func customizePositioningButtonColor() {
         let positioningButtonColors = colorsForPositioningButton()
         positioningButton.adjustColors(positioningButtonColors)
-        positioningButton.setSitumShadow(enabled: uiColorsTheme.isButtonShadowEnabled)
+        positioningButton.setSitumShadow(colorTheme: uiColorsTheme)
     }
     
-    func colorsForPositioningButton() -> ButtonsColors{
-        var buttonsColors: ButtonsColors
+    func colorsForPositioningButton() -> ButtonColors{
+        var buttonsColors: ButtonColors
         if positioningButton.isSelected{
-            buttonsColors = ButtonsColors(iconTintColor: uiColorsTheme.backgroundedButtonsIconstTintColor, backgroundColor: uiColorsTheme.primaryColor)
+            buttonsColors = ButtonColors(iconTintColor: uiColorsTheme.backgroundedButtonsIconstTintColor, backgroundColor: uiColorsTheme.primaryColor)
         }else{
-            buttonsColors = ButtonsColors(iconTintColor: uiColorsTheme.iconsTintColor, backgroundColor: uiColorsTheme.backgroundColor)
+            buttonsColors = ButtonColors(iconTintColor: uiColorsTheme.iconsTintColor, backgroundColor: uiColorsTheme.backgroundColor)
         }
         return buttonsColors
     }
@@ -390,8 +390,8 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
     }
     
     func configureNavigationButtonColor(){
-        navigationButton.setSitumShadow(enabled: uiColorsTheme.isButtonShadowEnabled)
-        let buttonColors =  ButtonsColors(iconTintColor: uiColorsTheme.backgroundedButtonsIconstTintColor, backgroundColor: uiColorsTheme.primaryColor)
+        navigationButton.setSitumShadow(colorTheme: uiColorsTheme)
+        let buttonColors =  ButtonColors(iconTintColor: uiColorsTheme.backgroundedButtonsIconstTintColor, backgroundColor: uiColorsTheme.primaryColor)
         navigationButton.adjustColors(buttonColors)
     }
     
@@ -959,18 +959,18 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
         return self.destinationMarker != nil
     }
     
-    func getCellColors(forFloor floor: SITFloor, atRow row: Int) -> ButtonsColors {
-        var cellCollors: ButtonsColors
+    func getCellColors(forFloor floor: SITFloor, atRow row: Int) -> ButtonColors {
+        var cellCollors: ButtonColors
         
         if row == selectedLevelIndex {
-            cellCollors = ButtonsColors(iconTintColor: uiColorsTheme.textColor, backgroundColor: UIColor.lightGray)
+            cellCollors = ButtonColors(iconTintColor: uiColorsTheme.textColor, backgroundColor: UIColor.lightGray)
         } else {
-            cellCollors = ButtonsColors(iconTintColor: uiColorsTheme.textColor, backgroundColor: uiColorsTheme.backgroundColor)
+            cellCollors = ButtonColors(iconTintColor: uiColorsTheme.textColor, backgroundColor: uiColorsTheme.backgroundColor)
         }
         
         if let presenter = presenter {
             if presenter.isSameFloor(floorIdentifier: floor.identifier) {
-                cellCollors = ButtonsColors(iconTintColor: uiColorsTheme.backgroundedButtonsIconstTintColor, backgroundColor: uiColorsTheme.primaryColor)
+                cellCollors = ButtonColors(iconTintColor: uiColorsTheme.backgroundedButtonsIconstTintColor, backgroundColor: uiColorsTheme.primaryColor)
             }
         }
         
@@ -1438,9 +1438,9 @@ extension PositioningViewController {
         customizeCenterButtonColorAndText()
     }
     
-    func customizeCenterButtonColorAndText(){
+    func customizeCenterButtonColorAndText() {
         centerButton.backgroundColor = uiColorsTheme.primaryColor
-        centerButton.setSitumShadow(enabled: uiColorsTheme.isButtonShadowEnabled)
+        centerButton.setSitumShadow(colorTheme: uiColorsTheme)
         let textColor = uiColorsTheme.backgroundedButtonsIconstTintColor
         
         let title = NSLocalizedString(

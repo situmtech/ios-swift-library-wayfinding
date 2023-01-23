@@ -13,7 +13,7 @@
 		607FACD81AFB9204008FA782 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACD71AFB9204008FA782 /* ViewController.swift */; };
 		607FACDB1AFB9204008FA782 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 607FACD91AFB9204008FA782 /* Main.storyboard */; };
 		607FACEC1AFB9204008FA782 /* Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACEB1AFB9204008FA782 /* Tests.swift */; };
-		C21B73AABE72F25741C72783 /* Pods_SitumWayfinding_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4095342CC30782891B2DE7A5 /* Pods_SitumWayfinding_Example.framework */; };
+		D6B354386C3822973BDDBCE8 /* Pods_SitumWayfinding_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D9CA75B2E375D35C3FC8A4CE /* Pods_SitumWayfinding_Example.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -45,8 +45,7 @@
 		2312C539236ADD0300DBAEBC /* WayfindingController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WayfindingController.swift; sourceTree = "<group>"; };
 		23DDC52B23914B8B007A91D0 /* SitumWayfinding.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SitumWayfinding.h; sourceTree = "<group>"; };
 		23DDC52C23914B8B007A91D0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		4095342CC30782891B2DE7A5 /* Pods_SitumWayfinding_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SitumWayfinding_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		4D555861A8443D94492C59B5 /* Pods-SitumWayfinding_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SitumWayfinding_Example.release.xcconfig"; path = "Target Support Files/Pods-SitumWayfinding_Example/Pods-SitumWayfinding_Example.release.xcconfig"; sourceTree = "<group>"; };
+		492FFB7735B31B791D16FA99 /* Pods-SitumWayfinding_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SitumWayfinding_Example.release.xcconfig"; path = "Target Support Files/Pods-SitumWayfinding_Example/Pods-SitumWayfinding_Example.release.xcconfig"; sourceTree = "<group>"; };
 		607FACD01AFB9204008FA782 /* SitumWayfinding_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SitumWayfinding_Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		607FACD41AFB9204008FA782 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		607FACD51AFB9204008FA782 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -56,11 +55,12 @@
 		607FACEA1AFB9204008FA782 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		607FACEB1AFB9204008FA782 /* Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests.swift; sourceTree = "<group>"; };
 		6EFFFBC1E758C8A0D60839F3 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
-		7DB2A2E57EB51143B4372E6E /* Pods-SitumWayfinding_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SitumWayfinding_Example.debug.xcconfig"; path = "Target Support Files/Pods-SitumWayfinding_Example/Pods-SitumWayfinding_Example.debug.xcconfig"; sourceTree = "<group>"; };
+		9652679D03CFB913CC8D368B /* Pods-SitumWayfinding_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SitumWayfinding_Example.debug.xcconfig"; path = "Target Support Files/Pods-SitumWayfinding_Example/Pods-SitumWayfinding_Example.debug.xcconfig"; sourceTree = "<group>"; };
 		D70CE14C28B8A3F800BC9D07 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Main.strings; sourceTree = "<group>"; };
 		D71BA3D528C5F81E0061F28F /* ar */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ar; path = ar.lproj/Main.strings; sourceTree = "<group>"; };
 		D7AE484F28B8CD1400A60FBB /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Main.strings; sourceTree = "<group>"; };
 		D7EC26F127DA18A200ABD5A7 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Main.strings; sourceTree = "<group>"; };
+		D9CA75B2E375D35C3FC8A4CE /* Pods_SitumWayfinding_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SitumWayfinding_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DEA375CE0ED3393820EC8160 /* SitumWayfinding.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = SitumWayfinding.podspec; path = ../SitumWayfinding.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 /* End PBXFileReference section */
 
@@ -69,7 +69,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C21B73AABE72F25741C72783 /* Pods_SitumWayfinding_Example.framework in Frameworks */,
+				D6B354386C3822973BDDBCE8 /* Pods_SitumWayfinding_Example.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -95,16 +95,16 @@
 		2520F8988BFFD05A4429D1DD /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				7DB2A2E57EB51143B4372E6E /* Pods-SitumWayfinding_Example.debug.xcconfig */,
-				4D555861A8443D94492C59B5 /* Pods-SitumWayfinding_Example.release.xcconfig */,
+				9652679D03CFB913CC8D368B /* Pods-SitumWayfinding_Example.debug.xcconfig */,
+				492FFB7735B31B791D16FA99 /* Pods-SitumWayfinding_Example.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
 		};
-		4BB9461BA889CA1DAA9B7C73 /* Frameworks */ = {
+		36F6CF98A9C0AA3695B8200C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				4095342CC30782891B2DE7A5 /* Pods_SitumWayfinding_Example.framework */,
+				D9CA75B2E375D35C3FC8A4CE /* Pods_SitumWayfinding_Example.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -118,7 +118,7 @@
 				23DDC52A23914B8B007A91D0 /* SitumWayfinding */,
 				607FACD11AFB9204008FA782 /* Products */,
 				2520F8988BFFD05A4429D1DD /* Pods */,
-				4BB9461BA889CA1DAA9B7C73 /* Frameworks */,
+				36F6CF98A9C0AA3695B8200C /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -187,13 +187,13 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 607FACEF1AFB9204008FA782 /* Build configuration list for PBXNativeTarget "SitumWayfinding_Example" */;
 			buildPhases = (
-				623B70C25505382DB17370EF /* [CP] Check Pods Manifest.lock */,
+				C7BC162BD63DA42A557BEA06 /* [CP] Check Pods Manifest.lock */,
 				607FACCC1AFB9204008FA782 /* Sources */,
 				607FACCD1AFB9204008FA782 /* Frameworks */,
 				607FACCE1AFB9204008FA782 /* Resources */,
 				23DDC54223915590007A91D0 /* Embed Frameworks */,
-				52FAE2B5699000105C2A305C /* [CP] Embed Pods Frameworks */,
-				DD26609A75B4B5C4E18D2104 /* [CP] Copy Pods Resources */,
+				4D0E7DBE90DF6C680C3CC0C8 /* [CP] Embed Pods Frameworks */,
+				6C19E9FCC4F4ED111642D5A2 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -289,7 +289,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		52FAE2B5699000105C2A305C /* [CP] Embed Pods Frameworks */ = {
+		4D0E7DBE90DF6C680C3CC0C8 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -309,7 +309,78 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-SitumWayfinding_Example/Pods-SitumWayfinding_Example-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		623B70C25505382DB17370EF /* [CP] Check Pods Manifest.lock */ = {
+		6C19E9FCC4F4ED111642D5A2 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-SitumWayfinding_Example/Pods-SitumWayfinding_Example-resources.sh",
+				"${PODS_ROOT}/GoogleMaps/Maps/Frameworks/GoogleMaps.framework/Resources/GoogleMaps.bundle",
+				"${BUILT_PRODUCTS_DIR}/SitumWayfinding/SitumWayfinding.framework/SitumWayfinding.storyboardc",
+				"${PODS_ROOT}/../../SitumWayfinding/Assets/Images/ic_action_bluetooth/swf_ic_action_bluetooth.png",
+				"${PODS_ROOT}/../../SitumWayfinding/Assets/Images/location-pointer-outdoor/swf_location_outdoor_pointer.png",
+				"${PODS_ROOT}/../../SitumWayfinding/Assets/Images/location-pointer/change_floor.png",
+				"${PODS_ROOT}/../../SitumWayfinding/Assets/Images/location-pointer/swf_location_pointer.png",
+				"${PODS_ROOT}/../../SitumWayfinding/Assets/Images/location/swf_location.png",
+				"${PODS_ROOT}/../../SitumWayfinding/Assets/Images/logo/swf_logo@1x.png",
+				"${PODS_ROOT}/../../SitumWayfinding/Assets/Images/logo/swf_logo@2x.png",
+				"${PODS_ROOT}/../../SitumWayfinding/Assets/Images/logo/swf_logo@3x.png",
+				"${PODS_ROOT}/../../SitumWayfinding/Assets/Images/Media.xcassets/app/swf_ic_action_localize.imageset/swf_ic_action_localize@1x.png",
+				"${PODS_ROOT}/../../SitumWayfinding/Assets/Images/Media.xcassets/app/swf_ic_action_localize.imageset/swf_ic_action_localize@2x.png",
+				"${PODS_ROOT}/../../SitumWayfinding/Assets/Images/Media.xcassets/app/swf_ic_action_no_positioning.imageset/swf_ic_action_no_positioning@1x.png",
+				"${PODS_ROOT}/../../SitumWayfinding/Assets/Images/Media.xcassets/app/swf_ic_action_no_positioning.imageset/swf_ic_action_no_positioning@2x.png",
+				"${PODS_ROOT}/../../SitumWayfinding/Assets/Images/Media.xcassets/app/swf_info.imageset/swf_info@1x.png",
+				"${PODS_ROOT}/../../SitumWayfinding/Assets/Images/Media.xcassets/app/swf_info.imageset/swf_info@2x.png",
+				"${PODS_ROOT}/../../SitumWayfinding/Assets/Images/Media.xcassets/app/swf_info.imageset/swf_info@3x.png",
+				"${PODS_ROOT}/../../SitumWayfinding/Assets/Images/Media.xcassets/navigation/change_floor.imageset/change_floor.png",
+				"${PODS_ROOT}/../../SitumWayfinding/Assets/Images/Media.xcassets/navigation/directions/situm_direction_empty.imageset/situm_direction_empty.png",
+				"${PODS_ROOT}/../../SitumWayfinding/Assets/Images/Media.xcassets/navigation/situm_navigate_action.imageset/swf_ic_action_navigate@1x.png",
+				"${PODS_ROOT}/../../SitumWayfinding/Assets/Images/Media.xcassets/navigation/situm_navigate_action.imageset/swf_ic_action_navigate@2x.png",
+				"${PODS_ROOT}/../../SitumWayfinding/Assets/Images/Media.xcassets/navigation/situm_navigate_action.imageset/swf_ic_action_navigate@3x.png",
+				"${PODS_ROOT}/../../SitumWayfinding/Assets/Images/radius/swf_radius.png",
+				"${PODS_ROOT}/../../SitumWayfinding/Assets/Fonts/Roboto/Roboto-Black.ttf",
+				"${PODS_ROOT}/../../SitumWayfinding/Assets/Fonts/Roboto/Roboto-Bold.ttf",
+				"${PODS_ROOT}/../../SitumWayfinding/Assets/Fonts/Roboto/Roboto-Medium.ttf",
+				"${PODS_ROOT}/../../SitumWayfinding/Assets/Fonts/Roboto/Roboto-Regular.ttf",
+				"${PODS_CONFIGURATION_BUILD_DIR}/SitumWayfinding/SitumWayfinding.bundle",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/GoogleMaps.bundle",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/SitumWayfinding.storyboardc",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/swf_ic_action_bluetooth.png",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/swf_location_outdoor_pointer.png",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/change_floor.png",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/swf_location_pointer.png",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/swf_location.png",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/swf_logo@1x.png",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/swf_logo@2x.png",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/swf_logo@3x.png",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/swf_ic_action_localize@1x.png",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/swf_ic_action_localize@2x.png",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/swf_ic_action_no_positioning@1x.png",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/swf_ic_action_no_positioning@2x.png",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/swf_info@1x.png",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/swf_info@2x.png",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/swf_info@3x.png",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/situm_direction_empty.png",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/swf_ic_action_navigate@1x.png",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/swf_ic_action_navigate@2x.png",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/swf_ic_action_navigate@3x.png",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/swf_radius.png",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Roboto-Black.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Roboto-Bold.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Roboto-Medium.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Roboto-Regular.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/SitumWayfinding.bundle",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-SitumWayfinding_Example/Pods-SitumWayfinding_Example-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		C7BC162BD63DA42A557BEA06 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -329,87 +400,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		DD26609A75B4B5C4E18D2104 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-SitumWayfinding_Example/Pods-SitumWayfinding_Example-resources.sh",
-				"${PODS_ROOT}/GoogleMaps/Maps/Frameworks/GoogleMaps.framework/Resources/GoogleMaps.bundle",
-				"${BUILT_PRODUCTS_DIR}/SitumWayfinding/SitumWayfinding.framework/SitumWayfinding.storyboardc",
-				"${PODS_ROOT}/../../SitumWayfinding/Assets/Images/ic_action_bluetooth/swf_ic_action_bluetooth.png",
-				"${PODS_ROOT}/../../SitumWayfinding/Assets/Images/ic_action_localize/swf_ic_action_localize@1x.png",
-				"${PODS_ROOT}/../../SitumWayfinding/Assets/Images/ic_action_localize/swf_ic_action_localize@2x.png",
-				"${PODS_ROOT}/../../SitumWayfinding/Assets/Images/ic_action_navigate/swf_ic_action_navigate@1x.png",
-				"${PODS_ROOT}/../../SitumWayfinding/Assets/Images/ic_action_navigate/swf_ic_action_navigate@2x.png",
-				"${PODS_ROOT}/../../SitumWayfinding/Assets/Images/ic_action_navigate/swf_ic_action_navigate@3x.png",
-				"${PODS_ROOT}/../../SitumWayfinding/Assets/Images/ic_action_no_positioning/swf_ic_action_no_positioning@1x.png",
-				"${PODS_ROOT}/../../SitumWayfinding/Assets/Images/ic_action_no_positioning/swf_ic_action_no_positioning@2x.png",
-				"${PODS_ROOT}/../../SitumWayfinding/Assets/Images/ic_action_no_positioning/swf_ic_action_no_positioning_dark@1x.png",
-				"${PODS_ROOT}/../../SitumWayfinding/Assets/Images/ic_action_no_positioning/swf_ic_action_no_positioning_dark@2x.png",
-				"${PODS_ROOT}/../../SitumWayfinding/Assets/Images/ic_info/swf_info@1x.png",
-				"${PODS_ROOT}/../../SitumWayfinding/Assets/Images/ic_info/swf_info@2x.png",
-				"${PODS_ROOT}/../../SitumWayfinding/Assets/Images/ic_info/swf_info@3x.png",
-				"${PODS_ROOT}/../../SitumWayfinding/Assets/Images/ic_info/swf_info_dark@1x.png",
-				"${PODS_ROOT}/../../SitumWayfinding/Assets/Images/ic_info/swf_info_dark@2x.png",
-				"${PODS_ROOT}/../../SitumWayfinding/Assets/Images/ic_info/swf_info_dark@3x.png",
-				"${PODS_ROOT}/../../SitumWayfinding/Assets/Images/location-pointer-outdoor/swf_location_outdoor_pointer.png",
-				"${PODS_ROOT}/../../SitumWayfinding/Assets/Images/location-pointer/change_floor.png",
-				"${PODS_ROOT}/../../SitumWayfinding/Assets/Images/location-pointer/swf_location_pointer.png",
-				"${PODS_ROOT}/../../SitumWayfinding/Assets/Images/location/swf_location.png",
-				"${PODS_ROOT}/../../SitumWayfinding/Assets/Images/logo/swf_logo@1x.png",
-				"${PODS_ROOT}/../../SitumWayfinding/Assets/Images/logo/swf_logo@2x.png",
-				"${PODS_ROOT}/../../SitumWayfinding/Assets/Images/logo/swf_logo@3x.png",
-				"${PODS_ROOT}/../../SitumWayfinding/Assets/Images/Media.xcassets/navigation/change_floor.imageset/change_floor.png",
-				"${PODS_ROOT}/../../SitumWayfinding/Assets/Images/Media.xcassets/navigation/directions/situm_direction_empty.imageset/situm_direction_empty.png",
-				"${PODS_ROOT}/../../SitumWayfinding/Assets/Images/radius/swf_radius.png",
-				"${PODS_ROOT}/../../SitumWayfinding/Assets/Fonts/Roboto/Roboto-Black.ttf",
-				"${PODS_ROOT}/../../SitumWayfinding/Assets/Fonts/Roboto/Roboto-Bold.ttf",
-				"${PODS_ROOT}/../../SitumWayfinding/Assets/Fonts/Roboto/Roboto-Medium.ttf",
-				"${PODS_ROOT}/../../SitumWayfinding/Assets/Fonts/Roboto/Roboto-Regular.ttf",
-				"${PODS_CONFIGURATION_BUILD_DIR}/SitumWayfinding/SitumWayfinding.bundle",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/GoogleMaps.bundle",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/SitumWayfinding.storyboardc",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/swf_ic_action_bluetooth.png",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/swf_ic_action_localize@1x.png",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/swf_ic_action_localize@2x.png",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/swf_ic_action_navigate@1x.png",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/swf_ic_action_navigate@2x.png",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/swf_ic_action_navigate@3x.png",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/swf_ic_action_no_positioning@1x.png",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/swf_ic_action_no_positioning@2x.png",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/swf_ic_action_no_positioning_dark@1x.png",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/swf_ic_action_no_positioning_dark@2x.png",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/swf_info@1x.png",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/swf_info@2x.png",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/swf_info@3x.png",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/swf_info_dark@1x.png",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/swf_info_dark@2x.png",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/swf_info_dark@3x.png",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/swf_location_outdoor_pointer.png",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/change_floor.png",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/swf_location_pointer.png",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/swf_location.png",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/swf_logo@1x.png",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/swf_logo@2x.png",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/swf_logo@3x.png",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/situm_direction_empty.png",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/swf_radius.png",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Roboto-Black.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Roboto-Bold.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Roboto-Medium.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Roboto-Regular.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/SitumWayfinding.bundle",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-SitumWayfinding_Example/Pods-SitumWayfinding_Example-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -560,7 +550,7 @@
 		};
 		607FACF01AFB9204008FA782 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 7DB2A2E57EB51143B4372E6E /* Pods-SitumWayfinding_Example.debug.xcconfig */;
+			baseConfigurationReference = 9652679D03CFB913CC8D368B /* Pods-SitumWayfinding_Example.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CURRENT_PROJECT_VERSION = 3;
@@ -579,7 +569,7 @@
 		};
 		607FACF11AFB9204008FA782 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 4D555861A8443D94492C59B5 /* Pods-SitumWayfinding_Example.release.xcconfig */;
+			baseConfigurationReference = 492FFB7735B31B791D16FA99 /* Pods-SitumWayfinding_Example.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CURRENT_PROJECT_VERSION = 3;

@@ -107,19 +107,19 @@ extension InfoBarNavigationViewController {
         customizeUIFont()
     }
     
-    func customizeUIImagesAndColors(){
+    func customizeUIImagesAndColors() {
         self.timeRemainingLabel.textColor = uiColorsTheme.textColor
         self.distanceRemainingLabel.textColor = uiColorsTheme.textColor
         self.estimatedTimeLabel.textColor = uiColorsTheme.textColor
         self.separatorLabel.textColor = uiColorsTheme.textColor
         self.distanceRemainingImage.setSitumImage(name: "situm_walk", tintColor: uiColorsTheme.iconsTintColor)
         self.estimatedTimeImage.setSitumImage(name: "situm_clock_time", tintColor: uiColorsTheme.iconsTintColor)
-        let buttonsColors = ButtonsColors(iconTintColor: uiColorsTheme.primaryColor, backgroundColor:.clear)
+        let buttonsColors = ButtonColors(iconTintColor: uiColorsTheme.primaryColor, backgroundColor:.clear)
         self.cancelButton.configure(imageName: "situm_navigation_cancel", buttonColors:buttonsColors ,for: .normal)
         self.topSeparator.backgroundColor = uiColorsTheme.primaryColorDimished
     }
     
-    func customizeUIFont(){
+    func customizeUIFont() {
         self.timeRemainingLabel.font = .normalBold
         self.distanceRemainingLabel.font = .small
         self.estimatedTimeLabel.font = .small

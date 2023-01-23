@@ -7,8 +7,8 @@
 
 import Foundation
 
-extension UIImageView{
-    func setSitumImage(name:String, tintColor: UIColor){
+extension UIImageView {
+    func setSitumImage(name: String, tintColor: UIColor) {
         image = UIImage(
             named: name,
             in: SitumMapsLibrary.bundle,

@@ -17,7 +17,7 @@ class IndicationsViewController: SitumViewController {
     @IBOutlet weak var nextIndicationLabel: UILabel!
     @IBOutlet weak var nextIndicationImage: UIImageView!
     
-    let indicationViewCornerRadius = 5.0
+    let indicationViewCornerRadius = RoundCornerRadius.normal 
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -65,19 +65,19 @@ class IndicationsViewController: SitumViewController {
     
     func setInstructions(progress: SITNavigationProgress, destination: String) {
         if progress.currentIndication.action == .sitCalculating {
-            self.showNavigationLoading()
-            self.indicationLabel.text = progress.currentIndication.humanReadableMessage()
+            showNavigationLoading()
+            indicationLabel.text = progress.currentIndication.humanReadableMessage()
         } else {
-            self.hideLoading()
-            self.setDestination(destination: destination)
-            self.indicationLabel.text = progress.currentIndication.humanReadableMessage()
+            hideLoading()
+            setDestination(destination: destination)
+            indicationLabel.text = progress.currentIndication.humanReadableMessage()
             let currentIndicationImageName = getIndicationsImageName(indication:progress.currentIndication)
-            self.indicationImage.setSitumImage(name: currentIndicationImageName, tintColor: uiColorsTheme.iconsTintColor)
-            self.nextIndicationLabel.text = NSLocalizedString("navigation.nextInstruction",
+            indicationImage.setSitumImage(name: currentIndicationImageName, tintColor: uiColorsTheme.iconsTintColor)
+            nextIndicationLabel.text = NSLocalizedString("navigation.nextInstruction",
                 bundle: SitumMapsLibrary.bundle,comment: "")
-            self.nextIndicationLabel.textColor = uiColorsTheme.backgroundedButtonsIconstTintColor
+            nextIndicationLabel.textColor = uiColorsTheme.backgroundedButtonsIconstTintColor
             let nextIndicationImageName = getIndicationsImageName(indication:progress.nextIndication)
-            self.nextIndicationImage.setSitumImage(name: nextIndicationImageName, tintColor: uiColorsTheme.backgroundedButtonsIconstTintColor)
+            nextIndicationImage.setSitumImage(name: nextIndicationImageName, tintColor: uiColorsTheme.backgroundedButtonsIconstTintColor)
         }
     }
     

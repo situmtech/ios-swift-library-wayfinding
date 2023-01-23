@@ -7,7 +7,10 @@
 
 import Foundation
 import UIKit
-struct UIColorsTheme{
+
+struct UIColorsTheme {
+    //In future try to use UI Element Colors and Custom Dynamic colors. See WWDC19 Implementing dark mode on ios. iOS 13+
+    
     //Constants, in future get from dashboard
     //Predefined color https://developer.apple.com/design/human-interface-guidelines/foundations/color
     private let clearModeBackgroundColor = UIColor(hex: "#FCFCFCFF")!
@@ -39,20 +42,20 @@ struct UIColorsTheme{
             if let organizationTheme = UIColorsTheme.organizationTheme { // Check if string is a valid string
                 let generalColor = UIColor(hex:  organizationTheme.themeColors.primary ) ?? UIColor.gray
                 color = organizationTheme.themeColors.primary.isEmpty ? defaultPrimaryColor : generalColor
-                }
             }
+        }
         return color
     }
-    var primaryColorDimished:UIColor{
+    var primaryColorDimished:UIColor {
         primaryColor.withAlphaComponent(0.5)
     }
     
-    init(){
+    init() {
         configureLightMode()
     }
     
     @available(iOS 12.0, *)
-    init(userInterfaceStyle: UIUserInterfaceStyle){
+    init(userInterfaceStyle: UIUserInterfaceStyle) {
         if userInterfaceStyle == .dark {
             configureDarkMode()
         }else{
@@ -60,7 +63,7 @@ struct UIColorsTheme{
         }
     }
     
-    mutating func configureLightMode(){
+    mutating func configureLightMode() {
         iconsTintColor = clearModeIconsTintColor
         backgroundColor = clearModeBackgroundColor
         textColor = clearModeTextColor
@@ -69,7 +72,7 @@ struct UIColorsTheme{
         isButtonShadowEnabled = true
     }
     
-    mutating func configureDarkMode(){
+    mutating func configureDarkMode() {
         iconsTintColor = darkModeIconsTintColor
         backgroundColor = darkModeBackgroundColor
         textColor = darkModeTextColor

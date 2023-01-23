@@ -7,6 +7,8 @@
 import Foundation
 
 class SitumViewController: UIViewController {
+    //TODO: For now it is limited to controllers inheriting from UIViewController. When the minimun version supported changes to iOS 13 simplify this class or even remove it. The goal should be to find a method to perform the managing of changes between light and dark mode in the same way in a UIViewController a UITableViewController...
+    
     var uiColorsTheme = UIColorsTheme()
     
     override func viewDidLoad() {
