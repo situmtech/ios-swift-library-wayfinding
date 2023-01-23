@@ -68,16 +68,6 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
         self.locationManager.requestLocationUpdates(SITServices.isUsingRemoteConfig() && useRemoteConfig ? nil: request)
         view?.changeLocationState(.calculating, centerCamera: true)
     }
-    
-    func stopPositioning() {
-        self.locationManager.removeUpdates()
-        self.userLocation = nil
-        self.locationManagerUserLocation = nil
-        self.lastOOBAlert = 0.0
-        self.lastCalibrationAlert = 0.0
-        view?.cleanLocationUI()
-        view?.stopNavigation(status: .canceled)
-    }
 
     func resetLastOutsideRouteAlert() {
         self.lastOutsideRouteAlert = 0.0
@@ -131,6 +121,16 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
         } else {
             self.stopPositioning()
         }
+    }
+
+    func stopPositioning() {
+        self.locationManager.removeUpdates()
+        self.userLocation = nil
+        self.locationManagerUserLocation = nil
+        self.lastOOBAlert = 0.0
+        self.lastCalibrationAlert = 0.0
+        view?.cleanLocationUI()
+        view?.stopNavigation(status: .canceled)
     }
 
     public func startPositioningAndNavigate(withDestination destination: CLLocationCoordinate2D, inFloor floorId: String) {
@@ -331,6 +331,7 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
             break;
         case .stopped:
             stateName = "Stopped"
+            stopPositioning()
             break;
         case .calculating:
             stateName = "Calculating"
