@@ -64,6 +64,7 @@ import GoogleMaps
 
     }
     
+    /// getter method to retrieve max zoom value. In case minZoom is greater than max zoom, min zoom will be returned instead. 
     @objc public func getMaxZoom() -> Int {
         if (minZoom > maxZoom) {
             return minZoom
@@ -186,7 +187,7 @@ import GoogleMaps
             return self
         }
         
-        /* Min zoom that will be set on the underlying map.
+        /** Min zoom that will be set on the underlying map.
          * This method inherits all the technical considerations that applies to the underlying map
          * (see <a href="https://developers.google.com/maps/documentation/ios-sdk/reference/interface_g_m_s_map_view">GMSMapView Class Reference</a>).
 
@@ -198,7 +199,7 @@ import GoogleMaps
             return self
         }
         
-        /* Max zoom that will be set on the underlying map.
+        /** Max zoom that will be set on the underlying map.
          * This method inherits all the technical considerations that applies to the underlying map
          * (see <a href="https://developers.google.com/maps/documentation/ios-sdk/reference/interface_g_m_s_map_view">GMSMapView Class Reference</a>).
 
