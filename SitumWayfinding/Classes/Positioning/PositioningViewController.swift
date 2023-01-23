@@ -247,6 +247,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         mapView.delegate = self
         lastBearing = 0.0
         lastAnimatedBearing = 0.0
+        
         let zoom: Float = actualZoom > 0.0 ? actualZoom : 18.0
         
         let latitude: CLLocationDegrees
@@ -262,7 +263,21 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         
         let camera = GMSCameraPosition.camera(withLatitude: latitude, longitude: longitude, zoom: zoom)
         // Check if values are correct (!= -1). Otherwise it could break the app.
-        mapView.setMinZoom(Float(self.library!.settings!.minZoom), maxZoom: Float(self.library!.settings!.getMaxZoom()))
+        var minZoom = Float(self.library!.settings!.minZoom)
+        if minZoom <= 0 || minZoom < kGMSMinZoomLevel {
+            minZoom = kGMSMinZoomLevel
+        }
+        
+        var maxZoom = Float(self.library!.settings!.maxZoom)
+        if (maxZoom <= 0 || maxZoom <= minZoom || maxZoom > kGMSMaxZoomLevel) {
+            maxZoom = kGMSMaxZoomLevel
+        }
+        
+        if minZoom >= 0 && maxZoom >= 0 {
+            mapView.setMinZoom(minZoom, maxZoom: maxZoom)
+        } else {
+            print("Unable to set min and maxZoom")
+        }
         mapView.camera = camera
     }
     
@@ -1170,11 +1185,11 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
             return
         }
         
-        if (minZoom > -1 && lockedMinZoom < Float(minZoom)) {
+        if (minZoom > 0 && lockedMinZoom < Float(minZoom)) {
             lockedMinZoom = Float(minZoom)
         }
         
-        if (maxZoom > -1 && lockedMaxZoom > Float(maxZoom)) {
+        if (maxZoom > 0 && lockedMaxZoom > Float(maxZoom)) {
             lockedMaxZoom = Float(maxZoom)
         }
 
