@@ -104,6 +104,7 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
         backButton.title = NSLocalizedString("positioning.back",
             bundle: SitumMapsLibrary.bundle,
             comment: "Button to go back when the user is in the positioning controller (where the map is shown)")
+        customizeBackButtonColor()
         self.displayElementsNavBar()
         definesPresentationContext = true
         mapReadinessChecker = SitumMapReadinessChecker { [weak self] in
@@ -237,6 +238,11 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
         initializeMarkerMapRenderer()
         initializePositioningUIElements()
         initializeIcons()
+        customizeBackButtonColor()
+    }
+    
+    func customizeBackButtonColor(){
+        backButton.tintColor = uiColorsTheme.primaryColor
     }
     
     func addMap() {
@@ -360,6 +366,7 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
     
     func initializeLevelIndicator() {
         selectedLevelIndex = 0
+        levelsTableView.alwaysBounceVertical = false
         levelsTableView.dataSource = self
         levelsTableView.delegate = self
         levelsTableView.roundCorners(corners: [.topLeft, .topRight, .bottomLeft, .bottomRight], radius: floorSelectorCornerRadius)
@@ -385,11 +392,11 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
         navigationButton.layer.cornerRadius = 0.5 * navigationButton.bounds.size.width
         navigationButton.layer.masksToBounds = false
         navigationButton.setIcon(imageName: "situm_navigate_action", for: .normal)
-        configureNavigationButtonColor()
+        customizeNavigationButtonColor()
         navigationButton.isHidden = true
     }
     
-    func configureNavigationButtonColor(){
+    func customizeNavigationButtonColor(){
         navigationButton.setSitumShadow(colorTheme: uiColorsTheme)
         let buttonColors =  ButtonColors(iconTintColor: uiColorsTheme.backgroundedButtonsIconstTintColor, backgroundColor: uiColorsTheme.primaryColor)
         navigationButton.adjustColors(buttonColors)
@@ -1474,6 +1481,8 @@ extension PositioningViewController {
         customizeCenterButtonColorAndText()
         customizePositioningButtonColor()
         customizeLoadingIndicatorColor()
-        configureNavigationButtonColor()
+        customizeNavigationButtonColor()
+        customizeBackButtonColor()
+        customizeSearchBarTintColor()
     }
 }
