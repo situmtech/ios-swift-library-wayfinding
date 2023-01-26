@@ -124,11 +124,15 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
     }
 
     func stopPositioning() {
-        self.locationManager.removeUpdates()
-        self.userLocation = nil
-        self.locationManagerUserLocation = nil
-        self.lastOOBAlert = 0.0
-        self.lastCalibrationAlert = 0.0
+        locationManager.removeUpdates()
+        updateInterfaceAndDataOnStopPositioning()
+    }
+
+    func updateInterfaceAndDataOnStopPositioning() {
+        userLocation = nil
+        locationManagerUserLocation = nil
+        lastOOBAlert = 0.0
+        lastCalibrationAlert = 0.0
         view?.cleanLocationUI()
         view?.stopNavigation(status: .canceled)
     }
@@ -331,7 +335,7 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
             break;
         case .stopped:
             stateName = "Stopped"
-            stopPositioning()
+            updateInterfaceAndDataOnStopPositioning()
             break;
         case .calculating:
             stateName = "Calculating"
