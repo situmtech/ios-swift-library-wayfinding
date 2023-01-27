@@ -11,7 +11,7 @@ protocol SearcheableItem {
     var id: String { get }
     var name: String { get }
     //TODO make it more generic
-    func floor(activeBuildingInfo: SITBuildingInfo?) -> String
+    func floorUILabel(activeBuildingInfo: SITBuildingInfo?) -> String
     func distance() -> String
     func obtainIconImage(iconsStore:IconsStore?, completion:@escaping(UIImage?) -> Void)
 }
@@ -22,13 +22,14 @@ extension SITPOI: SearcheableItem {
         return self.identifier
     }
 
-    func floor(activeBuildingInfo: SITBuildingInfo?) -> String {
-        guard let floor = activeBuildingInfo?.floors.first(where: { $0.identifier ==  self.position().floorIdentifier }) else {
+    func floorUILabel(activeBuildingInfo: SITBuildingInfo?) -> String {
+        guard let buildingInfo = activeBuildingInfo,
+              let floor = buildingInfo.floorWith(floorIdentifier: position().floorIdentifier) else {
             return ""
         }
-        return "\(NSLocalizedString("search.floor", bundle: SitumMapsLibrary.bundle, comment: "")) \(floor.floor)"
+        return floor.floorUILabel
     }
-    
+
     func distance() -> String {
         // TODO en proxima tarea se debe calcular este valor
         // localized string to use in the future for distance
@@ -84,7 +85,7 @@ class SearchResultsTableViewController: UITableViewController {
         let searchableItem = filteredPois[indexPath.row]
         cell.name = searchableItem.name
         cell.distance = searchableItem.distance()
-        cell.floor = searchableItem.floor(activeBuildingInfo: activeBuildingInfo)
+        cell.floor = searchableItem.floorUILabel(activeBuildingInfo: activeBuildingInfo)
         searchableItem.obtainIconImage(iconsStore: iconsStore) { image in
             cell.icon=image
         }

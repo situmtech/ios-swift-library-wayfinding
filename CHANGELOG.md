@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 All non released changes should be in CHANGELOG_UNRELEASED.md file
 
 ---------
+## [0.17.1] - 2022-12-22
+### Changed
+- Added Turkish translations
+- When the floor name is available show it instead of the ground level. The floor name will be shown in the search bar and in the bottom bar when a POI is selected
+
 ## [0.17.0] - 2022-12-21
 ### Added:
 - Added floor change icons in the route path to indicate when a change of floor has to be made
