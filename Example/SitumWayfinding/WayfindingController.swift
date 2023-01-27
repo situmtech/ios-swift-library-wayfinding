@@ -53,7 +53,7 @@ class WayfindingController: UIViewController {
         } catch {
             print("An error has ocurred. Your SitumView could not be loaded.")
         }
-
+        
         super.viewWillAppear(animated)
     }
 

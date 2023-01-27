@@ -1,0 +1,2 @@
+- Added dark mode support
+- UI improvements
