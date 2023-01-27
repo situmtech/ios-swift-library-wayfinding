@@ -1,2 +1,4 @@
 - Added dark mode support
-- UI improvements
+- UI improvements : Improvements in the UI of the bottom information view
+- UI improvements: Improvements in the floor selector appeareance
+- UI improvements: Now if you use the dashboard theme the primary color is applied to most of the coloured items of the UI
