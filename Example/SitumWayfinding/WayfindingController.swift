@@ -20,7 +20,7 @@ class WayfindingController: UIViewController {
     var credentials: Credentials!
     var buildingId: String!
     var useRemoteConfig: Bool = false
-    var useDashboardTheme: Bool = false
+    var useDashboardTheme: Bool = true
 
     var library: SitumMapsLibrary?
 

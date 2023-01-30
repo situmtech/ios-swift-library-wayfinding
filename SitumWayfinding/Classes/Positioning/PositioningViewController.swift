@@ -263,6 +263,17 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         
         let camera = GMSCameraPosition.camera(withLatitude: latitude, longitude: longitude, zoom: zoom)
         // Check if values are correct (!= -1). Otherwise it could break the app.
+        var zoomValues = minMaxZoomValues()
+
+        if zoomValues.minZoom >= 0 && zoomValues.maxZoom >= 0 {
+            mapView.setMinZoom(zoomValues.minZoom, maxZoom: zoomValues.maxZoom)
+        } else {
+            print("Unable to set min and maxZoom. Leaving default values.")
+        }
+        mapView.camera = camera
+    }
+
+    func minMaxZoomValues() -> (minZoom: Float, maxZoom: Float) {
         var minZoom = Float(self.library!.settings!.minZoom)
         if minZoom <= 0 || minZoom < kGMSMinZoomLevel {
             minZoom = kGMSMinZoomLevel
@@ -272,13 +283,8 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         if (maxZoom <= 0 || maxZoom <= minZoom || maxZoom > kGMSMaxZoomLevel) {
             maxZoom = kGMSMaxZoomLevel
         }
-        
-        if minZoom >= 0 && maxZoom >= 0 {
-            mapView.setMinZoom(minZoom, maxZoom: maxZoom)
-        } else {
-            print("Unable to set min and maxZoom")
-        }
-        mapView.camera = camera
+
+        return (minZoom, maxZoom)
     }
     
     func initializePositioningUIElements() {
@@ -1178,19 +1184,15 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         // Determine if values are outside min/max range. Cap zooms to min/max values
         var lockedMinZoom = self.mapView.camera.zoom - 0.1
         var lockedMaxZoom = self.mapView.maxZoom
-        guard let minZoom = library?.settings?.minZoom,
-              let maxZoom = library?.settings?.maxZoom
-        else {
-            self.mapView.setMinZoom(lockedMinZoom, maxZoom: lockedMaxZoom)
-            return
+
+        let zoomValues = minMaxZoomValues()
+        
+        if (zoomValues.minZoom > 0 && lockedMinZoom < zoomValues.minZoom) {
+            lockedMinZoom = zoomValues.minZoom
         }
         
-        if (minZoom > 0 && lockedMinZoom < Float(minZoom)) {
-            lockedMinZoom = Float(minZoom)
-        }
-        
-        if (maxZoom > 0 && lockedMaxZoom > Float(maxZoom)) {
-            lockedMaxZoom = Float(maxZoom)
+        if (zoomValues.maxZoom > 0 && lockedMaxZoom > zoomValues.maxZoom) {
+            lockedMaxZoom = zoomValues.maxZoom
         }
 
         self.mapView.setMinZoom(lockedMinZoom, maxZoom: lockedMaxZoom)
