@@ -53,7 +53,7 @@ SPEC CHECKSUMS:
   GoogleMaps: eb03e327edfd70b06de1e6e321653f73712df7ad
   Protobuf: 120350fc38646e2dedc26f49ecba778184ea1de2
   SitumSDK: d15af2153982df98a1247b252027b543435d4d16
-  SitumWayfinding: 0b9f3e6bc608844a59bae87fbc7e90ccc12ef118
+  SitumWayfinding: 17d3102eabb4684ee9737d4ce7d65684b67e1c84
   SSZipArchive: fe6a26b2a54d5a0890f2567b5cc6de5caa600aef
 
 PODFILE CHECKSUM: 181eb894514efe3e0119ec84dae5349934aaaa20

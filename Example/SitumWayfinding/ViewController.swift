@@ -42,7 +42,6 @@ class ViewController: UIViewController {
         )
         buildingId = "YOUR_BUILDING_ID"
         location = (lat: "YOUR_LATITUDE", lng: "YOUR_LONGITUDE")
-
         fakeLocationSwitch.isOn = UserDefaults.standard.bool(forKey: "fake_locations")
         loadPois()
     }

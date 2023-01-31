@@ -11,8 +11,6 @@ import GoogleMaps
 
 protocol PositioningController {
     
-    var buildingId: String { get set }
-    var library: SitumMapsLibrary? { get set }
-    
+    var buildingId: String { get set }    
     func getGoogleMap() -> GMSMapView?
 }
