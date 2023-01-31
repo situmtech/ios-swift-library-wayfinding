@@ -35,7 +35,7 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
     @IBOutlet weak var backButton: UIBarButtonItem!
     @IBOutlet weak var numberBeaconsRangedView: UIView!
     @IBOutlet weak var numberBeaconsRangedLabel: UILabel!
-    @IBOutlet weak var loadingIndicator: UIActivityIndicatorView!
+    @IBOutlet weak var positioningButtonLoadingIndicator: UIActivityIndicatorView!
     //Navigation
     @IBOutlet weak var indicationsView: UIView!
     weak var indicationsViewController: IndicationsViewController?
@@ -97,7 +97,6 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
     var tileProvider: TileProvider!
     var preserveStateInNewViewAppeareance = false
 
-
     override func viewDidLoad() {
         super.viewDidLoad()
         mapContainerViewTopConstraint.constant = 44
@@ -131,6 +130,11 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
         }
     }
 
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        removeLocationListener()
+    }
+
     override func viewDidLayoutSubviews() {
         //In viewWillAppear layout hasnt finished yet
         addMap()
@@ -145,7 +149,6 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
             }
         }
     }
-
 
     func initializeViewBeforeAppearing(){
         positionDrawer = GoogleMapsPositionDrawer(mapView: mapView)
@@ -187,6 +190,7 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
                                     self.presenter?.useRemoteConfig = set.useRemoteConfig
                                 }
                             }
+                            self.addLocationListener()
                             self.initializeUIElements()
                         }
                     }, failure: { (error: Error?) in
@@ -233,6 +237,18 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
     }
     
     //MARK: Initializers
+    func addLocationListener() {
+        if let presenter = presenter {
+            presenter.addLocationListener()
+        }
+    }
+
+    func removeLocationListener() {
+        if let presenter = presenter {
+            presenter.removeLocationListener()
+        }
+    }
+
     func initializeUIElements() {
         initializeMapView()
         initializeMarkerMapRenderer()
@@ -240,9 +256,9 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
         initializeIcons()
         customizeBackButtonColor()
     }
-    
+
     func customizeBackButtonColor(){
-        backButton.tintColor = uiColorsTheme.primaryColor
+        backButton?.tintColor = uiColorsTheme.primaryColor
     }
     
     func addMap() {
@@ -274,10 +290,7 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
     }
     
     func initializePositioningUIElements() {
-        initializeNavigationBar()
-        initializeIcons()
         initializePositioningButton()
-        initializeLoadingIndicator()
         hideCenterButton()
         initializeLevelIndicator()
         initializeNavigationButton()
@@ -285,11 +298,7 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
         prepareCenterButton()
         numberBeaconsRangedView.isHidden = true
     }
-    
-    func initializeNavigationBar() {
-        //navbar.topItem?.title = buildingInfo!.building.name
-    }
-    
+
     func initializeIcons() {
         let bundle = Bundle(for: type(of: self))
         let userLocIconName = getIconNameOrDefault(iconName: library?.settings?.userPositionIcon, defaultIconName: "swf_location")
@@ -329,9 +338,15 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
         positioningButton.isHidden = !(self.library?.settings?.positioningFabVisible ?? true)
         updatePositioningButtonImage(name: "swf_ic_action_no_positioning",state:.normal)
         customizePositioningButtonColor()
+
+        positioningButtonLoadingIndicator.hidesWhenStopped = true
+        if let presenter = presenter {
+            initializePositioningButtonWithLocationState(presenter.locationManager.state())
+        } else {
+            initializePositioningButtonWithLocationState(.stopped)
+        }
     }
-    
-    
+
     func updatePositioningButtonImage(name: String?, state:UIControl.State){
         let positioningButtonColors = colorsForPositioningButton()
         positioningButton.configure(imageName: name, buttonColors: positioningButtonColors, for: state)
@@ -342,7 +357,7 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
         positioningButton.adjustColors(positioningButtonColors)
         positioningButton.setSitumShadow(colorTheme: uiColorsTheme)
     }
-    
+
     func colorsForPositioningButton() -> ButtonColors{
         var buttonsColors: ButtonColors
         if positioningButton.isSelected{
@@ -352,16 +367,25 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
         }
         return buttonsColors
     }
-    
-    
+
+    private func initializePositioningButtonWithLocationState(_ currentState: SITLocationState) {
+        // if current state is started we do not know location yet so we set the calculating state
+        // When the first location arrives in delegate interface will be updated accordingly
+        if currentState == SITLocationState.started {
+            changeLocationState(.calculating, centerCamera: true)
+        } else {
+            changeLocationState(currentState, centerCamera: true)
+        }
+    }
+
     func initializeLoadingIndicator() {
-        loadingIndicator.isHidden = true
-        loadingIndicator.hidesWhenStopped = true
+        positioningButtonLoadingIndicator.isHidden = true
+        positioningButtonLoadingIndicator.hidesWhenStopped = true
         customizeLoadingIndicatorColor()
     }
-    
+
     func customizeLoadingIndicatorColor(){
-        loadingIndicator.color = uiColorsTheme.iconsTintColor
+        positioningButtonLoadingIndicator.color = uiColorsTheme.iconsTintColor
     }
     
     func initializeLevelIndicator() {
@@ -370,8 +394,9 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
         levelsTableView.dataSource = self
         levelsTableView.delegate = self
         levelsTableView.roundCorners(corners: [.topLeft, .topRight, .bottomLeft, .bottomRight], radius: floorSelectorCornerRadius)
-        
+
         initializeLevelSelector()
+        
         let indexPath = getDefaultFloorFirstLoad()
         levelsTableView.selectRow(at: indexPath, animated: true, scrollPosition: .bottom)
         tableView(levelsTableView, didSelectRowAt: indexPath)
@@ -395,7 +420,7 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
         customizeNavigationButtonColor()
         navigationButton.isHidden = true
     }
-    
+
     func customizeNavigationButtonColor(){
         navigationButton.setSitumShadow(colorTheme: uiColorsTheme)
         let buttonColors =  ButtonColors(iconTintColor: uiColorsTheme.backgroundedButtonsIconstTintColor, backgroundColor: uiColorsTheme.primaryColor)
@@ -552,7 +577,7 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell: UITableViewCell? = tableView.dequeueReusableCell(withIdentifier: "LevelCellIdentifier")
         cell?.roundCorners(corners: [.topLeft, .topRight, .bottomLeft, .bottomRight], radius: floorSelectorCornerRadius)
-        
+
         if let level: SITFloor = orderedFloors(buildingInfo: buildingInfo)?[indexPath.row] {
             // [06/08/19] This check is here because older buildings without the name field give unexpected nulls casted to string
             let shouldDisplayLevelName = !(level.name.isEmpty || (level.name == "<null>"))
@@ -609,28 +634,30 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
         }
     }
     
-    func change(_ state: SITLocationState, centerCamera: Bool) {
+    func changeLocationState(_ state: SITLocationState, centerCamera: Bool) {
         changePositioningButton(toState: state)
         isCameraCentered = centerCamera
     }
     
-    func changePositioningButton(toState state: SITLocationState) {
+    private func changePositioningButton(toState state: SITLocationState) {
         let bundle = Bundle(for: type(of: self))
-        
+
         switch state {
         case .stopped:
             positioningButton.isSelected = false
             updatePositioningButtonImage(name: "swf_ic_action_no_positioning", state: .normal)
-            loadingIndicator.stopAnimating()
+            positioningButtonLoadingIndicator.isHidden = true
+            positioningButtonLoadingIndicator.stopAnimating()
         case .calculating:
             positioningButton.isSelected = false
             updatePositioningButtonImage(name: nil, state: .normal)
-            loadingIndicator.isHidden = false
-            loadingIndicator.startAnimating()
+            positioningButtonLoadingIndicator.isHidden = false
+            positioningButtonLoadingIndicator.startAnimating()
         case .started:
             positioningButton.isSelected = true
             updatePositioningButtonImage(name: "swf_ic_action_localize", state: .selected)
-            loadingIndicator.stopAnimating()
+            positioningButtonLoadingIndicator.isHidden = true
+            positioningButtonLoadingIndicator.stopAnimating()
         default:
             // Button shouldn't react to outOfBuilding, compassNeedsCalibration and other states
             break
@@ -799,7 +826,6 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
     
     @IBAction
     func goBackButtonPressed(_ sender: Any) {
-        self.presenter?.stopPositioning()
         self.presenter?.view = nil
         if let callback: (Any) -> Void = self.library?.onBackPressedCallback {
             callback(sender)
@@ -1048,7 +1074,7 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
         self.numberBeaconsRangedView.isHidden = true
         self.reloadFloorPlansTableViewData()
         self.hideCenterButton()
-        self.change(.stopped, centerCamera: false)
+        self.changeLocationState(.stopped, centerCamera: false)
     }
     
     func stopNavigation(status: NavigationStatus) {
@@ -1148,7 +1174,7 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
             }
         }
     }
-    
+
     func getBuilding(buildingId: String, completion: @escaping (Result<SITBuilding, WayfindingError>) -> Void) {
         SITCommunicationManager.shared().fetchBuildingInfo(buildingId, withOptions: nil, success: { (mapping: [AnyHashable : Any]?) in
             if (mapping != nil) {
@@ -1452,19 +1478,19 @@ extension PositioningViewController {
         centerButton.layer.masksToBounds = false
         customizeCenterButtonColorAndText()
     }
-    
+
     func customizeCenterButtonColorAndText() {
         centerButton.backgroundColor = uiColorsTheme.primaryColor
         centerButton.setSitumShadow(colorTheme: uiColorsTheme)
         let textColor = uiColorsTheme.backgroundedButtonsIconstTintColor
-        
+
         let title = NSLocalizedString(
             "positioning.center",
             bundle: SitumMapsLibrary.bundle,
             comment: "Button to center map in current location of user"
         )
         let font = UIFont(name: "Roboto-Black", size: 18) ?? UIFont.systemFont(ofSize: 18)
-        
+
         let textAttributes = [
             NSAttributedString.Key.font: font,
             NSAttributedString.Key.foregroundColor: textColor
@@ -1474,13 +1500,12 @@ extension PositioningViewController {
             string: title.uppercased(),
             attributes: textAttributes
         )
-        
-        centerButton.setAttributedTitle(textTitle, for: .normal)
-        
-    }
-    
-}
 
+        centerButton.setAttributedTitle(textTitle, for: .normal)
+
+    }
+
+}
 
 extension PositioningViewController {
     override func reloadScreenColors(){

@@ -212,13 +212,13 @@
                         <outlet property="infoBarNavigation" destination="0vU-9Q-0Ee" id="N8Z-mx-xoA"/>
                         <outlet property="levelsTableHeightConstaint" destination="aFm-BU-ilT" id="BXr-eI-aP9"/>
                         <outlet property="levelsTableView" destination="mRp-tT-Z7z" id="tzA-eH-nUL"/>
-                        <outlet property="loadingIndicator" destination="pWt-0O-2sz" id="1xS-gE-DoD"/>
                         <outlet property="mapContainerViewTopConstraint" destination="ElL-xr-qil" id="4BD-zI-9EK"/>
                         <outlet property="navbar" destination="v9V-A6-0lh" id="NAK-HK-qsE"/>
                         <outlet property="navigationButton" destination="NVD-JK-oYf" id="dpU-xq-e5k"/>
                         <outlet property="numberBeaconsRangedLabel" destination="Lsd-iR-bT6" id="MST-2L-LWh"/>
                         <outlet property="numberBeaconsRangedView" destination="m4P-pu-GNe" id="4GJ-8C-dwg"/>
                         <outlet property="positioningButton" destination="fnW-Qy-DPF" id="CTq-9Q-fJZ"/>
+                        <outlet property="positioningButtonLoadingIndicator" destination="pWt-0O-2sz" id="yQw-RS-L56"/>
                         <segue destination="4Mn-zH-ugC" kind="unwind" identifier="UnwingFromPositioningIdentifier" unwindAction="unwindFromPositioning:" id="CbU-sF-AgO"/>
                     </connections>
                 </viewController>

@@ -57,6 +57,11 @@ class WayfindingController: UIViewController {
         super.viewWillAppear(animated)
     }
 
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        SITLocationManager.sharedInstance().removeUpdates()
+    }
+
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
