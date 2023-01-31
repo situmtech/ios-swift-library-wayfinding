@@ -136,8 +136,8 @@ import GoogleMaps
             instance.showSearchBar = showSearchBar
             return self
         }
-        
-        /*
+
+        /**
          * Sets whether the back button is visible
          * @note Since 0.18.0 when showBackButton is set to true the library no longer stop positioning when user taps
          * in the back button
