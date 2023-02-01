@@ -53,11 +53,11 @@ import GoogleMaps
     /// Boolean to show or hide positioning button
     private (set) var positioningFabVisible: Bool = true
 
-    /// Integer value that determines the minimum value the zoom level of the camera can have.
-    private (set) var minZoom: Int = -1
+    /// Float value that determines the minimum value the zoom level of the camera can have.
+    private (set) var minZoom: Float = -1
     
-    /// Integer value that determines the maximum value the zoom level of the camera can have.
-    private (set) var maxZoom: Int = -1
+    /// Float value that determines the maximum value the zoom level of the camera can have.
+    private (set) var maxZoom: Float = -1
     
     // private(set) var orgDetails: OrganizationTheme?
     private override init() {
@@ -65,7 +65,7 @@ import GoogleMaps
     }
     
     /// getter method to retrieve max zoom value. In case minZoom is greater than max zoom, min zoom will be returned instead. 
-    @objc public func getMaxZoom() -> Int {
+    @objc public func getMaxZoom() -> Float {
         if (minZoom > maxZoom) {
             return minZoom
         }
@@ -194,7 +194,7 @@ import GoogleMaps
          * @param minZoomLevel Min zoom preference.
          */
         @discardableResult
-        @objc public func setMinZoom(minZoom: Int) -> Builder {
+        @objc public func setMinZoom(minZoom: Float) -> Builder {
             instance.minZoom = minZoom
             return self
         }
@@ -206,7 +206,7 @@ import GoogleMaps
          * @param maxZoom Max zoom preference.
          */
         @discardableResult
-        @objc public func setMaxZoom(maxZoom: Int) -> Builder {
+        @objc public func setMaxZoom(maxZoom: Float) -> Builder {
             instance.maxZoom = maxZoom
             return self
         }

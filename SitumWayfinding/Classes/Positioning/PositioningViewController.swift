@@ -274,12 +274,12 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     }
 
     func minMaxZoomValues() -> (minZoom: Float, maxZoom: Float) {
-        var minZoom = Float(self.library!.settings!.minZoom)
+        var minZoom = self.library!.settings!.minZoom
         if minZoom <= 0 || minZoom < kGMSMinZoomLevel {
             minZoom = kGMSMinZoomLevel
         }
         
-        var maxZoom = Float(self.library!.settings!.maxZoom)
+        var maxZoom = self.library!.settings!.maxZoom
         if (maxZoom <= 0 || maxZoom <= minZoom || maxZoom > kGMSMaxZoomLevel) {
             maxZoom = kGMSMaxZoomLevel
         }
@@ -1171,7 +1171,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
     }
     
     func prepareCamera(building: SITBuilding) -> SITCameraOptions {
-        return SITCameraOptions(minZoom: Float(self.library!.settings!.minZoom), maxZoom: Float(self.library!.settings!.maxZoom), southWestCoordinate: building.bounds().southWest, northEastCooordinate: building.bounds().northEast)
+        return SITCameraOptions(minZoom: self.library!.settings!.minZoom, maxZoom: self.library!.settings!.maxZoom, southWestCoordinate: building.bounds().southWest, northEastCooordinate: building.bounds().northEast)
     }
     
     func lockCamera(options: SITCameraOptions) {
