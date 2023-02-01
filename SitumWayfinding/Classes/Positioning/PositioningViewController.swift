@@ -265,12 +265,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
         let camera = GMSCameraPosition.camera(withLatitude: latitude, longitude: longitude, zoom: zoom)
         // Check if values are correct (!= -1). Otherwise it could break the app.
         var zoomValues = minMaxZoomValues()
-
-        if zoomValues.minZoom >= 0 && zoomValues.maxZoom >= 0 {
-            mapView.setMinZoom(zoomValues.minZoom, maxZoom: zoomValues.maxZoom)
-        } else {
-            print("Unable to set min and maxZoom. Leaving default values.")
-        }
+        mapView.setMinZoom(zoomValues.minZoom, maxZoom: zoomValues.maxZoom)
         mapView.camera = camera
     }
 
@@ -1188,11 +1183,11 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
 
         let zoomValues = minMaxZoomValues()
         
-        if (zoomValues.minZoom > 0 && lockedMinZoom < zoomValues.minZoom) {
+        if (lockedMinZoom < zoomValues.minZoom) {
             lockedMinZoom = zoomValues.minZoom
         }
         
-        if (zoomValues.maxZoom > 0 && lockedMaxZoom > zoomValues.maxZoom) {
+        if (lockedMaxZoom > zoomValues.maxZoom) {
             lockedMaxZoom = zoomValues.maxZoom
         }
 
