@@ -12,6 +12,7 @@ import os
 import SitumSDK
 
 let SecondsBetweenAlerts = 30.0
+let SitumURL = "https://dashboard.situm.com"
 
 class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableViewDataSource, UITableViewDelegate, PositioningView, PositioningController {
     //MARK PositioningController protocol variables
@@ -402,7 +403,7 @@ class PositioningViewController: UIViewController, GMSMapViewDelegate, UITableVi
                 return
             }
             
-            let logoUrl = "https://dashboard.situm.es" + organizationTheme!.logo.direction
+            let logoUrl = SitumURL + organizationTheme!.logo.direction
             let data = NSData(contentsOf: URL(string: logoUrl)!) as Data?
             if let data = data {
                 let image = UIImage.init(data: data)
