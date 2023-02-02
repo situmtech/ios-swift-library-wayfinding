@@ -1,8 +1,8 @@
 /* Alert message after an error retrieving a building happens */
-"alert.error.building.message" = "Ha ocurrido un error en la descarga de la información del edificio. Por favor, vuelve a intentarlo";
+"alert.error.building.message" = "Se ha producido un error inesperado al cargar. Por favor, inténtelo de nuevo.";
 
 /* Alert title after an error retrieving a building happens */
-"alert.error.building.title" = "Error obteniendo la información del edificio";
+"alert.error.building.title" = "Error obteniendo información del edificio";
 
 /* Alert title for generic errors  */
 "alert.error.title" = "Error";
@@ -17,13 +17,13 @@
 "generic.cancel" = "Cancelar";
 
 /* Generic ok action */
-"generic.ok" = "Ok";
+"generic.ok" = "OK";
 
 /* Less than x minutes */
-"navigation.lessThanMinutes" = "menos de %d min";
+"navigation.lessThanMinutes" = "Menos de 1 minuto";
 
 /* No comment provided by engineer. */
-"navigation.loadingRoute" = "Calculando ruta...";
+"navigation.loadingRoute" = "Cargando tu ruta...";
 
 /* No comment provided by engineer. */
 "navigation.nextInstruction" = "Después";
@@ -32,34 +32,34 @@
 "navigation.remainingHours" = "%d h";
 
 /* Remaining time in minutes */
-"navigation.remainingMinutes" = "%d min";
+"navigation.remainingMinutes" = "%d minutos";
 
 /* No comment provided by engineer. */
-"navigationError.noAvailableRoute" = "No existe una ruta entre las localizaciones seleccionadas. Intenta otra ruta o cambia al modo de accesibilidad";
+"navigationError.noAvailableRoute" = "No hay ruta entre las ubicaciones seleccionadas. Intente calcular una ruta diferente o cambiar el modo de accesibilidad";
 
 /* No comment provided by engineer. */
-"navigationError.noDestinationSelected" = "No hay ninguna localización seleccionada actualmente, la navegación no puede comenzar. Por favor, selecciona un POI (o realiza una pulsación larga para una localización personalizada) e inténtalo de nuevo,";
+"navigationError.noDestinationSelected" = "No hay ningún destino seleccionado actualmente, la navegación no se puede iniciar. Por favor, seleccione un POI (o pulsación larga para crear uno personalizado) e inténtelo de nuevo.";
 
 /* No comment provided by engineer. */
-"navigationError.outdoorOrigin" = "La ubicación actual es en el exterior, la navegación solo está disponible en ubicaciones interiores";
+"navigationError.outdoorOrigin" = "La ubicación actual del usuario está en el exterior, la navegación sólo está disponible en el interior.";
 
 /* No comment provided by engineer. */
-"navigationError.outsideBuilding" = "El usuario no está actualmente en la ruta y está fuera el edificio. Por favor, vuelve a inicar la navegación";
+"navigationError.outsideBuilding" = "El usuario no se ha detectado actualmente en la ruta y está fuera del edificio. Por favor, vuelva para reanudar la navegación.";
 
 /* No comment provided by engineer. */
-"navigationError.positionUnknown" = "La localización actual es desconocida, por favor activa el posicionamiento antes de calcular la ruta y vuelve a intentarlo.";
+"navigationError.positionUnknown" = "La ubicación actual del usuario es desconocida, por favor active la posición antes de calcular una ruta y vuelva a intentarlo.";
 
 /* No comment provided by engineer. */
-"navigationError.unableToComputeRoute" = "Un error inesperado ha ocurrido mientras se calculaba la ruta. Por favor, vuelve a intentarlo.";
+"navigationError.unableToComputeRoute" = "Se ha encontrado un error inesperado mientras se calculaba la ruta. Por favor, inténtelo de nuevo.";
 
 /* Button to go back when the user is in the positioning controller (where the map is shown) */
-"positioning.back" = "Atrás";
+"positioning.back" = "Volver";
 
 /* No comment provided by engineer. */
-"positioning.calibrationNeeded.alert.message" = "La brújula de tu dispositivo no está calibrada. Por favor, vuelve a calibrarla para obtener la mejor experiencia de navegación.";
+"positioning.calibrationNeeded.alert.message" = "La brújula de tu dispositivo no está calificada en este momento. Por favor, recalibrala para obtener la mejor experiencia de navegación.";
 
 /* The user needs to calibrate the compass */
-"positioning.calibrationNeeded.alert.title" = "Se necesita calibración de la brújula";
+"positioning.calibrationNeeded.alert.title" = "Calibración de brújula fallida";
 
 /* Button to center map in current location of user */
 "positioning.center" = "Centrar";
@@ -77,28 +77,28 @@
 "positioning.destinationReached.alert.title" = "Destino alcanzado";
 
 /* Alert title error when download the floor plan fails */
-"positioning.error.emptyFloor.alert.message" = "Ha ocurrido un error inesperado mientras se descargaba la información del piso. Por favor, vuelve a intentarlo.";
+"positioning.error.emptyFloor.alert.message" = "Se ha producido un error inesperado al cargar. Por favor, inténtelo de nuevo.";
 
 /* Alert title error when download the floor plan fails */
-"positioning.error.emptyFloor.alert.title" = "Sin información del piso";
+"positioning.error.emptyFloor.alert.title" = "Ir al plano";
 
 /* Alert title error when the user does not select a destination */
-"positioning.error.noDestinationSelected.alert.title" = "No se ha seleccionado un destino";
+"positioning.error.noDestinationSelected.alert.title" = "Ningún destino seleccionado";
 
 /* Alert title error when the user position is unknown */
-"positioning.error.outsideBuilding.message" = "Por ahora no es posible crear destinos personalizados fuera del edificio";
+"positioning.error.outsideBuilding.message" = "Actualmente no puedes crear destinos al aire libre.";
 
 /* Alert title error when the user position is unknown */
-"positioning.error.outsideBuilding.title" = "Destino fuera del edificio";
+"positioning.error.outsideBuilding.title" = "Destino personalizado";
 
 /* Alert title error when the user is outdoor */
-"positioning.error.positionOutdoor.alert.title" = "Posición en el exterior";
+"positioning.error.positionOutdoor.alert.title" = "Posiciones en exterior";
 
 /* Alert title error when the user position is unknown */
 "positioning.error.positionUnknown.alert.title" = "Posición desconocida";
 
 /* Alert title error when WayFinding cannot compute route to destination */
-"positioning.error.unableToComputeRoute.alert.title" = "No se ha podido calcular la ruta";
+"positioning.error.unableToComputeRoute.alert.title" = "No se puede calcular la ruta";
 
 /* Alert message to show for a long press action */
 "positioning.longPressAction.alert.message" = "Selecciona una acción:";
@@ -106,14 +106,14 @@
 /* Alert title to show for a long press action */
 "positioning.longPressAction.alert.title" = "Acción de pulsación larga";
 
-/* Used to show the user the number of beacons that library detecst nearby */
-"positioning.numBeacons" = "%d beacons";
+/* Used to show the user the number of beacons that library detects nearby */
+"positioning.numBeacons" = "No hay beacons";
 
 /* Alert message to show user is outside of route */
-"positioning.outsideBuilding.alert.message" = "No hay posición disponible. Por favor, vaya a una zona calibrada o con señal GPS.";
+"positioning.outsideBuilding.alert.message" = "No hay posición disponible. Por favor, vaya a una zona calibrada o con señal GPS";
 
 /* Alert title to show user is outside of building */
-"positioning.outsideBuilding.alert.title" = "Usuario fuera de edificio";
+"positioning.outsideBuilding.alert.title" = "Usuario fuera del edificio";
 
 /* Alert title to show user is outside of route */
 "positioning.outsideRoute.alert.title" = "Usuario fuera de ruta";
@@ -125,22 +125,22 @@
 "search.distance" = "Distancia";
 
 /* No comment provided by engineer. */
-"search.floor" = "Piso";
+"search.floor" = "Planta";
 
 /* No comment provided by engineer. */
-"search.noResultFound" = "No se ha encontrado ningún resultado";
+"search.noResultFound" = "No se han encontrado resultados";
 
 /* Error when user does not set credentials */
-"situmMapsLibrary.error.credentials" = "Necesitas establecer la información de autenticación con setCredentials() antes de llamar a load(buildingWithId:)";
+"situmMapsLibrary.error.credentials" = "Debe establecer su información de autenticación con setCredentials() antes de llamar a load(buildingWithId:)";
 
-/* Error when user does not set credentials */
-"situmMapsLibrary.error.invalidBuilding" = "El identificador del edificio no es correcto. Por favor, introduce un identificador correcto en LibrarySettings";
-
-/* Error that appears when user does not provide location or bluetooth permissions*/
-"wayfinding.permissionsErrorDescription" = "Por favor active los permisos de localización y bluetooth en los ajustes para obtener posiciones";
+/* Error when user does not set correctly building id */
+"situmMapsLibrary.error.invalidBuilding" = "El ID de compilación no es correcto. Por favor, añade un ID de construcción válido en LibrarySettings";
 
 /* Error that appears when user does not provide location or bluetooth permissions*/
-"wayfinding.permissionsErrorTitle" = "Localización no disponible";
+"wayfinding.permissionsErrorDescription" = "Por favor, ve a los ajustes de la app y habilita los permisos de Ubicación y Bluetooth para poder calcular geolocalizaciones";
+
+/* Error that appears when user does not provide location or bluetooth permissions*/
+"wayfinding.permissionsErrorTitle" = "No se pudo determinar la localización";
 
 /* No comment provided by engineer. */
 "wayfindingError.buildingNotExist" = "El edificio no existe";
@@ -152,4 +152,4 @@
 "wayfindingError.requestError" = "Error en la respuesta";
 
 /* No comment provided by engineer. */
-"wayfindingError.unknown" = "Ha ocurrido un error inesperado";
+"wayfindingError.unknown" = "Ha ocurrido un error desconocido";

@@ -20,7 +20,7 @@
 "generic.ok" = "Ok";
 
 /* Less than x minutes */
-"navigation.lessThanMinutes" = "less than %d min";
+"navigation.lessThanMinutes" = "Less than %d min";
 
 /* No comment provided by engineer. */
 "navigation.loadingRoute" = "Loading route...";
@@ -32,7 +32,7 @@
 "navigation.remainingHours" = "%d h";
 
 /* Remaining time in minutes */
-"navigation.remainingMinutes" = "%d min";
+"navigation.remainingMinutes" = "%d mins";
 
 /* No comment provided by engineer. */
 "navigationError.noAvailableRoute" = "There is no route between the selected locations. Try to compute a different route or to switch accessibility mode";
@@ -110,7 +110,7 @@
 "positioning.numBeacons" = "%d beacons";
 
 /* Alert message to show user is outside of route */
-"positioning.outsideBuilding.alert.message" = "There is no position available. Please, go to a calibrated area or an area with available GPS signal";
+"positioning.outsideBuilding.alert.message" = "There is no position available. Please, go to a calibrated area or to an area with available GPS signal";
 
 /* Alert title to show user is outside of building */
 "positioning.outsideBuilding.alert.title" = "User outside building";
@@ -137,10 +137,10 @@
 "situmMapsLibrary.error.invalidBuilding" = "The builidng ID is not correct. Please add a valid building ID in LibrarySettings";
 
 /* Error that appears when user does not provide location or bluetooth permissions*/
-"wayfinding.permissionsErrorDescription" = "Please go to settings and enable location and bluetooth permissions to provide locations";
+"wayfinding.permissionsErrorDescription" = "Please go to Settings and enable Location and Bluetooth permissions in order to use positioning";
 
 /* Error that appears when user does not provide location or bluetooth permissions*/
-"wayfinding.permissionsErrorTitle" = "Unable to provide location";
+"wayfinding.permissionsErrorTitle" = "Unable to provide positioning";
 
 /* No comment provided by engineer. */
 "wayfindingError.buildingNotExist" = "Building does not exist";
