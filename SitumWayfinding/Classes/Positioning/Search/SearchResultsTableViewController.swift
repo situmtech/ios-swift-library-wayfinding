@@ -113,7 +113,6 @@ class SearchResultsTableViewController: UITableViewController {
         noDataLabel.text          = NSLocalizedString("search.noResultFound", bundle: SitumMapsLibrary.bundle, comment: "")
         noDataLabel.textAlignment = .center
         tableView.backgroundView  = noDataLabel
-        tableView.backgroundColor = UIColor.white
         tableView.separatorStyle  = .none
     }
     

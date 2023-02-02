@@ -43,11 +43,10 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
     }
     
     func startPositioning() {
-        initializeLocationManagers()
         requestLocationUpdates()
     }
     
-    func initializeLocationManagers() {
+    func addLocationListener() {
         // In a normal use case, SITLocationManager will be the provider of user positions,
         // however in WYF with debug purposes we allow the user to "fake" its location
         // Here we use factory pattern to abstract the construction of this location provider. SITLocationManager
@@ -56,24 +55,18 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
         locationManager = LocationManagerFactory.createLocationManager()
         #endif
         
-        LocationManagerFactory.setDelegate(object: locationManager, delegate: self)
+        LocationManagerFactory.addDelegate(object: locationManager, delegate: self)
+    }
+
+    func removeLocationListener() {
+        LocationManagerFactory.removeDelegate(object: locationManager, delegate: self)
     }
     
     func requestLocationUpdates() {
         var request: SITLocationRequest = RequestBuilder.buildLocationRequest(buildingId: buildingInfo.building.identifier)
         request = self.interceptorsManager.onLocationRequest(request)
         self.locationManager.requestLocationUpdates(SITServices.isUsingRemoteConfig() && useRemoteConfig ? nil: request)
-        view?.change(.calculating, centerCamera: true)
-    }
-    
-    func stopPositioning() {
-        self.locationManager.removeUpdates()
-        self.userLocation = nil
-        self.locationManagerUserLocation = nil
-        self.lastOOBAlert = 0.0
-        self.lastCalibrationAlert = 0.0
-        view?.cleanLocationUI()
-        view?.stopNavigation(status: .canceled)
+        view?.changeLocationState(.calculating, centerCamera: true)
     }
 
     func resetLastOutsideRouteAlert() {
@@ -128,6 +121,20 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
         } else {
             self.stopPositioning()
         }
+    }
+
+    func stopPositioning() {
+        locationManager.removeUpdates()
+        updateInterfaceAndDataOnStopPositioning()
+    }
+
+    func updateInterfaceAndDataOnStopPositioning() {
+        userLocation = nil
+        locationManagerUserLocation = nil
+        lastOOBAlert = 0.0
+        lastCalibrationAlert = 0.0
+        view?.cleanLocationUI()
+        view?.stopNavigation(status: .canceled)
     }
 
     public func startPositioningAndNavigate(withDestination destination: CLLocationCoordinate2D, inFloor floorId: String) {
@@ -281,7 +288,7 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
         locationManagerUserLocation = location
 
         if (userLocation == nil) {
-            view?.change(.started, centerCamera: true)
+            view?.changeLocationState(.started, centerCamera: true)
         }
         
         if isUserNavigating() {
@@ -328,6 +335,7 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
             break;
         case .stopped:
             stateName = "Stopped"
+            updateInterfaceAndDataOnStopPositioning()
             break;
         case .calculating:
             stateName = "Calculating"

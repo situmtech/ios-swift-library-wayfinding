@@ -30,6 +30,15 @@ public class SitumView: UIView {
         // Here we use an empty view controller since it's not gonna be used. The controller is only needed when loading the view programmatically.
         let library = SitumMapsLibrary(containedBy: self, controlledBy: UIViewController())
         library.setCredentials(credentials)
+        
+        var mode = "light"
+        
+        if #available(iOS 13.0, *) {
+            if traitCollection.userInterfaceStyle == .dark {
+                mode = "dark"
+            }
+        }
+        
         try library.loadFromView(buildingWithId: buildingId)
     }
 }

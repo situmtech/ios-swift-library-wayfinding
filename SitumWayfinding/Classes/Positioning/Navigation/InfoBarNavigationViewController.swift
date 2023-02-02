@@ -5,7 +5,7 @@
 import Foundation
 import UIKit
 
-class InfoBarNavigationViewController: UIViewController {
+class InfoBarNavigationViewController: SitumViewController {
     @IBOutlet weak var cancelButton: UIButton!
     @IBOutlet weak var logoImage: UIImageView!
     @IBOutlet weak var timeRemainingLabel: UILabel!
@@ -18,28 +18,7 @@ class InfoBarNavigationViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-    
-        let cancelImage = UIImage(named: "situm_navigation_cancel",
-            in: SitumMapsLibrary.bundle, compatibleWith: nil)
-        self.cancelButton.setImage(cancelImage, for: .normal)
-        self.cancelButton.tintColor = .primary
-    
-        self.timeRemainingLabel.textColor = .primary
-        self.timeRemainingLabel.font = .normalBold
-        self.distanceRemainingLabel.textColor = .primary
-        self.distanceRemainingLabel.font = .small
-        self.estimatedTimeLabel.textColor = .primary
-        self.estimatedTimeLabel.font = .small
-        self.separatorLabel.textColor = .primary
-        self.separatorLabel.font = .normal
-    
-        self.topSeparator.backgroundColor = .primaryDiminished
-    
-        self.distanceRemainingImage.image = UIImage(named: "situm_walk",
-            in: SitumMapsLibrary.bundle, compatibleWith: nil)
-        self.estimatedTimeImage.image = UIImage(named: "situm_clock_time",
-            in: SitumMapsLibrary.bundle, compatibleWith: nil)
-        
+        customizeUI()
         setLoadingState()
     }
     
@@ -119,5 +98,43 @@ extension SITNavigationProgress {
         get {
             return timeToGoal/1.4
         }
+    }
+}
+
+extension InfoBarNavigationViewController {
+    func customizeUI() {
+        customizeUIImagesAndColors()
+        customizeUIFont()
+    }
+    
+    func customizeUIImagesAndColors() {
+        self.timeRemainingLabel.textColor = uiColorsTheme.textColor
+        self.distanceRemainingLabel.textColor = uiColorsTheme.textColor
+        self.estimatedTimeLabel.textColor = uiColorsTheme.textColor
+        self.separatorLabel.textColor = uiColorsTheme.textColor
+        self.distanceRemainingImage.setSitumImage(name: "situm_walk", tintColor: uiColorsTheme.iconsTintColor)
+        self.estimatedTimeImage.setSitumImage(name: "situm_clock_time", tintColor: uiColorsTheme.iconsTintColor)
+        let buttonsColors = ButtonColors(iconTintColor: uiColorsTheme.primaryColor, backgroundColor:.clear)
+        self.cancelButton.configure(imageName: "situm_navigation_cancel", buttonColors:buttonsColors ,for: .normal)
+        self.topSeparator.backgroundColor = uiColorsTheme.primaryColorDimished
+    }
+    
+    func customizeUIFont() {
+        self.timeRemainingLabel.font = .normalBold
+        self.distanceRemainingLabel.font = .small
+        self.estimatedTimeLabel.font = .small
+        self.separatorLabel.font = .normal
+    }
+    
+}
+
+
+extension InfoBarNavigationViewController {
+    func isBeingPresented(){
+        customizeUIImagesAndColors()
+    }
+    
+    override func reloadScreenColors(){
+        customizeUIImagesAndColors()
     }
 }

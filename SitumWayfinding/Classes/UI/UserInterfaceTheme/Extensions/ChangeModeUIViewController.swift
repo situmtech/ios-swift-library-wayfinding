@@ -6,6 +6,7 @@ extension PositioningViewController {
         infoBarNavigation.isHidden = true
         indicationsView.isHidden = true
         navbar.isHidden = false
+        containerInfoBarMap?.isBeingPresented()
     }
         
     func showNavigationUI() {
@@ -18,7 +19,9 @@ extension PositioningViewController {
         
         navbar.isHidden = true
         containerInfoBarNavigation?.setLoadingState()
-        indicationsViewController?.showNavigationLoading()
+        //It seing that ViewWillAppear is not being called to viewController when isHidden is change so we have to notify viewController
+        indicationsViewController?.isBeingPresented()
+        containerInfoBarNavigation?.isBeingPresented()
     }
     
     func hiddenNavBar() {

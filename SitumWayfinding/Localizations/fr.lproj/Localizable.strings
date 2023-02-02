@@ -20,7 +20,7 @@
 "generic.ok" = "OK";
 
 /* Less than x minutes */
-"navigation.lessThanMinutes" = "moins d’une minute";
+"navigation.lessThanMinutes" = "Moins d’une minute";
 
 /* No comment provided by engineer. */
 "navigation.loadingRoute" = "Chargement de votre route...";
@@ -110,7 +110,7 @@
 "positioning.numBeacons" = "Aucune balise";
 
 /* Alert message to show user is outside of route */
-"positioning.outsideBuilding.alert.message" = "L'utilisateur est actuellement en dehors du bâtiment. Le positionnement reprendra lorsque l'utilisateur sera retourné.";
+"positioning.outsideBuilding.alert.message" = "Il n'y a pas de position disponible. S'il vous plaît, allez dans une zone calibrée ou une zone avec le signal GPS disponible";
 
 /* Alert title to show user is outside of building */
 "positioning.outsideBuilding.alert.title" = "Utilisateur en dehors du bâtiment";
@@ -135,6 +135,12 @@
 
 /* Error when user does not set correctly building id */
 "situmMapsLibrary.error.invalidBuilding" = "L'ID Builidng n'est pas correct. Veuillez ajouter un ID de bâtiment valide dans les paramètres de bibliothèque";
+
+/* Error that appears when user does not provide location or bluetooth permissions*/
+"wayfinding.permissionsErrorDescription" = "Veuillez aller dans les paramètres et activer la localisation et les autorisations bluetooth pour fournir des emplacements";
+
+/* Error that appears when user does not provide location or bluetooth permissions*/
+"wayfinding.permissionsErrorTitle" = "Impossible de fournir l'emplacement";
 
 /* No comment provided by engineer. */
 "wayfindingError.buildingNotExist" = "Le bâtiment n'existe pas";

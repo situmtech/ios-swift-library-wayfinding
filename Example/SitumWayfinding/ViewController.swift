@@ -27,6 +27,8 @@ class ViewController: UIViewController {
     @IBOutlet weak var remoteConfigSwitch: UISwitch!
     @IBOutlet weak var fakeLocationSwitch: UISwitch!
     
+    @IBOutlet weak var useDashboardThemeSwitch: UISwitch!
+    
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -42,7 +44,6 @@ class ViewController: UIViewController {
         )
         buildingId = "YOUR_BUILDING_ID"
         location = (lat: "YOUR_LATITUDE", lng: "YOUR_LONGITUDE")
-
         fakeLocationSwitch.isOn = UserDefaults.standard.bool(forKey: "fake_locations")
         loadPois()
     }
@@ -104,6 +105,7 @@ class ViewController: UIViewController {
                 vc.buildingId = buildingId
                 vc.action = action
                 vc.useRemoteConfig = remoteConfigSwitch.isOn
+                vc.useDashboardTheme = useDashboardThemeSwitch.isOn
             }
         }
     }
