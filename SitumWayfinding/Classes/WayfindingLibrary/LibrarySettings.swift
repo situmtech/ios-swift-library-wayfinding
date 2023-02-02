@@ -151,8 +151,13 @@ import GoogleMaps
             instance.showSearchBar = showSearchBar
             return self
         }
-        
-        /// Sets whether the back button is visible
+
+        /**
+         Sets whether the back button is visible
+         
+         - Note: Since 0.18.0 when showBackButton is set to true the library no longer stop positioning when user taps
+         in the back button
+         */
         @discardableResult
         @objc public func setShowBackButton(showBackButton: Bool) -> Builder {
             instance.showBackButton = showBackButton

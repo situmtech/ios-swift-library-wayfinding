@@ -32,7 +32,7 @@
 "navigation.remainingHours" = "%d ساعة";
 
 /* Remaining time in minutes */
-"navigation.remainingMinutes" = "%d د";
+"navigation.remainingMinutes" = "%d دقيقة";
 
 /* No comment provided by engineer. */
 "navigationError.noAvailableRoute" = "لا يوجد مسار بين المواقع المحددة. حاول حساب مسار مختلف أو تبديل وضع الوصول";
@@ -110,7 +110,7 @@
 "positioning.numBeacons" = "%d أجهزة إرشاد";
 
 /* Alert message to show user is outside of route */
-"positioning.outsideBuilding.alert.message" = "المستخدم حاليا خارج المبنى. سيتم استئناف تحديد الموقع عند عودة المستخدم.";
+"positioning.outsideBuilding.alert.message" = "لا يوجد مكان متاح. يرجى الذهاب إلى منطقة معايرة أو منطقة مع إشارة GPS المتاحة";
 
 /* Alert title to show user is outside of building */
 "positioning.outsideBuilding.alert.title" = "مستخدم خارج المبنى";
@@ -136,6 +136,12 @@
 /* Error when user does not set correctly building id */
 "situmMapsLibrary.error.invalidBuilding" = "معرف البناء غير صحيح. الرجاء إضافة معرف بناء صالح في إعدادات المكتبة";
 
+/* Error that appears when user does not provide location or bluetooth permissions*/
+"wayfinding.permissionsErrorDescription" = "الرجاء الذهاب إلى الإعدادات وتمكين أذونات الموقع والبلوتوث لتوفير المواقع";
+
+/* Error that appears when user does not provide location or bluetooth permissions*/
+"wayfinding.permissionsErrorTitle" = "غير قادر على توفير الموقع";
+
 /* No comment provided by engineer. */
 "wayfindingError.buildingNotExist" = "البناء غير موجود";
 
@@ -147,9 +153,3 @@
 
 /* No comment provided by engineer. */
 "wayfindingError.unknown" = "حدث خطأ غير معروف";
-
-/* Error that appears when user does not provide location or bluetooth permissions*/
-"wayfinding.permissionsErrorTitle" = "تعذر توفير الموقع";
-
-/* Error that appears when user does not provide location or bluetooth permissions*/
-"wayfinding.permissionsErrorDescription" = "يرجى الانتقال إلى الإعدادات وتمكين أذونات الموقع والبلوتوث لتوفير المواقع";

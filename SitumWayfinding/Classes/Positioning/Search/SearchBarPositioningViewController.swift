@@ -33,6 +33,7 @@ extension PositioningViewController: UISearchControllerDelegate, UISearchBarDele
     
     //MARK: UISearchControllerDelegate methods
     func presentSearchController(_ searchController: UISearchController) {
+        customizeSearchBarTintColor()
         // Inititialize searchResultsController variables
         searchResultsController?.activeBuildingInfo = self.buildingInfo
         searchResultsController?.iconsStore = iconsStore
@@ -60,5 +61,9 @@ extension PositioningViewController: UISearchControllerDelegate, UISearchBarDele
     //MARK: UISearchBarDelegate methods
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         searchResultsController?.dismissSearchResultsController(constraints: searchResultViewConstraints)
+    }
+    
+    func customizeSearchBarTintColor(){
+        searchController?.searchBar.tintColor = uiColorsTheme.primaryColor
     }
 }

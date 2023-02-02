@@ -55,8 +55,13 @@ class WayfindingController: UIViewController {
         } catch {
             print("An error has ocurred. Your SitumView could not be loaded.")
         }
-
+        
         super.viewWillAppear(animated)
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        SITLocationManager.sharedInstance().removeUpdates()
     }
 
     override func didReceiveMemoryWarning() {

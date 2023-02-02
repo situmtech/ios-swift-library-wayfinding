@@ -1,0 +1,155 @@
+/* Alert message after an error retrieving a building happens */
+"alert.error.building.message" = "אירעה שגיאה בלתי צפויה בעת הורדת מידע הבניין. בבקשה נסה שוב.";
+
+/* Alert title after an error retrieving a building happens */
+"alert.error.building.title" = "שגיאה בהשגת מידע בנייה";
+
+/* Alert title for generic errors  */
+"alert.error.title" = "שְׁגִיאָה";
+
+/* Message of alert when loading library */
+"alert.loading.message" = "תחזיקי רגע";
+
+/* Title of alert when loading library */
+"alert.loading.title" = "טעינה";
+
+/* Generic cancel action  */
+"generic.cancel" = "לְבַטֵל";
+
+/* Generic ok action */
+"generic.ok" = "בסדר";
+
+/* Less than x minutes */
+"navigation.lessThanMinutes" = "פחות מ %d דקות";
+
+/* No comment provided by engineer. */
+"navigation.loadingRoute" = "טוען מסלול...";
+
+/* No comment provided by engineer. */
+"navigation.nextInstruction" = "לאחר מכן";
+
+/* Remaining time in hours */
+"navigation.remainingHours" = "%d שעות";
+
+/* Remaining time in minutes */
+"navigation.remainingMinutes" = "%d דקות";
+
+/* No comment provided by engineer. */
+"navigationError.noAvailableRoute" = "אין מסלול בין המיקומים שנבחרו. נסה לחשב מסלול אחר או להחליף מצב נגישות";
+
+/* No comment provided by engineer. */
+"navigationError.noDestinationSelected" = "כרגע לא נבחר יעד, לא ניתן להתחיל את הניווט. אנא בחר POI (או לחץ לחיצה ארוכה כדי ליצור אחד מותאם אישית) ונסה שוב.";
+
+/* No comment provided by engineer. */
+"navigationError.outdoorOrigin" = "המיקום בפועל של המשתמש הוא חיצוני, ניווט זמין רק בתוך הבית.";
+
+/* No comment provided by engineer. */
+"navigationError.outsideBuilding" = "המשתמש אינו מזוהה כעת במסלול והוא מחוץ לבניין. אנא חזור כדי לחדש את הניווט.";
+
+/* No comment provided by engineer. */
+"navigationError.positionUnknown" = "המיקום האמיתי של המשתמש אינו ידוע, אנא הפעל את המיקום לפני חישוב מסלול ונסה שוב.";
+
+/* No comment provided by engineer. */
+"navigationError.unableToComputeRoute" = "נמצאה שגיאה בלתי צפויה בעת חישוב המסלול. בבקשה נסה שוב.";
+
+/* Button to go back when the user is in the positioning controller (where the map is shown) */
+"positioning.back" = "חזור";
+
+/* No comment provided by engineer. */
+"positioning.calibrationNeeded.alert.message" = "המצפן של המכשיר שלך לא מכויל כרגע. אנא כייל אותו מחדש כדי לקבל את חווית הניווט הטובה ביותר.";
+
+/* The user needs to calibrate the compass */
+"positioning.calibrationNeeded.alert.title" = "נדרש כיול מצפן";
+
+/* Button to center map in current location of user */
+"positioning.center" = "מֶרְכָּז";
+
+/* No comment provided by engineer. */
+"positioning.createMarker" = "צור סמן";
+
+/* Shown to user when select a destination (destination is any free point that user selects on the map) */
+"positioning.customDestination" = "יעד מותאם אישית";
+
+/* Alert message to show to the user when destination was reached */
+"positioning.destinationReached.alert.message" = "הגעתם ליעד";
+
+/* Alert title to show to the user when destination was reached */
+"positioning.destinationReached.alert.title" = "היעד הגיע";
+
+/* Alert title error when download the floor plan fails */
+"positioning.error.emptyFloor.alert.message" = "אירעה שגיאה בלתי צפויה בעת הורדת תכנית הקומה. בבקשה נסה שוב.";
+
+/* Alert title error when download the floor plan fails */
+"positioning.error.emptyFloor.alert.title" = "תוכנית קומה ריקה";
+
+/* Alert title error when the user does not select a destination */
+"positioning.error.noDestinationSelected.alert.title" = "לא נבחר יעד";
+
+/* Alert title error when the user position is unknown */
+"positioning.error.outsideBuilding.message" = "נכון לעכשיו אינך יכול ליצור יעדים בחוץ.";
+
+/* Alert title error when the user position is unknown */
+"positioning.error.outsideBuilding.title" = "יעד בחוץ";
+
+/* Alert title error when the user is outdoor */
+"positioning.error.positionOutdoor.alert.title" = "עמדת חוץ";
+
+/* Alert title error when the user position is unknown */
+"positioning.error.positionUnknown.alert.title" = "עמדה לא ידועה";
+
+/* Alert title error when WayFinding cannot compute route to destination */
+"positioning.error.unableToComputeRoute.alert.title" = "לא ניתן לחשב מסלול";
+
+/* Alert message to show for a long press action */
+"positioning.longPressAction.alert.message" = "בחר פעולה:";
+
+/* Alert title to show for a long press action */
+"positioning.longPressAction.alert.title" = "פעולות לחיצה ארוכה";
+
+/* Used to show the user the number of beacons that library detects nearby */
+"positioning.numBeacons" = "%d משואות";
+
+/* Alert message to show user is outside of route */
+"positioning.outsideBuilding.alert.message" = "אין עמדה פנויה. אנא, עבור לאזור מכויל או לאזור עם אות GPS זמין";
+
+/* Alert title to show user is outside of building */
+"positioning.outsideBuilding.alert.title" = "משתמש מחוץ לבניין";
+
+/* Alert title to show user is outside of route */
+"positioning.outsideRoute.alert.title" = "מסלול מחוץ למשתמש";
+
+/* Placeholder for searching pois */
+"positioning.searchPois" = "חפש את Pois";
+
+/* No comment provided by engineer. */
+"search.distance" = "מֶרְחָק";
+
+/* No comment provided by engineer. */
+"search.floor" = "קוֹמָה";
+
+/* No comment provided by engineer. */
+"search.noResultFound" = "לא נמצאו תוצאות";
+
+/* Error when user does not set credentials */
+"situmMapsLibrary.error.credentials" = "עליך להגדיר את פרטי ההסמכה שלך באמצעות setCredentials() לפני שתקרא ל-load(buildingWithId:)";
+
+/* Error when user does not set correctly building id */
+"situmMapsLibrary.error.invalidBuilding" = "מזהה הבניין אינו נכון. אנא הוסף מזהה בניין חוקי בהגדרות Library";
+
+/* Error that appears when user does not provide location or bluetooth permissions*/
+"wayfinding.permissionsErrorDescription" = "נא עבור להגדרות והפעל הרשאות מיקום ו-Bluetooth כדי לספק מיקומים";
+
+/* Error that appears when user does not provide location or bluetooth permissions*/
+"wayfinding.permissionsErrorTitle" = "לא ניתן לספק מיקום";
+
+/* No comment provided by engineer. */
+"wayfindingError.buildingNotExist" = "בניין לא קיים";
+
+/* No comment provided by engineer. */
+"wayfindingError.invalidPoi" = "ה-POI שנבחר אינו תקף בבניין זה";
+
+/* No comment provided by engineer. */
+"wayfindingError.requestError" = "שגיאה בתגובה";
+
+/* No comment provided by engineer. */
+"wayfindingError.unknown" = "קרתה שגיאה לא ידועה";

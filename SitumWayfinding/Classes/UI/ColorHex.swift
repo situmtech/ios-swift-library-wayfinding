@@ -1,9 +1,6 @@
 import Foundation
 
 extension UIColor {
-    static let primary: UIColor = UIColor(hex: "#283380FF")!
-    static let primaryDiminished: UIColor = UIColor(hex: "#283380FF")!.withAlphaComponent(0.5)
-    
     convenience init?(hex: String) {
         if hex.count == 6{
             self.init(sixDigitStringHex:hex)

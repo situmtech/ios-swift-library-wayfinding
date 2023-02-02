@@ -110,7 +110,6 @@
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Use remote configuration" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8Dl-6u-dKQ">
                                 <rect key="frame" x="89" y="329.5" width="193.5" height="20.5"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="mEa-mC-cKL">
@@ -122,7 +121,6 @@
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Use fake locations" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UuQ-hk-WAB">
                                 <rect key="frame" x="89" y="380.5" width="139.5" height="20.5"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                                 <attributedString key="userComments">
                                     <fragment content="#bc-ignore!"/>
@@ -146,7 +144,6 @@
                                     <constraint firstAttribute="width" constant="131" id="r59-ks-3Xh"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                                 <attributedString key="userComments">
                                     <fragment content="#bc-ignore!"/>
@@ -154,7 +151,7 @@
                             </label>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="rGn-7e-utf"/>
-                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="backgroundColor" systemColor="secondarySystemBackgroundColor"/>
                         <gestureRecognizers/>
                         <constraints>
                             <constraint firstItem="ieK-q5-HVl" firstAttribute="top" secondItem="LYZ-5T-B5U" secondAttribute="bottom" constant="30" id="1Uq-iX-031"/>
@@ -210,7 +207,6 @@
                             </view>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="9lI-Er-HH3"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="ff5-Rh-MIl" firstAttribute="leading" secondItem="9lI-Er-HH3" secondAttribute="leading" id="5kj-lb-zcp"/>
                             <constraint firstItem="ff5-Rh-MIl" firstAttribute="trailing" secondItem="9lI-Er-HH3" secondAttribute="trailing" id="kUQ-fk-rHN"/>
@@ -229,6 +225,9 @@
         </scene>
     </scenes>
     <resources>
+        <systemColor name="secondarySystemBackgroundColor">
+            <color red="0.94901960784313721" green="0.94901960784313721" blue="0.96862745098039216" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
