@@ -53,9 +53,24 @@ import GoogleMaps
     /// Boolean to show or hide positioning button
     private (set) var positioningFabVisible: Bool = true
 
+    /// Float value that determines the minimum value the zoom level of the camera can have.
+    private (set) var minZoom: Float = -1
+    
+    /// Float value that determines the maximum value the zoom level of the camera can have.
+    private (set) var maxZoom: Float = -1
+    
     // private(set) var orgDetails: OrganizationTheme?
     private override init() {
 
+    }
+    
+    /// getter method to retrieve max zoom value. In case minZoom is greater than max zoom, min zoom will be returned instead. 
+    @objc public func getMaxZoom() -> Float {
+        if (minZoom > maxZoom) {
+            return minZoom
+        }
+        
+        return maxZoom
     }
 
 
@@ -176,6 +191,30 @@ import GoogleMaps
             instance.positioningFabVisible = positioningFabVisible
             return self
         }
+        
+        /** Min zoom that will be set on the underlying map.
+         * This method inherits all the technical considerations that applies to the underlying map
+         * (see <a href="https://developers.google.com/maps/documentation/ios-sdk/reference/interface_g_m_s_map_view">GMSMapView Class Reference</a>).
+
+         * @param minZoomLevel Min zoom preference.
+         */
+        @discardableResult
+        @objc public func setMinZoom(minZoom: Float) -> Builder {
+            instance.minZoom = minZoom
+            return self
+        }
+        
+        /** Max zoom that will be set on the underlying map.
+         * This method inherits all the technical considerations that applies to the underlying map
+         * (see <a href="https://developers.google.com/maps/documentation/ios-sdk/reference/interface_g_m_s_map_view">GMSMapView Class Reference</a>).
+
+         * @param maxZoom Max zoom preference.
+         */
+        @discardableResult
+        @objc public func setMaxZoom(maxZoom: Float) -> Builder {
+            instance.maxZoom = maxZoom
+            return self
+        }
 
         /// Returns an instance of LibrarySettings
         @objc public func build() -> LibrarySettings {
@@ -226,6 +265,10 @@ import GoogleMaps
             builderCopy.setFloorsListVisible(floorsListVisible: settings.floorsListVisible)
             
             builderCopy.setPositioningFabVisible(positioningFabVisible: settings.positioningFabVisible)
+            
+            builderCopy.setMinZoom(minZoom: settings.minZoom)
+            
+            builderCopy.setMaxZoom(maxZoom: settings.maxZoom)
 
             return builderCopy
         }

@@ -12,6 +12,7 @@ import os
 import SitumSDK
 
 let SecondsBetweenAlerts = 30.0
+let SitumURL = "https://dashboard.situm.com"
 
 class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITableViewDataSource, UITableViewDelegate, PositioningView, PositioningController {
     //MARK PositioningController protocol variables
@@ -272,6 +273,7 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
         mapView.delegate = self
         lastBearing = 0.0
         lastAnimatedBearing = 0.0
+        
         let zoom: Float = actualZoom > 0.0 ? actualZoom : 18.0
         
         let latitude: CLLocationDegrees
@@ -286,7 +288,24 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
         }
         
         let camera = GMSCameraPosition.camera(withLatitude: latitude, longitude: longitude, zoom: zoom)
+        // Check if values are correct (!= -1). Otherwise it could break the app.
+        var zoomValues = minMaxZoomValues()
+        mapView.setMinZoom(zoomValues.minZoom, maxZoom: zoomValues.maxZoom)
         mapView.camera = camera
+    }
+
+    func minMaxZoomValues() -> (minZoom: Float, maxZoom: Float) {
+        var minZoom = self.library!.settings!.minZoom
+        if minZoom <= 0 || minZoom < kGMSMinZoomLevel {
+            minZoom = kGMSMinZoomLevel
+        }
+        
+        var maxZoom = self.library!.settings!.maxZoom
+        if (maxZoom <= 0 || maxZoom <= minZoom || maxZoom > kGMSMaxZoomLevel) {
+            maxZoom = kGMSMaxZoomLevel
+        }
+
+        return (minZoom, maxZoom)
     }
     
     func initializePositioningUIElements() {
@@ -439,7 +458,11 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
         self.containerInfoBarMap?.setLabels(primary: self.buildingName)
         if UIColorsTheme.organizationTheme?.logo != nil {
             // Bring the image and save it on cache
-            let logoUrl = "https://dashboard.situm.es" + UIColorsTheme.organizationTheme!.logo.direction
+            if (library?.settings?.useDashboardTheme == false) {
+                return
+            }
+            
+            let logoUrl = SitumURL + UIColorsTheme.organizationTheme!.logo.direction
             let data = NSData(contentsOf: URL(string: logoUrl)!) as Data?
             if let data = data {
                 let image = UIImage.init(data: data)
@@ -1190,7 +1213,7 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
     }
     
     func prepareCamera(building: SITBuilding) -> SITCameraOptions {
-        return SITCameraOptions(minZoom: self.mapView.camera.zoom, maxZoom: self.mapView.maxZoom, southWestCoordinate: building.bounds().southWest, northEastCooordinate: building.bounds().northEast)
+        return SITCameraOptions(minZoom: self.library!.settings!.minZoom, maxZoom: self.library!.settings!.maxZoom, southWestCoordinate: building.bounds().southWest, northEastCooordinate: building.bounds().northEast)
     }
     
     func lockCamera(options: SITCameraOptions) {
@@ -1199,7 +1222,22 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
         self.mapView.cameraTargetBounds = bounds
         let update = GMSCameraUpdate.fit(bounds, withPadding: 0.0)
         self.mapView.moveCamera(update)
-        self.mapView.setMinZoom(self.mapView.camera.zoom - 0.1, maxZoom: self.mapView.maxZoom)
+
+        // Determine if values are outside min/max range. Cap zooms to min/max values
+        var lockedMinZoom = self.mapView.camera.zoom - 0.1
+        var lockedMaxZoom = self.mapView.maxZoom
+
+        let zoomValues = minMaxZoomValues()
+        
+        if (lockedMinZoom < zoomValues.minZoom) {
+            lockedMinZoom = zoomValues.minZoom
+        }
+        
+        if (lockedMaxZoom > zoomValues.maxZoom) {
+            lockedMaxZoom = zoomValues.maxZoom
+        }
+
+        self.mapView.setMinZoom(lockedMinZoom, maxZoom: lockedMaxZoom)
     }
     
     func unlockCamera() {
