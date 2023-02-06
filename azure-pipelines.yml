@@ -23,7 +23,6 @@ resources:
     type: bitbucket
     endpoint: Bitbucket - sistemas
     name: situm/sys-kubernetes-templates.git
-    ref: 'feature/SIS-604'
 
 pool:
   vmImage: 'macOS-11'
@@ -41,7 +40,7 @@ steps:
     properties_file: 'scripts/framework.properties'
     prepare_ndk: false
 
-- ${{ if ne(variables['Build.SourceBranchName'], 'SIS-604-master') }}:
+- ${{ if ne(variables['Build.SourceBranchName'], 'master') }}:
   - task: InstallAppleCertificate@2
     inputs:
       certSecureFile: Certificados.p12
@@ -72,7 +71,7 @@ steps:
         xcodeVersion: $(xcodeVersion)
 
 
-- ${{ if eq(variables['Build.SourceBranchName'], 'SIS-604-master') }}:
+- ${{ if eq(variables['Build.SourceBranchName'], 'master') }}:
     - template: azure-templates/publish_release.yml@sys_kubernetes_templates
       parameters:
         bitbucket:
