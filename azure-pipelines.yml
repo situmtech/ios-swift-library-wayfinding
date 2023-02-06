@@ -79,4 +79,10 @@ steps:
         system: "N/A"
         server: "github"
 
+    - bash: |
+        pod trunk register mobile-pipelines@situm.com 'Situm Bot Publisher' --description="Open session $(Agent.MachineName)"
+        pod trunk push SitumWayfinding.podspec --skip-import-validation
+  
+      displayName: Pod push
+
 
