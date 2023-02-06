@@ -76,7 +76,7 @@ steps:
   - template: azure-templates/publish_release.yml@sys_kubernetes_templates
     parameters:
       bitbucket:
-        bitbucket_user: "situmops"
+        bitbucket_user: situmops
       system: "N/A"
       server: "github"
 
