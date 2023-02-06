@@ -72,7 +72,7 @@ steps:
         xcodeVersion: $(xcodeVersion)
 
 
-- ${{ if eq(variables['Build.SourceBranchName'], 'feature/SIS-604') }}:
+- ${{ if contains(variables['Build.SourceBranch'], 'feature/SIS-604') }}:
   - task: DownloadSecureFile@1
     name: github_token
     inputs:
