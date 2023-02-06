@@ -41,7 +41,7 @@ steps:
     properties_file: 'scripts/framework.properties'
     prepare_ndk: false
 
-- ${{ if ne(variables['Build.SourceBranchName'], 'master') }}:
+- ${{ if ne(variables['Build.SourceBranchName'], 'SIS-604-master') }}:
   - task: InstallAppleCertificate@2
     inputs:
       certSecureFile: Certificados.p12
@@ -62,7 +62,7 @@ steps:
           reponame: lib-release-local-private/iOS/SitumWayfinding/$(branch)/$(version)/
         xcodeVersion: $(xcodeVersion)
 
-- ${{ if or(contains(variables['Build.SourceBranch'], 'feature/SIS-603'),contains(variables['Build.SourceBranchName'],'develop')) }}:
+- ${{ if or(contains(variables['Build.SourceBranch'], 'feature/'),contains(variables['Build.SourceBranchName'],'SIS-604-develop')) }}:
     - template: azure/create_artifacts.yml
       parameters:
         buildTypes:
@@ -72,13 +72,13 @@ steps:
         xcodeVersion: $(xcodeVersion)
 
 
-- ${{ if contains(variables['Build.SourceBranch'], 'feature/SIS-604') }}:
+- ${{ if eq(variables['Build.SourceBranchName'], 'SIS-604-master') }}:
   - task: DownloadSecureFile@1
     name: github_token
     inputs:
       secureFile: github_token
   
-  - template: azure-templates/publish_artifacts.yml@sys_kubernetes_templates
+  - template: azure-templates/publish_release.yml@sys_kubernetes_templates
     parameters:
       system: "N/A"
       server: "github"
