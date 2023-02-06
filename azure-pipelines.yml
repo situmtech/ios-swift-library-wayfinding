@@ -73,11 +73,11 @@ steps:
 
 
 - ${{ if eq(variables['Build.SourceBranchName'], 'SIS-604-master') }}:
-  - template: azure-templates/publish_release.yml@sys_kubernetes_templates
-    parameters:
-      bitbucket:
-        bitbucket_user: situmops
-      system: "N/A"
-      server: "github"
+    - template: azure-templates/publish_release.yml@sys_kubernetes_templates
+      parameters:
+        bitbucket:
+          bitbucket_user: situmops
+        system: "N/A"
+        server: "github"
 
 
