@@ -38,9 +38,9 @@ class ViewController: UIViewController {
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: cellId)
 
         credentials = Credentials(
-            user: "core@situm.com",
-            apiKey: "65d3e2b743eb921babe860bcc55247bf34bdc42d7c0093981db64dde9cda080c",
-            googleMapsApiKey: "AIzaSyCVV1Fu7ZzWK4jJcaOcISRkuvxAt1hPhjw"
+            user: "YOUR_USER",
+            apiKey: "YOUR_SITUM_APIKEY",
+            googleMapsApiKey: "YOUR_GOOGLEMAPS_APIKEY"
         )
         buildingId = "12469"
         location = (lat: "YOUR_LATITUDE", lng: "YOUR_LONGITUDE")
