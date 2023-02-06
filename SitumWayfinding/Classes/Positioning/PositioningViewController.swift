@@ -42,6 +42,12 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
     weak var indicationsViewController: IndicationsViewController?
     @IBOutlet weak var navigationButton: UIButton!
     
+    //Find my car
+//    @IBOutlet weak var navigateToCarButton: UIButton!
+    @IBOutlet weak var positionPickerImage: UIImageView!
+//    @IBOutlet weak var findMyCarButton: UIButton!
+    @IBOutlet weak var findMyCarView: UIView!
+    
     @IBOutlet weak var infoBarMap: UIView!
     weak var containerInfoBarMap: InfoBarMapViewController?
     @IBOutlet weak var infoBarNavigation: UIView!
@@ -80,6 +86,11 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
     var polyline: Array<GMSPolyline> = []
     var routePath: Array<GMSMutablePath> = []
     var loadFinished: Bool = false
+    // Custom markerses
+    var customMarkerPosition: SITPoint?
+    let customMarker = GMSMarker()
+    // Customization
+    var organizationTheme: SITOrganizationTheme?
     //Search
     @IBOutlet weak var searchBar: UISearchBar!
     var searchResultsController: SearchResultsTableViewController?
@@ -315,6 +326,7 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
         initializeNavigationButton()
         initializeInfoBar()
         prepareCenterButton()
+//        initializeFindMyCarButtons()
         numberBeaconsRangedView.isHidden = true
     }
 
@@ -431,6 +443,43 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
         
         return indexPath
     }
+    
+    func addCustomMarker(position: SITPoint) {
+        customMarkerPosition = position
+        if let floor = orderedFloors(buildingInfo: buildingInfo)?[self.selectedLevelIndex] {
+            displayMarkers(forFloor: floor, isUserNavigating: self.isUserNavigating())
+        }
+    }
+    
+    func removeCustomMarker() {
+        customMarkerPosition = nil
+        if let floor = orderedFloors(buildingInfo: buildingInfo)?[self.selectedLevelIndex] {
+            displayMarkers(forFloor: floor, isUserNavigating: self.isUserNavigating())
+        }
+    }
+    
+//    func initializeFindMyCarButtons() {
+//        // Find my car menu
+//        findMyCarButton.layer.cornerRadius = 0.5 * findMyCarButton.bounds.size.width
+//        findMyCarButton.layer.masksToBounds = false
+//        findMyCarButton.layer.shadowColor = UIColor.darkGray.cgColor
+//        findMyCarButton.layer.shadowOpacity = 0.8
+//        findMyCarButton.layer.shadowRadius = 8.0
+//        findMyCarButton.layer.shadowOffset = CGSize(width: 7.0, height: 7.0)
+//        findMyCarButton.isHidden = false
+//        findMyCarButton.backgroundColor = primaryColor(defaultColor: UIColor.primary)
+//
+//        // Navigate to car button
+//        navigateToCarButton.layer.cornerRadius = 0.5 * navigateToCarButton.bounds.size.width
+//        navigateToCarButton.layer.masksToBounds = false
+//        navigateToCarButton.layer.shadowColor = UIColor.darkGray.cgColor
+//        navigateToCarButton.layer.shadowOpacity = 0.8
+//        navigateToCarButton.layer.shadowRadius = 8.0
+//        navigateToCarButton.layer.shadowOffset = CGSize(width: 7.0, height: 7.0)
+//        navigateToCarButton.isHidden = false
+//        navigateToCarButton.backgroundColor = primaryColor(defaultColor: UIColor.primary)
+//
+//    }
     
     func initializeNavigationButton() {
         navigationButton.layer.cornerRadius = 0.5 * navigationButton.bounds.size.width
@@ -695,6 +744,10 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
         }
     }
     
+//    func changeFindMyCarButtonVisibility(isVisible visible: Bool) {
+//        findMyCarButton.isHidden = !visible
+//    }
+    
     //MARK: MapViewDelegate
     func mapView(_ mapView: GMSMapView, willMove gesture: Bool) {
         Logger.logDebugMessage("Map will move with gesture: \(gesture)")
@@ -793,6 +846,24 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
         Logger.logInfoMessage("Navigation Button Has Been pressed")
         startNavigationByUser()
     }
+    
+//    @IBAction func findMyCarButtonPressed(_ sender: Any) {
+//        Logger.logInfoMessage("Find my car button Has Been pressed")
+//        self.findMyCarMode()
+//    }
+//
+//    @IBAction func navigateCarButtonPressed(_ sender: Any) {
+//        Logger.logInfoMessage("Navigate to car button Has Been pressed")
+//        if (customMarkerPosition == nil) {
+//            return
+//        }
+//
+//        if let floorId = customMarkerPosition?.floorIdentifier {
+//            if let selectedFloor = orderedFloors(buildingInfo: buildingInfo)?.first(where: {$0.identifier == floorId}) {
+//                startNavigation(to: customMarkerPosition!.coordinate(), in: selectedFloor)
+//            }
+//        }
+//    }
     
     func startNavigationByUser() {
         self.startNavigation()
@@ -1365,6 +1436,24 @@ extension PositioningViewController {
             renderer.displayPoiMarkers(forFloor: floor)
             if let customMarker = lastCustomMarker {
                 renderer.displayLongPressMarker(customMarker, forFloor: floor)
+            }
+            
+            if let customPosition = customMarkerPosition {
+                if (customPosition.floorIdentifier == floor.identifier) {
+                    let icon = self.scaledImage(
+                        image: UIImage(named: "change_floor")!,
+                        scaledToSize: CGSize(width: 40.0, height: 40.0)
+                    )
+                    let markerView = UIImageView(image: icon)
+                    customMarker.iconView = markerView
+                    customMarker.position = CLLocationCoordinate2D(latitude: customPosition.coordinate().latitude, longitude: customPosition.coordinate().longitude)
+                    
+                    customMarker.map = self.mapView
+                } else {
+                    customMarker.map = nil
+                }
+            } else {
+                customMarker.map = nil
             }
             
             // in the future selection should be encapsulated in some other class to abstract Google maps

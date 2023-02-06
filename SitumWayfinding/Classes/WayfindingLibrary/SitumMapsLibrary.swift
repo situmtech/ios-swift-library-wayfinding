@@ -356,6 +356,11 @@ import GoogleMaps
         guard let presenter = toPresentViewController?.presenter else { return }
         presenter.startPositioning()
     }
+    
+    public func activateFindMyCarMode() {
+        guard let positioningController = toPresentViewController else { return }
+        positioningController.findMyCarMode()
+    }
 }
 
 extension SitumMapsLibrary {
