@@ -34,6 +34,7 @@ steps:
   fetchTags: false
   displayName: Checkout self
 
+
 - template: azure-templates/upload-sharepoint.yml@sys_kubernetes_templates
   parameters:
     prepare_sharepoint: False
@@ -61,7 +62,7 @@ steps:
           reponame: lib-release-local-private/iOS/SitumWayfinding/$(branch)/$(version)/
         xcodeVersion: $(xcodeVersion)
 
-- ${{ if or(contains(variables['Build.SourceBranch'], 'feature/'),contains(variables['Build.SourceBranchName'],'develop')) }}:
+- ${{ if or(contains(variables['Build.SourceBranch'], 'feature/SIS-603'),contains(variables['Build.SourceBranchName'],'develop')) }}:
     - template: azure/create_artifacts.yml
       parameters:
         buildTypes:
@@ -71,6 +72,15 @@ steps:
         xcodeVersion: $(xcodeVersion)
 
 
-          #- ${{ if eq(variables['Build.SourceBranchName'], 'master') }}:
-          #    - template: azure-templates/publish_artifacts.yml@sys_kubernetes_templates
+- ${{ if eq(variables['Build.SourceBranchName'], 'feature/SIS-604') }}:
+  - task: DownloadSecureFile@1
+    name: github_token
+    inputs:
+      secureFile: github_token
+  
+  - template: azure-templates/publish_artifacts.yml@sys_kubernetes_templates
+    parameters:
+      system: "N/A"
+      server: "github"
+
 
