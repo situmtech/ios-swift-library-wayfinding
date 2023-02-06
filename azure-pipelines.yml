@@ -73,11 +73,6 @@ steps:
 
 
 - ${{ if eq(variables['Build.SourceBranchName'], 'SIS-604-master') }}:
-  - task: DownloadSecureFile@1
-    name: github_token
-    inputs:
-      secureFile: github_token
-  
   - template: azure-templates/publish_release.yml@sys_kubernetes_templates
     parameters:
       system: "N/A"
