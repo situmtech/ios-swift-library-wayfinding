@@ -80,6 +80,13 @@ class MarkerRenderer {
         }
     }
     
+    func displayCustomMarker(_ marker: SitumMarker, forFloor floor: SITFloor) {
+        if floor.identifier == marker.floorIdentifier {
+            markers.append(marker)
+            insertMarkerInGoogleMaps(marker: marker)
+        }
+    }
+    
     func displayOnlyDestinationMarker(_ marker: SitumMarker, forFloor floor: SITFloor) {
         removeMarkers()
         if let markerCluster = markerClustering {

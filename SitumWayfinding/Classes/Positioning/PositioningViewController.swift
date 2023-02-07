@@ -43,10 +43,9 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
     @IBOutlet weak var navigationButton: UIButton!
     
     //Find my car
-//    @IBOutlet weak var navigateToCarButton: UIButton!
     @IBOutlet weak var positionPickerImage: UIImageView!
-//    @IBOutlet weak var findMyCarButton: UIButton!
-    @IBOutlet weak var findMyCarView: UIView!
+    @IBOutlet weak var findMyCarAcceptButton: UIButton!
+    @IBOutlet weak var findMyCarCancelButton: UIButton!
     
     @IBOutlet weak var infoBarMap: UIView!
     weak var containerInfoBarMap: InfoBarMapViewController?
@@ -87,7 +86,7 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
     var routePath: Array<GMSMutablePath> = []
     var loadFinished: Bool = false
     // Custom markerses
-    var customMarkerPosition: SITPoint?
+    var customMarkerPosition: CustomMarkerPosition?
     let customMarker = GMSMarker()
     // Customization
     var organizationTheme: SITOrganizationTheme?
@@ -108,6 +107,10 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
     var changeOfFloorMarker = GMSMarker()
     var tileProvider: TileProvider!
     var preserveStateInNewViewAppeareance = false
+    // Find my car mode variables
+    var findMyCarModeActive = false
+    var carPositionKey = "car_parking_position"
+    var customMarkerKeyPrefix = "custom_position_"
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -133,6 +136,9 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
         } catch {
             print("Error: Can't load fonts")
         }
+        
+        // TODO JLAQ where should this logic be started?
+        self.customMarkerPosition = retrieveCustomPosition(positionKey: self.carPositionKey)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -326,7 +332,7 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
         initializeNavigationButton()
         initializeInfoBar()
         prepareCenterButton()
-//        initializeFindMyCarButtons()
+        initializeFindMyCarButtons()
         numberBeaconsRangedView.isHidden = true
     }
 
@@ -444,8 +450,35 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
         return indexPath
     }
     
-    func addCustomMarker(position: SITPoint) {
-        customMarkerPosition = position
+    private func retrieveCustomPosition(positionKey: String) -> CustomMarkerPosition? {
+        let customPositionKey = "\(self.customMarkerKeyPrefix)\(self.carPositionKey)"
+        if let data = UserDefaults.standard.data(forKey: customPositionKey) {
+            do {
+                let decoder = JSONDecoder()
+                return try decoder.decode(CustomMarkerPosition.self, from: data)
+
+            } catch {
+                print("Unable to Decode Position (\(error))")
+            }
+        }
+        return nil
+    }
+    
+    
+    func storeCustomPosition(positionKey: String, buildingId: String, floorId: String, lat: Double, lng: Double) {
+        do {
+            customMarkerPosition = CustomMarkerPosition(key: positionKey, buildingId: buildingId, floorId: floorId, latitude: lat, longitude: lng)
+            let encoder = JSONEncoder()
+            let data = try encoder.encode(customMarkerPosition)
+            
+            let customPositionKey = "\(self.customMarkerKeyPrefix)\(self.carPositionKey)"
+            UserDefaults.standard.set(data, forKey: customPositionKey)
+        
+        } catch {
+            print("Unable to Encode Position (\(error))")
+        }
+        
+        // TODO JLAQ is it needed to re-render all markers when storing the new one?
         if let floor = orderedFloors(buildingInfo: buildingInfo)?[self.selectedLevelIndex] {
             displayMarkers(forFloor: floor, isUserNavigating: self.isUserNavigating())
         }
@@ -458,28 +491,27 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
         }
     }
     
-//    func initializeFindMyCarButtons() {
-//        // Find my car menu
-//        findMyCarButton.layer.cornerRadius = 0.5 * findMyCarButton.bounds.size.width
-//        findMyCarButton.layer.masksToBounds = false
-//        findMyCarButton.layer.shadowColor = UIColor.darkGray.cgColor
-//        findMyCarButton.layer.shadowOpacity = 0.8
-//        findMyCarButton.layer.shadowRadius = 8.0
-//        findMyCarButton.layer.shadowOffset = CGSize(width: 7.0, height: 7.0)
-//        findMyCarButton.isHidden = false
-//        findMyCarButton.backgroundColor = primaryColor(defaultColor: UIColor.primary)
-//
-//        // Navigate to car button
-//        navigateToCarButton.layer.cornerRadius = 0.5 * navigateToCarButton.bounds.size.width
-//        navigateToCarButton.layer.masksToBounds = false
-//        navigateToCarButton.layer.shadowColor = UIColor.darkGray.cgColor
-//        navigateToCarButton.layer.shadowOpacity = 0.8
-//        navigateToCarButton.layer.shadowRadius = 8.0
-//        navigateToCarButton.layer.shadowOffset = CGSize(width: 7.0, height: 7.0)
-//        navigateToCarButton.isHidden = false
-//        navigateToCarButton.backgroundColor = primaryColor(defaultColor: UIColor.primary)
-//
-//    }
+    func initializeFindMyCarButtons() {
+        // Find my car menu
+        findMyCarAcceptButton.layer.cornerRadius = 0.5 * findMyCarAcceptButton.bounds.size.width
+        findMyCarAcceptButton.layer.masksToBounds = false
+        findMyCarAcceptButton.layer.shadowColor = UIColor.darkGray.cgColor
+        findMyCarAcceptButton.layer.shadowOpacity = 0.8
+        findMyCarAcceptButton.layer.shadowRadius = 8.0
+        findMyCarAcceptButton.layer.shadowOffset = CGSize(width: 7.0, height: 7.0)
+        findMyCarAcceptButton.isHidden = true
+//        findMyCarAcceptButton.backgroundColor = primaryColor(defaultColor: UIColor.primary)
+
+        // Navigate to car button
+        findMyCarCancelButton.layer.cornerRadius = 0.5 * findMyCarCancelButton.bounds.size.width
+        findMyCarCancelButton.layer.masksToBounds = false
+        findMyCarCancelButton.layer.shadowColor = UIColor.darkGray.cgColor
+        findMyCarCancelButton.layer.shadowOpacity = 0.8
+        findMyCarCancelButton.layer.shadowRadius = 8.0
+        findMyCarCancelButton.layer.shadowOffset = CGSize(width: 7.0, height: 7.0)
+        findMyCarCancelButton.isHidden = true
+
+    }
     
     func initializeNavigationButton() {
         navigationButton.layer.cornerRadius = 0.5 * navigationButton.bounds.size.width
@@ -847,7 +879,30 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
         startNavigationByUser()
     }
     
-//    @IBAction func findMyCarButtonPressed(_ sender: Any) {
+    @IBAction func findMyCarAcceptButtonTapped(_ sender: Any) {
+        self.showPositioningUI()
+        
+        
+        // parent.renderer.displayLongPressMarker(customMarker, forFloor: floor)
+        let markerPosition = self.mapView.projection.coordinate(for: CGPoint(x: self.mapView.center.x, y: self.mapView.center.y))
+        if let floor = self.orderedFloors(buildingInfo: self.buildingInfo)?[self.selectedLevelIndex] {
+            if let buildingInfo = self.buildingInfo {
+                self.storeCustomPosition(
+                    positionKey: self.carPositionKey,
+                    buildingId: buildingInfo.building.identifier,
+                    floorId: floor.identifier,
+                    lat: markerPosition.latitude,
+                    lng: markerPosition.longitude
+                )
+            }
+        }
+    }
+    
+    
+    @IBAction func findMyCarCancelButtonTapped(_ sender: Any) {
+        self.showPositioningUI()
+    }
+    //    @IBAction func findMyCarButtonPressed(_ sender: Any) {
 //        Logger.logInfoMessage("Find my car button Has Been pressed")
 //        self.findMyCarMode()
 //    }
@@ -1367,9 +1422,9 @@ extension PositioningViewController {
         CATransaction.setValue(0.5, forKey: kCATransactionAnimationDuration)
         CATransaction.setCompletionBlock({
             // self.mapView.selectedMarker = marker.gmsMarker // tooltip sobre POI
-            if marker.isPoiMarker {
+//            if marker.isPoiMarker {
                 self.poiMarkerWasSelected(poiMarker: marker)
-            }
+//            }
             self.lastSelectedMarker = marker
             success()
         })
@@ -1439,22 +1494,33 @@ extension PositioningViewController {
             }
             
             if let customPosition = customMarkerPosition {
-                if (customPosition.floorIdentifier == floor.identifier) {
-                    let icon = self.scaledImage(
-                        image: UIImage(named: "change_floor")!,
-                        scaledToSize: CGSize(width: 40.0, height: 40.0)
-                    )
-                    let markerView = UIImageView(image: icon)
-                    customMarker.iconView = markerView
-                    customMarker.position = CLLocationCoordinate2D(latitude: customPosition.coordinate().latitude, longitude: customPosition.coordinate().longitude)
-                    
-                    customMarker.map = self.mapView
-                } else {
-                    customMarker.map = nil
+                if let indexPath = self.getIndexPath(floorId: customPosition.floorId)?.row {
+                    if let markerFloor = orderedFloors(buildingInfo: buildingInfo)?[indexPath] {
+                        // TODO JLAQ do not create a new instance of situm marker on each render
+                        let situmMarker = SitumMarker(coordinate: CLLocationCoordinate2D(latitude: customPosition.latitude, longitude: customPosition.longitude), floor: markerFloor)
+                        renderer.displayCustomMarker(situmMarker, forFloor: floor)
+                    }
                 }
-            } else {
-                customMarker.map = nil
             }
+            
+            
+//            if let customPosition = customMarkerPosition {
+//                if (customPosition.floorId == floor.identifier) {
+//                    let icon = self.scaledImage(
+//                        image: UIImage(named: "change_floor")!,
+//                        scaledToSize: CGSize(width: 40.0, height: 40.0)
+//                    )
+//                    let markerView = UIImageView(image: icon)
+//                    customMarker.iconView = markerView
+//                    customMarker.position = CLLocationCoordinate2D(latitude: customPosition.latitude, longitude: customPosition.longitude)
+//
+//                    customMarker.map = self.mapView
+//                } else {
+//                    customMarker.map = nil
+//                }
+//            } else {
+//                customMarker.map = nil
+//            }
             
             // in the future selection should be encapsulated in some other class to abstract Google maps
             for marker in renderer.markers {

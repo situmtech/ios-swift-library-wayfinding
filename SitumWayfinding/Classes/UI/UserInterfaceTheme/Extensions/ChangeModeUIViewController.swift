@@ -28,20 +28,27 @@ extension PositioningViewController {
     }
     
     private func displayFindMyCarUIElements() {
-        findMyCarView.isHidden = false
-        findMyCarButton.isHidden = true
-        navigateToCarButton.isHidden = true
+//        findMyCarView.isHidden = false
+//        findMyCarButton.isHidden = true
+//        navigateToCarButton.isHidden = true
         positionPickerImage.isHidden = false
+        findMyCarModeActive = true
+        findMyCarAcceptButton.isHidden = false
+        findMyCarCancelButton.isHidden = false
     }
-    
+
     private func hideFindMyCarUIElements() {
-        findMyCarView.isHidden = true
-        findMyCarButton.isHidden = false
-        navigateToCarButton.isHidden = false
-        positionPickerImage.isHidden = true
+//        findMyCarView?.isHidden = true
+//        findMyCarButton.isHidden = false
+//        navigateToCarButton.isHidden = false
+        positionPickerImage?.isHidden = true
+        findMyCarModeActive = false
+        findMyCarAcceptButton.isHidden = true
+        findMyCarCancelButton.isHidden = true
     }
 
     func findMyCarMode() {
+        findMyCarModeActive = true
         mapContainerViewTopConstraint.constant = 44
         infoBarMap.isHidden = true
         infoBarNavigation.isHidden = true
