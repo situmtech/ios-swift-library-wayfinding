@@ -152,7 +152,11 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
     }
 
     func initializeViewBeforeAppearing(){
-        positionDrawer = GoogleMapsPositionDrawer(mapView: mapView)
+        if positionDrawer == nil {
+            positionDrawer = GoogleMapsPositionDrawer(mapView: mapView)
+        } else {
+            positionDrawer?.makeUserMarkerVisible(visible: false)
+        }
         let loading = NSLocalizedString("alert.loading.title",
             bundle: SitumMapsLibrary.bundle,
             comment: "Alert title when loading library")
