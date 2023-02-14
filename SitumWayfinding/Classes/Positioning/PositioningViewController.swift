@@ -41,6 +41,7 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
     @IBOutlet weak var indicationsView: UIView!
     weak var indicationsViewController: IndicationsViewController?
     @IBOutlet weak var navigationButton: UIButton!
+    @IBOutlet weak var deletePoiButton: UIButton!
     
     //Find my car
     @IBOutlet weak var positionPickerImage: UIImageView!
@@ -86,7 +87,7 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
     var routePath: Array<GMSMutablePath> = []
     var loadFinished: Bool = false
     // Custom markerses
-    var customMarkerPosition: CustomMarkerPosition?
+    var customPoi: CustomPoi?
     let customMarker = GMSMarker()
     // Customization
     var organizationTheme: SITOrganizationTheme?
@@ -110,7 +111,7 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
     // Find my car mode variables
     var findMyCarModeActive = false
     var carPositionKey = "car_parking_position"
-    var customMarkerKeyPrefix = "custom_position_"
+    var customPoiManager = CustomPoiManager()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -129,6 +130,7 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
         }
 
         self.initializeChangeOfFloorMarker()
+        self.retrieveCustomPoi(poiKey: self.carPositionKey)
 
         do {
             let fonts = ["Roboto-Black", "Roboto-Bold", "Roboto-Medium", "Roboto-Regular"]
@@ -136,9 +138,7 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
         } catch {
             print("Error: Can't load fonts")
         }
-        
-        // TODO JLAQ where should this logic be started?
-        self.customMarkerPosition = retrieveCustomPosition(positionKey: self.carPositionKey)
+
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -330,6 +330,7 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
         hideCenterButton()
         initializeLevelIndicator()
         initializeNavigationButton()
+        initializeDeletePoiButton()
         initializeInfoBar()
         prepareCenterButton()
         initializeFindMyCarButtons()
@@ -450,48 +451,33 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
         return indexPath
     }
     
-    private func retrieveCustomPosition(positionKey: String) -> CustomMarkerPosition? {
-        let customPositionKey = "\(self.customMarkerKeyPrefix)\(self.carPositionKey)"
-        if let data = UserDefaults.standard.data(forKey: customPositionKey) {
-            do {
-                let decoder = JSONDecoder()
-                return try decoder.decode(CustomMarkerPosition.self, from: data)
-
-            } catch {
-                print("Unable to Decode Position (\(error))")
-            }
-        }
-        return nil
+    private func retrieveCustomPoi(poiKey: String) {
+        self.customPoi =  customPoiManager.get(poiKey: poiKey)
     }
     
-    
-    func storeCustomPosition(positionKey: String, buildingId: String, floorId: String, lat: Double, lng: Double) {
-        do {
-            customMarkerPosition = CustomMarkerPosition(key: positionKey, buildingId: buildingId, floorId: floorId, latitude: lat, longitude: lng)
-            let encoder = JSONEncoder()
-            let data = try encoder.encode(customMarkerPosition)
-            
-            let customPositionKey = "\(self.customMarkerKeyPrefix)\(self.carPositionKey)"
-            UserDefaults.standard.set(data, forKey: customPositionKey)
+    private func deleteCustomPoi(poiKey: String) {
+        self.customPoi = nil
+        customPoiManager.remove(poiKey: poiKey)
         
-        } catch {
-            print("Unable to Encode Position (\(error))")
-        }
+        deselect(marker: lastSelectedMarker)
         
-        // TODO JLAQ is it needed to re-render all markers when storing the new one?
         if let floor = orderedFloors(buildingInfo: buildingInfo)?[self.selectedLevelIndex] {
             displayMarkers(forFloor: floor, isUserNavigating: self.isUserNavigating())
         }
     }
     
-    func removeCustomMarker() {
-        customMarkerPosition = nil
+    
+    func storeCustomPoi(poiKey: String, buildingId: String, floorId: String, lat: Double, lng: Double) {
+        customPoi = CustomPoi(key: poiKey, buildingId: buildingId, floorId: floorId, latitude: lat, longitude: lng)
+        
+        customPoiManager.store(customPoi: customPoi!)
+        
         if let floor = orderedFloors(buildingInfo: buildingInfo)?[self.selectedLevelIndex] {
             displayMarkers(forFloor: floor, isUserNavigating: self.isUserNavigating())
         }
     }
     
-    func initializeFindMyCarButtons() {
+    private func initializeFindMyCarButtons() {
         // Find my car menu
         findMyCarAcceptButton.layer.cornerRadius = 0.5 * findMyCarAcceptButton.bounds.size.width
         findMyCarAcceptButton.layer.masksToBounds = false
@@ -519,6 +505,16 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
         navigationButton.setIcon(imageName: "situm_navigate_action", for: .normal)
         customizeNavigationButtonColor()
         navigationButton.isHidden = true
+    }
+    
+    private func initializeDeletePoiButton() {
+        deletePoiButton.layer.cornerRadius = 0.5 * deletePoiButton.bounds.size.width
+        deletePoiButton.layer.masksToBounds = false
+        deletePoiButton.setIcon(imageName: "situm_navigate_action", for: .normal)
+        deletePoiButton.setSitumShadow(colorTheme: uiColorsTheme)
+        let buttonColors =  ButtonColors(iconTintColor: uiColorsTheme.backgroundedButtonsIconstTintColor, backgroundColor: UIColor(red: 255, green: 0, blue: 0))
+        deletePoiButton.adjustColors(buttonColors)
+        deletePoiButton.isHidden = true
     }
 
     func customizeNavigationButtonColor(){
@@ -773,6 +769,15 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
             navigationButton.isHidden = false
         } else {
             navigationButton.isHidden = true
+            changeDeletePoiButtonVisibility(isVisible: false)
+        }
+    }
+    
+    func changeDeletePoiButtonVisibility(isVisible visible: Bool) {
+        if (visible) {
+            deletePoiButton.isHidden = false
+        } else {
+            deletePoiButton.isHidden = true
         }
     }
     
@@ -879,16 +884,18 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
         startNavigationByUser()
     }
     
+    @IBAction func deletePoiButtonPressed(_ sender: Any) {
+        deleteCustomPoi(poiKey: self.carPositionKey)
+    }
+    
     @IBAction func findMyCarAcceptButtonTapped(_ sender: Any) {
         self.showPositioningUI()
         
-        
-        // parent.renderer.displayLongPressMarker(customMarker, forFloor: floor)
         let markerPosition = self.mapView.projection.coordinate(for: CGPoint(x: self.mapView.center.x, y: self.mapView.center.y))
         if let floor = self.orderedFloors(buildingInfo: self.buildingInfo)?[self.selectedLevelIndex] {
             if let buildingInfo = self.buildingInfo {
-                self.storeCustomPosition(
-                    positionKey: self.carPositionKey,
+                self.storeCustomPoi(
+                    poiKey: self.carPositionKey,
                     buildingId: buildingInfo.building.identifier,
                     floorId: floor.identifier,
                     lat: markerPosition.latitude,
@@ -1409,6 +1416,21 @@ extension PositioningViewController {
         select(marker: marker, success: {})
     }
     
+    func selectCustomPoi(success: @escaping () -> Void) throws {
+        if (customPoi != nil) {
+            guard let indexPath = getIndexPath(floorId: customPoi!.floorId),
+                let renderer = markerRenderer else { return }
+            
+            select(floor: indexPath)
+            if let customMarker = renderer.searchCustomMarker() {
+                select(marker: customMarker, success: success)
+            } else {
+                // TODO throw custom error
+                print("No custom POI stored")
+            }
+        }
+    }
+    
     //Imitates actions done by google maps when a user select a marker
     func select(marker: SitumMarker, success: @escaping () -> Void) {
         //TODO Extender para que sexa valido tamen para os custom markers
@@ -1448,6 +1470,9 @@ extension PositioningViewController {
     func poiMarkerWasSelected(poiMarker: SitumMarker) {
         if (!isUserNavigating()) {
             changeNavigationButtonVisibility(isVisible: true)
+            if (poiMarker.isCustomMarker) {
+                changeDeletePoiButtonVisibility(isVisible: true)
+            }
         }
         updateInfoBarLabelsIfNotInsideRoute(mainLabel: poiMarker.poi?.name ?? DEFAULT_POI_NAME,
             secondaryLabel: floorUILabel(with: poiMarker))
@@ -1493,34 +1518,20 @@ extension PositioningViewController {
                 renderer.displayLongPressMarker(customMarker, forFloor: floor)
             }
             
-            if let customPosition = customMarkerPosition {
-                if let indexPath = self.getIndexPath(floorId: customPosition.floorId)?.row {
+            if let storedCustomPoi = customPoi {
+                if let indexPath = self.getIndexPath(floorId: storedCustomPoi.floorId)?.row {
                     if let markerFloor = orderedFloors(buildingInfo: buildingInfo)?[indexPath] {
                         // TODO JLAQ do not create a new instance of situm marker on each render
-                        let situmMarker = SitumMarker(coordinate: CLLocationCoordinate2D(latitude: customPosition.latitude, longitude: customPosition.longitude), floor: markerFloor)
+                        let situmMarker = SitumMarker(
+                            coordinate: CLLocationCoordinate2D(latitude: storedCustomPoi.latitude, longitude: storedCustomPoi.longitude),
+                            floor: markerFloor,
+                            custom: true,
+                            title: "Pruebadejose"
+                        )
                         renderer.displayCustomMarker(situmMarker, forFloor: floor)
                     }
                 }
             }
-            
-            
-//            if let customPosition = customMarkerPosition {
-//                if (customPosition.floorId == floor.identifier) {
-//                    let icon = self.scaledImage(
-//                        image: UIImage(named: "change_floor")!,
-//                        scaledToSize: CGSize(width: 40.0, height: 40.0)
-//                    )
-//                    let markerView = UIImageView(image: icon)
-//                    customMarker.iconView = markerView
-//                    customMarker.position = CLLocationCoordinate2D(latitude: customPosition.latitude, longitude: customPosition.longitude)
-//
-//                    customMarker.map = self.mapView
-//                } else {
-//                    customMarker.map = nil
-//                }
-//            } else {
-//                customMarker.map = nil
-//            }
             
             // in the future selection should be encapsulated in some other class to abstract Google maps
             for marker in renderer.markers {

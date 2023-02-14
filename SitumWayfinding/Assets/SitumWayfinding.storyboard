@@ -208,6 +208,22 @@
                                     <action selector="findMyCarCancelButtonTapped:" destination="Xd8-Bs-mWc" eventType="touchUpInside" id="0r1-Mt-agw"/>
                                 </connections>
                             </button>
+                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" selected="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="blg-ZW-rdT" userLabel="Delete poi button">
+                                <rect key="frame" x="334" y="586" width="60" height="60"/>
+                                <color key="backgroundColor" systemColor="systemRedColor"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="blg-ZW-rdT" secondAttribute="height" multiplier="1:1" id="Rvx-fZ-pbB"/>
+                                    <constraint firstAttribute="width" constant="60" id="egy-9I-UAv"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                                <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <inset key="contentEdgeInsets" minX="5" minY="5" maxX="5" maxY="5"/>
+                                <inset key="imageEdgeInsets" minX="10" minY="10" maxX="10" maxY="10"/>
+                                <state key="normal" image="situm_navigate_action"/>
+                                <connections>
+                                    <action selector="deletePoiButtonPressed:" destination="Xd8-Bs-mWc" eventType="touchUpInside" id="ef2-Jz-Xx1"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
@@ -215,6 +231,7 @@
                             <constraint firstItem="5jv-3Y-QbE" firstAttribute="top" secondItem="v9V-A6-0lh" secondAttribute="bottom" id="6eq-4a-5ot"/>
                             <constraint firstItem="JFM-V3-6Rg" firstAttribute="leading" secondItem="4ox-Qr-DiY" secondAttribute="leading" id="7T2-tt-Tfr"/>
                             <constraint firstItem="5yZ-on-3xh" firstAttribute="centerX" secondItem="4ox-Qr-DiY" secondAttribute="centerX" id="7gS-tb-06s"/>
+                            <constraint firstItem="fnW-Qy-DPF" firstAttribute="top" secondItem="NVD-JK-oYf" secondAttribute="bottom" constant="8" symbolic="YES" id="7uW-J2-QJI"/>
                             <constraint firstItem="aWx-id-saf" firstAttribute="top" secondItem="lGP-Wy-4pP" secondAttribute="bottom" constant="8" symbolic="YES" id="9DK-nL-Sau"/>
                             <constraint firstItem="aWx-id-saf" firstAttribute="trailing" secondItem="4ox-Qr-DiY" secondAttribute="trailingMargin" id="9es-6g-GVT"/>
                             <constraint firstItem="v9V-A6-0lh" firstAttribute="leading" secondItem="4ox-Qr-DiY" secondAttribute="leading" id="Ao0-ui-nZH"/>
@@ -222,9 +239,12 @@
                             <constraint firstItem="5jv-3Y-QbE" firstAttribute="top" secondItem="7Uq-7g-NAV" secondAttribute="bottom" constant="44" id="ElL-xr-qil"/>
                             <constraint firstAttribute="trailing" secondItem="0vU-9Q-0Ee" secondAttribute="trailing" id="FFq-z8-s0x"/>
                             <constraint firstItem="9hw-wj-GeI" firstAttribute="top" secondItem="5jv-3Y-QbE" secondAttribute="bottom" id="J1B-6r-QfW"/>
+                            <constraint firstItem="blg-ZW-rdT" firstAttribute="width" secondItem="blg-ZW-rdT" secondAttribute="height" multiplier="1:1" id="KWb-a6-h6d"/>
                             <constraint firstItem="9hw-wj-GeI" firstAttribute="top" secondItem="pWt-0O-2sz" secondAttribute="bottom" constant="87" id="MFB-fA-gaD"/>
                             <constraint firstItem="JFM-V3-6Rg" firstAttribute="top" secondItem="7Uq-7g-NAV" secondAttribute="bottom" id="MQ3-qj-bha"/>
+                            <constraint firstItem="blg-ZW-rdT" firstAttribute="leading" secondItem="fnW-Qy-DPF" secondAttribute="leading" id="Mek-aH-4YY"/>
                             <constraint firstItem="mRp-tT-Z7z" firstAttribute="bottom" secondItem="fnW-Qy-DPF" secondAttribute="bottom" id="Nhz-eN-tAw"/>
+                            <constraint firstItem="NVD-JK-oYf" firstAttribute="top" secondItem="blg-ZW-rdT" secondAttribute="bottom" constant="8" symbolic="YES" id="QXP-oQ-clq"/>
                             <constraint firstItem="fnW-Qy-DPF" firstAttribute="trailing" secondItem="4ox-Qr-DiY" secondAttribute="trailingMargin" id="Xp6-8N-xuq"/>
                             <constraint firstItem="fnW-Qy-DPF" firstAttribute="top" secondItem="NVD-JK-oYf" secondAttribute="bottom" constant="8" symbolic="YES" id="Y4e-tt-u6a"/>
                             <constraint firstItem="0vU-9Q-0Ee" firstAttribute="top" secondItem="fnW-Qy-DPF" secondAttribute="bottom" constant="20" id="avA-24-lUh"/>
@@ -253,6 +273,7 @@
                     <connections>
                         <outlet property="backButton" destination="ysb-eJ-ja8" id="Tse-P7-KFK"/>
                         <outlet property="centerButton" destination="x1X-sn-fxl" id="mzE-8y-1mR"/>
+                        <outlet property="deletePoiButton" destination="blg-ZW-rdT" id="Yjj-Jf-DyM"/>
                         <outlet property="findMyCarAcceptButton" destination="aWx-id-saf" id="w0z-Kv-RMZ"/>
                         <outlet property="findMyCarCancelButton" destination="lGP-Wy-4pP" id="N7h-zq-3id"/>
                         <outlet property="indicationsView" destination="JFM-V3-6Rg" id="724-Cl-JfV"/>
@@ -739,6 +760,9 @@
         </systemColor>
         <systemColor name="systemOrangeColor">
             <color red="1" green="0.58431372549019611" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+        <systemColor name="systemRedColor">
+            <color red="1" green="0.23137254901960785" blue="0.18823529411764706" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>

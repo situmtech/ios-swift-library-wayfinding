@@ -127,7 +127,7 @@ class MarkerRenderer {
                 self?.selectMarkerInGoogleMaps(marker: marker)
             }
             selectedPoi = marker.poi
-        } else if marker.isCustomMarker {
+        } else if marker.isLongPressMarker {
             selectMarkerInGoogleMaps(marker: marker)
         }
     }
@@ -146,7 +146,7 @@ class MarkerRenderer {
                 }
             }
         }
-        if marker.isCustomMarker {
+        if marker.isLongPressMarker {
             removeMarkerFromGoogleMaps(marker: marker)
             markers = markers.filter { element in element != marker }
         }
@@ -226,6 +226,10 @@ class MarkerRenderer {
             guard let poi = marker.poi else { return false }
             return poi.id == searchedPoi.id
         }
+    }
+    
+    func searchCustomMarker() -> SitumMarker? {
+        return markers.first(where: { marker in marker.isCustomMarker})
     }
 }
 

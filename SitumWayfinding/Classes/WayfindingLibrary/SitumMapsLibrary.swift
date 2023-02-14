@@ -365,6 +365,21 @@ import GoogleMaps
             positioningController.findMyCarMode()
         }
     }
+    
+    public func hasCustomPoi() -> Bool {
+        guard let positioningController = toPresentViewController else { return false }
+        return positioningController.customPoi != nil
+    }
+    
+    public func selectCustomPoi(completion: @escaping (Result<Void, Error>) -> Void) {
+        do {
+            try self.toPresentViewController?.selectCustomPoi(success: {
+                completion(.success(()))
+            })
+        } catch {
+            completion(.failure(error))
+        }
+    }
 }
 
 extension SitumMapsLibrary {

@@ -16,6 +16,6 @@ extension GMSMarker {
 struct SitumMarkerData {
     var floorIdentifier: String
     var isPoiMarker: Bool
-    var isCustomMarker: Bool
+    var isLongPressMarker: Bool
     var isTopLevel: Bool
 }

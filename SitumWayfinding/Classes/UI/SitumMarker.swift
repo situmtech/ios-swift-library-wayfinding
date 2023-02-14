@@ -10,12 +10,17 @@ import GoogleMaps
 import SitumSDK
 
 struct SitumMarker: Equatable {
+    
+    // TODO JLAQ enum for marker type
+    
     private(set) var gmsMarker: GMSMarker
     private(set) var poi: SITPOI?
+    private(set) var custom = false
     var title: String { return gmsMarker.title ?? "" }
     private(set) var floorIdentifier: String
     var isPoiMarker: Bool { return poi != nil }
-    var isCustomMarker: Bool { return poi == nil }
+    var isLongPressMarker: Bool { return custom == false && poi == nil }
+    var isCustomMarker: Bool { return custom }
     var isTopLevel: Bool {
         guard let poi = poi, let topLevelField = poi.customFields["top_level"] as? String else { return false }
         return topLevelField.lowercased().trimmingCharacters(in: .whitespacesAndNewlines) == "true"
@@ -32,20 +37,27 @@ struct SitumMarker: Equatable {
         self.gmsMarker.markerData = SitumMarkerData(
             floorIdentifier: floorIdentifier,
             isPoiMarker: isPoiMarker,
-            isCustomMarker: isCustomMarker,
+            isLongPressMarker: isLongPressMarker,
             isTopLevel: isTopLevel
         )
     }
     
-    init(coordinate: CLLocationCoordinate2D, floor: SITFloor) {
+    // TODO JLAQ change arguments and default values
+    init(coordinate: CLLocationCoordinate2D, floor: SITFloor, custom: Bool = false, title: String? = nil) {
         let marker: GMSMarker = GMSMarker(position: coordinate)
-        marker.title = NSLocalizedString(
-            "positioning.customDestination",
-            bundle: SitumMapsLibrary.bundle,
-            comment: "Shown to user when select a destination (destination is any free point that user selects on the map)"
-        )
+        // TODO JLAQ change title
+        if (title != nil) {
+            marker.title = title
+        } else {
+            marker.title = NSLocalizedString(
+                "positioning.customDestination",
+                bundle: SitumMapsLibrary.bundle,
+                comment: "Shown to user when select a destination (destination is any free point that user selects on the map)"
+            )
+        }
         gmsMarker = marker
         floorIdentifier = floor.identifier
+        self.custom = custom
     }
     
     func setMapView(mapView: GMSMapView?) {
