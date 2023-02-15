@@ -466,9 +466,12 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
         }
     }
     
+    func removeCustomPoi() {
+        self.deleteCustomPoi(poiKey: carPositionKey)
+    }
     
-    func storeCustomPoi(poiKey: String, buildingId: String, floorId: String, lat: Double, lng: Double) {
-        customPoi = CustomPoi(key: poiKey, buildingId: buildingId, floorId: floorId, latitude: lat, longitude: lng)
+    func storeCustomPoi(poiKey: String, name: String, description: String, buildingId: String, floorId: String, lat: Double, lng: Double) {
+        customPoi = CustomPoi(key: poiKey, name: name, description: description, buildingId: buildingId, floorId: floorId, latitude: lat, longitude: lng)
         
         customPoiManager.store(customPoi: customPoi!)
         
@@ -896,6 +899,8 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
             if let buildingInfo = self.buildingInfo {
                 self.storeCustomPoi(
                     poiKey: self.carPositionKey,
+                    name: "Car position",
+                    description: "",
                     buildingId: buildingInfo.building.identifier,
                     floorId: floor.identifier,
                     lat: markerPosition.latitude,

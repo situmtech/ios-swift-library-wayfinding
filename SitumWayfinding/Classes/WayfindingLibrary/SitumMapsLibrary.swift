@@ -371,6 +371,16 @@ import GoogleMaps
         return positioningController.customPoi != nil
     }
     
+    public func getCustomPoi() -> CustomPoi? {
+        guard let positioningController = toPresentViewController else { return nil }
+        return positioningController.customPoi
+    }
+    
+    public func removeCustomPoi() {
+        guard let positioningController = toPresentViewController else { return }
+        positioningController.removeCustomPoi()
+    }
+    
     public func selectCustomPoi(completion: @escaping (Result<Void, Error>) -> Void) {
         do {
             try self.toPresentViewController?.selectCustomPoi(success: {

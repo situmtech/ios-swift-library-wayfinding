@@ -7,10 +7,12 @@
 
 import Foundation
 
-struct CustomPoi: Codable {
+public struct CustomPoi: Codable {
     let key: String
-    let buildingId: String
-    let floorId: String
-    let latitude: Double
-    let longitude: Double
+    public let name: String
+    public let description: String
+    public let buildingId: String
+    public let floorId: String
+    public let latitude: Double
+    public let longitude: Double
 }
