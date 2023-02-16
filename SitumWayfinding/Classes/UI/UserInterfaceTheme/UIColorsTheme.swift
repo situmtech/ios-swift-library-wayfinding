@@ -23,6 +23,7 @@ struct UIColorsTheme {
     private let darkModeIconsTintColor = UIColor(hex: "#F2F2F7FF")!
     private let allModesBackgroundedButtonsIconstTintColor = UIColor(hex: "#F2F2F7FF")!
     private let defaultPrimaryColor: UIColor = UIColor(hex: "#283380FF")!
+    private let defaultDangerColor: UIColor = UIColor(hex: "#B00020FF")!
     
     
     //Organization theme information
@@ -48,6 +49,16 @@ struct UIColorsTheme {
     }
     var primaryColorDimished:UIColor {
         primaryColor.withAlphaComponent(0.5)
+    }
+    var dangerColor: UIColor {
+        var color = defaultDangerColor
+        if UIColorsTheme.useDashboardTheme == true {
+            if let organizationTheme = UIColorsTheme.organizationTheme {
+                let generalColor = UIColor(hex:  organizationTheme.themeColors.danger ) ?? UIColor.gray
+                color = organizationTheme.themeColors.danger.isEmpty ? defaultDangerColor : generalColor
+            }
+        }
+        return color
     }
     
     init() {

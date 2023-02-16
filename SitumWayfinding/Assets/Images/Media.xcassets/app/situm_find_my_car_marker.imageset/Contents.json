@@ -1,0 +1,15 @@
+{
+  "images" : [
+    {
+      "filename" : "situm_find_my_car_marker 1.png",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  },
+  "properties" : {
+    "template-rendering-intent" : "original"
+  }
+}

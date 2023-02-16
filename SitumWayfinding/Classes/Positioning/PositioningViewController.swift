@@ -45,8 +45,8 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
     
     //Find my car
     @IBOutlet weak var positionPickerImage: UIImageView!
-    @IBOutlet weak var findMyCarAcceptButton: UIButton!
-    @IBOutlet weak var findMyCarCancelButton: UIButton!
+    @IBOutlet weak var customPoiAcceptButton: UIButton!
+    @IBOutlet weak var customPoiCancelButton: UIButton!
     
     @IBOutlet weak var infoBarMap: UIView!
     weak var containerInfoBarMap: InfoBarMapViewController?
@@ -109,7 +109,7 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
     var tileProvider: TileProvider!
     var preserveStateInNewViewAppeareance = false
     // Find my car mode variables
-    var findMyCarModeActive = false
+    var customPoiSelectionModeActive = false
     var carPositionKey = "car_parking_position"
     var customPoiManager = CustomPoiManager()
 
@@ -333,7 +333,7 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
         initializeDeletePoiButton()
         initializeInfoBar()
         prepareCenterButton()
-        initializeFindMyCarButtons()
+        initializeCustomPoiSelectionButtons()
         numberBeaconsRangedView.isHidden = true
     }
 
@@ -482,25 +482,22 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
         }
     }
     
-    private func initializeFindMyCarButtons() {
+    private func initializeCustomPoiSelectionButtons() {
         // Find my car menu
-        findMyCarAcceptButton.layer.cornerRadius = 0.5 * findMyCarAcceptButton.bounds.size.width
-        findMyCarAcceptButton.layer.masksToBounds = false
-        findMyCarAcceptButton.layer.shadowColor = UIColor.darkGray.cgColor
-        findMyCarAcceptButton.layer.shadowOpacity = 0.8
-        findMyCarAcceptButton.layer.shadowRadius = 8.0
-        findMyCarAcceptButton.layer.shadowOffset = CGSize(width: 7.0, height: 7.0)
-        findMyCarAcceptButton.isHidden = true
-//        findMyCarAcceptButton.backgroundColor = primaryColor(defaultColor: UIColor.primary)
+        customPoiAcceptButton.layer.cornerRadius = 0.5 * customPoiAcceptButton.bounds.size.width
+        customPoiAcceptButton.layer.masksToBounds = false
+        customPoiAcceptButton.setSitumShadow(colorTheme: uiColorsTheme)
+        let acceptButtonColors =  ButtonColors(iconTintColor: uiColorsTheme.backgroundedButtonsIconstTintColor, backgroundColor: uiColorsTheme.primaryColor)
+        customPoiAcceptButton.adjustColors(acceptButtonColors)
+        customPoiAcceptButton.isHidden = true
 
         // Navigate to car button
-        findMyCarCancelButton.layer.cornerRadius = 0.5 * findMyCarCancelButton.bounds.size.width
-        findMyCarCancelButton.layer.masksToBounds = false
-        findMyCarCancelButton.layer.shadowColor = UIColor.darkGray.cgColor
-        findMyCarCancelButton.layer.shadowOpacity = 0.8
-        findMyCarCancelButton.layer.shadowRadius = 8.0
-        findMyCarCancelButton.layer.shadowOffset = CGSize(width: 7.0, height: 7.0)
-        findMyCarCancelButton.isHidden = true
+        customPoiCancelButton.layer.cornerRadius = 0.5 * customPoiCancelButton.bounds.size.width
+        customPoiCancelButton.layer.masksToBounds = false
+        customPoiCancelButton.setSitumShadow(colorTheme: uiColorsTheme)
+        let cancelButtonColors =  ButtonColors(iconTintColor: uiColorsTheme.backgroundedButtonsIconstTintColor, backgroundColor: uiColorsTheme.dangerColor)
+        customPoiCancelButton.adjustColors(cancelButtonColors)
+        customPoiCancelButton.isHidden = true
 
     }
     
@@ -515,9 +512,8 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
     private func initializeDeletePoiButton() {
         deletePoiButton.layer.cornerRadius = 0.5 * deletePoiButton.bounds.size.width
         deletePoiButton.layer.masksToBounds = false
-        deletePoiButton.setIcon(imageName: "situm_navigate_action", for: .normal)
         deletePoiButton.setSitumShadow(colorTheme: uiColorsTheme)
-        let buttonColors =  ButtonColors(iconTintColor: uiColorsTheme.backgroundedButtonsIconstTintColor, backgroundColor: UIColor(red: 255, green: 0, blue: 0))
+        let buttonColors =  ButtonColors(iconTintColor: uiColorsTheme.backgroundedButtonsIconstTintColor, backgroundColor: uiColorsTheme.dangerColor)
         deletePoiButton.adjustColors(buttonColors)
         deletePoiButton.isHidden = true
     }
@@ -786,9 +782,6 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
         }
     }
     
-//    func changeFindMyCarButtonVisibility(isVisible visible: Bool) {
-//        findMyCarButton.isHidden = !visible
-//    }
     
     //MARK: MapViewDelegate
     func mapView(_ mapView: GMSMapView, willMove gesture: Bool) {
@@ -893,7 +886,7 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
         deleteCustomPoi(poiKey: self.carPositionKey)
     }
     
-    @IBAction func findMyCarAcceptButtonTapped(_ sender: Any) {
+    @IBAction func customPoiAcceptButtonTapped(_ sender: Any) {
         self.showPositioningUI()
         
         let markerPosition = self.mapView.projection.coordinate(for: CGPoint(x: self.mapView.center.x, y: self.mapView.center.y))
@@ -913,26 +906,9 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
     }
     
     
-    @IBAction func findMyCarCancelButtonTapped(_ sender: Any) {
+    @IBAction func customPoiCancelButtonTapped(_ sender: Any) {
         self.showPositioningUI()
     }
-    //    @IBAction func findMyCarButtonPressed(_ sender: Any) {
-//        Logger.logInfoMessage("Find my car button Has Been pressed")
-//        self.findMyCarMode()
-//    }
-//
-//    @IBAction func navigateCarButtonPressed(_ sender: Any) {
-//        Logger.logInfoMessage("Navigate to car button Has Been pressed")
-//        if (customMarkerPosition == nil) {
-//            return
-//        }
-//
-//        if let floorId = customMarkerPosition?.floorIdentifier {
-//            if let selectedFloor = orderedFloors(buildingInfo: buildingInfo)?.first(where: {$0.identifier == floorId}) {
-//                startNavigation(to: customMarkerPosition!.coordinate(), in: selectedFloor)
-//            }
-//        }
-//    }
     
     func startNavigationByUser() {
         self.startNavigation()
@@ -1545,12 +1521,18 @@ extension PositioningViewController {
                 if let indexPath = self.getIndexPath(floorId: storedCustomPoi.floorId)?.row {
                     if let markerFloor = orderedFloors(buildingInfo: buildingInfo)?[indexPath] {
                         // TODO JLAQ do not create a new instance of situm marker on each render
+                        let markerPosition = CLLocationCoordinate2D(latitude: storedCustomPoi.latitude, longitude: storedCustomPoi.longitude)
+                        let markerIcon = UIImage(
+                            named: "situm_find_my_car_marker",
+                            in: SitumMapsLibrary.bundle,
+                            compatibleWith: nil)
                         let situmMarker = SitumMarker(
-                            coordinate: CLLocationCoordinate2D(latitude: storedCustomPoi.latitude, longitude: storedCustomPoi.longitude),
+                            coordinate: markerPosition,
                             floor: markerFloor,
                             custom: true,
-                            title: "Pruebadejose",
-                            id: String(storedCustomPoi.key)
+                            title: storedCustomPoi.name,
+                            id: String(storedCustomPoi.key),
+                            image: markerIcon
                         )
                         renderer.displayCustomMarker(situmMarker, forFloor: floor)
                     }
@@ -1567,7 +1549,7 @@ extension PositioningViewController {
             if let marker = destinationMarker {
                renderer.displayOnlyDestinationMarker(marker, forFloor: floor)
             } else {
-                Logger.logDebugMessage("Destination will not be shown becuase there is no destinationMarker selected")
+                Logger.logDebugMessage("Destination will not be shown because there is no destinationMarker selected")
             }
         }
     }

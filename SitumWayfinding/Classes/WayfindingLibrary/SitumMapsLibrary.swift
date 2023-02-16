@@ -368,10 +368,10 @@ import GoogleMaps
     
     public func activateFindMyCarMode() {
         guard let positioningController = toPresentViewController else { return }
-        if (positioningController.findMyCarModeActive) {
-            print("Find my car mode is already active")
+        if (positioningController.customPoiSelectionModeActive) {
+            print("Custom poi selection mode is already active")
         } else {
-            positioningController.findMyCarMode()
+            positioningController.customPoiSelectionMode()
         }
     }
     

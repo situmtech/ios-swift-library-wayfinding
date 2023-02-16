@@ -169,45 +169,6 @@
                                     <action selector="navigationButtonPressed:" destination="Xd8-Bs-mWc" eventType="touchUpInside" id="Ps6-v4-L57"/>
                                 </connections>
                             </button>
-                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" selected="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aWx-id-saf" userLabel="Find my car accept">
-                                <rect key="frame" x="334" y="654" width="60" height="60"/>
-                                <color key="backgroundColor" red="0.0" green="0.45882352939999999" blue="0.78823529410000004" alpha="1" colorSpace="calibratedRGB"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="60" id="IJi-wn-ZQF"/>
-                                    <constraint firstAttribute="width" secondItem="aWx-id-saf" secondAttribute="height" multiplier="1:1" id="Uul-1z-COG"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" type="system" pointSize="18"/>
-                                <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <inset key="contentEdgeInsets" minX="5" minY="5" maxX="5" maxY="5"/>
-                                <inset key="imageEdgeInsets" minX="10" minY="10" maxX="10" maxY="10"/>
-                                <state key="normal" title="YES"/>
-                                <connections>
-                                    <action selector="findMyCarAcceptButtonTapped:" destination="Xd8-Bs-mWc" eventType="touchUpInside" id="yfe-Lr-SaU"/>
-                                </connections>
-                            </button>
-                            <imageView hidden="YES" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="change_floor" translatesAutoresizingMaskIntoConstraints="NO" id="5yZ-on-3xh">
-                                <rect key="frame" x="191" y="461" width="32" height="32"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="32" id="1jT-2G-zBy"/>
-                                    <constraint firstAttribute="width" constant="32" id="gGp-5W-buU"/>
-                                </constraints>
-                            </imageView>
-                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" selected="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lGP-Wy-4pP" userLabel="Find my car cancel">
-                                <rect key="frame" x="334" y="586" width="60" height="60"/>
-                                <color key="backgroundColor" red="0.0" green="0.45882352939999999" blue="0.78823529410000004" alpha="1" colorSpace="calibratedRGB"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" secondItem="lGP-Wy-4pP" secondAttribute="height" multiplier="1:1" id="7jP-Eb-evY"/>
-                                    <constraint firstAttribute="width" constant="60" id="XJQ-gD-LP2"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" type="system" pointSize="18"/>
-                                <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <inset key="contentEdgeInsets" minX="5" minY="5" maxX="5" maxY="5"/>
-                                <inset key="imageEdgeInsets" minX="10" minY="10" maxX="10" maxY="10"/>
-                                <state key="normal" title="NO"/>
-                                <connections>
-                                    <action selector="findMyCarCancelButtonTapped:" destination="Xd8-Bs-mWc" eventType="touchUpInside" id="0r1-Mt-agw"/>
-                                </connections>
-                            </button>
                             <button hidden="YES" opaque="NO" contentMode="scaleToFill" selected="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="blg-ZW-rdT" userLabel="Delete poi button">
                                 <rect key="frame" x="334" y="586" width="60" height="60"/>
                                 <color key="backgroundColor" systemColor="systemRedColor"/>
@@ -219,11 +180,50 @@
                                 <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <inset key="contentEdgeInsets" minX="5" minY="5" maxX="5" maxY="5"/>
                                 <inset key="imageEdgeInsets" minX="10" minY="10" maxX="10" maxY="10"/>
-                                <state key="normal" image="situm_navigate_action"/>
+                                <state key="normal" image="situm_ic_delete"/>
                                 <connections>
                                     <action selector="deletePoiButtonPressed:" destination="Xd8-Bs-mWc" eventType="touchUpInside" id="ef2-Jz-Xx1"/>
                                 </connections>
                             </button>
+                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" selected="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aWx-id-saf" userLabel="Find my car accept">
+                                <rect key="frame" x="334" y="654" width="60" height="60"/>
+                                <color key="backgroundColor" red="0.0" green="0.45882352939999999" blue="0.78823529410000004" alpha="1" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="60" id="IJi-wn-ZQF"/>
+                                    <constraint firstAttribute="width" secondItem="aWx-id-saf" secondAttribute="height" multiplier="1:1" id="Uul-1z-COG"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                                <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <inset key="contentEdgeInsets" minX="5" minY="5" maxX="5" maxY="5"/>
+                                <inset key="imageEdgeInsets" minX="10" minY="10" maxX="10" maxY="10"/>
+                                <state key="normal" image="situm_ic_check"/>
+                                <connections>
+                                    <action selector="customPoiAcceptButtonTapped:" destination="Xd8-Bs-mWc" eventType="touchUpInside" id="Ihx-e6-ji5"/>
+                                </connections>
+                            </button>
+                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" selected="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lGP-Wy-4pP" userLabel="Find my car cancel">
+                                <rect key="frame" x="334" y="586" width="60" height="60"/>
+                                <color key="backgroundColor" red="0.0" green="0.45882352939999999" blue="0.78823529410000004" alpha="1" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="lGP-Wy-4pP" secondAttribute="height" multiplier="1:1" id="7jP-Eb-evY"/>
+                                    <constraint firstAttribute="width" constant="60" id="XJQ-gD-LP2"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                                <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <inset key="contentEdgeInsets" minX="5" minY="5" maxX="5" maxY="5"/>
+                                <inset key="imageEdgeInsets" minX="10" minY="10" maxX="10" maxY="10"/>
+                                <state key="normal" image="situm_ic_close"/>
+                                <connections>
+                                    <action selector="customPoiCancelButtonTapped:" destination="Xd8-Bs-mWc" eventType="touchUpInside" id="1IS-jX-NWb"/>
+                                </connections>
+                            </button>
+                            <imageView hidden="YES" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="map-marker-custom" translatesAutoresizingMaskIntoConstraints="NO" id="5yZ-on-3xh">
+                                <rect key="frame" x="191" y="446" width="32" height="32"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="32" id="1jT-2G-zBy"/>
+                                    <constraint firstAttribute="width" constant="32" id="gGp-5W-buU"/>
+                                </constraints>
+                            </imageView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
@@ -253,7 +253,7 @@
                             <constraint firstItem="v9V-A6-0lh" firstAttribute="top" secondItem="7Uq-7g-NAV" secondAttribute="bottom" id="e0m-dI-kun"/>
                             <constraint firstItem="x1X-sn-fxl" firstAttribute="trailing" secondItem="fnW-Qy-DPF" secondAttribute="trailing" id="fsm-VM-9bN"/>
                             <constraint firstItem="NVD-JK-oYf" firstAttribute="centerX" secondItem="fnW-Qy-DPF" secondAttribute="centerX" id="gNh-Sn-ebJ"/>
-                            <constraint firstItem="5yZ-on-3xh" firstAttribute="centerY" secondItem="5jv-3Y-QbE" secondAttribute="centerY" id="jMm-5d-QGw"/>
+                            <constraint firstItem="5yZ-on-3xh" firstAttribute="centerY" secondItem="5jv-3Y-QbE" secondAttribute="centerY" constant="-15" id="jMm-5d-QGw"/>
                             <constraint firstItem="m4P-pu-GNe" firstAttribute="leading" secondItem="4ox-Qr-DiY" secondAttribute="leadingMargin" constant="4" id="kuU-yc-uBr"/>
                             <constraint firstItem="0vU-9Q-0Ee" firstAttribute="leading" secondItem="4ox-Qr-DiY" secondAttribute="leading" id="lNq-l1-3RQ"/>
                             <constraint firstItem="m4P-pu-GNe" firstAttribute="top" secondItem="v9V-A6-0lh" secondAttribute="bottom" constant="10" id="mg8-Fv-YXK"/>
@@ -273,9 +273,9 @@
                     <connections>
                         <outlet property="backButton" destination="ysb-eJ-ja8" id="Tse-P7-KFK"/>
                         <outlet property="centerButton" destination="x1X-sn-fxl" id="mzE-8y-1mR"/>
+                        <outlet property="customPoiAcceptButton" destination="aWx-id-saf" id="w0z-Kv-RMZ"/>
+                        <outlet property="customPoiCancelButton" destination="lGP-Wy-4pP" id="N7h-zq-3id"/>
                         <outlet property="deletePoiButton" destination="blg-ZW-rdT" id="Yjj-Jf-DyM"/>
-                        <outlet property="findMyCarAcceptButton" destination="aWx-id-saf" id="w0z-Kv-RMZ"/>
-                        <outlet property="findMyCarCancelButton" destination="lGP-Wy-4pP" id="N7h-zq-3id"/>
                         <outlet property="indicationsView" destination="JFM-V3-6Rg" id="724-Cl-JfV"/>
                         <outlet property="infoBarMap" destination="fi4-us-9qJ" id="Bpe-39-IT9"/>
                         <outlet property="infoBarNavigation" destination="0vU-9Q-0Ee" id="N8Z-mx-xoA"/>
@@ -739,10 +739,13 @@
         </scene>
     </scenes>
     <resources>
-        <image name="change_floor" width="512" height="512"/>
+        <image name="map-marker-custom" width="96" height="96"/>
         <image name="situm_circula_cross" width="612" height="612"/>
         <image name="situm_clock_time" width="485.2130126953125" height="485.21200561523438"/>
         <image name="situm_direction_destination" width="512" height="512"/>
+        <image name="situm_ic_check" width="25" height="25"/>
+        <image name="situm_ic_close" width="25" height="25"/>
+        <image name="situm_ic_delete" width="25" height="25"/>
         <image name="situm_navigate_action" width="36" height="36"/>
         <image name="situm_walk" width="24" height="24"/>
         <image name="swf_ic_action_bluetooth.png" width="384" height="384"/>

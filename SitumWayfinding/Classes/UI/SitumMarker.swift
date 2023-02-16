@@ -42,10 +42,13 @@ struct SitumMarker: Equatable {
         )
     }
     
-    // TODO JLAQ change arguments and default values
-    init(coordinate: CLLocationCoordinate2D, floor: SITFloor, custom: Bool = false, title: String? = nil, id: String? = nil) {
+    init(coordinate: CLLocationCoordinate2D, floor: SITFloor, custom: Bool = false, title: String? = nil, id: String? = nil, image: UIImage? = nil) {
         let marker: GMSMarker = GMSMarker(position: coordinate)
-        // TODO JLAQ change title
+        
+        if (image != nil) {
+            marker.icon = ImageUtils.scaleImageToSize(image: image!, newSize: CGSize(width: 45, height: 45))
+        }
+        
         if (title != nil) {
             marker.title = title
         } else {
@@ -60,6 +63,7 @@ struct SitumMarker: Equatable {
         self.custom = custom
         if (id != nil) {
             poi = SITPOI(identifier: id ?? "", createdAt: Date(), updatedAt: Date(), customFields: [:])
+            poi!.name = title!
         }
     }
     

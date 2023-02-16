@@ -1,3 +1,10 @@
+//
+//  CustomMarkerPosition.swift
+//  SitumWayfinding
+//
+//  Created by Jose Alvarez on 6/2/23.
+//
+
 import Foundation
 
 

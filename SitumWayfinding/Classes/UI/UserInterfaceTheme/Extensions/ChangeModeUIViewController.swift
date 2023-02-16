@@ -7,7 +7,7 @@ extension PositioningViewController {
         indicationsView.isHidden = true
         navbar.isHidden = false
         containerInfoBarMap?.isBeingPresented()
-        hideFindMyCarUIElements()
+        hideCustomPoiSelectionUIElements()
     }
         
     func showNavigationUI() {
@@ -24,43 +24,38 @@ extension PositioningViewController {
         indicationsViewController?.isBeingPresented()
         containerInfoBarNavigation?.isBeingPresented()
         indicationsViewController?.showNavigationLoading()
-        hideFindMyCarUIElements()
+        hideCustomPoiSelectionUIElements()
     }
     
-    private func displayFindMyCarUIElements() {
-//        findMyCarView.isHidden = false
-//        findMyCarButton.isHidden = true
-//        navigateToCarButton.isHidden = true
+    private func displayCustomPoiSelectionUIElements() {
         positionPickerImage.isHidden = false
-        findMyCarModeActive = true
-        findMyCarAcceptButton.isHidden = false
-        findMyCarCancelButton.isHidden = false
+        customPoiSelectionModeActive = true
+        customPoiAcceptButton.isHidden = false
+        customPoiCancelButton.isHidden = false
     }
 
-    private func hideFindMyCarUIElements() {
-//        findMyCarView?.isHidden = true
-//        findMyCarButton.isHidden = false
-//        navigateToCarButton.isHidden = false
+    private func hideCustomPoiSelectionUIElements() {
         positionPickerImage?.isHidden = true
-        findMyCarModeActive = false
-        findMyCarAcceptButton.isHidden = true
-        findMyCarCancelButton.isHidden = true
+        customPoiSelectionModeActive = false
+        customPoiAcceptButton.isHidden = true
+        customPoiCancelButton.isHidden = true
     }
 
-    func findMyCarMode() {
-        findMyCarModeActive = true
+    func customPoiSelectionMode() {
+        deselect(marker: lastSelectedMarker)
+        customPoiSelectionModeActive = true
         mapContainerViewTopConstraint.constant = 44
         infoBarMap.isHidden = true
         infoBarNavigation.isHidden = true
         indicationsView.isHidden = true
         navbar.isHidden = true
-        displayFindMyCarUIElements()
+        displayCustomPoiSelectionUIElements()
     }
     
     func hiddenNavBar() {
         mapContainerViewTopConstraint.constant = 0
         infoBarMap.isHidden = false
         navbar.isHidden = true
-        hideFindMyCarUIElements()
+        hideCustomPoiSelectionUIElements()
     }
 }
