@@ -19,13 +19,23 @@ class LocationManagerFactory {
         #endif
     }
     
-    static func setDelegate(object: SITLocationInterface, delegate: SITLocationDelegate) {
+    static func addDelegate(object: SITLocationInterface, delegate: SITLocationDelegate) {
         // protocol do not include delegate but we know it exists
         // this could change in the future if delegate is in the protocol definition
         if let manager = object as? SITLocationManager {
-            manager.delegate = delegate
+            manager.addDelegate(delegate)
         } else if let manager = object as? FakeLocationManager {
             manager.delegate = delegate
+        } else {
+            Logger.logErrorMessage("Could not cast \(object) to an object with delegate")
+        }
+    }
+
+    static func removeDelegate(object: SITLocationInterface, delegate: SITLocationDelegate) {
+        if let manager = object as? SITLocationManager {
+            manager.removeDelegate(delegate)
+        } else if let manager = object as? FakeLocationManager {
+            manager.delegate = nil
         } else {
             Logger.logErrorMessage("Could not cast \(object) to an object with delegate")
         }

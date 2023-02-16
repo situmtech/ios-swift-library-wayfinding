@@ -20,6 +20,7 @@ class WayfindingController: UIViewController {
     var credentials: Credentials!
     var buildingId: String!
     var useRemoteConfig: Bool = false
+    var useDashboardTheme: Bool = true
 
     var library: SitumMapsLibrary?
 
@@ -33,6 +34,7 @@ class WayfindingController: UIViewController {
                 .setBuildingId(buildingId: buildingId)
                 .setUseRemoteConfig(useRemoteConfig: useRemoteConfig)
                 .setEnablePoiClustering(enablePoisClustering: true)
+                .setUseDashboardTheme(useDashboardTheme: useDashboardTheme)
                 .build()
         self.library = SitumMapsLibrary(containedBy: self.containerView, controlledBy: self, withSettings: settings)
 
@@ -53,8 +55,13 @@ class WayfindingController: UIViewController {
         } catch {
             print("An error has ocurred. Your SitumView could not be loaded.")
         }
-
+        
         super.viewWillAppear(animated)
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        SITLocationManager.sharedInstance().removeUpdates()
     }
 
     override func didReceiveMemoryWarning() {

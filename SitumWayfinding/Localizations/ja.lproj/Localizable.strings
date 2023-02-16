@@ -110,7 +110,7 @@
 "positioning.numBeacons" = "%d beacons";
 
 /* Alert message to show user is outside of route */
-"positioning.outsideBuilding.alert.message" = "ユーザーは現在建物の外にいます。ユーザーが戻ったときに位置を再開します。";
+"positioning.outsideBuilding.alert.message" = "利用可能な位置はありません。キャリブレーションされた領域または利用可能なGPS信号を持つ領域に移動してください";
 
 /* Alert title to show user is outside of building */
 "positioning.outsideBuilding.alert.title" = "User not in building";
@@ -135,6 +135,12 @@
 
 /* Error when user does not set correctly building id */
 "situmMapsLibrary.error.invalidBuilding" = "組み込みIDが正しくありません。LibrarySettings で有効な建物IDを追加してください。";
+
+/* Error that appears when user does not provide location or bluetooth permissions*/
+"wayfinding.permissionsErrorDescription" = "場所を提供するには、設定に移動し、場所とBluetoothの権限を有効にしてください";
+
+/* Error that appears when user does not provide location or bluetooth permissions*/
+"wayfinding.permissionsErrorTitle" = "位置情報を提供できません";
 
 /* No comment provided by engineer. */
 "wayfindingError.buildingNotExist" = "ビルディングが存在しません";
