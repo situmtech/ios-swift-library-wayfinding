@@ -459,7 +459,8 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
         self.customPoi = nil
         customPoiManager.remove(poiKey: poiKey)
         
-        deselect(marker: lastSelectedMarker)
+        deselect(marker: lastSelectedMarker, notifyDelegate: false)
+        delegateNotifier?.notifyOnCustomPoiRemoved(poiId: poiKey)
         
         if let floor = orderedFloors(buildingInfo: buildingInfo)?[self.selectedLevelIndex] {
             displayMarkers(forFloor: floor, isUserNavigating: self.isUserNavigating())
@@ -474,6 +475,7 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
         customPoi = CustomPoi(key: poiKey, name: name, description: description, buildingId: buildingId, floorId: floorId, latitude: lat, longitude: lng)
         
         customPoiManager.store(customPoi: customPoi!)
+        delegateNotifier?.notifyOnCustomPoiSet(customPoi: customPoi!)
         
         if let floor = orderedFloors(buildingInfo: buildingInfo)?[self.selectedLevelIndex] {
             displayMarkers(forFloor: floor, isUserNavigating: self.isUserNavigating())
@@ -1459,14 +1461,14 @@ extension PositioningViewController {
         CATransaction.commit()
     }
     
-    func deselect(marker: SitumMarker?) {
+    func deselect(marker: SitumMarker?, notifyDelegate: Bool = true) {
         self.removeLastCustomMarkerIfOutsideRoute()
         self.changeNavigationButtonVisibility(isVisible: false)
         self.updateInfoBarLabelsIfNotInsideRoute(mainLabel: self.buildingName)
         self.lastSelectedMarker = nil
         if let marker = marker {
             if marker.isPoiMarker {
-                poiMarkerWasDeselected(poiMarker: marker)
+                poiMarkerWasDeselected(poiMarker: marker, notifyDelegate: notifyDelegate)
             }
             markerRenderer?.deselectMarker(marker)
         }
@@ -1487,7 +1489,11 @@ extension PositioningViewController {
         isCameraCentered = false
         //Call only if this marker wasnt already the selected one
         if poiMarker != lastSelectedMarker, let uPoi = poiMarker.poi, let uBuildingInfo = buildingInfo {
-            poiWasSelected(poi: uPoi, buildingInfo: uBuildingInfo)
+            if (!poiMarker.isCustomMarker) {
+                poiWasSelected(poi: uPoi, buildingInfo: uBuildingInfo)
+            } else {
+                customPoiWasSelected(poiId: uPoi.identifier)
+            }
         }
     }
 
@@ -1501,9 +1507,13 @@ extension PositioningViewController {
         }
     }
     
-    func poiMarkerWasDeselected(poiMarker: SitumMarker) {
+    func poiMarkerWasDeselected(poiMarker: SitumMarker, notifyDelegate: Bool = true) {
         if let uPoi = poiMarker.poi, let uBuildingInfo = buildingInfo {
-            poiWasDeselected(poi: uPoi, buildingInfo: uBuildingInfo)
+            if !poiMarker.isCustomMarker && notifyDelegate {
+                poiWasDeselected(poi: uPoi, buildingInfo: uBuildingInfo)
+            } else if notifyDelegate {
+                customPoiWasDeselected(poiId: uPoi.identifier)
+            }
         }
     }
     
@@ -1513,6 +1523,14 @@ extension PositioningViewController {
     
     func poiWasDeselected(poi: SITPOI, buildingInfo: SITBuildingInfo) {
         delegateNotifier?.notifyOnPOIDeselected(poi: poi, buildingInfo: buildingInfo)
+    }
+    
+    func customPoiWasSelected(poiId: String) {
+        delegateNotifier?.notifyOnCustomPoiSelected(poiId: poiId)
+    }
+    
+    func customPoiWasDeselected(poiId: String) {
+        delegateNotifier?.notifyOnCustomPoiDeselected(poiId: poiId)
     }
     
     func displayMarkers(forFloor floor: SITFloor, isUserNavigating: Bool) {
@@ -1531,7 +1549,8 @@ extension PositioningViewController {
                             coordinate: CLLocationCoordinate2D(latitude: storedCustomPoi.latitude, longitude: storedCustomPoi.longitude),
                             floor: markerFloor,
                             custom: true,
-                            title: "Pruebadejose"
+                            title: "Pruebadejose",
+                            id: String(storedCustomPoi.key)
                         )
                         renderer.displayCustomMarker(situmMarker, forFloor: floor)
                     }

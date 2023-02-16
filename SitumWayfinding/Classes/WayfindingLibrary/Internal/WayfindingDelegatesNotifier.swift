@@ -11,6 +11,7 @@ class WayfindingDelegatesNotifier{
     var floorChangeDelegate: OnFloorChangeListener?
     var mapReadyDelegate: OnMapReadyListener?
     var navigationDelegate: OnNavigationListener?
+    var customPoiChangeDelegate: OnCustomPoiChangeListener?
     
     /**
      Method that notifies when a POI has been selected. There are several actions that can result on a POI being selected.
@@ -50,5 +51,21 @@ class WayfindingDelegatesNotifier{
 
     func notifyOnMapReady(map: SitumMap) {
         mapReadyDelegate?.onMapReady(map: map)
+    }
+    
+    func notifyOnCustomPoiSet(customPoi: CustomPoi) {
+        customPoiChangeDelegate?.onCustomPoiSet(customPoi: customPoi);
+    }
+    
+    func notifyOnCustomPoiRemoved(poiId: String) {
+        customPoiChangeDelegate?.onCustomPoiRemoved(poiId: poiId);
+    }
+    
+    func notifyOnCustomPoiSelected(poiId: String) {
+        customPoiChangeDelegate?.onCustomPoiSelected(poiId: poiId);
+    }
+    
+    func notifyOnCustomPoiDeselected(poiId: String) {
+        customPoiChangeDelegate?.onCustomPoiDeselected(poiId: poiId);
     }
 }

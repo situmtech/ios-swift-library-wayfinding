@@ -247,6 +247,15 @@ import GoogleMaps
     public func setOnNavigationListener(listener: OnNavigationListener?) {
         delegatesNotifier.navigationDelegate = listener
     }
+    
+    /**
+     Sets a delegate that gets notified with events related to Custom POIS
+
+     - parameter listener: OnCustomPoiChangeListener
+     */
+    public func setOnCustomPoiChangeListener(listener: OnCustomPoiChangeListener?) {
+        delegatesNotifier.customPoiChangeDelegate = listener
+    }
 
     /**
      Start the navigation to a poi in the current building. This will:

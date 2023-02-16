@@ -43,7 +43,7 @@ struct SitumMarker: Equatable {
     }
     
     // TODO JLAQ change arguments and default values
-    init(coordinate: CLLocationCoordinate2D, floor: SITFloor, custom: Bool = false, title: String? = nil) {
+    init(coordinate: CLLocationCoordinate2D, floor: SITFloor, custom: Bool = false, title: String? = nil, id: String? = nil) {
         let marker: GMSMarker = GMSMarker(position: coordinate)
         // TODO JLAQ change title
         if (title != nil) {
@@ -58,6 +58,9 @@ struct SitumMarker: Equatable {
         gmsMarker = marker
         floorIdentifier = floor.identifier
         self.custom = custom
+        if (id != nil) {
+            poi = SITPOI(identifier: id ?? "", createdAt: Date(), updatedAt: Date(), customFields: [:])
+        }
     }
     
     func setMapView(mapView: GMSMapView?) {
