@@ -9,8 +9,8 @@ import Foundation
 
 public struct CustomPoi: Codable {
     let key: String
-    public let name: String
-    public let description: String
+    public let name: String?
+    public let description: String?
     public let buildingId: String
     public let floorId: String
     public let latitude: Double

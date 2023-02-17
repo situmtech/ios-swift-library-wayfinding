@@ -370,9 +370,9 @@ import GoogleMaps
      Start the custom poi selection mode
      - parameters
         - name: Name of the custom poi to create
-        - description: optional param to indicate the description of the custom poi
+        - description: Description of the custom poi
      */
-    public func activateFindMyCarMode(name: String, description: String?) {
+    public func startCustomPoiSelection(name: String?, description: String?) {
         guard let positioningController = toPresentViewController else { return }
         positioningController.customPoiSelectionMode(name: name, description: description)
     }

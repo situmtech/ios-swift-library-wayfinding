@@ -454,7 +454,7 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
         return indexPath
     }
     
-    func customPoiSelectionMode(name: String, description: String?) {
+    func customPoiSelectionMode(name: String?, description: String?) {
         if (self.customPoiSelectionModeActive) {
             print("Custom poi selection mode is already active")
         } else {
@@ -489,7 +489,7 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
         self.deleteCustomPoi(poiKey: carPositionKey)
     }
     
-    func storeCustomPoi(poiKey: String, name: String, description: String, buildingId: String, floorId: String, lat: Double, lng: Double) {
+    func storeCustomPoi(poiKey: String, name: String?, description: String?, buildingId: String, floorId: String, lat: Double, lng: Double) {
         customPoi = CustomPoi(key: poiKey, name: name, description: description, buildingId: buildingId, floorId: floorId, latitude: lat, longitude: lng)
         
         customPoiManager.store(customPoi: customPoi!)
@@ -912,8 +912,8 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
             if let buildingInfo = self.buildingInfo {
                 self.storeCustomPoi(
                     poiKey: self.carPositionKey,
-                    name: self.customPoiName ?? "",
-                    description: self.customPoiDescription ?? "",
+                    name: self.customPoiName,
+                    description: self.customPoiDescription,
                     buildingId: buildingInfo.building.identifier,
                     floorId: floor.identifier,
                     lat: markerPosition.latitude,
