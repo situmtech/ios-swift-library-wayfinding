@@ -41,8 +41,7 @@ extension PositioningViewController {
         customPoiCancelButton.isHidden = true
     }
 
-    func customPoiSelectionMode() {
-        deselect(marker: lastSelectedMarker)
+    func customPoiSelectionUI() {
         customPoiSelectionModeActive = true
         mapContainerViewTopConstraint.constant = 44
         infoBarMap.isHidden = true

@@ -88,6 +88,9 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
     var loadFinished: Bool = false
     // Custom markerses
     var customPoi: CustomPoi?
+    // TODO abstract the name and description logic to a new controller
+    var customPoiName: String?
+    var customPoiDescription: String?
     let customMarker = GMSMarker()
     // Customization
     var organizationTheme: SITOrganizationTheme?
@@ -449,6 +452,21 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
         }
         
         return indexPath
+    }
+    
+    func customPoiSelectionMode(name: String, description: String?) {
+        if (self.customPoiSelectionModeActive) {
+            print("Custom poi selection mode is already active")
+        } else {
+            if(SITNavigationManager.shared().isRunning()) {
+                print("Cannot edit custom pois while navigating")
+            } else {
+                self.customPoiName = name
+                self.customPoiDescription = description
+                self.deselect(marker: lastSelectedMarker)
+                self.customPoiSelectionUI()
+            }
+        }
     }
     
     private func retrieveCustomPoi(poiKey: String) {
@@ -894,8 +912,8 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
             if let buildingInfo = self.buildingInfo {
                 self.storeCustomPoi(
                     poiKey: self.carPositionKey,
-                    name: "Car position",
-                    description: "",
+                    name: self.customPoiName ?? "",
+                    description: self.customPoiDescription ?? "",
                     buildingId: buildingInfo.building.identifier,
                     floorId: floor.identifier,
                     lat: markerPosition.latitude,

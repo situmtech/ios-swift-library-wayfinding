@@ -366,30 +366,36 @@ import GoogleMaps
         presenter.startPositioning()
     }
     
-    public func activateFindMyCarMode() {
+    /**
+     Start the custom poi selection mode
+     - parameters
+        - name: Name of the custom poi to create
+        - description: optional param to indicate the description of the custom poi
+     */
+    public func activateFindMyCarMode(name: String, description: String?) {
         guard let positioningController = toPresentViewController else { return }
-        if (positioningController.customPoiSelectionModeActive) {
-            print("Custom poi selection mode is already active")
-        } else {
-            positioningController.customPoiSelectionMode()
-        }
+        positioningController.customPoiSelectionMode(name: name, description: description)
     }
     
-    public func hasCustomPoi() -> Bool {
-        guard let positioningController = toPresentViewController else { return false }
-        return positioningController.customPoi != nil
-    }
-    
+    /**
+     Retrieve the previously stored custom poi
+     */
     public func getCustomPoi() -> CustomPoi? {
         guard let positioningController = toPresentViewController else { return nil }
         return positioningController.customPoi
     }
     
+    /**
+     Remove the previously stored instance of custom poi
+     */
     public func removeCustomPoi() {
         guard let positioningController = toPresentViewController else { return }
         positioningController.removeCustomPoi()
     }
     
+    /**
+     Display the stored custom poi as selected
+     */
     public func selectCustomPoi(completion: @escaping (Result<Void, Error>) -> Void) {
         do {
             try self.toPresentViewController?.selectCustomPoi(success: {
