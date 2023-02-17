@@ -1,0 +1,53 @@
+parameters:
+  - name: buildTypes
+    type: object
+  - name: xcodeVersion
+    type: string
+
+
+
+steps:
+- ${{ each buildType in parameters.buildTypes }}:
+  - bash: |
+      echo -e "\n[+] Execute pod repo update.........\n"
+      pod repo update 
+
+      echo -e "\n[+] Installing Example app dependencies.......\n"
+      pushd Example/ 
+      pod install
+      popd
+    displayName: Install dependencies
+
+
+  - bash: |
+      sudo xcode-select -switch ${{ parameters.xcodeVersion }}
+      ./scripts/compilation_wayfinding.sh ${{ buildType.name }}
+    displayName: Build Example app
+
+  - task: PublishPipelineArtifact@1
+    inputs:
+      targetPath: 'build/buildWayfinding.log'
+      artifact: 'logs'
+      publishLocation: 'pipeline'
+    displayName: Archive build logs
+
+  - bash: |
+      echo -e "\n[+] Executing Lint pods\n"
+      pod lib lint --skip-import-validation --allow-warnings --verbose
+    displayName: Lint cocoapods spec
+  
+  - script: |
+      sudo gem install jazzy
+      sudo xcode-select -switch ${{ parameters.xcodeVersion }}
+      
+      echo -en "\n[+]zipName = ${{ buildType.zipName }}\n"
+      ./scripts/generate_appledoc.sh ${{ buildType.zipName }}
+
+      
+      echo -en "\n[+] Uploading ${{ buildType.zipName }} to ${{ buildType.reponame }}\n"
+      ./jfrog rt upload ${{ buildType.zipName }} ${{ buildType.reponame }}
+    displayName: Generate appledoc
+  
+  
+  
+

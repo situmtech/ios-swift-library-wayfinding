@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'SitumWayfinding'
-  s.version          = '0.18.0'
+  s.version          = '0.18.1'
   s.summary          = 'Indoor Location for iOS.'
   s.static_framework = true
 
@@ -46,7 +46,7 @@ Pod::Spec.new do |s|
   }
   
   s.dependency 'GoogleMaps', '~> 4.2.0'
-  s.dependency 'SitumSDK', '~> 2.56.0'
+  s.dependency 'SitumSDK', '~> 2.57.0'
   s.dependency 'Google-Maps-iOS-Utils', '~> 4.1.0'
 
 end
