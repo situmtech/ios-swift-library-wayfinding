@@ -83,7 +83,12 @@ class MarkerRenderer {
     func displayCustomMarker(_ marker: SitumMarker, forFloor floor: SITFloor) {
         if floor.identifier == marker.floorIdentifier {
             markers.append(marker)
-            insertMarkerInGoogleMaps(marker: marker)
+            if let markerClustering = markerClustering  {
+                markerClustering.add(marker)
+                markerClustering.display()
+            } else {
+                insertMarkerInGoogleMaps(marker: marker)
+            }
         }
     }
     
