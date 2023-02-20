@@ -1074,7 +1074,7 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
         if (!isUserNavigating()) {
             if inside(coordinate: coordinate) {
                 removeLastCustomMarkerIfOutsideRoute()
-                lastCustomMarker = SitumMarker(coordinate: coordinate, floor: floor)
+                lastCustomMarker = SitumMarker(coordinate: coordinate, floor: floor, markerType: SitumMarkerType.longPressMarker)
                 lastSelectedMarker = lastCustomMarker
                 containerInfoBarMap?.setLabels(primary: lastCustomMarker!.title, secondary: floorUILabel(with: lastCustomMarker!))
                 changeNavigationButtonVisibility(isVisible: true)
@@ -1538,16 +1538,15 @@ extension PositioningViewController {
             if let storedCustomPoi = customPoi {
                 if let indexPath = self.getIndexPath(floorId: storedCustomPoi.floorId)?.row {
                     if let markerFloor = orderedFloors(buildingInfo: buildingInfo)?[indexPath] {
-                        // TODO JLAQ do not create a new instance of situm marker on each render
-                        let markerPosition = CLLocationCoordinate2D(latitude: storedCustomPoi.latitude, longitude: storedCustomPoi.longitude)
+                        // TODO do not create a new instance of situm marker on each render
                         let markerIcon = UIImage(
                             named: "situm_find_my_car_marker",
                             in: SitumMapsLibrary.bundle,
                             compatibleWith: nil)
                         let situmMarker = SitumMarker(
-                            coordinate: markerPosition,
+                            coordinate: CLLocationCoordinate2D(latitude: storedCustomPoi.latitude, longitude: storedCustomPoi.longitude),
                             floor: markerFloor,
-                            custom: true,
+                            markerType: SitumMarkerType.customPoiMarker,
                             title: storedCustomPoi.name,
                             id: String(storedCustomPoi.key),
                             image: markerIcon
