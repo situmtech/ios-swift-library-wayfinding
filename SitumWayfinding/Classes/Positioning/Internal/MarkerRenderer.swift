@@ -256,8 +256,8 @@ class MarkerRenderer {
         }
     }
     
-    func searchCustomMarker() -> SitumMarker? {
-        return markers.first(where: { marker in marker.isCustomMarker})
+    func searchCustomMarker(key: String) -> SitumMarker? {
+        return markers.first(where: { marker in marker.isCustomMarker && marker.customPoi?.key == key})
     }
 }
 

@@ -1431,7 +1431,7 @@ extension PositioningViewController {
                 let renderer = markerRenderer else { return }
             
             select(floor: indexPath)
-            if let customMarker = renderer.searchCustomMarker() {
+            if let customMarker = renderer.searchCustomMarker(key: carPositionKey) {
                 select(marker: customMarker, success: success)
             } else {
                 // TODO throw custom error
