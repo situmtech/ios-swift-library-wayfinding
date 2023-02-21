@@ -9,6 +9,7 @@ import Foundation
 
 /// Object that represents a custom POI saved by the user 
 public struct CustomPoi: Codable {
+    /// Unique key of the poi
     public private(set) var key: String
     /// Name of the poi
     public private(set) var name: String?
