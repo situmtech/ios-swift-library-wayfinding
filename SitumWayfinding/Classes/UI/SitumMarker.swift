@@ -18,6 +18,7 @@ enum SitumMarkerType {
 struct SitumMarker: Equatable {
     private(set) var gmsMarker: GMSMarker
     private(set) var poi: SITPOI?
+    private(set) var customPoi: CustomPoi?
     private(set) var markerType: SitumMarkerType = SitumMarkerType.poiMarker
     var title: String { return gmsMarker.title ?? "" }
     private(set) var floorIdentifier: String
@@ -45,6 +46,14 @@ struct SitumMarker: Equatable {
             isLongPressMarker: isLongPressMarker,
             isTopLevel: isTopLevel
         )
+    }
+    
+    init(customPoi: CustomPoi) {
+        let marker: GMSMarker = GMSMarker(position: CLLocationCoordinate2D(latitude: customPoi.latitude, longitude: customPoi.longitude))
+        gmsMarker = marker
+        floorIdentifier = customPoi.floorId
+        self.customPoi = customPoi
+        markerType = SitumMarkerType.customPoiMarker
     }
     
     init(coordinate: CLLocationCoordinate2D, floor: SITFloor, markerType: SitumMarkerType, title: String? = nil, id: String? = nil, image: UIImage? = nil) {

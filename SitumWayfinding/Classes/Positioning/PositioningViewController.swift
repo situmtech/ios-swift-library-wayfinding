@@ -490,7 +490,15 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
     }
     
     func storeCustomPoi(poiKey: String, name: String?, description: String?, buildingId: String, floorId: String, lat: Double, lng: Double) {
-        customPoi = CustomPoi(key: poiKey, name: name, description: description, buildingId: buildingId, floorId: floorId, latitude: lat, longitude: lng)
+        let markerIcon = UIImage(
+            named: "situm_car_location",
+            in: SitumMapsLibrary.bundle,
+            compatibleWith: nil)
+        let markerIconSelected = UIImage(
+            named: "situm_car_location_selected",
+            in: SitumMapsLibrary.bundle,
+            compatibleWith: nil)
+        customPoi = CustomPoi(key: poiKey, name: name, description: description, buildingId: buildingId, floorId: floorId, latitude: lat, longitude: lng, markerImage: markerIcon, markerSelectedImage: markerIconSelected)
         
         customPoiManager.store(customPoi: customPoi!)
         delegateNotifier?.notifyOnCustomPoiSet(customPoi: customPoi!)
@@ -1475,7 +1483,13 @@ extension PositioningViewController {
                 changeDeletePoiButtonVisibility(isVisible: true)
             }
         }
-        updateInfoBarLabelsIfNotInsideRoute(mainLabel: poiMarker.poi?.name ?? DEFAULT_POI_NAME,
+        var infoBarLabel: String = DEFAULT_POI_NAME
+        if poiMarker.isPoiMarker {
+            infoBarLabel = poiMarker.poi?.name ?? DEFAULT_POI_NAME
+        } else if poiMarker.isCustomMarker {
+            infoBarLabel = poiMarker.customPoi?.name ?? DEFAULT_POI_NAME
+        }
+        updateInfoBarLabelsIfNotInsideRoute(mainLabel: infoBarLabel,
             secondaryLabel: floorUILabel(with: poiMarker))
         if (positioningButton.isSelected) {
             showCenterButton()
@@ -1483,9 +1497,9 @@ extension PositioningViewController {
         isCameraCentered = false
         //Call only if this marker wasnt already the selected one
         if poiMarker != lastSelectedMarker, let uPoi = poiMarker.poi, let uBuildingInfo = buildingInfo {
-            if (!poiMarker.isCustomMarker) {
+            if (poiMarker.isPoiMarker) {
                 poiWasSelected(poi: uPoi, buildingInfo: uBuildingInfo)
-            } else {
+            } else if (poiMarker.isCustomMarker){
                 customPoiWasSelected(poiId: uPoi.identifier)
             }
         }
@@ -1536,24 +1550,8 @@ extension PositioningViewController {
             }
             
             if let storedCustomPoi = customPoi {
-                if let indexPath = self.getIndexPath(floorId: storedCustomPoi.floorId)?.row {
-                    if let markerFloor = orderedFloors(buildingInfo: buildingInfo)?[indexPath] {
-                        // TODO do not create a new instance of situm marker on each render
-                        let markerIcon = UIImage(
-                            named: "situm_find_my_car_marker",
-                            in: SitumMapsLibrary.bundle,
-                            compatibleWith: nil)
-                        let situmMarker = SitumMarker(
-                            coordinate: CLLocationCoordinate2D(latitude: storedCustomPoi.latitude, longitude: storedCustomPoi.longitude),
-                            floor: markerFloor,
-                            markerType: SitumMarkerType.customPoiMarker,
-                            title: storedCustomPoi.name,
-                            id: String(storedCustomPoi.key),
-                            image: markerIcon
-                        )
-                        renderer.displayCustomMarker(situmMarker, forFloor: floor)
-                    }
-                }
+                let situmMarker = SitumMarker(customPoi: storedCustomPoi)
+                renderer.displayCustomMarker(situmMarker, forFloor: floor)
             }
             
             // in the future selection should be encapsulated in some other class to abstract Google maps

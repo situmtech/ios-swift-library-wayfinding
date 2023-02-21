@@ -22,4 +22,43 @@ public struct CustomPoi: Codable {
     public let latitude: Double
     /// Longitude of the poi
     public let longitude: Double
+    let markerImageData: Data?
+    let markerSelectedImageData: Data?
+    
+    public init(key: String, name: String?, description: String?, buildingId: String, floorId: String, latitude: Double, longitude: Double) {
+        self.key = key
+        self.name = name
+        self.description = description
+        self.buildingId = buildingId
+        self.floorId = floorId
+        self.latitude = latitude
+        self.longitude = longitude
+    }
+    
+    init(key: String, name: String?, description: String?, buildingId: String, floorId: String, latitude: Double, longitude: Double, markerImage: UIImage? = nil, markerSelectedImage: UIImage? = nil) {
+        self.key = key
+        self.name = name
+        self.description = description
+        self.buildingId = buildingId
+        self.floorId = floorId
+        self.latitude = latitude
+        self.longitude = longitude
+        self.markerImageData = markerImage?.pngData()
+        self.markerSelectedImageData = markerSelectedImage?.pngData()
+    }
+    
+    func getMarkerImage() -> UIImage? {
+        if (self.markerImageData != nil) {
+            return UIImage(data: self.markerImageData!)
+        }
+        return nil
+    }
+    
+    func getMarkerSelectedImage() -> UIImage? {
+        if (markerSelectedImageData != nil) {
+            return UIImage(data: markerSelectedImageData!)
+        }
+        return nil
+    }
+
 }
