@@ -22,7 +22,9 @@ public struct CustomPoi: Codable {
     public private(set) var latitude: Double
     /// Longitude of the poi
     public private(set) var longitude: Double
+    /// Image data of the marker when not selected
     public private(set) var markerImageData: Data?
+    /// Image data of the marker when selected
     public private(set) var markerSelectedImageData: Data?
     
     init(key: String, name: String?, description: String?, buildingId: String, floorId: String, latitude: Double, longitude: Double, markerImage: UIImage? = nil, markerSelectedImage: UIImage? = nil) {
@@ -37,14 +39,16 @@ public struct CustomPoi: Codable {
         self.markerSelectedImageData = markerSelectedImage?.pngData()
     }
     
-    func getMarkerImage() -> UIImage? {
+    /// Get custom poi image as UIImage
+    public func getMarkerImage() -> UIImage? {
         if (self.markerImageData != nil) {
             return UIImage(data: self.markerImageData!)
         }
         return nil
     }
     
-    func getMarkerSelectedImage() -> UIImage? {
+    /// Get custom poi selected image as UIImage
+    public func getMarkerSelectedImage() -> UIImage? {
         if (markerSelectedImageData != nil) {
             return UIImage(data: markerSelectedImageData!)
         }
