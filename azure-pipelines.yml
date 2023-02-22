@@ -93,7 +93,7 @@ steps:
         pod trunk me
   
         echo -e "\n[+] Pod push SDK..........."
-        pod trunk push SitumWayfinding.podspec --skip-import-validation
+        pod trunk push SitumWayfinding.podspec --skip-import-validation --allow-warnings
   
     
       displayName: Push podspec
