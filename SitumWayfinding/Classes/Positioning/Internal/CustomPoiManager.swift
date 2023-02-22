@@ -11,11 +11,11 @@ import Foundation
 class CustomPoiManager {
     let customMarkerKeyPrefix = "custom_position_";
     
-    private func getStorageCustomKey(poiKey: String) -> String {
+    private func getStorageCustomKey(poiKey: Int) -> String {
         return "\(self.customMarkerKeyPrefix)\(poiKey)"
     }
     
-    func get(poiKey: String) -> CustomPoi? {
+    func get(poiKey: Int) -> CustomPoi? {
         let customPoiStorageKey = self.getStorageCustomKey(poiKey: poiKey)
         if let data = UserDefaults.standard.data(forKey: customPoiStorageKey) {
             do {
@@ -29,7 +29,7 @@ class CustomPoiManager {
         return nil
     }
     
-    func remove(poiKey: String) {
+    func remove(poiKey: Int) {
         let customPoiStorageKey = self.getStorageCustomKey(poiKey: poiKey)
         UserDefaults.standard.removeObject(forKey: customPoiStorageKey)
     }
@@ -40,7 +40,7 @@ class CustomPoiManager {
             let encoder = JSONEncoder()
             let data = try encoder.encode(customPoi)
             
-            let customPoiStorageKey = self.getStorageCustomKey(poiKey: customPoi.key)
+            let customPoiStorageKey = self.getStorageCustomKey(poiKey: customPoi.id)
             UserDefaults.standard.set(data, forKey: customPoiStorageKey)
         } catch {
             print("Unable to Encode Position (\(error))")

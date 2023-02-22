@@ -10,7 +10,7 @@ import Foundation
 /// Object that represents a custom POI saved by the user 
 public struct CustomPoi: Codable {
     /// Unique key of the poi
-    public private(set) var key: String
+    public private(set) var id: Int
     /// Name of the poi
     public private(set) var name: String?
     /// Description of the poi
@@ -28,8 +28,8 @@ public struct CustomPoi: Codable {
     /// Image data of the marker when selected
     public private(set) var markerSelectedImageData: Data?
     
-    init(key: String, name: String?, description: String?, buildingId: String, floorId: String, latitude: Double, longitude: Double, markerImage: UIImage? = nil, markerSelectedImage: UIImage? = nil) {
-        self.key = key
+    init(key: Int, name: String?, description: String?, buildingId: String, floorId: String, latitude: Double, longitude: Double, markerImage: UIImage? = nil, markerSelectedImage: UIImage? = nil) {
+        self.id = key
         self.name = name
         self.description = description
         self.buildingId = buildingId

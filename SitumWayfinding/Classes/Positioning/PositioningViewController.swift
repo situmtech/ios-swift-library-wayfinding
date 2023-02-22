@@ -112,8 +112,8 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
     var tileProvider: TileProvider!
     var preserveStateInNewViewAppeareance = false
     // Find my car mode variables
-    var customPoiSelectionModeActive = false
-    var carPositionKey = "car_parking_position"
+    var customPoiCreationModeActive = false
+    var carPositionKey = 10000
     var customPoiManager = CustomPoiManager()
 
     override func viewDidLoad() {
@@ -454,9 +454,9 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
         return indexPath
     }
     
-    func customPoiSelectionMode(name: String?, description: String?) {
-        if (self.customPoiSelectionModeActive) {
-            print("Custom poi selection mode is already active")
+    func customPoiCreationMode(name: String?, description: String?) {
+        if (self.customPoiCreationModeActive) {
+            print("Custom poi creation mode is already active")
         } else {
             if(SITNavigationManager.shared().isRunning()) {
                 print("Cannot edit custom pois while navigating")
@@ -464,16 +464,16 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
                 self.customPoiName = name
                 self.customPoiDescription = description
                 self.deselect(marker: lastSelectedMarker)
-                self.customPoiSelectionUI()
+                self.customPoiCreationUI()
             }
         }
     }
     
-    private func retrieveCustomPoi(poiKey: String) {
+    private func retrieveCustomPoi(poiKey: Int) {
         self.customPoi =  customPoiManager.get(poiKey: poiKey)
     }
     
-    private func deleteCustomPoi(poiKey: String) {
+    private func deleteCustomPoi(poiKey: Int) {
         self.customPoi = nil
         customPoiManager.remove(poiKey: poiKey)
         
@@ -485,11 +485,22 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
         }
     }
     
-    func removeCustomPoi() {
-        self.deleteCustomPoi(poiKey: carPositionKey)
+    func removeCustomPoi(key: Int) {
+        self.deleteCustomPoi(poiKey: key)
     }
     
-    func storeCustomPoi(poiKey: String, name: String?, description: String?, buildingId: String, floorId: String, lat: Double, lng: Double) {
+    func getCustomPoiById(id: Int) -> CustomPoi? {
+        if (customPoi != nil && customPoi?.id == id) {
+            return customPoi
+        }
+        return nil
+    }
+    
+    func getLatestCustomPoi() -> CustomPoi? {
+        return customPoi
+    }
+    
+    func storeCustomPoi(poiKey: Int, name: String?, description: String?, buildingId: String, floorId: String, lat: Double, lng: Double) {
         let markerIcon = UIImage(
             named: "situm_car_location",
             in: SitumMapsLibrary.bundle,
@@ -1425,13 +1436,13 @@ extension PositioningViewController {
         select(marker: marker, success: {})
     }
     
-    func selectCustomPoi(success: @escaping () -> Void) throws {
-        if (customPoi != nil) {
+    func selectCustomPoi(id: Int, success: @escaping () -> Void) throws {
+        if (customPoi != nil && customPoi?.id == id) {
             guard let indexPath = getIndexPath(floorId: customPoi!.floorId),
                 let renderer = markerRenderer else { return }
             
             select(floor: indexPath)
-            if let customMarker = renderer.searchCustomMarker(key: carPositionKey) {
+            if let customMarker = renderer.searchCustomMarker(customPoiId: id) {
                 select(marker: customMarker, success: success)
             } else {
                 // TODO throw custom error
@@ -1496,11 +1507,11 @@ extension PositioningViewController {
         }
         isCameraCentered = false
         //Call only if this marker wasnt already the selected one
-        if poiMarker != lastSelectedMarker, let uPoi = poiMarker.poi, let uBuildingInfo = buildingInfo {
-            if (poiMarker.isPoiMarker) {
+        if poiMarker != lastSelectedMarker {
+            if poiMarker.isPoiMarker, let uPoi = poiMarker.poi, let uBuildingInfo = buildingInfo {
                 poiWasSelected(poi: uPoi, buildingInfo: uBuildingInfo)
-            } else if (poiMarker.isCustomMarker){
-                customPoiWasSelected(poiId: uPoi.identifier)
+            } else if poiMarker.isCustomMarker, let cPoi = poiMarker.customPoi {
+                customPoiWasSelected(poiId: cPoi.id)
             }
         }
     }
@@ -1516,12 +1527,10 @@ extension PositioningViewController {
     }
     
     func poiMarkerWasDeselected(poiMarker: SitumMarker, notifyDelegate: Bool = true) {
-        if let uPoi = poiMarker.poi, let uBuildingInfo = buildingInfo {
-            if !poiMarker.isCustomMarker && notifyDelegate {
-                poiWasDeselected(poi: uPoi, buildingInfo: uBuildingInfo)
-            } else if notifyDelegate {
-                customPoiWasDeselected(poiId: uPoi.identifier)
-            }
+        if poiMarker.isPoiMarker, let uPoi = poiMarker.poi, let uBuildingInfo = buildingInfo, notifyDelegate {
+            poiWasDeselected(poi: uPoi, buildingInfo: uBuildingInfo)
+        } else if poiMarker.isCustomMarker, notifyDelegate, let cPoi = poiMarker.customPoi {
+            customPoiWasDeselected(poiId: cPoi.id)
         }
     }
     
@@ -1533,11 +1542,11 @@ extension PositioningViewController {
         delegateNotifier?.notifyOnPOIDeselected(poi: poi, buildingInfo: buildingInfo)
     }
     
-    func customPoiWasSelected(poiId: String) {
+    func customPoiWasSelected(poiId: Int) {
         delegateNotifier?.notifyOnCustomPoiSelected(poiId: poiId)
     }
     
-    func customPoiWasDeselected(poiId: String) {
+    func customPoiWasDeselected(poiId: Int) {
         delegateNotifier?.notifyOnCustomPoiDeselected(poiId: poiId)
     }
     

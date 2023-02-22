@@ -7,7 +7,7 @@ extension PositioningViewController {
         indicationsView.isHidden = true
         navbar.isHidden = false
         containerInfoBarMap?.isBeingPresented()
-        hideCustomPoiSelectionUIElements()
+        hideCustomPoiCreationUIElements()
     }
         
     func showNavigationUI() {
@@ -24,37 +24,37 @@ extension PositioningViewController {
         indicationsViewController?.isBeingPresented()
         containerInfoBarNavigation?.isBeingPresented()
         indicationsViewController?.showNavigationLoading()
-        hideCustomPoiSelectionUIElements()
+        hideCustomPoiCreationUIElements()
     }
     
-    private func displayCustomPoiSelectionUIElements() {
+    private func displayCustomPoiCreationUIElements() {
         positionPickerImage.isHidden = false
-        customPoiSelectionModeActive = true
+        customPoiCreationModeActive = true
         customPoiAcceptButton.isHidden = false
         customPoiCancelButton.isHidden = false
     }
 
-    private func hideCustomPoiSelectionUIElements() {
+    private func hideCustomPoiCreationUIElements() {
         positionPickerImage?.isHidden = true
-        customPoiSelectionModeActive = false
+        customPoiCreationModeActive = false
         customPoiAcceptButton.isHidden = true
         customPoiCancelButton.isHidden = true
     }
 
-    func customPoiSelectionUI() {
-        customPoiSelectionModeActive = true
+    func customPoiCreationUI() {
+        customPoiCreationModeActive = true
         mapContainerViewTopConstraint.constant = 44
         infoBarMap.isHidden = true
         infoBarNavigation.isHidden = true
         indicationsView.isHidden = true
         navbar.isHidden = true
-        displayCustomPoiSelectionUIElements()
+        displayCustomPoiCreationUIElements()
     }
     
     func hiddenNavBar() {
         mapContainerViewTopConstraint.constant = 0
         infoBarMap.isHidden = false
         navbar.isHidden = true
-        hideCustomPoiSelectionUIElements()
+        hideCustomPoiCreationUIElements()
     }
 }

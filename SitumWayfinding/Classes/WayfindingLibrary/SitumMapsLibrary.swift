@@ -367,38 +367,49 @@ import GoogleMaps
     }
     
     /**
-     Start the custom poi selection mode
+     Start the custom poi creation mode
      - parameters
         - name: Name of the custom poi to create
         - description: Description of the custom poi
      */
-    public func startCustomPoiSelection(name: String?, description: String?) {
+    public func startCustomPoiCreation(name: String?, description: String?) {
         guard let positioningController = toPresentViewController else { return }
-        positioningController.customPoiSelectionMode(name: name, description: description)
+        positioningController.customPoiCreationMode(name: name, description: description)
     }
     
     /**
-     Retrieve the previously stored custom poi
+     Retrieve the previously stored custom poi given its id
+     */
+    public func getCustomPoi(id: Int?) -> CustomPoi? {
+        guard let positioningController = toPresentViewController else { return nil }
+        if (id != nil) {
+            return positioningController.getCustomPoiById(id: id!)
+        }
+        return positioningController.getLatestCustomPoi()
+    }
+    
+    /**
+     Retrieve the latest stored custom poi
      */
     public func getCustomPoi() -> CustomPoi? {
         guard let positioningController = toPresentViewController else { return nil }
-        return positioningController.customPoi
+        return positioningController.getLatestCustomPoi()
     }
     
     /**
      Remove the previously stored instance of custom poi
      */
-    public func removeCustomPoi() {
+    public func removeCustomPoi(id: Int) {
         guard let positioningController = toPresentViewController else { return }
-        positioningController.removeCustomPoi()
+        positioningController.removeCustomPoi(key: id)
     }
     
     /**
      Display the stored custom poi as selected
      */
-    public func selectCustomPoi(completion: @escaping (Result<Void, Error>) -> Void) {
+    public func selectCustomPoi(id: Int, completion: @escaping (Result<Void, Error>) -> Void) {
         do {
-            try self.toPresentViewController?.selectCustomPoi(success: {
+            try self.toPresentViewController?.selectCustomPoi(id: id, success: {
                 completion(.success(()))
             })
         } catch {
