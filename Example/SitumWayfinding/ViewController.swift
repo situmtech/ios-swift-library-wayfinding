@@ -42,7 +42,7 @@ class ViewController: UIViewController {
             apiKey: "YOUR_SITUM_APIKEY",
             googleMapsApiKey: "YOUR_GOOGLEMAPS_APIKEY"
         )
-        buildingId = "12469"
+        buildingId = "YOUR_BUILDING_ID"
         location = (lat: "YOUR_LATITUDE", lng: "YOUR_LONGITUDE")
         fakeLocationSwitch.isOn = UserDefaults.standard.bool(forKey: "fake_locations")
         loadPois()
