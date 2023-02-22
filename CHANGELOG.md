@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 All non released changes should be in CHANGELOG_UNRELEASED.md file
 
 ---------
+## [0.18.2] - 2023-02-23
+# Changed
+- Updated Situm SDK dependency to 2.57.1
+
 ## [0.18.1] - 2023-02-16
 ### Changed
 -  Updated Situm SDK dependency to 2.57.0
