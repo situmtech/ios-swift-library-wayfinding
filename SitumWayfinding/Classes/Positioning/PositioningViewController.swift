@@ -88,9 +88,15 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
     var loadFinished: Bool = false
     // Custom markerses
     var customPoi: CustomPoi?
+    var customPoiCreationModeActive = false
+    var carPositionKey = 10000
+    var customPoiManager = CustomPoiManager()
     // TODO abstract the name and description logic to a new controller
     var customPoiName: String?
     var customPoiDescription: String?
+    var customPoiMarkerIcon: UIImage?
+    var customPoiMarkerIconSelected: UIImage?
+    // Long press marker
     let customMarker = GMSMarker()
     // Customization
     var organizationTheme: SITOrganizationTheme?
@@ -111,10 +117,6 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
     var changeOfFloorMarker = GMSMarker()
     var tileProvider: TileProvider!
     var preserveStateInNewViewAppeareance = false
-    // Find my car mode variables
-    var customPoiCreationModeActive = false
-    var carPositionKey = 10000
-    var customPoiManager = CustomPoiManager()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -454,7 +456,7 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
         return indexPath
     }
     
-    func customPoiCreationMode(name: String?, description: String?) {
+    func customPoiCreationMode(name: String?, description: String?, markerIcon: UIImage?, markerIconSelected: UIImage?) {
         if (self.customPoiCreationModeActive) {
             print("Custom poi creation mode is already active")
         } else {
@@ -463,6 +465,8 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
             } else {
                 self.customPoiName = name
                 self.customPoiDescription = description
+                self.customPoiMarkerIcon = markerIcon
+                self.customPoiMarkerIconSelected = markerIconSelected
                 self.deselect(marker: lastSelectedMarker)
                 self.customPoiCreationUI()
             }
@@ -500,15 +504,7 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
         return customPoi
     }
     
-    func storeCustomPoi(poiKey: Int, name: String?, description: String?, buildingId: String, floorId: String, lat: Double, lng: Double) {
-        let markerIcon = UIImage(
-            named: "situm_car_location",
-            in: SitumMapsLibrary.bundle,
-            compatibleWith: nil)
-        let markerIconSelected = UIImage(
-            named: "situm_car_location_selected",
-            in: SitumMapsLibrary.bundle,
-            compatibleWith: nil)
+    func storeCustomPoi(poiKey: Int, name: String?, description: String?, buildingId: String, floorId: String, lat: Double, lng: Double, markerIcon: UIImage? = nil, markerIconSelected: UIImage? = nil) {
         customPoi = CustomPoi(key: poiKey, name: name, description: description, buildingId: buildingId, floorId: floorId, latitude: lat, longitude: lng, markerImage: markerIcon, markerSelectedImage: markerIconSelected)
         
         customPoiManager.store(customPoi: customPoi!)
@@ -936,7 +932,9 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
                     buildingId: buildingInfo.building.identifier,
                     floorId: floor.identifier,
                     lat: markerPosition.latitude,
-                    lng: markerPosition.longitude
+                    lng: markerPosition.longitude,
+                    markerIcon: customPoiMarkerIcon,
+                    markerIconSelected: customPoiMarkerIconSelected
                 )
             }
         }

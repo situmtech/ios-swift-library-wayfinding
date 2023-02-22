@@ -371,10 +371,25 @@ import GoogleMaps
      - parameters
         - name: Name of the custom poi to create
         - description: Description of the custom poi
+        - markerICon: Image for the marker displayed on the map for the custom POI
+        - markerIconSelected: Image for the marker displayed on the map for the custom POI when selected
      */
-    public func startCustomPoiCreation(name: String?, description: String?) {
+    public func startCustomPoiCreation(name: String?, description: String?, markerIcon: UIImage? = nil, markerIconSelected: UIImage? = nil) {
+        let defaultMarkerIcon = UIImage(
+            named: "situm_car_location",
+            in: SitumMapsLibrary.bundle,
+            compatibleWith: nil)
+        let defaultMarkerIconSelected = UIImage(
+            named: "situm_car_location_selected",
+            in: SitumMapsLibrary.bundle,
+            compatibleWith: nil)
         guard let positioningController = toPresentViewController else { return }
-        positioningController.customPoiCreationMode(name: name, description: description)
+        positioningController.customPoiCreationMode(
+            name: name,
+            description: description,
+            markerIcon: markerIcon ?? defaultMarkerIcon,
+            markerIconSelected: markerIconSelected ?? defaultMarkerIconSelected
+        )
     }
     
     /**
