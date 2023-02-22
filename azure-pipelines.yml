@@ -61,7 +61,7 @@ steps:
           reponame: lib-release-local-private/iOS/SitumWayfinding/$(branch)/$(version)/
         xcodeVersion: $(xcodeVersion)
 
-- ${{ if or(contains(variables['Build.SourceBranch'], 'feature/'),contains(variables['Build.SourceBranchName'],'SIS-604-develop')) }}:
+- ${{ if or(contains(variables['Build.SourceBranch'], 'feature/'),contains(variables['Build.SourceBranchName'],'develop')) }}:
     - template: azure/create_artifacts.yml
       parameters:
         buildTypes:
