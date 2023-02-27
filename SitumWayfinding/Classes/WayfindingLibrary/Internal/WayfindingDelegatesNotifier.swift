@@ -53,19 +53,19 @@ class WayfindingDelegatesNotifier{
         mapReadyDelegate?.onMapReady(map: map)
     }
     
-    func notifyOnCustomPoiSet(customPoi: CustomPoi) {
-        customPoiChangeDelegate?.onCustomPoiSet(customPoi: customPoi);
+    func notifyOnCustomPoiCreated(customPoi: CustomPoi) {
+        customPoiChangeDelegate?.onCustomPoiCreated(customPoi: customPoi);
     }
     
-    func notifyOnCustomPoiRemoved(poiId: Int) {
-        customPoiChangeDelegate?.onCustomPoiRemoved(poiId: poiId);
+    func notifyOnCustomPoiRemoved(customPoi: CustomPoi) {
+        customPoiChangeDelegate?.onCustomPoiRemoved(customPoi: customPoi);
     }
     
-    func notifyOnCustomPoiSelected(poiId: Int) {
-        customPoiChangeDelegate?.onCustomPoiSelected(poiId: poiId);
+    func notifyOnCustomPoiSelected(customPoi: CustomPoi) {
+        customPoiChangeDelegate?.onCustomPoiSelected(customPoi: customPoi);
     }
     
-    func notifyOnCustomPoiDeselected(poiId: Int) {
-        customPoiChangeDelegate?.onCustomPoiDeselected(poiId: poiId);
+    func notifyOnCustomPoiDeselected(customPoi: CustomPoi) {
+        customPoiChangeDelegate?.onCustomPoiDeselected(customPoi: customPoi);
     }
 }

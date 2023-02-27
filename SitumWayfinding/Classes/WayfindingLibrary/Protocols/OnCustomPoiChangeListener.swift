@@ -16,21 +16,21 @@ public protocol OnCustomPoiChangeListener {
     /**
      Method that notifies when a Custom POI has been set.
      */
-    func onCustomPoiSet(customPoi: CustomPoi)
+    func onCustomPoiCreated(customPoi: CustomPoi)
     
     /**
      Method that notifies when a Custom POI has been removed.
      */
-    func onCustomPoiRemoved(poiId: Int)
+    func onCustomPoiRemoved(customPoi: CustomPoi)
 
      /**
       Method that notifies when a Custom POI has been selected.
       */
-    func onCustomPoiSelected(poiId: Int)
+    func onCustomPoiSelected(customPoi: CustomPoi)
      
      /**
       Method that notifies when a Custom POI has been deselected.
       */
-    func onCustomPoiDeselected(poiId: Int)
+    func onCustomPoiDeselected(customPoi: CustomPoi)
     
 }

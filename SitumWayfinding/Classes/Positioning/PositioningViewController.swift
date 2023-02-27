@@ -479,13 +479,15 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
     
     private func deleteCustomPoi(poiKey: Int) {
         self.customPoi = nil
-        customPoiManager.remove(poiKey: poiKey)
-        
-        deselect(marker: lastSelectedMarker, notifyDelegate: false)
-        delegateNotifier?.notifyOnCustomPoiRemoved(poiId: poiKey)
-        
-        if let floor = orderedFloors(buildingInfo: buildingInfo)?[self.selectedLevelIndex] {
-            displayMarkers(forFloor: floor, isUserNavigating: self.isUserNavigating())
+        if let storedCustomPoi = customPoiManager.get(poiKey: poiKey) {
+            customPoiManager.remove(poiKey: poiKey)
+            
+            deselect(marker: lastSelectedMarker, notifyDelegate: false)
+            delegateNotifier?.notifyOnCustomPoiRemoved(customPoi: storedCustomPoi)
+            
+            if let floor = orderedFloors(buildingInfo: buildingInfo)?[self.selectedLevelIndex] {
+                displayMarkers(forFloor: floor, isUserNavigating: self.isUserNavigating())
+            }
         }
     }
     
@@ -508,7 +510,7 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
         customPoi = CustomPoi(key: poiKey, name: name, description: description, buildingId: buildingId, floorId: floorId, latitude: lat, longitude: lng, markerImage: markerIcon, markerSelectedImage: markerIconSelected)
         
         customPoiManager.store(customPoi: customPoi!)
-        delegateNotifier?.notifyOnCustomPoiSet(customPoi: customPoi!)
+        delegateNotifier?.notifyOnCustomPoiCreated(customPoi: customPoi!)
         
         if let floor = orderedFloors(buildingInfo: buildingInfo)?[self.selectedLevelIndex] {
             displayMarkers(forFloor: floor, isUserNavigating: self.isUserNavigating())
@@ -1541,11 +1543,15 @@ extension PositioningViewController {
     }
     
     func customPoiWasSelected(poiId: Int) {
-        delegateNotifier?.notifyOnCustomPoiSelected(poiId: poiId)
+        if let storedCustomPoi = customPoiManager.get(poiKey: poiId) {
+            delegateNotifier?.notifyOnCustomPoiSelected(customPoi: storedCustomPoi)
+        }
     }
     
     func customPoiWasDeselected(poiId: Int) {
-        delegateNotifier?.notifyOnCustomPoiDeselected(poiId: poiId)
+        if let storedCustomPoi = customPoiManager.get(poiKey: poiId) {
+            delegateNotifier?.notifyOnCustomPoiDeselected(customPoi: storedCustomPoi)
+        }
     }
     
     func displayMarkers(forFloor floor: SITFloor, isUserNavigating: Bool) {
