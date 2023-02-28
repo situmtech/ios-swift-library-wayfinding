@@ -18,7 +18,7 @@ enum SitumMarkerType {
 struct SitumMarker: Equatable {
     private(set) var gmsMarker: GMSMarker
     private(set) var poi: SITPOI?
-    private(set) var customPoi: CustomPoi?
+    private(set) var customPoi: CustomPoiImpl?
     private(set) var markerType: SitumMarkerType = SitumMarkerType.poiMarker
     var title: String { return gmsMarker.title ?? "" }
     private(set) var floorIdentifier: String
@@ -48,7 +48,7 @@ struct SitumMarker: Equatable {
         )
     }
     
-    init(customPoi: CustomPoi) {
+    init(customPoi: CustomPoiImpl) {
         let marker: GMSMarker = GMSMarker(position: CLLocationCoordinate2D(latitude: customPoi.latitude, longitude: customPoi.longitude))
         gmsMarker = marker
         floorIdentifier = customPoi.floorId

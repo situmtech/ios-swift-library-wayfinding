@@ -15,12 +15,12 @@ class CustomPoiManager {
         return "\(self.customMarkerKeyPrefix)\(poiKey)"
     }
     
-    func get(poiKey: Int) -> CustomPoi? {
+    func get(poiKey: Int) -> CustomPoiImpl? {
         let customPoiStorageKey = self.getStorageCustomKey(poiKey: poiKey)
         if let data = UserDefaults.standard.data(forKey: customPoiStorageKey) {
             do {
                 let decoder = JSONDecoder()
-                return try decoder.decode(CustomPoi.self, from: data)
+                return try decoder.decode(CustomPoiImpl.self, from: data)
 
             } catch {
                 print("Unable to Decode Position (\(error))")
@@ -35,7 +35,7 @@ class CustomPoiManager {
     }
     
     
-    func store(customPoi: CustomPoi) {
+    func store(customPoi: CustomPoiImpl) {
         do {
             let encoder = JSONEncoder()
             let data = try encoder.encode(customPoi)

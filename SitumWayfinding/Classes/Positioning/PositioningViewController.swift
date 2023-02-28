@@ -87,7 +87,7 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
     var routePath: Array<GMSMutablePath> = []
     var loadFinished: Bool = false
     // Custom markerses
-    var customPoi: CustomPoi?
+    var customPoi: CustomPoiImpl?
     var customPoiCreationModeActive = false
     var carPositionKey = 10000
     var customPoiManager = CustomPoiManager()
@@ -507,7 +507,7 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
     }
     
     func storeCustomPoi(poiKey: Int, name: String?, description: String?, buildingId: String, floorId: String, lat: Double, lng: Double, markerIcon: UIImage? = nil, markerIconSelected: UIImage? = nil) {
-        customPoi = CustomPoi(key: poiKey, name: name, description: description, buildingId: buildingId, floorId: floorId, latitude: lat, longitude: lng, markerImage: markerIcon, markerSelectedImage: markerIconSelected)
+        customPoi = CustomPoiImpl(key: poiKey, name: name, description: description, buildingId: buildingId, floorId: floorId, latitude: lat, longitude: lng, markerImage: markerIcon, markerSelectedImage: markerIconSelected)
         
         customPoiManager.store(customPoi: customPoi!)
         delegateNotifier?.notifyOnCustomPoiCreated(customPoi: customPoi!)

@@ -7,26 +7,26 @@
 
 import Foundation
 
-/// Object that represents a custom POI saved by the user 
-public struct CustomPoi: Codable {
+
+struct CustomPoiImpl: CustomPoi, Codable {
     /// Unique key of the poi
-    public private(set) var id: Int
+    private(set) var id: Int
     /// Name of the poi
-    public private(set) var name: String?
+    private(set) var name: String?
     /// Description of the poi
-    public private(set) var description: String?
+    private(set) var description: String?
     /// ID of the building where this POI is placed
-    public private(set) var buildingId: String
+    private(set) var buildingId: String
     /// ID of the floor where this POI is placed
-    public private(set) var floorId: String
+    private(set) var floorId: String
     /// Latitude of the poi
-    public private(set) var latitude: Double
+    private(set) var latitude: Double
     /// Longitude of the poi
-    public private(set) var longitude: Double
+    private(set) var longitude: Double
     /// Image data of the marker when not selected
-    public private(set) var markerImageData: Data?
+    private(set) var markerImageData: Data?
     /// Image data of the marker when selected
-    public private(set) var markerSelectedImageData: Data?
+    private(set) var markerSelectedImageData: Data?
     
     init(key: Int, name: String?, description: String?, buildingId: String, floorId: String, latitude: Double, longitude: Double, markerImage: UIImage? = nil, markerSelectedImage: UIImage? = nil) {
         self.id = key
@@ -41,7 +41,7 @@ public struct CustomPoi: Codable {
     }
     
     /// Get custom poi image as UIImage
-    public func getMarkerImage() -> UIImage? {
+    func getMarkerImage() -> UIImage? {
         if (self.markerImageData != nil) {
             return UIImage(data: self.markerImageData!)
         }
@@ -49,11 +49,50 @@ public struct CustomPoi: Codable {
     }
     
     /// Get custom poi selected image as UIImage
-    public func getMarkerSelectedImage() -> UIImage? {
+    func getMarkerSelectedImage() -> UIImage? {
         if (markerSelectedImageData != nil) {
             return UIImage(data: markerSelectedImageData!)
         }
         return nil
     }
-
+    
+    func getName() -> String? {
+        return self.name
+    }
+    
+    func getId() -> Int {
+        return self.id
+    }
+    
+    func getDescription() -> String? {
+        return self.description
+    }
+    
+    func getLevelId() -> Int {
+        return Int(self.floorId) ?? -1
+    }
+    
+    func getBuildingId() -> Int {
+        return Int(self.buildingId) ?? -1
+    }
+    
+    func toMap() -> [String : Any] {
+        let customPoiDict: [String: Any] = [
+            "id": self.getId(),
+            "name": self.getName(),
+            "description": self.getDescription(),
+            "buildingId": self.getBuildingId(),
+            "levelId": self.getLevelId(),
+            "coordinates": [
+                "latitude": self.latitude,
+                "longitude": self.longitude,
+                
+            ]
+        ]
+        return customPoiDict
+        
+    }
+    
+    
+    
 }
