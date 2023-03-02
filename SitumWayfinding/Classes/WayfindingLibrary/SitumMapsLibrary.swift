@@ -17,7 +17,7 @@ import GoogleMaps
     
     private var parentViewControler: UIViewController
     private var containerView: UIView
-    private var toPresentViewController: PositioningViewController?
+    weak private var toPresentViewController: PositioningViewController?
     internal let interceptorsManager: InterceptorsManager = InterceptorsManager()
     internal var onBackPressedCallback: ((Any) -> Void)?
     internal var delegatesNotifier = WayfindingDelegatesNotifier()

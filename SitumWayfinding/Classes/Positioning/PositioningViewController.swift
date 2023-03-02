@@ -17,7 +17,7 @@ let SitumURL = "https://dashboard.situm.com"
 class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITableViewDataSource, UITableViewDelegate, PositioningView, PositioningController {
     //MARK PositioningController protocol variables
     var buildingId: String = ""
-    weak var library: SitumMapsLibrary? {
+    var library: SitumMapsLibrary? {
         willSet(newLibrary) {
             UIColorsTheme.useDashboardTheme = newLibrary?.settings?.useDashboardTheme ?? false
         }
@@ -133,7 +133,6 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        //removeLocationListener()
     }
 
     override func viewDidLayoutSubviews() {
@@ -152,7 +151,6 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
     }
     
     deinit{
-        print("Position View Controller deinitialized")
         presenter?.removeLocationListener()
     }
 
