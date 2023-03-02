@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 All non released changes should be in CHANGELOG_UNRELEASED.md file
 
 ---------
+## [0.18.2] - 2023-02-23
+# Changed
+- Updated Situm SDK dependency to 2.57.1
+
+## [0.18.1] - 2023-02-16
+### Changed
+-  Updated Situm SDK dependency to 2.57.0
+
 ## [0.18.0] - 2023-02-02
 ### Changed
 - Added support to customize minZoom and maxZoom on the map. With this feature as a developer you can provide values that configure the minimum and maximum value of zoom the map will allow the user to set. Since the base map depends on GoogleMaps, you can see more information regarding the zoom parameter on https://developers.google.com/maps/documentation/android-sdk/views#zoom for Android and https://developers.google.com/maps/documentation/ios-sdk/views#zoom for iOS.
