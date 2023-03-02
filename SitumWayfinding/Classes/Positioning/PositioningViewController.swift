@@ -1463,10 +1463,7 @@ extension PositioningViewController {
         CATransaction.begin()
         CATransaction.setValue(0.5, forKey: kCATransactionAnimationDuration)
         CATransaction.setCompletionBlock({
-            // self.mapView.selectedMarker = marker.gmsMarker // tooltip sobre POI
-//            if marker.isPoiMarker {
-                self.poiMarkerWasSelected(poiMarker: marker)
-//            }
+            self.poiMarkerWasSelected(poiMarker: marker)
             self.lastSelectedMarker = marker
             success()
         })
@@ -1480,9 +1477,7 @@ extension PositioningViewController {
         self.updateInfoBarLabelsIfNotInsideRoute(mainLabel: self.buildingName)
         self.lastSelectedMarker = nil
         if let marker = marker {
-            if marker.isPoiMarker {
-                poiMarkerWasDeselected(poiMarker: marker, notifyDelegate: notifyDelegate)
-            }
+            poiMarkerWasDeselected(poiMarker: marker, notifyDelegate: notifyDelegate)
             markerRenderer?.deselectMarker(marker)
         }
     }
