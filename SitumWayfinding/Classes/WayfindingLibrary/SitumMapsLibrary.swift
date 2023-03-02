@@ -80,6 +80,16 @@ import GoogleMaps
             UIUtils().present(the: self.toPresentViewController!, over: self.parentViewControler, in: self.containerView)
         } // NOTE: else unnecessary: validateSettings already checks settings not nil
     }
+    
+    /**
+        Unload the module
+     */
+    @objc public func unload(){
+        toPresentViewController?.view.removeFromSuperview()
+        toPresentViewController?.removeFromParent()
+        toPresentViewController?.presenter = nil
+        toPresentViewController = nil
+    }
 
     /**
      Sets the credentials that will be used to authenticate when "load(buildingWithId:, logWith:)" is called

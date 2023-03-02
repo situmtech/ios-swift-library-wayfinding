@@ -12,7 +12,7 @@ import GoogleMaps
 
 class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate, SITNavigationDelegate {
     
-    var view: PositioningView?
+    weak var view: PositioningView?
     var buildingInfo: SITBuildingInfo
     var interceptorsManager: InterceptorsManager
     
