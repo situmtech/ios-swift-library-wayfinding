@@ -82,7 +82,9 @@ import GoogleMaps
     }
     
     /**
-        Unload the module
+     Unload Wayfinging module. This method wil clean the used resources.
+     
+     If you need to load the Wayfinding module several times, make sure that you unload the previous loaded instance to guarantee the correct functioning of the WYF module.
      */
     @objc public func unload(){
         toPresentViewController?.view.removeFromSuperview()
