@@ -125,7 +125,6 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
 
     func stopPositioning() {
         locationManager.removeUpdates()
-        updateInterfaceAndDataOnStopPositioning()
     }
 
     func updateInterfaceAndDataOnStopPositioning() {

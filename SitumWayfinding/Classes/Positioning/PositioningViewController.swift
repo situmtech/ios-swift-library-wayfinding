@@ -127,6 +127,7 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         if (!preserveStateInNewViewAppeareance || positionDrawer == nil){
+            preserveStateInNewViewAppeareance = true
             self.initializeViewBeforeAppearing()
         }
     }
@@ -151,6 +152,7 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
     }
     
     deinit{
+        stopNavigation(status: .canceled)
         presenter?.removeLocationListener()
     }
 
