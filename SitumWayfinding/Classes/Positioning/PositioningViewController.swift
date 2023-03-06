@@ -41,6 +41,12 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
     @IBOutlet weak var indicationsView: UIView!
     weak var indicationsViewController: IndicationsViewController?
     @IBOutlet weak var navigationButton: UIButton!
+    @IBOutlet weak var deletePoiButton: UIButton!
+    
+    //Find my car
+    @IBOutlet weak var positionPickerImage: UIImageView!
+    @IBOutlet weak var customPoiAcceptButton: UIButton!
+    @IBOutlet weak var customPoiCancelButton: UIButton!
     
     @IBOutlet weak var infoBarMap: UIView!
     weak var containerInfoBarMap: InfoBarMapViewController?
@@ -80,6 +86,20 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
     var polyline: Array<GMSPolyline> = []
     var routePath: Array<GMSMutablePath> = []
     var loadFinished: Bool = false
+    // Custom markerses
+    var customPoi: CustomPoiImpl?
+    var customPoiCreationModeActive = false
+    var carPositionKey = 10000
+    var customPoiManager = CustomPoiManager()
+    // TODO abstract the name and description logic to a new controller
+    var customPoiName: String?
+    var customPoiDescription: String?
+    var customPoiMarkerIcon: UIImage?
+    var customPoiMarkerIconSelected: UIImage?
+    // Long press marker
+    let customMarker = GMSMarker()
+    // Customization
+    var organizationTheme: SITOrganizationTheme?
     //Search
     @IBOutlet weak var searchBar: UISearchBar!
     var searchResultsController: SearchResultsTableViewController?
@@ -115,6 +135,7 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
         }
 
         self.initializeChangeOfFloorMarker()
+        self.retrieveCustomPoi(poiKey: self.carPositionKey)
 
         do {
             let fonts = ["Roboto-Black", "Roboto-Bold", "Roboto-Medium", "Roboto-Regular"]
@@ -122,6 +143,7 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
         } catch {
             print("Error: Can't load fonts")
         }
+
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -313,8 +335,10 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
         hideCenterButton()
         initializeLevelIndicator()
         initializeNavigationButton()
+        initializeDeletePoiButton()
         initializeInfoBar()
         prepareCenterButton()
+        initializeCustomPoiSelectionButtons()
         numberBeaconsRangedView.isHidden = true
     }
 
@@ -432,12 +456,101 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
         return indexPath
     }
     
+    func customPoiCreationMode(name: String?, description: String?, markerIcon: UIImage?, markerIconSelected: UIImage?) {
+        if (self.customPoiCreationModeActive) {
+            print("Custom poi creation mode is already active")
+        } else {
+            if(SITNavigationManager.shared().isRunning()) {
+                print("Cannot edit custom pois while navigating")
+            } else {
+                self.customPoiName = name
+                self.customPoiDescription = description
+                self.customPoiMarkerIcon = markerIcon
+                self.customPoiMarkerIconSelected = markerIconSelected
+                self.deselect(marker: lastSelectedMarker)
+                self.customPoiCreationUI()
+            }
+        }
+    }
+    
+    private func retrieveCustomPoi(poiKey: Int) {
+        self.customPoi =  customPoiManager.get(poiKey: poiKey)
+    }
+    
+    private func deleteCustomPoi(poiKey: Int) {
+        self.customPoi = nil
+        if let storedCustomPoi = customPoiManager.get(poiKey: poiKey) {
+            customPoiManager.remove(poiKey: poiKey)
+            
+            deselect(marker: lastSelectedMarker, notifyDelegate: false)
+            delegateNotifier?.notifyOnCustomPoiRemoved(customPoi: storedCustomPoi)
+            
+            if let floor = orderedFloors(buildingInfo: buildingInfo)?[self.selectedLevelIndex] {
+                displayMarkers(forFloor: floor, isUserNavigating: self.isUserNavigating())
+            }
+        }
+    }
+    
+    func removeCustomPoi(key: Int) {
+        self.deleteCustomPoi(poiKey: key)
+    }
+    
+    func getCustomPoiById(id: Int) -> CustomPoi? {
+        if (customPoi != nil && customPoi?.id == id) {
+            return customPoi
+        }
+        return nil
+    }
+    
+    func getLatestCustomPoi() -> CustomPoi? {
+        return customPoi
+    }
+    
+    func storeCustomPoi(poiKey: Int, name: String?, description: String?, buildingId: String, floorId: String, lat: Double, lng: Double, markerIcon: UIImage? = nil, markerIconSelected: UIImage? = nil) {
+        customPoi = CustomPoiImpl(key: poiKey, name: name, description: description, buildingId: buildingId, floorId: floorId, latitude: lat, longitude: lng, markerImage: markerIcon, markerSelectedImage: markerIconSelected)
+        
+        customPoiManager.store(customPoi: customPoi!)
+        delegateNotifier?.notifyOnCustomPoiCreated(customPoi: customPoi!)
+        
+        if let floor = orderedFloors(buildingInfo: buildingInfo)?[self.selectedLevelIndex] {
+            displayMarkers(forFloor: floor, isUserNavigating: self.isUserNavigating())
+        }
+    }
+    
+    private func initializeCustomPoiSelectionButtons() {
+        // Find my car menu
+        customPoiAcceptButton.layer.cornerRadius = 0.5 * customPoiAcceptButton.bounds.size.width
+        customPoiAcceptButton.layer.masksToBounds = false
+        customPoiAcceptButton.setSitumShadow(colorTheme: uiColorsTheme)
+        let acceptButtonColors =  ButtonColors(iconTintColor: uiColorsTheme.backgroundedButtonsIconstTintColor, backgroundColor: uiColorsTheme.primaryColor)
+        customPoiAcceptButton.adjustColors(acceptButtonColors)
+        customPoiAcceptButton.isHidden = true
+
+        // Navigate to car button
+        customPoiCancelButton.layer.cornerRadius = 0.5 * customPoiCancelButton.bounds.size.width
+        customPoiCancelButton.layer.masksToBounds = false
+        customPoiCancelButton.setSitumShadow(colorTheme: uiColorsTheme)
+        let cancelButtonColors =  ButtonColors(iconTintColor: uiColorsTheme.backgroundedButtonsIconstTintColor, backgroundColor: uiColorsTheme.dangerColor)
+        customPoiCancelButton.adjustColors(cancelButtonColors)
+        customPoiCancelButton.isHidden = true
+
+    }
+    
     func initializeNavigationButton() {
         navigationButton.layer.cornerRadius = 0.5 * navigationButton.bounds.size.width
         navigationButton.layer.masksToBounds = false
         navigationButton.setIcon(imageName: "situm_navigate_action", for: .normal)
         customizeNavigationButtonColor()
         navigationButton.isHidden = true
+    }
+    
+    private func initializeDeletePoiButton() {
+        deletePoiButton.layer.cornerRadius = 0.5 * deletePoiButton.bounds.size.width
+        deletePoiButton.layer.masksToBounds = false
+        deletePoiButton.setSitumShadow(colorTheme: uiColorsTheme)
+        let buttonColors =  ButtonColors(iconTintColor: uiColorsTheme.backgroundedButtonsIconstTintColor, backgroundColor: uiColorsTheme.dangerColor)
+        deletePoiButton.adjustColors(buttonColors)
+        deletePoiButton.isHidden = true
     }
 
     func customizeNavigationButtonColor(){
@@ -692,8 +805,18 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
             navigationButton.isHidden = false
         } else {
             navigationButton.isHidden = true
+            changeDeletePoiButtonVisibility(isVisible: false)
         }
     }
+    
+    func changeDeletePoiButtonVisibility(isVisible visible: Bool) {
+        if (visible) {
+            deletePoiButton.isHidden = false
+        } else {
+            deletePoiButton.isHidden = true
+        }
+    }
+    
     
     //MARK: MapViewDelegate
     func mapView(_ mapView: GMSMapView, willMove gesture: Bool) {
@@ -792,6 +915,36 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
     func navigationButtonPressed(_ sender: Any) {
         Logger.logInfoMessage("Navigation Button Has Been pressed")
         startNavigationByUser()
+    }
+    
+    @IBAction func deletePoiButtonPressed(_ sender: Any) {
+        deleteCustomPoi(poiKey: self.carPositionKey)
+    }
+    
+    @IBAction func customPoiAcceptButtonTapped(_ sender: Any) {
+        self.showPositioningUI()
+        
+        let markerPosition = self.mapView.projection.coordinate(for: CGPoint(x: self.mapView.center.x, y: self.mapView.center.y))
+        if let floor = self.orderedFloors(buildingInfo: self.buildingInfo)?[self.selectedLevelIndex] {
+            if let buildingInfo = self.buildingInfo {
+                self.storeCustomPoi(
+                    poiKey: self.carPositionKey,
+                    name: self.customPoiName,
+                    description: self.customPoiDescription,
+                    buildingId: buildingInfo.building.identifier,
+                    floorId: floor.identifier,
+                    lat: markerPosition.latitude,
+                    lng: markerPosition.longitude,
+                    markerIcon: customPoiMarkerIcon,
+                    markerIconSelected: customPoiMarkerIconSelected
+                )
+            }
+        }
+    }
+    
+    
+    @IBAction func customPoiCancelButtonTapped(_ sender: Any) {
+        self.showPositioningUI()
     }
     
     func startNavigationByUser() {
@@ -940,7 +1093,7 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
         if (!isUserNavigating()) {
             if inside(coordinate: coordinate) {
                 removeLastCustomMarkerIfOutsideRoute()
-                lastCustomMarker = SitumMarker(coordinate: coordinate, floor: floor)
+                lastCustomMarker = SitumMarker(coordinate: coordinate, floor: floor, markerType: SitumMarkerType.longPressMarker)
                 lastSelectedMarker = lastCustomMarker
                 containerInfoBarMap?.setLabels(primary: lastCustomMarker!.title, secondary: floorUILabel(with: lastCustomMarker!))
                 changeNavigationButtonVisibility(isVisible: true)
@@ -1283,6 +1436,21 @@ extension PositioningViewController {
         select(marker: marker, success: {})
     }
     
+    func selectCustomPoi(id: Int, success: @escaping () -> Void) throws {
+        if (customPoi != nil && customPoi?.id == id) {
+            guard let indexPath = getIndexPath(floorId: customPoi!.floorId),
+                let renderer = markerRenderer else { return }
+            
+            select(floor: indexPath)
+            if let customMarker = renderer.searchCustomMarker(customPoiId: id) {
+                select(marker: customMarker, success: success)
+            } else {
+                // TODO throw custom error
+                print("No custom POI stored")
+            }
+        }
+    }
+    
     //Imitates actions done by google maps when a user select a marker
     func select(marker: SitumMarker, success: @escaping () -> Void) {
         //TODO Extender para que sexa valido tamen para os custom markers
@@ -1295,10 +1463,7 @@ extension PositioningViewController {
         CATransaction.begin()
         CATransaction.setValue(0.5, forKey: kCATransactionAnimationDuration)
         CATransaction.setCompletionBlock({
-            // self.mapView.selectedMarker = marker.gmsMarker // tooltip sobre POI
-            if marker.isPoiMarker {
-                self.poiMarkerWasSelected(poiMarker: marker)
-            }
+            self.poiMarkerWasSelected(poiMarker: marker)
             self.lastSelectedMarker = marker
             success()
         })
@@ -1306,15 +1471,13 @@ extension PositioningViewController {
         CATransaction.commit()
     }
     
-    func deselect(marker: SitumMarker?) {
+    func deselect(marker: SitumMarker?, notifyDelegate: Bool = true) {
         self.removeLastCustomMarkerIfOutsideRoute()
         self.changeNavigationButtonVisibility(isVisible: false)
         self.updateInfoBarLabelsIfNotInsideRoute(mainLabel: self.buildingName)
         self.lastSelectedMarker = nil
         if let marker = marker {
-            if marker.isPoiMarker {
-                poiMarkerWasDeselected(poiMarker: marker)
-            }
+            poiMarkerWasDeselected(poiMarker: marker, notifyDelegate: notifyDelegate)
             markerRenderer?.deselectMarker(marker)
         }
     }
@@ -1322,16 +1485,29 @@ extension PositioningViewController {
     func poiMarkerWasSelected(poiMarker: SitumMarker) {
         if (!isUserNavigating()) {
             changeNavigationButtonVisibility(isVisible: true)
+            if (poiMarker.isCustomMarker) {
+                changeDeletePoiButtonVisibility(isVisible: true)
+            }
         }
-        updateInfoBarLabelsIfNotInsideRoute(mainLabel: poiMarker.poi?.name ?? DEFAULT_POI_NAME,
+        var infoBarLabel: String = DEFAULT_POI_NAME
+        if poiMarker.isPoiMarker {
+            infoBarLabel = poiMarker.poi?.name ?? DEFAULT_POI_NAME
+        } else if poiMarker.isCustomMarker {
+            infoBarLabel = poiMarker.customPoi?.name ?? DEFAULT_POI_NAME
+        }
+        updateInfoBarLabelsIfNotInsideRoute(mainLabel: infoBarLabel,
             secondaryLabel: floorUILabel(with: poiMarker))
         if (positioningButton.isSelected) {
             showCenterButton()
         }
         isCameraCentered = false
         //Call only if this marker wasnt already the selected one
-        if poiMarker != lastSelectedMarker, let uPoi = poiMarker.poi, let uBuildingInfo = buildingInfo {
-            poiWasSelected(poi: uPoi, buildingInfo: uBuildingInfo)
+        if poiMarker != lastSelectedMarker {
+            if poiMarker.isPoiMarker, let uPoi = poiMarker.poi, let uBuildingInfo = buildingInfo {
+                poiWasSelected(poi: uPoi, buildingInfo: uBuildingInfo)
+            } else if poiMarker.isCustomMarker, let cPoi = poiMarker.customPoi {
+                customPoiWasSelected(poiId: cPoi.id)
+            }
         }
     }
 
@@ -1345,9 +1521,11 @@ extension PositioningViewController {
         }
     }
     
-    func poiMarkerWasDeselected(poiMarker: SitumMarker) {
-        if let uPoi = poiMarker.poi, let uBuildingInfo = buildingInfo {
+    func poiMarkerWasDeselected(poiMarker: SitumMarker, notifyDelegate: Bool = true) {
+        if poiMarker.isPoiMarker, let uPoi = poiMarker.poi, let uBuildingInfo = buildingInfo, notifyDelegate {
             poiWasDeselected(poi: uPoi, buildingInfo: uBuildingInfo)
+        } else if poiMarker.isCustomMarker, notifyDelegate, let cPoi = poiMarker.customPoi {
+            customPoiWasDeselected(poiId: cPoi.id)
         }
     }
     
@@ -1359,12 +1537,29 @@ extension PositioningViewController {
         delegateNotifier?.notifyOnPOIDeselected(poi: poi, buildingInfo: buildingInfo)
     }
     
+    func customPoiWasSelected(poiId: Int) {
+        if let storedCustomPoi = customPoiManager.get(poiKey: poiId) {
+            delegateNotifier?.notifyOnCustomPoiSelected(customPoi: storedCustomPoi)
+        }
+    }
+    
+    func customPoiWasDeselected(poiId: Int) {
+        if let storedCustomPoi = customPoiManager.get(poiKey: poiId) {
+            delegateNotifier?.notifyOnCustomPoiDeselected(customPoi: storedCustomPoi)
+        }
+    }
+    
     func displayMarkers(forFloor floor: SITFloor, isUserNavigating: Bool) {
         guard let renderer = markerRenderer else { return }
         if !isUserNavigating {
             renderer.displayPoiMarkers(forFloor: floor)
             if let customMarker = lastCustomMarker {
                 renderer.displayLongPressMarker(customMarker, forFloor: floor)
+            }
+            
+            if let storedCustomPoi = customPoi {
+                let situmMarker = SitumMarker(customPoi: storedCustomPoi)
+                renderer.displayCustomMarker(situmMarker, forFloor: floor)
             }
             
             // in the future selection should be encapsulated in some other class to abstract Google maps
@@ -1377,7 +1572,7 @@ extension PositioningViewController {
             if let marker = destinationMarker {
                renderer.displayOnlyDestinationMarker(marker, forFloor: floor)
             } else {
-                Logger.logDebugMessage("Destination will not be shown becuase there is no destinationMarker selected")
+                Logger.logDebugMessage("Destination will not be shown because there is no destinationMarker selected")
             }
         }
     }

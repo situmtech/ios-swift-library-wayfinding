@@ -247,6 +247,15 @@ import GoogleMaps
     public func setOnNavigationListener(listener: OnNavigationListener?) {
         delegatesNotifier.navigationDelegate = listener
     }
+    
+    /**
+     Sets a delegate that gets notified with events related to Custom POIS
+
+     - parameter listener: OnCustomPoiChangeListener
+     */
+    public func setOnCustomPoiChangeListener(listener: OnCustomPoiChangeListener?) {
+        delegatesNotifier.customPoiChangeDelegate = listener
+    }
 
     /**
      Start the navigation to a poi in the current building. This will:
@@ -355,6 +364,64 @@ import GoogleMaps
     public func startPositioning() {
         guard let presenter = toPresentViewController?.presenter else { return }
         presenter.startPositioning()
+    }
+    
+    /**
+     Start the custom poi creation mode
+     - parameters
+        - name: Name of the custom poi to create
+        - description: Description of the custom poi
+        - markerICon: Image for the marker displayed on the map for the custom POI
+        - markerIconSelected: Image for the marker displayed on the map for the custom POI when selected
+     */
+    public func startCustomPoiCreation(name: String?, description: String?, markerIcon: UIImage? = nil, markerIconSelected: UIImage? = nil) {
+        guard let positioningController = toPresentViewController else { return }
+        positioningController.customPoiCreationMode(
+            name: name,
+            description: description,
+            markerIcon: markerIcon,
+            markerIconSelected: markerIconSelected
+        )
+    }
+    
+    /**
+     Retrieve the previously stored custom poi given its id
+     */
+    public func getCustomPoi(id: Int?) -> CustomPoi? {
+        guard let positioningController = toPresentViewController else { return nil }
+        if (id != nil) {
+            return positioningController.getCustomPoiById(id: id!)
+        }
+        return positioningController.getLatestCustomPoi()
+    }
+    
+    /**
+     Retrieve the latest stored custom poi
+     */
+    public func getCustomPoi() -> CustomPoi? {
+        guard let positioningController = toPresentViewController else { return nil }
+        return positioningController.getLatestCustomPoi()
+    }
+    
+    /**
+     Remove the previously stored instance of custom poi
+     */
+    public func removeCustomPoi(id: Int) {
+        guard let positioningController = toPresentViewController else { return }
+        positioningController.removeCustomPoi(key: id)
+    }
+    
+    /**
+     Display the stored custom poi as selected
+     */
+    public func selectCustomPoi(id: Int, completion: @escaping (Result<Void, Error>) -> Void) {
+        do {
+            try self.toPresentViewController?.selectCustomPoi(id: id, success: {
+                completion(.success(()))
+            })
+        } catch {
+            completion(.failure(error))
+        }
     }
 }
 
