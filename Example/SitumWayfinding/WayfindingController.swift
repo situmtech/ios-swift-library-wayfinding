@@ -19,7 +19,7 @@ class WayfindingController: UIViewController {
     var action: WYFAction?
     var credentials: Credentials!
     var buildingId: String!
-    var useRemoteConfig: Bool = false
+    var useRemoteConfig: Bool = true
     var useDashboardTheme: Bool = true
 
     var library: SitumMapsLibrary?
@@ -32,9 +32,10 @@ class WayfindingController: UIViewController {
         let settings = LibrarySettings.Builder()
                 .setCredentials(credentials: credentials)
                 .setBuildingId(buildingId: buildingId)
-                .setUseRemoteConfig(useRemoteConfig: useRemoteConfig)
-                .setEnablePoiClustering(enablePoisClustering: true)
-                .setUseDashboardTheme(useDashboardTheme: useDashboardTheme)
+                // .setUseRemoteConfig(useRemoteConfig: useRemoteConfig)
+                // .setEnablePoiClustering(enablePoisClustering: true)
+                // .setUseDashboardTheme(useDashboardTheme: useDashboardTheme)
+                // .setShowPoiNames(showPoiNames: showPoiNames)
                 .build()
         self.library = SitumMapsLibrary(containedBy: self.containerView, controlledBy: self, withSettings: settings)
 
