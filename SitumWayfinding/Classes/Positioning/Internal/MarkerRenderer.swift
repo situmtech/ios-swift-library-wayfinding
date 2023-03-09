@@ -80,6 +80,20 @@ class MarkerRenderer {
         }
     }
     
+    func displayCustomMarker(_ marker: SitumMarker, forFloor floor: SITFloor) {
+        if floor.identifier == marker.floorIdentifier {
+            markers.append(marker)
+            loadIcon(forMarker: marker, selected: false) { [weak self] marker in
+                if let markerClustering = self?.markerClustering  {
+                    markerClustering.add(marker)
+                    markerClustering.display()
+                } else {
+                    self?.insertMarkerInGoogleMaps(marker: marker)
+                }
+            }
+        }
+    }
+    
     func displayOnlyDestinationMarker(_ marker: SitumMarker, forFloor floor: SITFloor) {
         removeMarkers()
         if let markerCluster = markerClustering {
@@ -120,8 +134,12 @@ class MarkerRenderer {
                 self?.selectMarkerInGoogleMaps(marker: marker)
             }
             selectedPoi = marker.poi
-        } else if marker.isCustomMarker {
+        } else if marker.isLongPressMarker {
             selectMarkerInGoogleMaps(marker: marker)
+        } else if marker.isCustomMarker {
+            loadIcon(forMarker: marker, selected: true) { [weak self] marker in
+                self?.selectMarkerInGoogleMaps(marker: marker)
+            }
         }
     }
     
@@ -130,7 +148,7 @@ class MarkerRenderer {
     }
 
     func deselectMarker(_ marker: SitumMarker) {
-        if marker.isPoiMarker {
+        if (marker.isPoiMarker || marker.isCustomMarker) {
             loadIcon(forMarker: marker, selected: false) { [weak self] marker in
                 if let map = self?.mapView, marker.gmsMarker == map.selectedMarker {
                     // deselect poi if it is the one selected, otherwise since loadIcon is async
@@ -138,8 +156,7 @@ class MarkerRenderer {
                     self?.deselectMarkerFromGoogleMaps(marker: marker)
                 }
             }
-        }
-        if marker.isCustomMarker {
+        } else if marker.isLongPressMarker {
             removeMarkerFromGoogleMaps(marker: marker)
             markers = markers.filter { element in element != marker }
         }
@@ -185,28 +202,46 @@ class MarkerRenderer {
        - iconLoaded: Return the marker with the icon loaded inside
      */
     private func loadIcon(forMarker marker: SitumMarker, selected: Bool, iconLoaded: ((SitumMarker) -> ())? = nil) {
-        guard let poi = marker.poi else { return }
-        // do not load images for markers that are not currently rendered (internal array)
-        // also, ensure the marker is a reference to internal array of SitumMarker
-        guard let marker = searchMarker(byPoi: poi) else { return }
-        let showPoiNames = showPoiNames
-        
-        iconsStore.obtainIconFor(category: poi.category) { items in
-            guard var icon = selected ? items?[1] : items?[0] else {
-                Logger.logDebugMessage("Icon from server could not be retrieved")
-                return
-            }
+        if (marker.isPoiMarker) {
             
-            icon = ImageUtils.scaleImageToSize(image: icon, newSize: CGSize(width: 45, height: 45))
-    
-            let color = UIColor(hex: "#5b5b5bff") ?? UIColor.gray
-            let title = poi.name
-            if showPoiNames {
-                marker.gmsMarker.icon = icon.setTitle(title: title, size: 16.0, color: color, weight: .bold)
-            } else {
-                marker.gmsMarker.icon = icon
+            guard let poi = marker.poi else { return }
+            // do not load images for markers that are not currently rendered (internal array)
+            // also, ensure the marker is a reference to internal array of SitumMarker
+            guard let marker = searchMarker(byPoi: poi) else { return }
+            let showPoiNames = showPoiNames
+            
+            iconsStore.obtainIconFor(category: poi.category) { items in
+                guard var icon = selected ? items?[1] : items?[0] else {
+                    Logger.logDebugMessage("Icon from server could not be retrieved")
+                    return
+                }
+                
+                icon = ImageUtils.scaleImageToSize(image: icon, newSize: CGSize(width: 45, height: 45))
+                
+                let color = UIColor(hex: "#5b5b5bff") ?? UIColor.gray
+                let title = poi.name
+                if showPoiNames {
+                    marker.gmsMarker.icon = icon.setTitle(title: title, size: 16.0, color: color, weight: .bold)
+                } else {
+                    marker.gmsMarker.icon = icon
+                }
+                iconLoaded?(marker)
             }
-            iconLoaded?(marker)
+        } else if (marker.isCustomMarker) {
+            guard let customPoi = marker.customPoi else { return }
+            let markerImage = customPoi.getMarkerSelectedImage() == nil ? customPoi.getMarkerImage() : selected ? customPoi.getMarkerSelectedImage() : customPoi.getMarkerImage()
+            let color = UIColor(hex: "#5b5b5bff") ?? UIColor.gray
+            if (markerImage != nil) {
+                let icon = ImageUtils.scaleImageToSize(image: markerImage!, newSize: CGSize(width: 45, height: 45))
+                if (showPoiNames && customPoi.name != nil) {
+                    marker.gmsMarker.icon = icon.setTitle(title: customPoi.name!, size: 16.0, color: color, weight: .bold)
+                } else {
+                    marker.gmsMarker.icon = icon
+                }
+                iconLoaded?(marker)
+            } else {
+                iconLoaded?(marker)
+            }
         }
     }
     
@@ -219,6 +254,10 @@ class MarkerRenderer {
             guard let poi = marker.poi else { return false }
             return poi.id == searchedPoi.id
         }
+    }
+    
+    func searchCustomMarker(customPoiId: Int) -> SitumMarker? {
+        return markers.first(where: { marker in marker.isCustomMarker && marker.customPoi?.id == customPoiId})
     }
 }
 

@@ -9,7 +9,7 @@
 import Foundation
 import SitumSDK
 
-protocol PositioningView {
+protocol PositioningView : AnyObject{
     
     func changeLocationState(_ state: SITLocationState, centerCamera: Bool)
     

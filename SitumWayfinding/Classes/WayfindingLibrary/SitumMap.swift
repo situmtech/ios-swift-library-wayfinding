@@ -75,6 +75,13 @@ public protocol SitumMap {
      - parameter listener: OnNavigationChangeListener
      */
     func setOnNavigationListener(listener: OnNavigationListener?)
+    
+    /**
+     Sets a delegate that get notified with events related to changes on Custom POIs
+
+     - parameter listener: OnCustomPoiChangeListener
+     */
+    func setOnCustomPoiChangeListener(listener: OnCustomPoiChangeListener?)
 
     /**
      Select a given poi. This method will perform the proper actions over the User Interface to make that Poi the
