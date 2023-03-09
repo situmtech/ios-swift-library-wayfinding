@@ -154,7 +154,7 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
     deinit{
         stopNavigation(status: .canceled)
         presenter?.removeLocationListener()
-        print("Position View Controller deinitialized")
+        Logger.logDebugMessage("Position View Controller deinitialized")
     }
 
     func initializeViewBeforeAppearing(){
