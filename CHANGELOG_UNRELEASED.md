@@ -5,3 +5,6 @@
 - Fixed bug that does not clean the previous user position in some cases when reloading Wayfinding.
 - Fixed a bug when the user was on navigation if the Wayfinding view is removed from screen and presented again afterwards.
 - Fixed a bug that causes the duplication of some pois if the user has been on a route and the positioning is stopped.
+
+# Changed
+- Updated Situm SDK dependency to 2.58.0
