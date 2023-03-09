@@ -9,13 +9,24 @@ import Foundation
 import GoogleMaps
 import SitumSDK
 
+enum SitumMarkerType {
+    case poiMarker
+    case longPressMarker
+    case customPoiMarker
+}
+
 struct SitumMarker: Equatable {
     private(set) var gmsMarker: GMSMarker
     private(set) var poi: SITPOI?
+    private(set) var customPoi: CustomPoiImpl?
+    private(set) var markerType: SitumMarkerType = SitumMarkerType.poiMarker
     var title: String { return gmsMarker.title ?? "" }
     private(set) var floorIdentifier: String
-    var isPoiMarker: Bool { return poi != nil }
-    var isCustomMarker: Bool { return poi == nil }
+    
+    var isPoiMarker: Bool { return self.markerType == SitumMarkerType.poiMarker }
+    var isLongPressMarker: Bool { return self.markerType == SitumMarkerType.longPressMarker }
+    var isCustomMarker: Bool { return self.markerType == SitumMarkerType.customPoiMarker }
+
     var isTopLevel: Bool {
         guard let poi = poi, let topLevelField = poi.customFields["top_level"] as? String else { return false }
         return topLevelField.lowercased().trimmingCharacters(in: .whitespacesAndNewlines) == "true"
@@ -32,20 +43,42 @@ struct SitumMarker: Equatable {
         self.gmsMarker.markerData = SitumMarkerData(
             floorIdentifier: floorIdentifier,
             isPoiMarker: isPoiMarker,
-            isCustomMarker: isCustomMarker,
+            isLongPressMarker: isLongPressMarker,
             isTopLevel: isTopLevel
         )
     }
     
-    init(coordinate: CLLocationCoordinate2D, floor: SITFloor) {
+    init(customPoi: CustomPoiImpl) {
+        let marker: GMSMarker = GMSMarker(position: CLLocationCoordinate2D(latitude: customPoi.latitude, longitude: customPoi.longitude))
+        gmsMarker = marker
+        floorIdentifier = customPoi.floorId
+        self.customPoi = customPoi
+        markerType = SitumMarkerType.customPoiMarker
+    }
+    
+    init(coordinate: CLLocationCoordinate2D, floor: SITFloor, markerType: SitumMarkerType, title: String? = nil, id: String? = nil, image: UIImage? = nil) {
         let marker: GMSMarker = GMSMarker(position: coordinate)
-        marker.title = NSLocalizedString(
-            "positioning.customDestination",
-            bundle: SitumMapsLibrary.bundle,
-            comment: "Shown to user when select a destination (destination is any free point that user selects on the map)"
-        )
+        
+        if (image != nil) {
+            marker.icon = ImageUtils.scaleImageToSize(image: image!, newSize: CGSize(width: 45, height: 45))
+        }
+        
+        if (title != nil) {
+            marker.title = title
+        } else {
+            marker.title = NSLocalizedString(
+                "positioning.customDestination",
+                bundle: SitumMapsLibrary.bundle,
+                comment: "Shown to user when select a destination (destination is any free point that user selects on the map)"
+            )
+        }
         gmsMarker = marker
         floorIdentifier = floor.identifier
+        self.markerType = markerType
+        if (id != nil) {
+            poi = SITPOI(identifier: id ?? "", createdAt: Date(), updatedAt: Date(), customFields: [:])
+            poi!.name = title!
+        }
     }
     
     func setMapView(mapView: GMSMapView?) {
