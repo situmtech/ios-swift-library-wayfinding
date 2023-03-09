@@ -149,13 +149,13 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         if (!preserveStateInNewViewAppeareance || positionDrawer == nil){
+            preserveStateInNewViewAppeareance = true
             self.initializeViewBeforeAppearing()
         }
     }
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        removeLocationListener()
     }
 
     override func viewDidLayoutSubviews() {
@@ -172,9 +172,19 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
             }
         }
     }
+    
+    deinit{
+        stopNavigation(status: .canceled)
+        presenter?.removeLocationListener()
+        Logger.logDebugMessage("Position View Controller deinitialized")
+    }
 
     func initializeViewBeforeAppearing(){
-        positionDrawer = GoogleMapsPositionDrawer(mapView: mapView)
+        if positionDrawer == nil {
+            positionDrawer = GoogleMapsPositionDrawer(mapView: mapView)
+        }
+        positionDrawer?.makeUserMarkerVisible(visible: false)
+        
         let loading = NSLocalizedString("alert.loading.title",
             bundle: SitumMapsLibrary.bundle,
             comment: "Alert title when loading library")
