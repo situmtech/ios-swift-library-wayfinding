@@ -30,10 +30,10 @@ import GoogleMaps
     /// Text that will be used as placeholder in the search view component.
     private(set) var searchViewPlaceholder: String? = ""
     /// Boolean to configure if location system should use the remote configuration (true) or not (false). See https://situm.com/docs/07-remote-configuration/ to learn more on how to use this functionality.
-    private (set) var useRemoteConfig: Bool = false
+    private (set) var useRemoteConfig: Bool = true
     
     /// Boolean that configure if the name of the POIs is shown above its icons when painting them on the map
-    private (set) var showPoiNames: Bool? = false
+    private (set) var showPoiNames: Bool? = true
     
     /// Boolean that hides the pois finder in the navbar
     private (set) var showSearchBar: Bool? = true
@@ -42,7 +42,7 @@ import GoogleMaps
     private (set) var showBackButton: Bool? = false
     
     /// Boolean that controls if the navigation indications are shown or hidden
-    private (set) var enablePoisClustering: Bool = false
+    private (set) var enablePoisClustering: Bool = true
     
     /// Boolean to show or hide navigation indications
     private (set) var showNavigationIndications: Bool = true
