@@ -27,7 +27,7 @@ PODS:
   - SitumSDK (2.58.0):
     - Protobuf (~> 3.7)
     - SSZipArchive (~> 2.4)
-  - SitumWayfinding (0.18.2):
+  - SitumWayfinding (0.19.0):
     - Google-Maps-iOS-Utils (~> 4.1.0)
     - GoogleMaps (~> 4.2.0)
     - SitumSDK (~> 2.58.0)

@@ -17,7 +17,7 @@ import GoogleMaps
     
     private var parentViewControler: UIViewController
     private var containerView: UIView
-    private var toPresentViewController: PositioningViewController?
+    weak private var toPresentViewController: PositioningViewController?
     internal let interceptorsManager: InterceptorsManager = InterceptorsManager()
     internal var onBackPressedCallback: ((Any) -> Void)?
     internal var delegatesNotifier = WayfindingDelegatesNotifier()
@@ -79,6 +79,18 @@ import GoogleMaps
             self.toPresentViewController?.preserveStateInNewViewAppeareance = false;
             UIUtils().present(the: self.toPresentViewController!, over: self.parentViewControler, in: self.containerView)
         } // NOTE: else unnecessary: validateSettings already checks settings not nil
+    }
+    
+    /**
+     Unload Wayfinging module. This method wil clean the used resources.
+     
+     If you need to load the Wayfinding module several times, make sure that you unload the previous loaded instance to guarantee the correct functioning of the WYF module.
+     */
+    @objc public func unload(){
+        toPresentViewController?.view.removeFromSuperview()
+        toPresentViewController?.removeFromParent()
+        toPresentViewController?.presenter = nil
+        toPresentViewController = nil
     }
 
     /**
