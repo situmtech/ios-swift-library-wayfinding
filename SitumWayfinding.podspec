@@ -46,7 +46,7 @@ Pod::Spec.new do |s|
   }
   
   s.dependency 'GoogleMaps', '~> 4.2.0'
-  s.dependency 'SitumSDK', '~> 2.58.0'
+  s.dependency 'SitumSDK', '~> 2.59.0'
   s.dependency 'Google-Maps-iOS-Utils', '~> 4.1.0'
 
 end
