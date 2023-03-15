@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 All non released changes should be in CHANGELOG_UNRELEASED.md file
 
 ---------
+## [0.19.1] - 2023-03-15
+### Changed
+- Enabled remote configuration by default.
+- Enabled clustering option by default.
+- Enabled showPoiNames option by default.
+- Enabled useDashboardTheme option by default.
+- Update iOS SDK to version 2.59.0
+
+
 ## [0.19.0] - 2023-03-09
 ### Added
 - Added new method to unload the Wayfinding module, this method should be used if the wyf module is not needed or before calling the load method again. If the unload method is not called, Wayfinding will consume unnecesary resources and can be left in an inequrate state.
