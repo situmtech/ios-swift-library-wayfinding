@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 All non released changes should be in CHANGELOG_UNRELEASED.md file
 
 ---------
+## [0.19.2] - 2023-03-20
+### Fixed
+* Fixed a crash when trying to unload a wyf module that has not yet been presented into screen
+
 ## [0.19.1] - 2023-03-15
 ### Changed
 - Enabled remote configuration by default.

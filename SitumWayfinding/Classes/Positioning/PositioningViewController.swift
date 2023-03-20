@@ -1280,7 +1280,7 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
         self.notifyEndOfNavigation(status: status, marker: self.destinationMarker)
         self.destinationMarker = nil
         self.lastSelectedMarker = nil
-        if let floor = orderedFloors(buildingInfo: buildingInfo)?[self.selectedLevelIndex] {
+        if let buildingInfo = buildingInfo, let floor = orderedFloors(buildingInfo: buildingInfo)?[self.selectedLevelIndex] {
             displayMarkers(forFloor: floor, isUserNavigating: false)
         }
     }
