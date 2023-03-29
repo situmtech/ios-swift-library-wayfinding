@@ -14,8 +14,7 @@ pr: none
 variables:
 - group: situmArtifactory
 - group: Passwords
-- name: xcodeVersion
-  value: /Applications/Xcode_13.2.1.app
+- group: SoftwareVersions
 
 resources:
   repositories:
@@ -23,9 +22,15 @@ resources:
     type: bitbucket
     endpoint: Bitbucket - sistemas
     name: situm/sys-kubernetes-templates.git
+    ref: feature/SIS-627
+  - repository: web_developers
+    type: bitbucket
+    endpoint: Bitbucket - sistemas
+    name: situm/web-developers.git
+    ref: master
 
 pool:
-  vmImage: 'macOS-11'
+  vmImage: $(macOSVersion)
 
 steps:
 - checkout: self
@@ -34,67 +39,87 @@ steps:
   displayName: Checkout self
 
 
+- ${{ if contains(variables['Build.SourceBranchName'], 'feature/SIS-627') }}:
+  #- ${{ if eq(variables['Build.SourceBranchName'], 'master') }}:
 - template: azure-templates/upload-sharepoint.yml@sys_kubernetes_templates
   parameters:
     prepare_sharepoint: False
-    properties_file: 'scripts/framework.properties'
+    properties_file: 'ios-swift-library-wayfinding/scripts/framework.properties'
     prepare_ndk: false
 
-- ${{ if ne(variables['Build.SourceBranchName'], 'master') }}:
-  - task: InstallAppleCertificate@2
-    inputs:
-      certSecureFile: Certificados.p12
-  
-  - task: InstallAppleProvisioningProfile@1
-    inputs:
-      provisioningProfileLocation: 'secureFiles'
-      provProfileSecureFile: 566ecab6-e43e-473a-9daa-2456d675f241.mobileprovision
-      removeProfile: true
-    
-    # release/* branches:
-- ${{ if contains(variables['Build.SourceBranch'], 'release/') }}:
-    - template: azure/create_artifacts.yml
+      #- ${{ if ne(variables['Build.SourceBranchName'], 'master') }}:
+      #  - template: azure-templates/upload-sharepoint.yml@sys_kubernetes_templates
+      #    parameters:
+      #      prepare_sharepoint: False
+      #      properties_file: 'scripts/framework.properties'
+      #      prepare_ndk: false
+      #
+      #  - task: InstallAppleCertificate@2
+      #    inputs:
+      #      certSecureFile: Certificados.p12
+      #  
+      #  - task: InstallAppleProvisioningProfile@1
+      #    inputs:
+      #      provisioningProfileLocation: 'secureFiles'
+      #      provProfileSecureFile: 566ecab6-e43e-473a-9daa-2456d675f241.mobileprovision
+      #      removeProfile: true
+      #    
+      #    # release/* branches:
+      #- ${{ if contains(variables['Build.SourceBranch'], 'release/') }}:
+      #    - template: azure/create_artifacts.yml
+      #      parameters:
+      #        buildTypes:
+      #        - name: Release
+      #          zipName: SitumWayfinding.appledoc-$(version).zip
+      #          reponame: lib-release-local-private/iOS/SitumWayfinding/$(branch)/$(version)/
+      #        xcodeVersion: $(xcodeVersion)
+      #
+      #- ${{ if or(contains(variables['Build.SourceBranch'], 'feature/'),contains(variables['Build.SourceBranchName'],'develop')) }}:
+      #    - template: azure/create_artifacts.yml
+      #      parameters:
+      #        buildTypes:
+      #        - name: Debug
+      #          zipName: SitumWayfinding.appledoc-$(branch)-$(version)-DEV.zip
+      #          reponame: libs-snapshot-local-private/iOS/SitumWayfinding/$(branch)/$(version)
+      #        xcodeVersion: $(xcodeVersion)
+      #
+      #
+      #- ${{ if eq(variables['Build.SourceBranchName'], 'master') }}:
+      #
+- ${{ if contains(variables['Build.SourceBranchName'], 'feature/SIS-627') }}:
+    - template: azure-templates/commit-doc.yaml@sys_kubernetes_templates
       parameters:
-        buildTypes:
-        - name: Release
-          zipName: SitumWayfinding.appledoc-$(version).zip
-          reponame: lib-release-local-private/iOS/SitumWayfinding/$(branch)/$(version)/
-        xcodeVersion: $(xcodeVersion)
-
-- ${{ if or(contains(variables['Build.SourceBranch'], 'feature/'),contains(variables['Build.SourceBranchName'],'develop')) }}:
-    - template: azure/create_artifacts.yml
-      parameters:
-        buildTypes:
-        - name: Debug
-          zipName: SitumWayfinding.appledoc-$(branch)-$(version)-DEV.zip
-          reponame: libs-snapshot-local-private/iOS/SitumWayfinding/$(branch)/$(version)
-        xcodeVersion: $(xcodeVersion)
-
-
-- ${{ if eq(variables['Build.SourceBranchName'], 'master') }}:
-    - template: azure-templates/publish_release.yml@sys_kubernetes_templates
-      parameters:
+        version: $(wayfindingVersion)
+        docPath: "sdk_documentation/wayfinding/appledoc" 
+        system: "ios"
+        release: "ios-wayfinding"
+        artifactId: "SitumWayfinding"
         bitbucket:
-          bitbucket_user: situmops
-        system: "N/A"
-        server: "github"
-
-    - task: DownloadSecureFile@1
-      name: netrc
-      inputs:
-        secureFile: netrc
-  
-    - bash: |
-        echo -e "\n[+] Configure pod trunk register........\n"
-        cp $(netrc.secureFilePath) ~/.netrc
-        chmod 0600 ~/.netrc
-  
-        echo -e "\n[+] Show pod trunk sessions...........\n"
-        pod trunk me
-  
-        echo -e "\n[+] Pod push WYF..........."
-        pod trunk push SitumWayfinding.podspec --skip-import-validation --allow-warnings
-  
-    
-      displayName: Push podspec
+          bitbucket_user: $(bitbucket_user)
+          bitbucket_pass: $(bitbucket_pass)
+  #    - template: azure-templates/publish_release.yml@sys_kubernetes_templates
+  #      parameters:
+  #        bitbucket:
+  #          bitbucket_user: situmops
+  #        system: "N/A"
+  #        server: "github"
+  #
+  #    - task: DownloadSecureFile@1
+  #      name: netrc
+  #      inputs:
+  #        secureFile: netrc
+  #  
+  #    - bash: |
+  #        echo -e "\n[+] Configure pod trunk register........\n"
+  #        cp $(netrc.secureFilePath) ~/.netrc
+  #        chmod 0600 ~/.netrc
+  #  
+  #        echo -e "\n[+] Show pod trunk sessions...........\n"
+  #        pod trunk me
+  #  
+  #        echo -e "\n[+] Pod push WYF..........."
+  #        pod trunk push SitumWayfinding.podspec --skip-import-validation --allow-warnings
+  #  
+  #    
+  #      displayName: Push podspec
       
