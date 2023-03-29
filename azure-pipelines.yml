@@ -89,7 +89,7 @@ steps:
 - ${{ if contains(variables['Build.SourceBranch'], 'feature/SIS-627') }}:
     - template: azure-templates/commit-doc.yaml@sys_kubernetes_templates
       parameters:
-        version: $(wayfindingVersion)
+        version: $(version)
         docPath: "sdk_documentation/wayfinding/appledoc" 
         system: "ios"
         release: "ios-wayfinding"
