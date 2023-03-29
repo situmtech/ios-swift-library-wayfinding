@@ -90,6 +90,7 @@ steps:
     - template: azure-templates/commit-doc.yaml@sys_kubernetes_templates
       parameters:
         version: $(version)
+
         docPath: "sdk_documentation/wayfinding/appledoc" 
         system: "ios"
         release: "ios-wayfinding"
