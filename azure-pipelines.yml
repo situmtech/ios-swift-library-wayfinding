@@ -41,11 +41,11 @@ steps:
 
 - ${{ if contains(variables['Build.SourceBranchName'], 'feature/SIS-627') }}:
   #- ${{ if eq(variables['Build.SourceBranchName'], 'master') }}:
-- template: azure-templates/upload-sharepoint.yml@sys_kubernetes_templates
-  parameters:
-    prepare_sharepoint: False
-    properties_file: 'ios-swift-library-wayfinding/scripts/framework.properties'
-    prepare_ndk: false
+  - template: azure-templates/upload-sharepoint.yml@sys_kubernetes_templates
+    parameters:
+      prepare_sharepoint: False
+      properties_file: 'ios-swift-library-wayfinding/scripts/framework.properties'
+      prepare_ndk: false
 
       #- ${{ if ne(variables['Build.SourceBranchName'], 'master') }}:
       #  - template: azure-templates/upload-sharepoint.yml@sys_kubernetes_templates
