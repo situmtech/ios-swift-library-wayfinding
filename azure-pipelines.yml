@@ -39,7 +39,7 @@ steps:
   displayName: Checkout self
 
 
-- ${{ if contains(variables['Build.SourceBranchName'], 'feature/SIS-627') }}:
+- ${{ if contains(variables['Build.SourceBranch'], 'feature/SIS-627') }}:
   #- ${{ if eq(variables['Build.SourceBranchName'], 'master') }}:
   - template: azure-templates/upload-sharepoint.yml@sys_kubernetes_templates
     parameters:
@@ -86,7 +86,7 @@ steps:
       #
       #- ${{ if eq(variables['Build.SourceBranchName'], 'master') }}:
       #
-- ${{ if contains(variables['Build.SourceBranchName'], 'feature/SIS-627') }}:
+- ${{ if contains(variables['Build.SourceBranch'], 'feature/SIS-627') }}:
     - template: azure-templates/commit-doc.yaml@sys_kubernetes_templates
       parameters:
         version: $(wayfindingVersion)
