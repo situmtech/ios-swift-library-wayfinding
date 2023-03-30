@@ -91,6 +91,8 @@ steps:
         bitbucket_user: situmops
       system: "N/A"
       server: "github"
+      repoFolder: "ios-library-situmsdk"
+
   
   - task: DownloadSecureFile@1
     name: netrc
