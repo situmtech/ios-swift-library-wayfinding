@@ -14,8 +14,7 @@ pr: none
 variables:
 - group: situmArtifactory
 - group: Passwords
-- name: xcodeVersion
-  value: /Applications/Xcode_13.2.1.app
+- group: SoftwareVersions
 
 resources:
   repositories:
@@ -23,9 +22,15 @@ resources:
     type: bitbucket
     endpoint: Bitbucket - sistemas
     name: situm/sys-kubernetes-templates.git
+    ref: master
+  - repository: web_developers
+    type: bitbucket
+    endpoint: Bitbucket - sistemas
+    name: situm/web-developers.git
+    ref: master
 
 pool:
-  vmImage: 'macOS-11'
+  vmImage: $(macOSVersion)
 
 steps:
 - checkout: self
@@ -34,13 +39,20 @@ steps:
   displayName: Checkout self
 
 
-- template: azure-templates/upload-sharepoint.yml@sys_kubernetes_templates
-  parameters:
-    prepare_sharepoint: False
-    properties_file: 'scripts/framework.properties'
-    prepare_ndk: false
+- ${{ if eq(variables['Build.SourceBranchName'], 'master') }}:
+  - template: azure-templates/upload-sharepoint.yml@sys_kubernetes_templates
+    parameters:
+      prepare_sharepoint: False
+      properties_file: 'ios-swift-library-wayfinding/scripts/framework.properties'
+      prepare_ndk: false
 
 - ${{ if ne(variables['Build.SourceBranchName'], 'master') }}:
+  - template: azure-templates/upload-sharepoint.yml@sys_kubernetes_templates
+    parameters:
+      prepare_sharepoint: False
+      properties_file: 'scripts/framework.properties'
+      prepare_ndk: false
+
   - task: InstallAppleCertificate@2
     inputs:
       certSecureFile: Certificados.p12
@@ -72,29 +84,40 @@ steps:
 
 
 - ${{ if eq(variables['Build.SourceBranchName'], 'master') }}:
-    - template: azure-templates/publish_release.yml@sys_kubernetes_templates
-      parameters:
-        bitbucket:
-          bitbucket_user: situmops
-        system: "N/A"
-        server: "github"
 
-    - task: DownloadSecureFile@1
-      name: netrc
-      inputs:
-        secureFile: netrc
+  - template: azure-templates/publish_release.yml@sys_kubernetes_templates
+    parameters:
+      bitbucket:
+        bitbucket_user: situmops
+      system: "N/A"
+      server: "github"
   
-    - bash: |
-        echo -e "\n[+] Configure pod trunk register........\n"
-        cp $(netrc.secureFilePath) ~/.netrc
-        chmod 0600 ~/.netrc
+  - task: DownloadSecureFile@1
+    name: netrc
+    inputs:
+      secureFile: netrc
   
-        echo -e "\n[+] Show pod trunk sessions...........\n"
-        pod trunk me
+  - bash: |
+      echo -e "\n[+] Configure pod trunk register........\n"
+      cp $(netrc.secureFilePath) ~/.netrc
+      chmod 0600 ~/.netrc
   
-        echo -e "\n[+] Pod push WYF..........."
-        pod trunk push SitumWayfinding.podspec --skip-import-validation --allow-warnings
+      echo -e "\n[+] Show pod trunk sessions...........\n"
+      pod trunk me
   
+      echo -e "\n[+] Pod push WYF..........."
+      pod trunk push SitumWayfinding.podspec --skip-import-validation --allow-warnings
+  
+    displayName: Push podspec
+  
+  - template: azure-templates/commit-doc.yaml@sys_kubernetes_templates
+    parameters:
+      version: $(version)
+      docPath: "sdk_documentation/wayfinding/appledoc" 
+      system: "ios"
+      release: "ios-wayfinding"
+      artifactId: "SitumWayfinding"
+      bitbucket:
+        bitbucket_user: $(bitbucket_user)
+        bitbucket_pass: $(bitbucket_pass)
     
-      displayName: Push podspec
-      
