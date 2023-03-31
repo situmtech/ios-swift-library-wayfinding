@@ -91,6 +91,8 @@ steps:
         bitbucket_user: situmops
       system: "N/A"
       server: "github"
+      repoFolder: "ios-swift-library-wayfinding"
+
   
   - task: DownloadSecureFile@1
     name: netrc
