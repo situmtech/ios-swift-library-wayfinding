@@ -290,6 +290,8 @@ class PositioningPresenter: NSObject, SITLocationDelegate, SITDirectionsDelegate
             view?.changeLocationState(.started, centerCamera: true)
         }
         
+        lastPositioningLocation = location
+
         if isUserNavigating() {
             // UI and self.userLocation are updated in SITNavigationManager callback with the user position adjusted
             // to the route
