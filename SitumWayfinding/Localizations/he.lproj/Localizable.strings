@@ -2,22 +2,22 @@
 "alert.error.building.message" = "אירעה שגיאה בלתי צפויה בעת הורדת מידע הבניין. בבקשה נסה שוב.";
 
 /* Alert title after an error retrieving a building happens */
-"alert.error.building.title" = "שגיאה בהשגת מידע בנייה";
+"alert.error.building.title" = "שגיאה בהשגת מידע על בניין";
 
 /* Alert title for generic errors  */
 "alert.error.title" = "שְׁגִיאָה";
 
 /* Message of alert when loading library */
-"alert.loading.message" = "תחזיקי רגע";
+"alert.loading.message" = "המתינו רגע";
 
 /* Title of alert when loading library */
 "alert.loading.title" = "טעינה";
 
 /* Generic cancel action  */
-"generic.cancel" = "לְבַטֵל";
+"generic.cancel" = "ביטול";
 
 /* Generic ok action */
-"generic.ok" = "בסדר";
+"generic.ok" = "אישור";
 
 /* Less than x minutes */
 "navigation.lessThanMinutes" = "פחות מ %d דקות";
@@ -41,7 +41,7 @@
 "navigationError.noDestinationSelected" = "כרגע לא נבחר יעד, לא ניתן להתחיל את הניווט. אנא בחר POI (או לחץ לחיצה ארוכה כדי ליצור אחד מותאם אישית) ונסה שוב.";
 
 /* No comment provided by engineer. */
-"navigationError.outdoorOrigin" = "המיקום בפועל של המשתמש הוא חיצוני, ניווט זמין רק בתוך הבית.";
+"navigationError.outdoorOrigin" = "המיקום בפועל של המשתמש הוא חיצוני, ניווט זמין רק בתוך המבנה.";
 
 /* No comment provided by engineer. */
 "navigationError.outsideBuilding" = "המשתמש אינו מזוהה כעת במסלול והוא מחוץ לבניין. אנא חזור כדי לחדש את הניווט.";
@@ -62,7 +62,7 @@
 "positioning.calibrationNeeded.alert.title" = "נדרש כיול מצפן";
 
 /* Button to center map in current location of user */
-"positioning.center" = "מֶרְכָּז";
+"positioning.center" = "מרכז";
 
 /* No comment provided by engineer. */
 "positioning.createMarker" = "צור סמן";
@@ -74,7 +74,7 @@
 "positioning.destinationReached.alert.message" = "הגעתם ליעד";
 
 /* Alert title to show to the user when destination was reached */
-"positioning.destinationReached.alert.title" = "היעד הגיע";
+"positioning.destinationReached.alert.title" = "הגעתם ליעד";
 
 /* Alert title error when download the floor plan fails */
 "positioning.error.emptyFloor.alert.message" = "אירעה שגיאה בלתי צפויה בעת הורדת תכנית הקומה. בבקשה נסה שוב.";
@@ -86,13 +86,13 @@
 "positioning.error.noDestinationSelected.alert.title" = "לא נבחר יעד";
 
 /* Alert title error when the user position is unknown */
-"positioning.error.outsideBuilding.message" = "נכון לעכשיו אינך יכול ליצור יעדים בחוץ.";
+"positioning.error.outsideBuilding.message" = "נכון לעכשיו אינך יכול ליצור יעדים חיצוניים.";
 
 /* Alert title error when the user position is unknown */
-"positioning.error.outsideBuilding.title" = "יעד בחוץ";
+"positioning.error.outsideBuilding.title" = "יעד חיצוני";
 
 /* Alert title error when the user is outdoor */
-"positioning.error.positionOutdoor.alert.title" = "עמדת חוץ";
+"positioning.error.positionOutdoor.alert.title" = "עמדה חיצונית";
 
 /* Alert title error when the user position is unknown */
 "positioning.error.positionUnknown.alert.title" = "עמדה לא ידועה";
@@ -116,10 +116,10 @@
 "positioning.outsideBuilding.alert.title" = "משתמש מחוץ לבניין";
 
 /* Alert title to show user is outside of route */
-"positioning.outsideRoute.alert.title" = "מסלול מחוץ למשתמש";
+"positioning.outsideRoute.alert.title" = "משתמש מחוץ למסלול";
 
 /* Placeholder for searching pois */
-"positioning.searchPois" = "חפש את Pois";
+"positioning.searchPois" = "חפש נקודות עניין";
 
 /* No comment provided by engineer. */
 "search.distance" = "מֶרְחָק";
@@ -146,7 +146,7 @@
 "wayfindingError.buildingNotExist" = "בניין לא קיים";
 
 /* No comment provided by engineer. */
-"wayfindingError.invalidPoi" = "ה-POI שנבחר אינו תקף בבניין זה";
+"wayfindingError.invalidPoi" = "נקודת הענין שנבחרה אינה תקפה בבניין זה";
 
 /* No comment provided by engineer. */
 "wayfindingError.requestError" = "שגיאה בתגובה";

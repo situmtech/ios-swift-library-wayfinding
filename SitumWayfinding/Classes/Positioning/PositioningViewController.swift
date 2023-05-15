@@ -668,22 +668,39 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
         hideCenterButton()
     }
     
+    func setCameraNotCentered(){
+        isCameraCentered = false;
+        showCenterButton()
+    }
+    
+    
     func reloadFloorPlansTableViewData() {
         levelsTableView.reloadData()
     }
     
     //PositioningView protocol method
     func select(floor floorId: String) {
-        if let indexPath = getIndexPath(floorId: floorId) {
-            tableView(levelsTableView, didSelectRowAt: indexPath)
+         if let indexPath = getIndexPath(floorId: floorId) {
+            let cameraWasCentered = self.isCameraCentered
+            let isSameLevel = indexPath.row == self.selectedLevelIndex
+            select(floor: indexPath)
+
+            if (presenter?.userLocation != nil && !isSameLevel && cameraWasCentered){
+                setCameraCentered()
+            }
         }
+
     }
     
+    //Called from floor selector
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        select(floor: indexPath)
+         select(floor: indexPath)
     }
     
+    //Called from tableView (floorSelector) and poi selector
+    //Side effect = uncenter camera and update ui based on location
     func select(floor floorIndex: IndexPath) {
+       
         resetChangeOfFloorMarker()
 
         let isSameLevel = floorIndex.row == self.selectedLevelIndex
@@ -703,12 +720,13 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
         self.selectedLevelIndex = floorIndex.row
         self.reloadFloorPlansTableViewData()
         self.displayMap(forLevel: self.selectedLevelIndex)
-        if (presenter?.userLocation != nil && !isSameLevel) {
-            self.isCameraCentered = false
-            self.showCenterButton()
+         
+       
+        levelsTableView.scrollToRow(at: floorIndex, at: .middle, animated: true)
+        setCameraNotCentered()
+        if (presenter?.userLocation != nil){
             self.updateUI(with: self.presenter!.userLocation!)
         }
-        levelsTableView.scrollToRow(at: floorIndex, at: .middle, animated: true)
     }
     
     //MARK: TableView
@@ -721,6 +739,7 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+     
         let cell: UITableViewCell? = tableView.dequeueReusableCell(withIdentifier: "LevelCellIdentifier")
         cell?.roundCorners(corners: [.topLeft, .topRight, .bottomLeft, .bottomRight], radius: floorSelectorCornerRadius)
 
@@ -978,6 +997,7 @@ class PositioningViewController: SitumViewController, GMSMapViewDelegate, UITabl
     }
     
     func startNavigation(to location: CLLocationCoordinate2D, in floor: SITFloor) {
+     
         guard let indexPath = getIndexPath(floorId: floor.identifier) else {
             return
         }
