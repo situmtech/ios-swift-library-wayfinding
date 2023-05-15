@@ -92,8 +92,18 @@ steps:
       system: "N/A"
       server: "github"
       repoFolder: "ios-swift-library-wayfinding"
-
   
+  - template: azure-templates/commit-doc.yaml@sys_kubernetes_templates
+    parameters:
+      version: $(version)
+      docPath: "sdk_documentation/wayfinding/appledoc" 
+      system: "ios"
+      release: "ios-wayfinding"
+      artifactId: "SitumWayfinding"
+      bitbucket:
+        bitbucket_user: $(bitbucket_user)
+        bitbucket_pass: $(bitbucket_pass)
+    
   - task: DownloadSecureFile@1
     name: netrc
     inputs:
@@ -111,15 +121,4 @@ steps:
       pod trunk push SitumWayfinding.podspec --skip-import-validation --allow-warnings
   
     displayName: Push podspec
-  
-  - template: azure-templates/commit-doc.yaml@sys_kubernetes_templates
-    parameters:
-      version: $(version)
-      docPath: "sdk_documentation/wayfinding/appledoc" 
-      system: "ios"
-      release: "ios-wayfinding"
-      artifactId: "SitumWayfinding"
-      bitbucket:
-        bitbucket_user: $(bitbucket_user)
-        bitbucket_pass: $(bitbucket_pass)
-    
+
