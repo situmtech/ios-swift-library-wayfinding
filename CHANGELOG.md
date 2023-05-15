@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 All non released changes should be in CHANGELOG_UNRELEASED.md file
 
 ---------
+## [0.19.3] - 2023-05-15
+## Fixed
+- Fixed bug that generated errors getting directions in certain cases (the user went out of route and the system tried to automaticallly recomputed).
+- Fixed bug that showed incorrect information when the user centered the camera while getting position updates.
+
+# Changed
+- Updated Situm SDK dependency to 2.60.1.
+- Updated Hebrew translations.
+
 ## [0.19.2] - 2023-03-20
 ### Fixed
 * Fixed a crash when trying to unload a wyf module that has not yet been presented into screen

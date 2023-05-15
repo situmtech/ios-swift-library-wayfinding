@@ -117,6 +117,7 @@ steps:
       echo -e "\n[+] Show pod trunk sessions...........\n"
       pod trunk me
   
+      cd ios-swift-library-wayfinding
       echo -e "\n[+] Pod push WYF..........."
       pod trunk push SitumWayfinding.podspec --skip-import-validation --allow-warnings
   
