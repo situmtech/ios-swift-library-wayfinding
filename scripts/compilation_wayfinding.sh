@@ -16,6 +16,7 @@ xcodebuild -workspace ./Example/SitumWayfinding.xcworkspace \
 -derivedDataPath "build/derivedData" \
 -scheme SitumWayfinding-Example \
 -allowProvisioningUpdates \
+-destination $(iosSimulator) \
 clean build 2>&1 | tee ./build/buildWayfinding.log
 
 # Change dir if debug release
