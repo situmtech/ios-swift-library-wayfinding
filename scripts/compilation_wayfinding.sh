@@ -16,14 +16,14 @@ xcodebuild -workspace ./Example/SitumWayfinding.xcworkspace \
 -derivedDataPath "build/derivedData" \
 -scheme SitumWayfinding-Example \
 -allowProvisioningUpdates \
--destination 'platform=iOS,name=Any iOS Device' \
+-destination 'platform=iOS Simulator,name=iPhone 14' \
 clean build 2>&1 | tee ./build/buildWayfinding.log
 
 # Change dir if debug release
 if [ "$BUILD_TYPE" == "Release" ]; then
-	cd "build/derivedData/Build/Products/Release-iphoneos"
+	cd "build/derivedData/Build/Products/Release-iphonesimulator"
 else
-	cd "build/derivedData/Build/Products/Debug-iphoneos"
+	cd "build/derivedData/Build/Products/Debug-iphonesimulator"
 fi
 
 #If example app isnt generated throw error
