@@ -84,6 +84,8 @@ fileprivate class FakeLocationManager: NSObject, SITLocationInterface {
     
     func updateLocationParameters(_ update: SITLocationParametersUpdate) {}
     
+    func add(_ externalLocation: SITExternalLocation) {}
+    
     deinit {
         removeTimer()
     }
