@@ -27,7 +27,7 @@ PODS:
   - SitumSDK (2.62.0):
     - Protobuf (~> 3.7)
     - SSZipArchive (~> 2.4)
-  - SitumWayfinding (0.19.5):
+  - SitumWayfinding (0.19.6):
     - Google-Maps-iOS-Utils (~> 4.1.0)
     - GoogleMaps (~> 4.2.0)
     - SitumSDK (~> 2.62.0)
@@ -53,7 +53,7 @@ SPEC CHECKSUMS:
   GoogleMaps: eb03e327edfd70b06de1e6e321653f73712df7ad
   Protobuf: 74a8b46ebe3001096a6f4b624e9efbae8adb2edd
   SitumSDK: 204f169f74c3ac383c31bf52a6341d34a7f71764
-  SitumWayfinding: b53ea314bb27dff5355e481441b0e8f07ef93087
+  SitumWayfinding: 350eb91f2a5c33a80c10970fb4c9f395c3ca3890
   SSZipArchive: fe6a26b2a54d5a0890f2567b5cc6de5caa600aef
 
 PODFILE CHECKSUM: 181eb894514efe3e0119ec84dae5349934aaaa20
