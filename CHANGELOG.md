@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 All non released changes should be in CHANGELOG_UNRELEASED.md file
 
 ---------
+## [0.19.8] - 2023-10-19
+### Changed
+- Added polish translation.
+- Update iOS SDK to version 3.2.2
+
 ## [0.19.7] - 2023-08-11
 ### Changed
 - Update iOS SDK to version 3.0.2

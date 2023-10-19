@@ -25,8 +25,8 @@ Pod::Spec.new do |s|
   s.author           = { 'Name' => 'support@situm.es' }
   s.source           = { :git => 'https://github.com/situmtech/ios-swift-library-wayfinding.git', :tag => s.version.to_s }
 
-  s.ios.deployment_target = '10.0'
-  s.platform = :ios, '10.0'
+  s.ios.deployment_target = '12.0'
+  s.platform = :ios, '12.0'
   s.swift_version = '5.0'
 
   s.source_files = 'SitumWayfinding/Classes/**/*'
@@ -46,7 +46,7 @@ Pod::Spec.new do |s|
   }
   
   s.dependency 'GoogleMaps', '~> 4.2.0'
-  s.dependency 'SitumSDK', '~> 3.0.2'
+  s.dependency 'SitumSDK', '~> 3.2.2'
   s.dependency 'Google-Maps-iOS-Utils', '~> 4.1.0'
 
 end
