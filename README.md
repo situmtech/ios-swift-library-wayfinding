@@ -5,6 +5,10 @@
 [![License](https://img.shields.io/cocoapods/l/SitumWayfinding.svg?style=flat)](https://cocoapods.org/pods/SitumWayfinding)
 [![Platform](https://img.shields.io/cocoapods/p/SitumWayfinding.svg?style=flat)](https://cocoapods.org/pods/SitumWayfinding)
 
+> [!IMPORTANT]  
+> This guide refers to the old version of the Wayfinding module, which is **no longer maintained**. We strongly recommend adopting [MapView](https://github.com/situmtech/situm-ios-swift-getting-started), the new visual component available for iOS.
+To stay up to date, checkout the [Situm iOS SDK changelog](https://situm.com/docs/ios-sdk-changelog/).
+
 ## Description
 
 Situm Wayfinding Module written in Swift for iOS devices has been designed to create indoor location applications in the simplest way. It has been built in the top of the Situm SDK and allows users to position in a building, see its floors, see the building POIs (Point Of Interest), create routes to any point of the building, receive instructions to reach a place and more. If you are interested in building applications using the Situm SDK, please refer to [Situm iOS SDK Sample app](https://github.com/situmtech/situm-ios-swift-getting-started).
