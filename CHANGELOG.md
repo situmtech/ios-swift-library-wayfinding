@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 All non released changes should be in CHANGELOG_UNRELEASED.md file
 
 ---------
+## [0.20.0] - 2024-02-22
+### Deprecated
+- Library deprecated. We strongly recommend adopting [MapView](https://github.com/situmtech/situm-ios-swift-getting-started), the new visual component available for iOS.
+### Changed
+- Update iOS SDK to version 3.7.2
+
 ## [0.19.10] - 2023-12-12
 ### Changed
 - Update iOS SDK to version 3.5.0
